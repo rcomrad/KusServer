@@ -13,7 +13,7 @@ sudo ./cmake_install.sh
 cd ../..
 git clone https://github.com/Microsoft/vcpkg.git
 cd ./vcpkg
-./vcpkg/bootstrap-vcpkg.sh
+./bootstrap-vcpkg.sh
 ./vcpkg install crow:x64-linux
 ./vcpkg install libpqxx:x64-linux
 

@@ -1,6 +1,6 @@
 cd ..
 git branch -D autocommit
-git checkout -b autocommit
+git branch autocommit
 git stash
 git switch autocommit
 git stash apply
