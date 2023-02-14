@@ -1,0 +1,10 @@
+/build
+
+**.pdb
+**.obj
+**.sqlite3
+**.log
+**.err
+**.exe
+**.dll
+**.pass

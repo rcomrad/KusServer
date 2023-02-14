@@ -1,0 +1,41 @@
+[Unit]
+Description=KusManager
+
+Wants=network.target
+After=syslog.target network-online.target
+
+[Service]
+Type=simple
+ExecStart=/home/rcomrad/server/bin/Server.exe
+WorkingDirectory=/home/rcomrad/server/bin
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=KusManager
+Restart=on-failure
+RestartSec=10
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
+
+# /etc/systemd/system/
+# sudo systemctl start KusManager
+# sudo systemctl restart KusManager
+# sudo systemctl stop KusManager
+# sudo systemctl status KusManager
+# sudo systemctl daemon-reload
+
+# sudo chmod 640 /etc/systemd/system/crowthing.service
+
+# sudo journalctl -u KusManager
+# sudo journalctl -u KusManager --since "2023-01-08 16:05:00"
+
+# scp rcomrad@194.87.206.68:/home/rcomrad/logs D:/logs
+
+# Type=simple
+# ExecStart=/home/rcomrad/server/bin/Server.exe
+# StandardOutput=/home/rcomrad/server/log1.log
+# StandardError=/home/rcomrad/server/log2.log
+# Restart=on-failure
+# RestartSec=10
+# KillMode=process
