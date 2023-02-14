@@ -39,8 +39,7 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
     ([]() { return crow::mustache::load("index.html").render(); });
 
     CROW_ROUTE(app, "/test")
-    ([]() { return "test (#0)"; });
-
+    ([]() { return "All fine!"; });
 
     CROW_ROUTE(app, "/favicon.ico")
     (
