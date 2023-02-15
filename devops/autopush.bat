@@ -1,7 +1,7 @@
 cd ..
 git branch -D autocommit
 git branch autocommit
-git stash
+git stash --include-untracked
 git switch autocommit
 git stash apply
 git add .
