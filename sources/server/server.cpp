@@ -13,11 +13,11 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
     auto& cors = app.get_middleware<crow::CORSHandler>();
     app.loglevel(crow::LogLevel::Debug);
 
-#ifdef CROW_ENABLE_SSL
+// #ifdef CROW_ENABLE_SSL
 
-    app.ssl_file("cert.crt", "keyfile.key");
+//     app.ssl_file("cert.crt", "keyfile.key");
 
-#endif
+// #endif
 
     // clang-format off
     cors
@@ -35,19 +35,19 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
     // clang-format on
 
     //--------------------------------------------------------
-    CROW_ROUTE(app, "/")
-    ([]() { return crow::mustache::load("index.html").render(); });
+    // CROW_ROUTE(app, "/")
+    // ([]() { return crow::mustache::load("index.html").render(); });
 
-    CROW_ROUTE(app, "/test")
+    CROW_ROUTE(app, "/api/test")
     ([]() { return "All fine!"; });
 
-    CROW_ROUTE(app, "/favicon.ico")
-    (
-        [](const crow::request&, crow::response& res)
-        {
-            res.set_static_file_info("assets/favicon.ico");
-            res.end();
-        });
+    // CROW_ROUTE(app, "/favicon.ico")
+    // (
+    //     [](const crow::request&, crow::response& res)
+    //     {
+    //         res.set_static_file_info("assets/favicon.ico");
+    //         res.end();
+    //     });
     //---------------------------------------------------------------------
 
     CROW_ROUTE(app, "/api/get/all/<string>")
@@ -110,23 +110,23 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
 
     //--------------------------------------------------------------------------------
 
-    CROW_ROUTE(app, "/journal")
-    ([]() { return crow::mustache::load("index.html").render(); });
-    CROW_ROUTE(app, "/user")
-    ([]() { return crow::mustache::load("index.html").render(); });
-    CROW_ROUTE(app, "/grade")
-    ([]() { return crow::mustache::load("index.html").render(); });
-    CROW_ROUTE(app, "/plan")
-    ([]() { return crow::mustache::load("index.html").render(); });
-    CROW_ROUTE(app, "/journal_manage")
-    ([]() { return crow::mustache::load("index.html").render(); });
-    CROW_ROUTE(app, "/head_journal")
-    ([]() { return crow::mustache::load("index.html").render(); });
+    // CROW_ROUTE(app, "/journal")
+    // ([]() { return crow::mustache::load("index.html").render(); });
+    // CROW_ROUTE(app, "/user")
+    // ([]() { return crow::mustache::load("index.html").render(); });
+    // CROW_ROUTE(app, "/grade")
+    // ([]() { return crow::mustache::load("index.html").render(); });
+    // CROW_ROUTE(app, "/plan")
+    // ([]() { return crow::mustache::load("index.html").render(); });
+    // CROW_ROUTE(app, "/journal_manage")
+    // ([]() { return crow::mustache::load("index.html").render(); });
+    // CROW_ROUTE(app, "/head_journal")
+    // ([]() { return crow::mustache::load("index.html").render(); });
 
     //--------------------------------------------------------------------------------
 
     // clang-format off
-    app.port(80).multithreaded().run();
+    app.port(18080).multithreaded().run();
     // app.port(80).app.ssl_file("cert.crt", "keyfile.key").multithreaded().run();
     // app.port(18080).app.ssl_file("cert.crt", "keyfile.key").multithreaded().run();
     // clang-format on

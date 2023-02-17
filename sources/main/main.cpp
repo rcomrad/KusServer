@@ -11,8 +11,7 @@ int
 main(int argc, char* argv[])
 {
     std::cout << "LAMPA\n";
-    std::cout << __cplusplus << std::endl;
-    "ABC";
+    // std::cout << __cplusplus << std::endl;
     std::vector<std::string> arguments;
     arguments.reserve(argc);
     for (size_t i = 0; i < argc; ++i)

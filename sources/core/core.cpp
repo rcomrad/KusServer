@@ -36,6 +36,11 @@ core::Core::Core() noexcept
     mAdminDBS.shame    = "public";
 
     std::ifstream ios("database.pass");
+    if (!ios.is_open())
+    {
+        std::cout << "NO DATABASE PASSWORD FILE DETECTED!\n";
+        exit(0);
+    }
     ios >> mAdminDBS.password >> mDBS.password;
 
     mApps["server"] = std::move(std::thread(&Core::serverThread, this));
