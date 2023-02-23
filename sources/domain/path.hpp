@@ -3,7 +3,10 @@
 
 //--------------------------------------------------------------------------------
 
+#include <optional>
 #include <string>
+#include <string_view>
+#include <unordered_map>
 
 #define MAIN_PATH       dom::Path::getMainPath()
 #define EXECUTABLE_PATH dom::Path::getExecutablePath()
@@ -18,10 +21,17 @@ namespace dom
 class Path
 {
 public:
+    static std::optional<std::string> getPath(
+        const std::string& aName) noexcept;
+
     static std::string getMainPath() noexcept;
     static std::string getExecutablePath() noexcept;
 
 private:
+    static std::unordered_map<std::string, std::string> mPaths;
+
+    static std::unordered_map<std::string, std::string> getPaths() noexcept;
+
     static std::string getMainPathOnce() noexcept;
     static std::string getExecutablePathOnce() noexcept;
 };

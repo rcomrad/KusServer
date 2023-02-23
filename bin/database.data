@@ -58,8 +58,8 @@ TABLE mark
 
 TABLE plan
 	subject_id smallint NOT NULL
-	name character varying(100)  NOT NULL
-	url character varying(100)  NOT NULL
+	name character varying(100) NOT NULL
+	url character varying(100) NOT NULL
 
 TABLE theme
 	plan_id integer NOT NULL
@@ -72,5 +72,14 @@ TABLE file
 TABLE holiday
 	school_id integer NOT NULL
 	date_val date NOT NULL
+
+TABLE problem
+	index integer NOT NULL
+
+TABLE submission
+	user_id integer NOT NULL
+	problem_id integer NOT NULL
+	date_val date NOT NULL
+	verdict character varying(3) NOT NULL
 
 TABLE NUN

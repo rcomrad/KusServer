@@ -75,6 +75,14 @@
         {                                                                   \
             res = getData<data::Holiday>(args...);                          \
         }                                                                   \
+        else if (str_hash == hasher("problem"))                             \
+        {                                                                   \
+            res = getData<data::Problem>(args...);                          \
+        }                                                                   \
+        else if (str_hash == hasher("submission"))                          \
+        {                                                                   \
+            res = getData<data::Submission>(args...);                       \
+        }                                                                   \
                                                                             \
         return res;                                                         \
     }                                                                       \
@@ -146,6 +154,14 @@
         else if (str_hash == hasher("holiday"))                             \
         {                                                                   \
             res = core::PostHandler::process<data::Holiday>(args...);       \
+        }                                                                   \
+        else if (str_hash == hasher("problem"))                             \
+        {                                                                   \
+            res = core::PostHandler::process<data::Problem>(args...);       \
+        }                                                                   \
+        else if (str_hash == hasher("submission"))                          \
+        {                                                                   \
+            res = core::PostHandler::process<data::Submission>(args...);    \
         }                                                                   \
                                                                             \
         return res;                                                         \

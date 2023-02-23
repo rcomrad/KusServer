@@ -10,7 +10,7 @@
 #include "sql_wrapper.hpp"
 
 #ifdef BILL_WINDOWS
-#    define LOG_POSTGRES_QUERIES 1
+#    define LOG_POSTGRES_QUERIES 0
 #else
 #    define LOG_POSTGRES_QUERIES 0
 #endif

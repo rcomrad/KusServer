@@ -1,8 +1,51 @@
 #include "path.hpp"
 
-//--------------------------------------------------------------------------------
+#include <fstream>
+#include <optional>
 
 #include "error_message.hpp"
+
+//--------------------------------------------------------------------------------
+
+std::unordered_map<std::string, std::string> dom::Path::mPaths =
+    dom::Path::getPaths();
+
+//--------------------------------------------------------------------------------
+
+std::unordered_map<std::string, std::string>
+dom::Path::getPaths() noexcept
+{
+    std::unordered_map<std::string, std::string> result;
+    std::ifstream inp("paths.path");
+
+    if (!inp.is_open())
+    {
+        std::cout << "ERROR: no paths file!\n";
+        exit(0);
+    }
+
+    std::string name, path;
+    while (inp >> name >> path)
+    {
+        result[name] = path;
+    }
+
+    return result;
+}
+
+//--------------------------------------------------------------------------------
+
+std::optional<std::string>
+dom::Path::getPath(const std::string& aName) noexcept
+{
+    auto it = mPaths.find(aName);
+    std::optional<std::string> result;
+    if (it != mPaths.end())
+    {
+        result = it->second;
+    }
+    return result;
+}
 
 //--------------------------------------------------------------------------------
 
@@ -28,8 +71,7 @@ std::string
 dom::Path::getMainPathOnce() noexcept
 {
     std::string path = getExecutablePath();
-    do
-        path.pop_back();
+    do path.pop_back();
     while (path.back() != '\\' && path.back() != '/');
     return path;
 }

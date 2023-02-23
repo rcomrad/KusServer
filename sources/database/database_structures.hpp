@@ -280,6 +280,41 @@ struct Holiday : public UpperDataStruct<HolidayBase>
 {
 };
 
+struct ProblemBase : public BaseDataStruct<2>
+{
+    int id    = 0;
+    int index = 0;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::unordered_map<std::string, uint8_t> columnNames;
+
+    void reset();
+};
+
+struct Problem : public UpperDataStruct<ProblemBase>
+{
+};
+
+struct SubmissionBase : public BaseDataStruct<5>
+{
+    int id         = 0;
+    int user_id    = 0;
+    int problem_id = 0;
+    std::string date_val;
+    std::string verdict;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::unordered_map<std::string, uint8_t> columnNames;
+
+    void reset();
+};
+
+struct Submission : public UpperDataStruct<SubmissionBase>
+{
+};
+
 } // namespace data
 
 //--------------------------------------------------------------------------------

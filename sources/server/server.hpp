@@ -148,6 +148,22 @@ public:
 
     //--------------------------------------------------------------------------------
 
+    crow::json::wvalue::list getDataHendler(const std::string& aRequest,
+                                            std::string&& aCondition) noexcept
+    {
+        for (auto& i : aCondition)
+        {
+            if (i == ';') i = ' ';
+        }
+        GetRequest req(aRequest);
+        if (req.args.size() == 0)
+        {
+            req.args["*"];
+        }
+        req.reset(req.name);
+        return getDataAsJSON(req.name, req, aCondition);
+    }
+
     crow::response get(const std::string& aRequest,
                        std::string&& aCondition) noexcept
     {
@@ -200,7 +216,6 @@ private:
     std::vector<std::string> roles;
 
     SERVER_FUNCTIONS
-
 };
 } // namespace serv
 //--------------------------------------------------------------------------------
