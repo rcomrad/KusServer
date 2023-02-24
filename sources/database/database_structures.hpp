@@ -280,10 +280,11 @@ struct Holiday : public UpperDataStruct<HolidayBase>
 {
 };
 
-struct ProblemBase : public BaseDataStruct<2>
+struct ProblemBase : public BaseDataStruct<3>
 {
-    int id    = 0;
-    int index = 0;
+    int id = 0;
+    std::string name;
+    std::string nickname;
 
     static std::string tableName;
     static std::vector<data::Type> types;
@@ -296,13 +297,15 @@ struct Problem : public UpperDataStruct<ProblemBase>
 {
 };
 
-struct SubmissionBase : public BaseDataStruct<5>
+struct SubmissionBase : public BaseDataStruct<7>
 {
     int id         = 0;
     int user_id    = 0;
     int problem_id = 0;
     std::string date_val;
     std::string verdict;
+    int test = 0;
+    std::string file_path;
 
     static std::string tableName;
     static std::vector<data::Type> types;

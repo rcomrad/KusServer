@@ -76,6 +76,7 @@ user
 	'teach22';'123';'Артём';'Воробьев';6;1
 	'teach23';'123';'Августина';'Аникина';2;1
 	'all24';'123';'Серафима';'Смирнова';120;1
+	'submitor';'123';'Tester';'Testerovich';512;1
 END
 
 role
@@ -88,6 +89,7 @@ role
 	'add_plan'
 	'director'
 	'admin'
+	'submitor'
 END
 
 lesson
@@ -121,11 +123,12 @@ file
 END
 
 submission
-	1;1;'2022-10-28';'OK'
+	1;1;'2001-09-28 01:00:00';'OK';0;'NUN'
 END
 
 problem
-	1
+	'HELL BINGO';'1'
+	'BOBRORALLY';'2'
 END
 
 holiday

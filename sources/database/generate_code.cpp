@@ -90,6 +90,10 @@ generateDatabaseStructuresHPPFile()
             {
                 temp += "std::string ";
             }
+            else if (s2 == "timestamp")
+            {
+                temp += "std::string ";
+            }
             temp += s1;
             if (flag) temp += " = 0";
             temp += ";\n";
@@ -181,6 +185,10 @@ generateDatabaseStructuresCPPFile()
                 columnTypes += "data::Type::BOOL, ";
             }
             else if (s2 == "date")
+            {
+                columnTypes += "data::Type::STRING, ";
+            }
+            else if (s2 == "timestamp")
             {
                 columnTypes += "data::Type::STRING, ";
             }

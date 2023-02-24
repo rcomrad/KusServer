@@ -300,30 +300,34 @@ data::HolidayBase::reset()
 }
 
 std::string data::ProblemBase::tableName         = "problem";
-std::vector<data::Type> data::ProblemBase::types = {data::Type::INT,
-                                                    data::Type::INT};
+std::vector<data::Type> data::ProblemBase::types = {
+    data::Type::INT, data::Type::STRING, data::Type::STRING};
 std::unordered_map<std::string, uint8_t> data::ProblemBase::columnNames = {
-    {"id",    0},
-    {"index", 1}
+    {"id",       0},
+    {"name",     1},
+    {"nickname", 2}
 };
 
 void
 data::ProblemBase::reset()
 {
     ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&index);
+    ptrs[1] = (void*)(&name);
+    ptrs[2] = (void*)(&nickname);
 }
 
 std::string data::SubmissionBase::tableName         = "submission";
 std::vector<data::Type> data::SubmissionBase::types = {
-    data::Type::INT, data::Type::INT, data::Type::INT, data::Type::STRING,
-    data::Type::STRING};
+    data::Type::INT,    data::Type::INT, data::Type::INT,   data::Type::STRING,
+    data::Type::STRING, data::Type::INT, data::Type::STRING};
 std::unordered_map<std::string, uint8_t> data::SubmissionBase::columnNames = {
     {"id",         0},
     {"user_id",    1},
     {"problem_id", 2},
     {"date_val",   3},
-    {"verdict",    4}
+    {"verdict",    4},
+    {"test",       5},
+    {"file_path",  6}
 };
 
 void
@@ -334,4 +338,6 @@ data::SubmissionBase::reset()
     ptrs[2] = (void*)(&problem_id);
     ptrs[3] = (void*)(&date_val);
     ptrs[4] = (void*)(&verdict);
+    ptrs[5] = (void*)(&test);
+    ptrs[6] = (void*)(&file_path);
 }

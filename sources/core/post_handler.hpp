@@ -3,9 +3,9 @@
 
 //--------------------------------------------------------------------------------
 
+#include <set>
 #include <string_view>
 #include <vector>
-#include <set>
 
 #include "database/database_query.hpp"
 
@@ -19,7 +19,8 @@ class PostHandler
 {
 public:
     template <typename T>
-    static crow::json::wvalue process(const crow::request& aReq, data::DatabaseQuery& aDBQ)
+    static crow::json::wvalue process(const crow::request& aReq,
+                                      data::DatabaseQuery& aDBQ)
     {
         auto req   = crow::json::load(aReq.body);
         auto table = getStructTable<T>(req, aDBQ);
@@ -27,7 +28,7 @@ public:
         return {};
     }
 
-    //TODO: remove aDBQ!
+    // TODO: remove aDBQ!
     template <typename T>
     static auto getStructTable(const crow::json::rvalue& aReq,
                                data::DatabaseQuery& aDBQ) noexcept
@@ -57,7 +58,7 @@ public:
             }
         }
 
-        if (T::tableName == "user")
+        if (T::tableName == "user" && aReq.has("role"))
         {
             std::set<std::string> roles;
             for (auto it = aReq["role"].begin(); it != aReq["role"].end(); ++it)
@@ -81,10 +82,9 @@ public:
         return result;
     }
 
-protected:
-
     static std::string uploadFile(crow::multipart::message& aMsg,
-                                  data::DatabaseQuery& aDBQ);
+                                  data::DatabaseQuery& aDBQ,
+                                  std::string aPathPrefix = "");
 };
 } // namespace core
 

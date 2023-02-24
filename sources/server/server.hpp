@@ -95,7 +95,7 @@ public:
                     // if (name == "role_id" || opt.get().second.size() > 1)
                     if (name == "role_id")
                     {
-                        temp["roles"] =
+                        temp["role"] =
                             getDataAsJSON("role", GetRequest(),
                                           "id = " + data::wrap(*(int*)i[indx]));
                     }

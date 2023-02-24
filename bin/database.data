@@ -74,12 +74,15 @@ TABLE holiday
 	date_val date NOT NULL
 
 TABLE problem
-	index integer NOT NULL
+	name character varying(20) NOT NULL
+	nickname character varying(15) NOT NULL
 
 TABLE submission
 	user_id integer NOT NULL
 	problem_id integer NOT NULL
-	date_val date NOT NULL
+	date_val timestamp NOT NULL
 	verdict character varying(3) NOT NULL
+	test integer NOT NULL
+	file_path character varying(30) NOT NULL
 
 TABLE NUN

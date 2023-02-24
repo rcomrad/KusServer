@@ -89,6 +89,48 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
                 return res;
             });
 
+    CROW_ROUTE(app, "/api/submit")
+        .methods("POST"_method)(
+            [&](const crow::request& req)
+            {
+                crow::response res;
+
+                boost::posix_time::ptime timeLocal =
+                    boost::posix_time::second_clock::local_time();
+                std::string dateTime;
+                dateTime += std::to_string(timeLocal.date().year()) + "-";
+                dateTime += std::to_string(timeLocal.date().month()) + "-";
+                dateTime += std::to_string(timeLocal.date().day()) + " ";
+                dateTime +=
+                    std::to_string(timeLocal.time_of_day().hours()) + ":";
+                dateTime +=
+                    std::to_string(timeLocal.time_of_day().minutes()) + ":";
+                if (timeLocal.time_of_day().seconds() < 10) dateTime += "0";
+                dateTime += std::to_string(timeLocal.time_of_day().seconds());
+
+                data::DatabaseQuery dbq(mDBS);
+                data::Table<data::Submission> submition;
+                submition.emplace_back();
+
+                crow::multipart::message msg(req);
+                submition.back().user_id =
+                    std::stoi(msg.get_part_by_name("user_id").body);
+                submition.back().problem_id =
+                    std::stoi(msg.get_part_by_name("problem_id").body);
+
+                submition.back().date_val  = dateTime;
+                submition.back().verdict   = "NUN";
+                submition.back().test      = -1;
+                submition.back().file_path = core::PostHandler::uploadFile(
+                    msg, dbq, dom::Path::getPath("submition").value());
+
+                std::cout << dateTime << "\n";
+
+                dbq.insert<data::Submission>(submition);
+
+                return res;
+            });
+
     //---------------------------------------------------------------------
 
     CROW_ROUTE(app, "/api/login")
@@ -126,17 +168,17 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
             result["submissions"] = std::move(submissions);
 
             std::string path = dom::Path::getPath("problem").value() +
-                               std::to_string(*((int*)problem[0][1])) + "/";
+                               (*((std::string*)problem[0][2])) + "/";
             std::cout << path + "data.txt\n";
             std::ifstream inp;
 
             inp.open(path + "data.txt");
             std::string temp, s;
-            inp >> temp;
+            std::getline(inp, temp);
             result["name"] = temp;
-            inp >> temp;
+            std::getline(inp, temp);
             result["time_limit"] = temp;
-            inp >> temp;
+            std::getline(inp, temp);
             result["memory_limit"] = temp;
             int count;
             inp >> count;
