@@ -143,3 +143,19 @@ holiday
 	1;'2022-11-05'
 	1;'2022-11-06'
 END
+
+user_upload
+	'basic'
+END
+
+plan_upload
+	'basic'
+END
+
+journal_upload
+	'basic'
+END
+
+journal_download
+	'basic'
+END

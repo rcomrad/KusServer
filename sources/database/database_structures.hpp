@@ -318,6 +318,70 @@ struct Submission : public UpperDataStruct<SubmissionBase>
 {
 };
 
+struct User_uploadBase : public BaseDataStruct<2>
+{
+    int id = 0;
+    std::string name;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::unordered_map<std::string, uint8_t> columnNames;
+
+    void reset();
+};
+
+struct User_upload : public UpperDataStruct<User_uploadBase>
+{
+};
+
+struct Plan_uploadBase : public BaseDataStruct<2>
+{
+    int id = 0;
+    std::string name;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::unordered_map<std::string, uint8_t> columnNames;
+
+    void reset();
+};
+
+struct Plan_upload : public UpperDataStruct<Plan_uploadBase>
+{
+};
+
+struct Journal_uploadBase : public BaseDataStruct<2>
+{
+    int id = 0;
+    std::string name;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::unordered_map<std::string, uint8_t> columnNames;
+
+    void reset();
+};
+
+struct Journal_upload : public UpperDataStruct<Journal_uploadBase>
+{
+};
+
+struct Journal_downloadBase : public BaseDataStruct<2>
+{
+    int id = 0;
+    std::string name;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::unordered_map<std::string, uint8_t> columnNames;
+
+    void reset();
+};
+
+struct Journal_download : public UpperDataStruct<Journal_downloadBase>
+{
+};
+
 } // namespace data
 
 //--------------------------------------------------------------------------------

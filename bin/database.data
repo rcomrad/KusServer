@@ -85,4 +85,16 @@ TABLE submission
 	test integer NOT NULL
 	file_path character varying(30) NOT NULL
 
+TABLE user_upload
+	name character varying(20) NOT NULL
+
+TABLE plan_upload
+	name character varying(20) NOT NULL
+
+TABLE journal_upload
+	name character varying(20) NOT NULL
+
+TABLE journal_download
+	name character varying(20) NOT NULL
+
 TABLE NUN
