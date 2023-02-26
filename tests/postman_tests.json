@@ -1,0 +1,234 @@
+{
+	"info": {
+		"_postman_id": "236da5f7-eb4f-45bf-aa50-b37e96ffc9b3",
+		"name": "StanokCollection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Shema",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"// pm.test(\"First check\", () => {\r",
+							"//     const expectedObject = \r",
+							"//     {\r",
+							"//         \"user\": \r",
+							"//         {\r",
+							"//             \"id\": 24,\r",
+							"//             \"surname\": \"Смирнова\",\r",
+							"//             \"login\": \"all24\",\r",
+							"//             \"password\": \"123\",\r",
+							"//             \"name\": \"Серафима\",\r",
+							"//             \"role\": \r",
+							"//             [\r",
+							"//                 \"add_user\",\r",
+							"//                 \"add_grade\",\r",
+							"//                 \"add_journal\",\r",
+							"//                 \"add_plan\"\r",
+							"//             ],\r",
+							"//             \"school_id\": 1\r",
+							"//         }\r",
+							"//     };\r",
+							"\r",
+							"//     pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
+							"// });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"all24\",\r\n    \"password\": \"123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/login",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "False log in Abba",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"pm.test(\"Abba user is created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"user\": {\r",
+							"            \"password\": \"abba\",\r",
+							"            \"id\": 26,\r",
+							"            \"login\": \"test1\",\r",
+							"            \"surname\": \"Агамовна\",\r",
+							"            \"name\": \"Абба\",\r",
+							"            \"role\": [\r",
+							"                \"student\",\r",
+							"                \"teacher\",\r",
+							"                \"add_user\"\r",
+							"            ],\r",
+							"            \"school_id\": 10\r",
+							"        }\r",
+							"    };\r",
+							"\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"test1\",\r\n    \"password\": \"abba\"\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/login",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Abba",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"test1\",\r\n    \"password\": \"abba\",\r\n    \"name\": \"Абба\",\r\n    \"surname\": \"Агамовна\",\r\n    \"role\": \r\n    [\r\n        \"add_user\",\r\n        \"add_plan\"\r\n    ],\r\n    \"school_id\": 10\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/post/user",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"post",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log in Abba",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"pm.test(\"Abba user is created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"user\": {\r",
+							"            \"password\": \"abba\",\r",
+							"            \"id\": 26,\r",
+							"            \"login\": \"test1\",\r",
+							"            \"surname\": \"Агамовна\",\r",
+							"            \"name\": \"Абба\",\r",
+							"            \"role\": [\r",
+							"                \"student\",\r",
+							"                \"teacher\",\r",
+							"                \"add_user\"\r",
+							"            ],\r",
+							"            \"school_id\": 10\r",
+							"        }\r",
+							"    };\r",
+							"\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"test1\",\r\n    \"password\": \"abba\"\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/login",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
