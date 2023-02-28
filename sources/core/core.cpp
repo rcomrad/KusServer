@@ -63,29 +63,6 @@ core::Core::createJournals() noexcept
 {
     data::DatabaseQuery dbq(mDBS);
     JournalHandler::loadFromFile("journals.data", dbq);
-    // std::ifstream inp("journals.data");
-
-    // std::string s;
-    // std::getline(inp, s);
-
-    // data::Table<data::Journal_table> journals;
-    // int num;
-    // while (inp >> num)
-    // {
-    //     journals.emplace_back();
-
-    //     journals.back().id = num;
-    //     inp >> journals.back().teacher_id;
-    //     inp >> journals.back().methodist_id;
-    //     inp >> journals.back().is_group;
-    //     inp >> journals.back().group_id;
-    //     inp >> journals.back().subject_id;
-    //     inp >> journals.back().plan_id;
-    //     inp >> journals.back().head_id;
-    // }
-
-    // data::DatabaseQuery dbq(mDBS);
-    // dbq.insert<data::Journal_table>(journals);
 }
 
 void
@@ -118,11 +95,12 @@ core::Core::run(const std::vector<std::string>& argv) noexcept
     deleteEnvironment();
     createEnvironment();
     createDatabaseFromFile("database.data");
-    populateDatabaseFromFile("populate_database.data");
+    populateDatabaseFromFile("populate_basic.data");
+    // populateDatabaseFromFile("populate_database.data");
     std::cout << "8888888888888888\n";
 
-    createPlans();
-    createJournals();
+    // createPlans();
+    // createJournals();
 
     bool flag = true;
     while (true)

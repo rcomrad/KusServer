@@ -1,61 +1,31 @@
 {
 	"info": {
-		"_postman_id": "236da5f7-eb4f-45bf-aa50-b37e96ffc9b3",
-		"name": "StanokCollection",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"_postman_id": "08377a17-1233-4a6b-bbca-7c0cdb625f38",
+		"name": "KusJournalTester",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25083981"
 	},
 	"item": [
 		{
-			"name": "Shema",
+			"name": "Check user emptiness",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"\r",
-							"\r",
-							"// pm.test(\"First check\", () => {\r",
-							"//     const expectedObject = \r",
-							"//     {\r",
-							"//         \"user\": \r",
-							"//         {\r",
-							"//             \"id\": 24,\r",
-							"//             \"surname\": \"Смирнова\",\r",
-							"//             \"login\": \"all24\",\r",
-							"//             \"password\": \"123\",\r",
-							"//             \"name\": \"Серафима\",\r",
-							"//             \"role\": \r",
-							"//             [\r",
-							"//                 \"add_user\",\r",
-							"//                 \"add_grade\",\r",
-							"//                 \"add_journal\",\r",
-							"//                 \"add_plan\"\r",
-							"//             ],\r",
-							"//             \"school_id\": 1\r",
-							"//         }\r",
-							"//     };\r",
-							"\r",
-							"//     pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
-							"// });"
+							"pm.test(\"Status test\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
 				}
 			],
 			"request": {
-				"method": "POST",
+				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"login\": \"all24\",\r\n    \"password\": \"123\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
-					"raw": "127.0.0.1:18080/api/login",
+					"raw": "127.0.0.1:18080/api/get/all/user",
 					"host": [
 						"127",
 						"0",
@@ -65,40 +35,23 @@
 					"port": "18080",
 					"path": [
 						"api",
-						"login"
+						"get",
+						"all",
+						"user"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "False log in Abba",
+			"name": "False log in Abba user",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"\r",
-							"\r",
-							"pm.test(\"Abba user is created successfully\", () => {\r",
-							"    const expectedObject = \r",
-							"    {\r",
-							"        \"user\": {\r",
-							"            \"password\": \"abba\",\r",
-							"            \"id\": 26,\r",
-							"            \"login\": \"test1\",\r",
-							"            \"surname\": \"Агамовна\",\r",
-							"            \"name\": \"Абба\",\r",
-							"            \"role\": [\r",
-							"                \"student\",\r",
-							"                \"teacher\",\r",
-							"                \"add_user\"\r",
-							"            ],\r",
-							"            \"school_id\": 10\r",
-							"        }\r",
-							"    };\r",
-							"\r",
-							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
+							"pm.test(\"User table is empty\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -130,7 +83,7 @@
 			"response": []
 		},
 		{
-			"name": "Create Abba",
+			"name": "Create Abba user",
 			"event": [
 				{
 					"listen": "test",
@@ -147,7 +100,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"login\": \"test1\",\r\n    \"password\": \"abba\",\r\n    \"name\": \"Абба\",\r\n    \"surname\": \"Агамовна\",\r\n    \"role\": \r\n    [\r\n        \"add_user\",\r\n        \"add_plan\"\r\n    ],\r\n    \"school_id\": 10\r\n}",
+					"raw": "{\r\n    \"login\": \"test1\",\r\n    \"password\": \"abba\",\r\n    \"name\": \"Абба\",\r\n    \"surname\": \"Агамовна\",\r\n    \"role\": \r\n    [\r\n        \"teacher\",\r\n        \"grade_head\",\r\n        \"add_user\",\r\n        \"add_plan\"\r\n    ],\r\n    \"school_id\": 10\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -173,7 +126,7 @@
 			"response": []
 		},
 		{
-			"name": "Log in Abba",
+			"name": "Log in Abba user",
 			"event": [
 				{
 					"listen": "test",
@@ -186,14 +139,15 @@
 							"    {\r",
 							"        \"user\": {\r",
 							"            \"password\": \"abba\",\r",
-							"            \"id\": 26,\r",
+							"            \"id\": 1,\r",
 							"            \"login\": \"test1\",\r",
 							"            \"surname\": \"Агамовна\",\r",
 							"            \"name\": \"Абба\",\r",
 							"            \"role\": [\r",
-							"                \"student\",\r",
 							"                \"teacher\",\r",
-							"                \"add_user\"\r",
+							"                \"grade_head\",\r",
+							"                \"add_user\",\r",
+							"                \"add_plan\"\r",
 							"            ],\r",
 							"            \"school_id\": 10\r",
 							"        }\r",
@@ -225,6 +179,423 @@
 					"path": [
 						"api",
 						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create teacher user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"teacher\",\r\n    \"password\": \"teacher123\",\r\n    \"name\": \"teacherN\",\r\n    \"surname\": \"teacherS\",\r\n    \"role\": \r\n    [\r\n        \"teacher\"\r\n    ],\r\n    \"school_id\": 10\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/post/user",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"post",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log in teacher user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"pm.test(\"Teacher user is created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"user\": {\r",
+							"            \"password\": \"teacher123\",\r",
+							"            \"id\": 2,\r",
+							"            \"login\": \"teacher\",\r",
+							"            \"surname\": \"teacherS\",\r",
+							"            \"name\": \"teacherN\",\r",
+							"            \"role\": [\r",
+							"                \"teacher\"\r",
+							"            ],\r",
+							"            \"school_id\": 10\r",
+							"        }\r",
+							"    };\r",
+							"\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"teacher\",\r\n    \"password\": \"teacher123\"\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/login",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create methodist user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"methodist\",\r\n    \"password\": \"methodist123\",\r\n    \"name\": \"methodistN\",\r\n    \"surname\": \"methodistS\",\r\n    \"role\": \r\n    [\r\n        \"add_journal\"\r\n    ],\r\n    \"school_id\": 10\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/post/user",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"post",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log in methodist user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"pm.test(\"Methodist user is created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"user\": {\r",
+							"            \"password\": \"methodist123\",\r",
+							"            \"id\": 3,\r",
+							"            \"login\": \"methodist\",\r",
+							"            \"surname\": \"methodistS\",\r",
+							"            \"name\": \"methodistN\",\r",
+							"            \"role\": [\r",
+							"                \"add_journal\"\r",
+							"            ],\r",
+							"            \"school_id\": 10\r",
+							"        }\r",
+							"    };\r",
+							"\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"methodist\",\r\n    \"password\": \"methodist123\"\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/login",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create head user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"head\",\r\n    \"password\": \"head123\",\r\n    \"name\": \"headN\",\r\n    \"surname\": \"headS\",\r\n    \"role\": \r\n    [\r\n        \"teacher\",\r\n        \"grade_head\"\r\n    ],\r\n    \"school_id\": 10\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/post/user",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"post",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log in head user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"pm.test(\"Head user is created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"user\": {\r",
+							"            \"password\": \"head123\",\r",
+							"            \"id\": 4,\r",
+							"            \"login\": \"head\",\r",
+							"            \"surname\": \"headS\",\r",
+							"            \"name\": \"headN\",\r",
+							"            \"role\": [\r",
+							"                \"teacher\",\r",
+							"                \"grade_head\"\r",
+							"            ],\r",
+							"            \"school_id\": 10\r",
+							"        }\r",
+							"    };\r",
+							"\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"head\",\r\n    \"password\": \"head123\"\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/login",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check journal emptiness",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"No any journals\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:18080/api/get/all/journal_table",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"get",
+						"all",
+						"journal_table"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create jornal",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"teacher_id\": 2,\r\n    \"methodist_id\": 3,\r\n    \"is_group\": false,\r\n    \"group_id\": \"1\",\r\n    \"subject_id\": 1,\r\n    \"plan_id\": 1,\r\n    \"head_id\": 4,\r\n    \"schedule\": \"1 2 3\"\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/post/journal_table",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"post",
+						"journal_table"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check journal",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"pm.test(\"Journal is created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"journal_table\": {\r",
+							"            \"subject_id\": 1,\r",
+							"            \"id\": 1,\r",
+							"            \"teacher_id\": 2,\r",
+							"            \"methodist_id\": 3,\r",
+							"            \"group_id\": 1,\r",
+							"            \"head_id\": 4,\r",
+							"            \"is_group\": false,\r",
+							"            \"plan_id\": 1,\r",
+							"            \"schedule\": \"1 2 3\"\r",
+							"        }\r",
+							"    };\r",
+							"\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:18080/api/get/by_id/journal_table/1",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"get",
+						"by_id",
+						"journal_table",
+						"1"
 					]
 				}
 			},

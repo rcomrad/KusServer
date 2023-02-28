@@ -1,0 +1,32 @@
+role
+	'submitor'
+	'student'
+	'teacher'
+	'grade_head'
+	'add_user'
+	'add_grade'
+	'add_journal'
+	'add_plan'
+	'director'
+	'admin'
+END
+
+file
+	1
+END
+
+user_upload
+	'basic'
+END
+
+plan_upload
+	'basic'
+END
+
+journal_upload
+	'basic'
+END
+
+journal_download
+	'basic'
+END

@@ -33,6 +33,7 @@ public:
     static auto getStructTable(const crow::json::rvalue& aReq,
                                data::DatabaseQuery& aDBQ) noexcept
     {
+        data::Table<T> tempp;
         data::Table<T> result;
         result.emplace_back();
         auto& temp = result.back();
@@ -72,7 +73,7 @@ public:
             {
                 if (roles.count(*(std::string*)i[1]))
                 {
-                    num += *(int*)i[0];
+                    num += 1 << (*(int*)i[0] - 1);
                 }
             }
 
