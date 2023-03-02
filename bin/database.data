@@ -1,4 +1,4 @@
-0TABLE school
+TABLE school
 	full_name character varying(255) NOT NULL
 	short_name character varying(255) NOT NULL
 	start_date date NOT NULL

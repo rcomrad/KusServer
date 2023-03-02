@@ -91,9 +91,10 @@ struct Table
     std::vector<data::Type> types;
     std::vector<T> data;
 
-    Table()
+    Table(int aSize = 0)
     {
         reset();
+        data.resize(aSize);
     }
 
     std::string getTableName() const

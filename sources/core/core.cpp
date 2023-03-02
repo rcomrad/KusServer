@@ -96,11 +96,14 @@ core::Core::run(const std::vector<std::string>& argv) noexcept
     createEnvironment();
     createDatabaseFromFile("database.data");
     populateDatabaseFromFile("populate_basic.data");
-    // populateDatabaseFromFile("populate_database.data");
-    std::cout << "8888888888888888\n";
 
-    // createPlans();
-    // createJournals();
+#ifdef LINUS_LINUX
+    populateDatabaseFromFile("populate_database.data");
+    createPlans();
+    createJournals();
+#endif
+
+    std::cout << "8888888888888888\n";
 
     bool flag = true;
     while (true)

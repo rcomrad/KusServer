@@ -512,6 +512,8 @@ data::Postgresql::merge(std::string& aResult,
 
     for (auto& i : aStrings)
     {
+        if (i == "") continue;
+
         aResult += i;
         aResult += ", ";
     }

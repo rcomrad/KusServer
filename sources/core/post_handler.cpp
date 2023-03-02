@@ -11,7 +11,7 @@ core::PostHandler::uploadFile(crow::multipart::message& aMsg,
 
     // TODO: filename
     auto fileName = aMsg.get_part_by_name("filename").body;
-    auto file            = aMsg.get_part_by_name("file").body;
+    auto file     = aMsg.get_part_by_name("file").body;
 
     auto table = aDBQ.getData<data::File>();
 

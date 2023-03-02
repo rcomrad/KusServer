@@ -31,12 +31,15 @@ core::PlanHandler::loadFromRequest(const crow::request& aReq,
                                    data::DatabaseQuery& aDBQ)
 {
     crow::multipart::message msg(aReq);
-    auto url = uploadFile(msg, aDBQ);
+    for (auto& i : msg.parts)
+    {
+        std::cout << i.body << "\n";
+    }
 
-    data::Table<data::Plan> plan;
-    plan.back().subject_id = std::stoi(msg.get_part_by_name("subject_id").body);
+    data::Table<data::Plan> plan(1);
     plan.back().name       = msg.get_part_by_name("name").body;
-    plan.back().url        = url;
+    plan.back().subject_id = std::stoi(msg.get_part_by_name("subject_id").body);
+    plan.back().url        = uploadFile(msg, aDBQ);
 
     make(plan, aDBQ);
 }

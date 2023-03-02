@@ -79,19 +79,6 @@ user
 	'submitor';'123';'Tester';'Testerovich';512;1
 END
 
-role
-	'submitor'
-	'student'
-	'teacher'
-	'grade_head'
-	'add_user'
-	'add_grade'
-	'add_journal'
-	'add_plan'
-	'director'
-	'admin'
-END
-
 lesson
 	1;'2022-10-28';1
 END
@@ -118,10 +105,6 @@ theme
 	'Тема 6';1
 END
 
-file
-	1
-END
-
 submission
 	1;1;'2001-09-28 01:00:00';'OK';0;'NUN'
 END
@@ -142,20 +125,4 @@ holiday
 	1;'2022-11-04'
 	1;'2022-11-05'
 	1;'2022-11-06'
-END
-
-user_upload
-	'basic'
-END
-
-plan_upload
-	'basic'
-END
-
-journal_upload
-	'basic'
-END
-
-journal_download
-	'basic'
 END

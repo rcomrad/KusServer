@@ -16,17 +16,17 @@ file
 END
 
 user_upload
-	'basic'
+	'Стандартный ввод'
 END
 
 plan_upload
-	'basic'
+	'CSV файл'
 END
 
 journal_upload
-	'basic'
+	'Стандартный ввод'
 END
 
 journal_download
-	'basic'
+	'Стандартный вывод'
 END
