@@ -38,19 +38,19 @@ public:
     }
 
     template <typename T>
-    void insert(const Table<T>& aData) noexcept
+    int insert(const Table<T>& aData) noexcept
     {
-        mDatabase.insert<T>(aData);
+        return mDatabase.insert<T>(aData);
     }
 
     template <typename T>
-    void update(const Table<T>& aData) noexcept
+    int update(const Table<T>& aData) noexcept
     {
-        mDatabase.update<T>(aData);
+        return mDatabase.update<T>(aData);
     }
 
     // TODO: delete
-    void insert(const std::string& aTableName,
+    int insert(const std::string& aTableName,
                 const std::vector<std::string>& aData) noexcept;
 
     void createTable(const std::string& aTableName,

@@ -31,10 +31,6 @@ core::PlanHandler::loadFromRequest(const crow::request& aReq,
                                    data::DatabaseQuery& aDBQ)
 {
     crow::multipart::message msg(aReq);
-    for (auto& i : msg.parts)
-    {
-        std::cout << i.body << "\n";
-    }
 
     data::Table<data::Plan> plan(1);
     plan.back().name       = msg.get_part_by_name("name").body;

@@ -193,14 +193,14 @@ data::Postgresql::select(const std::string& aTableName,
     prepare({std::move(statement)});
 }
 
-void
+int
 data::Postgresql::insert(const std::string& aTableName,
                          const std::vector<std::string>& aData) noexcept
 {
-    insertWithID(aTableName, 0, aData);
+    return insertWithID(aTableName, 0, aData);
 }
 
-void
+int
 data::Postgresql::insertWithID(const std::string& aTableName, int id,
                                const std::vector<std::string>& aData) noexcept
 {
@@ -217,9 +217,20 @@ data::Postgresql::insertWithID(const std::string& aTableName, int id,
     }
 
     merge(statement, aData);
-    statement.push_back(')');
+    // statement.push_back(') RETURNING id');
+    statement += ") RETURNING id;";
 
-    exec({std::move(statement)});
+    // exec({std::move(statement)});
+    prepare({std::move(statement)});
+    step();
+
+    // if (!id)
+    // {
+    //     statement = "SELECT currval('" + aTableName + "_id_seq')";
+    //     exec({std::move(statement)});
+    //     id =  
+    // }
+    return getColumnIntUnsafe(0);
 }
 
 void

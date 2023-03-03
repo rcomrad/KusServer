@@ -87,20 +87,22 @@ public:
     }
 
     template <typename T>
-    void insert(const Table<T>& aData) noexcept
+    int insert(const Table<T>& aData) noexcept
     {
         std::vector<std::string> data;
         for (int i = 0; i < aData.size(); ++i)
         {
             int id = *((int*)aData[i][0]);
-            insertWithID(aData.getTableName(), id,
-                         aData.makeStrings(i, true, true));
+            return insertWithID(aData.getTableName(), id,
+                                aData.makeStrings(i, true, true));
         }
     }
 
     template <typename T>
-    void update(const Table<T>& aData) noexcept
+    int update(const Table<T>& aData) noexcept
     {
+        int res;
+
         std::vector<std::string> data;
 
         if (T::tableName == "grade")
@@ -116,12 +118,17 @@ public:
         {
             int id = *((int*)aData[i][0]);
             if (id == 0)
-                insertWithID(aData.getTableName(), id,
-                             aData.makeStrings(i, true, true));
+                res = insertWithID(aData.getTableName(), id,
+                                   aData.makeStrings(i, true, true));
             else
-                update(aData.getTableName(), aData.makeStrings(i, false, true),
-                       "id = " + wrap(id));
+                update(aData.getTableName(),
+                             aData.makeStrings(i, false, true),
+                             "id = " + wrap(id));
+
+            res = id;
         }
+
+        return res;
     }
 
     std::vector<data::Type> getColumnTypes(
@@ -132,13 +139,13 @@ public:
     void select(const std::string& aTableName,
                 const std::vector<std::string>& aColum = {},
                 const std::string& aConditon           = "") noexcept;
-    void insert(const std::string& aTableName,
-                const std::vector<std::string>& aData) noexcept;
-    void insertWithID(const std::string& aTableName, int id,
-                      const std::vector<std::string>& aData) noexcept;
+    int insert(const std::string& aTableName,
+               const std::vector<std::string>& aData) noexcept;
+    int insertWithID(const std::string& aTableName, int id,
+                     const std::vector<std::string>& aData) noexcept;
     void update(const std::string& aTableName,
-                const std::vector<std::string>& aValue,
-                const std::string& aConditon) noexcept;
+               const std::vector<std::string>& aValue,
+               const std::string& aConditon) noexcept;
     void deleteRow(const std::string& aTableName,
                    const std::string& aConditon) noexcept;
 

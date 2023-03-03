@@ -106,11 +106,11 @@ data::DatabaseQuery::getColumnNames(const std::string& aTableName) noexcept
 //     return res;
 // }
 
-void
+int
 data::DatabaseQuery::insert(const std::string& aTableName,
                             const std::vector<std::string>& aData) noexcept
 {
-    mDatabase.insert(aTableName, aData);
+    return mDatabase.insert(aTableName, aData);
 }
 
 // void

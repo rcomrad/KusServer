@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "08377a17-1233-4a6b-bbca-7c0cdb625f38",
+		"_postman_id": "a946a82c-4e90-44cd-a0a2-09b936e6fec1",
 		"name": "KusJournalTester",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "25083981"
@@ -919,7 +919,7 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "/C:/Users/Sasha/Desktop/1486298.jpg"
+							"src": "1.csv"
 						}
 					]
 				},
