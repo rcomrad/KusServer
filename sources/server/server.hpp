@@ -99,8 +99,14 @@ public:
                             getDataAsJSON("role", GetRequest(),
                                           "id = " + data::wrap(*(int*)i[indx]));
                     }
+                    // else
                     else if (j.second.size() > 0)
                     {
+                        if (name == "group_id" && !*(bool*)i[3])
+                        {
+                            name = "grade_id";
+                        }
+
                         std::string cond = "id = ";
                         if (!notID) name.resize(name.size() - 3);
                         else

@@ -51,7 +51,7 @@ public:
 
     // TODO: delete
     int insert(const std::string& aTableName,
-                const std::vector<std::string>& aData) noexcept;
+               const std::vector<std::string>& aData) noexcept;
 
     void createTable(const std::string& aTableName,
                      const std::vector<ColumnSetting>& aColumns) noexcept;

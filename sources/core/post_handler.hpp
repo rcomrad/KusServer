@@ -24,8 +24,8 @@ public:
     {
         auto req   = crow::json::load(aReq.body);
         auto table = getStructTable<T>(req, aDBQ);
-        aDBQ.update<T>(table);
-        return {};
+        auto res   = aDBQ.update<T>(table);
+        return {res};
     }
 
     // TODO: remove aDBQ!

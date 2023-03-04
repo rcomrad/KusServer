@@ -217,20 +217,15 @@ data::Postgresql::insertWithID(const std::string& aTableName, int id,
     }
 
     merge(statement, aData);
-    // statement.push_back(') RETURNING id');
     statement += ") RETURNING id;";
 
-    // exec({std::move(statement)});
     prepare({std::move(statement)});
     step();
+    int res = 0;
+    if (hasData(0)) res = getColumnIntUnsafe(0);
+    closeStatment();
 
-    // if (!id)
-    // {
-    //     statement = "SELECT currval('" + aTableName + "_id_seq')";
-    //     exec({std::move(statement)});
-    //     id =  
-    // }
-    return getColumnIntUnsafe(0);
+    return res;
 }
 
 void
