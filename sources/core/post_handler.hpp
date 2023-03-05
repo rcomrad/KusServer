@@ -28,13 +28,28 @@ public:
         return {res};
     }
 
+    template <typename T>
+    static crow::json::wvalue drop(const crow::request& aReq,
+                                   data::DatabaseQuery& aDBQ)
+    {
+        auto req = crow::json::load(aReq.body);
+        auto temp = req.keys();
+        for (auto i : temp) std::cout << i << "\n";
+        auto table = getStructTable<T>(req, aDBQ);
+        aDBQ.drop<T>(table);
+        return {};
+    }
+
     // TODO: remove aDBQ!
     template <typename T>
     static auto getStructTable(const crow::json::rvalue& aReq,
                                data::DatabaseQuery& aDBQ) noexcept
     {
-        data::Table<T> tempp;
         data::Table<T> result;
+
+        
+        if (aReq.begin()->t() == crow::json::type::List)
+
         result.emplace_back();
         auto& temp = result.back();
         for (auto& i : aReq)

@@ -158,11 +158,11 @@ struct Journal_tableBase : public BaseDataStruct<9>
     int id           = 0;
     int teacher_id   = 0;
     int methodist_id = 0;
-    bool is_group;
-    int group_id   = 0;
-    int subject_id = 0;
-    int plan_id    = 0;
-    int head_id    = 0;
+    char is_group    = -1;
+    int group_id     = 0;
+    int subject_id   = 0;
+    int plan_id      = 0;
+    int head_id      = 0;
     std::string schedule;
 
     static std::string tableName;

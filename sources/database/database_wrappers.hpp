@@ -209,13 +209,15 @@ struct Table
             }
 
             auto temp = data[num][j.second];
+            char bb   = 0;
             switch (types[j.second])
             {
                 case data::Type::INT:
                     row += wrap(*((int*)temp));
                     break;
                 case data::Type::BOOL:
-                    row += wrap(*((bool*)temp));
+                    bb = *((char*)temp);
+                    if (bb != -1) row += wrap(bool(bb));
                     break;
                 case data::Type::CHARS:
                     row += wrap(*((char*)temp));
@@ -225,15 +227,30 @@ struct Table
                     break;
             }
 
-            if (row != "\'\'" && row != "0")
+            if (!row.empty() && row != "\'\'" && row != "0")
             {
                 if (!aSkipName) row = j.first + " = " + row;
-                res[j.second - 1] = std::move(row);
+                res[j.second] = std::move(row);
             }
             row.clear();
         }
 
-        while (res.size() && res.back().empty()) res.pop_back();
+        int l = 0;
+        while (!res[l].empty()) l++;
+        int r = l + 1;
+
+        while (r < res.size())
+        {
+            while (r < res.size() && res[r].empty()) ++r;
+            if (!(r < res.size())) break;
+
+            res[l] = std::move(res[r]);
+            ++l;
+        }
+
+        res.resize(l);
+
+        // while (res.size() && res.back().empty()) res.pop_back();
 
         // int l = 0, r = 1;
         // while (r < res.size())

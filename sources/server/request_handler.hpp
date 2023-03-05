@@ -197,5 +197,101 @@
         }                                                                      \
                                                                                \
         return res;                                                            \
+    }                                                                          \
+                                                                               \
+    template <typename... Args>                                                \
+    crow::json::wvalue dropRequestHandler(std::string_view aTableName,         \
+                                          Args&&... args) noexcept             \
+    {                                                                          \
+        crow::json::wvalue res{400};                                           \
+        auto hasher   = std::hash<std::string_view>{};                         \
+        auto str_hash = hasher(aTableName);                                    \
+                                                                               \
+        if (str_hash == hasher("school"))                                      \
+        {                                                                      \
+            res = core::PostHandler::drop<data::School>(args...);              \
+        }                                                                      \
+        else if (str_hash == hasher("user"))                                   \
+        {                                                                      \
+            res = core::PostHandler::drop<data::User>(args...);                \
+        }                                                                      \
+        else if (str_hash == hasher("role"))                                   \
+        {                                                                      \
+            res = core::PostHandler::drop<data::Role>(args...);                \
+        }                                                                      \
+        else if (str_hash == hasher("grade"))                                  \
+        {                                                                      \
+            res = core::PostHandler::drop<data::Grade>(args...);               \
+        }                                                                      \
+        else if (str_hash == hasher("grade_student"))                          \
+        {                                                                      \
+            res = core::PostHandler::drop<data::Grade_student>(args...);       \
+        }                                                                      \
+        else if (str_hash == hasher("group"))                                  \
+        {                                                                      \
+            res = core::PostHandler::drop<data::Group>(args...);               \
+        }                                                                      \
+        else if (str_hash == hasher("group_student"))                          \
+        {                                                                      \
+            res = core::PostHandler::drop<data::Group_student>(args...);       \
+        }                                                                      \
+        else if (str_hash == hasher("lesson"))                                 \
+        {                                                                      \
+            res = core::PostHandler::drop<data::Lesson>(args...);              \
+        }                                                                      \
+        else if (str_hash == hasher("journal_table"))                          \
+        {                                                                      \
+            res = core::PostHandler::drop<data::Journal_table>(args...);       \
+        }                                                                      \
+        else if (str_hash == hasher("subject"))                                \
+        {                                                                      \
+            res = core::PostHandler::drop<data::Subject>(args...);             \
+        }                                                                      \
+        else if (str_hash == hasher("mark"))                                   \
+        {                                                                      \
+            res = core::PostHandler::drop<data::Mark>(args...);                \
+        }                                                                      \
+        else if (str_hash == hasher("plan"))                                   \
+        {                                                                      \
+            res = core::PostHandler::drop<data::Plan>(args...);                \
+        }                                                                      \
+        else if (str_hash == hasher("theme"))                                  \
+        {                                                                      \
+            res = core::PostHandler::drop<data::Theme>(args...);               \
+        }                                                                      \
+        else if (str_hash == hasher("file"))                                   \
+        {                                                                      \
+            res = core::PostHandler::drop<data::File>(args...);                \
+        }                                                                      \
+        else if (str_hash == hasher("holiday"))                                \
+        {                                                                      \
+            res = core::PostHandler::drop<data::Holiday>(args...);             \
+        }                                                                      \
+        else if (str_hash == hasher("problem"))                                \
+        {                                                                      \
+            res = core::PostHandler::drop<data::Problem>(args...);             \
+        }                                                                      \
+        else if (str_hash == hasher("submission"))                             \
+        {                                                                      \
+            res = core::PostHandler::drop<data::Submission>(args...);          \
+        }                                                                      \
+        else if (str_hash == hasher("user_upload"))                            \
+        {                                                                      \
+            res = core::PostHandler::drop<data::User_upload>(args...);         \
+        }                                                                      \
+        else if (str_hash == hasher("plan_upload"))                            \
+        {                                                                      \
+            res = core::PostHandler::drop<data::Plan_upload>(args...);         \
+        }                                                                      \
+        else if (str_hash == hasher("journal_upload"))                         \
+        {                                                                      \
+            res = core::PostHandler::drop<data::Journal_upload>(args...);      \
+        }                                                                      \
+        else if (str_hash == hasher("journal_download"))                       \
+        {                                                                      \
+            res = core::PostHandler::drop<data::Journal_download>(args...);    \
+        }                                                                      \
+                                                                               \
+        return res;                                                            \
     }
 #endif // !REQUEST_HANDLER_HPP

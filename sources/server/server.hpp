@@ -102,9 +102,11 @@ public:
                     // else
                     else if (j.second.size() > 0)
                     {
+                        bool kostil = false;
                         if (name == "group_id" && !*(bool*)i[3])
                         {
                             name = "grade_id";
+                            kostil = true;
                         }
 
                         std::string cond = "id = ";
@@ -118,6 +120,8 @@ public:
 
                         auto jList = getDataAsJSON(
                             req.name, req, cond + data::wrap(*(int*)i[indx]));
+
+                        if (kostil) name = "group";
                         if (jList.size() != 1)
                         {
                             temp[name + "s"] = std::move(jList);

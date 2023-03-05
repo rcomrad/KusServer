@@ -15,12 +15,6 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
     auto& cors = app.get_middleware<crow::CORSHandler>();
     app.loglevel(crow::LogLevel::Debug);
 
-    // #ifdef CROW_ENABLE_SSL
-
-    //     app.ssl_file("cert.crt", "keyfile.key");
-
-    // #endif
-
     // clang-format off
     cors
       .global()
@@ -37,19 +31,10 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
     // clang-format on
 
     //--------------------------------------------------------
-    // CROW_ROUTE(app, "/")
-    // ([]() { return crow::mustache::load("index.html").render(); });
 
     CROW_ROUTE(app, "/api/test")
     ([]() { return "All fine!"; });
 
-    // CROW_ROUTE(app, "/favicon.ico")
-    // (
-    //     [](const crow::request&, crow::response& res)
-    //     {
-    //         res.set_static_file_info("assets/favicon.ico");
-    //         res.end();
-    //     });
     //---------------------------------------------------------------------
 
     CROW_ROUTE(app, "/api/get/all/<string>")
@@ -62,6 +47,18 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
     CROW_ROUTE(app, "/api/get/if/<string>/<string>")
     ([&](std::string aRequest, std::string aCondition)
      { return get(aRequest, std::move(aCondition)); });
+
+    //---------------------------------------------------------------------
+
+    CROW_ROUTE(app, "/api/drop/<string>")
+        .methods("POST"_method)(
+            [&](const crow::request& req, std::string aTableName)
+            {
+                crow::response res;
+                data::DatabaseQuery dbq(mDBS);
+                res = dropRequestHandler(aTableName, req, dbq);
+                return res;
+            });
 
     //---------------------------------------------------------------------
 

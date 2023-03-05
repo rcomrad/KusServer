@@ -66,7 +66,8 @@ generateDatabaseStructuresHPPFile()
         }
         else
         {
-            bool flag = false;
+            bool flag   = false;
+            bool flagGG = false;
             temp += "\t";
             if (s2 == "character")
             {
@@ -84,7 +85,8 @@ generateDatabaseStructuresHPPFile()
             }
             else if (s2 == "boolean")
             {
-                temp += "bool ";
+                temp += "char ";
+                flagGG = true;
             }
             else if (s2 == "date")
             {
@@ -96,6 +98,7 @@ generateDatabaseStructuresHPPFile()
             }
             temp += s1;
             if (flag) temp += " = 0";
+            if (flagGG) temp += " = -1";
             temp += ";\n";
         }
 
@@ -240,6 +243,7 @@ generateRequestHandlerFile()
 
     std::ifstream database("database.data");
     std::string temp;
+    std::string tempGG;
 
     bool flag = true;
     while (true)
@@ -258,11 +262,13 @@ generateRequestHandlerFile()
             {
                 file << "        if";
                 temp += "        if";
+                tempGG += "        if";
             }
             else
             {
                 file << "        else if";
                 temp += "        else if";
+                tempGG += "        else if";
             }
             flag = false;
 
@@ -271,16 +277,24 @@ generateRequestHandlerFile()
             file << "            res = getData<data::" << structName
                  << ">(args...); \\\n";
             file << "        } \\\n";
-
+            //---------------------------------------------------------------------
             temp += " (str_hash == hasher(\"" + s2 + "\")) \\\n";
             temp += "        { \\\n";
             temp += "            res = core::PostHandler::process<data::" +
                     structName + ">(args...); \\\n";
             temp += "        } \\\n";
+            //---------------------------------------------------------------------
+            tempGG += " (str_hash == hasher(\"" + s2 + "\")) \\\n";
+            tempGG += "        { \\\n";
+            tempGG += "            res = core::PostHandler::drop<data::" +
+                      structName + ">(args...); \\\n";
+            tempGG += "        } \\\n";
         }
     }
 
     file << "\\\n        return res; \\\n    } \\\n\\\n";
+
+    //---------------------------------------------------------------------
 
     file << "    template <typename... Args> \\\n";
     file << "    crow::json::wvalue postRequestHandler(std::string_view "
@@ -291,9 +305,24 @@ generateRequestHandlerFile()
     file << "        crow::json::wvalue res{400}; \\\n";
     file << "        auto hasher   = std::hash<std::string_view>{}; \\\n";
     file << "        auto str_hash = hasher(aTableName); \\\n \\\n";
-
     file << temp;
+    file << "\\\n        return res; \\\n     } \\\n\\\n";
+
+    //---------------------------------------------------------------------
+
+    file << "    template <typename... Args> \\\n";
+    file << "    crow::json::wvalue dropRequestHandler(std::string_view "
+            "aTableName, \\\n";
+    file << "                            Args&&... args) "
+            "noexcept \\\n";
+    file << "    { \\\n";
+    file << "        crow::json::wvalue res{400}; \\\n";
+    file << "        auto hasher   = std::hash<std::string_view>{}; \\\n";
+    file << "        auto str_hash = hasher(aTableName); \\\n \\\n";
+    file << tempGG;
     file << "\\\n        return res; \\\n     }\n";
+
+    //---------------------------------------------------------------------
 
     file << "#endif // !REQUEST_HANDLER_HPP\n";
 }

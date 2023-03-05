@@ -49,6 +49,15 @@ public:
         return mDatabase.update<T>(aData);
     }
 
+    template <typename T>
+    void drop(const Table<T>& aData) noexcept
+    {
+        for (int i = 0; i < aData.size(); ++i)
+        {
+            mDatabase.deleteRow(T::tableName, aData.getCondition(i));
+        }
+    }
+
     // TODO: delete
     int insert(const std::string& aTableName,
                const std::vector<std::string>& aData) noexcept;
