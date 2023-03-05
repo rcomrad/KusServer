@@ -988,6 +988,90 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Delete journal",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"methodist_id\" : 1\r\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:18080/api/drop/journal_table",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"drop",
+						"journal_table"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete journals",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\" : [2, 4]\r\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:18080/api/drop/journal_table",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"drop",
+						"journal_table"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete journal by methodist",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"methodist_id\" : 24\r\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:18080/api/drop/journal_table",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"drop",
+						"journal_table"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
