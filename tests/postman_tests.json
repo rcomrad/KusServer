@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "99320546-3be1-4a94-80d8-45df34797b63",
+		"_postman_id": "addb9bae-3e34-482b-a307-b71a40e4199a",
 		"name": "KusJournalTester",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "25083981"
@@ -996,7 +996,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"methodist_id\" : 1\r\n}"
+					"raw": "{\r\n    \"id\" : 1\r\n}"
 				},
 				"url": {
 					"raw": "http://127.0.0.1:18080/api/drop/journal_table",

@@ -106,11 +106,11 @@ public:
 
         if (T::tableName == "grade")
         {
-            deleteRow("grade_student", "grade_id = " + wrap(aData[0].id));
+            drop("grade_student", "grade_id = " + wrap(aData[0].id));
         }
         if (T::tableName == "group")
         {
-            deleteRow("group_student", "group_id = " + wrap(aData[0].id));
+            drop("group_student", "group_id = " + wrap(aData[0].id));
         }
 
         for (int i = 0; i < aData.size(); ++i)
@@ -142,8 +142,10 @@ public:
     void update(const std::string& aTableName,
                 const std::vector<std::string>& aValue,
                 const std::string& aConditon) noexcept;
-    void deleteRow(const std::string& aTableName,
-                   const std::string& aConditon) noexcept;
+    void drop(const std::string& aTableName,
+              const std::string& aConditon) noexcept;
+    void dropByID(const std::string& aTableName,
+                  const std::vector<int>& aIDs) noexcept;
 
     void createEnvironment(const DBSettings& aDBS) noexcept;
     void createTable(const std::string& aTableName,

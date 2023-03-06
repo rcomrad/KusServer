@@ -32,12 +32,29 @@ public:
     static crow::json::wvalue drop(const crow::request& aReq,
                                    data::DatabaseQuery& aDBQ)
     {
-        auto req  = crow::json::load(aReq.body);
-        auto temp = req.keys();
-        for (auto i : temp) std::cout << i << "\n";
-        auto table = getStructTable<T>(req, aDBQ);
-        aDBQ.drop<T>(table);
+        auto req = crow::json::load(aReq.body);
+        if (req.begin()->t() != crow::json::type::List)
+        {
+            auto table = getStructTable<T>(req, aDBQ);
+            aDBQ.drop<T>(table);
+        }
+        else
+        {
+            for (crow::json::rvalue& i : *req.begin())
+            {
+                auto IDs = getIDs(req);
+                aDBQ.dropByID<T>(IDs);
+            }
+        }
+
         return {};
+    }
+
+    static std::vector<int> getIDs(const crow::json::rvalue& aReq) noexcept
+    {
+        std::vector<int> res;
+        for (auto& i : *aReq.begin()) res.push_back(i.i());
+        return res;
     }
 
     // TODO: remove aDBQ!
@@ -45,37 +62,10 @@ public:
     static auto getStructTable(const crow::json::rvalue& aReq,
                                data::DatabaseQuery& aDBQ) noexcept
     {
-        data::Table<T> result;
-
-        if (aReq.begin()->t() != crow::json::type::List)
-        {
-            getStructTableSup<T>(&aReq, result, aDBQ);
-        }
-        else
-        {
-            for (crow::json::rvalue& i : *aReq.begin())
-            {
-                getStructTableSup<T>(&i, result, aDBQ);
-            }
-        }
-
-        return result;
-    }
-
-    static std::string uploadFile(crow::multipart::message& aMsg,
-                                  data::DatabaseQuery& aDBQ,
-                                  std::string aPathPrefix = "");
-
-private:
-    // TODO: remove aDBQ!
-    template <typename T>
-    static void getStructTableSup(const crow::json::rvalue* aReq,
-                                  data::Table<T>& result,
-                                  data::DatabaseQuery& aDBQ) noexcept
-    {
-        result.emplace_back();
+        data::Table<T> result(1);
         auto& temp = result.back();
-        for (auto& i : *aReq)
+        
+        for (auto& i : aReq)
         {
             auto ind = result.getIndex(i.key());
             if (ind == -1) continue;
@@ -97,11 +87,10 @@ private:
             }
         }
 
-        if (T::tableName == "user" && aReq->has("role"))
+        if (T::tableName == "user" && aReq.has("role"))
         {
             std::set<std::string> roles;
-            for (auto it = (*aReq)["role"].begin(); it != (*aReq)["role"].end();
-                 ++it)
+            for (auto it = aReq["role"].begin(); it != aReq["role"].end(); ++it)
             {
                 roles.insert(it->s());
             }
@@ -116,9 +105,15 @@ private:
                 }
             }
 
-            *(int*)result.back()[result.names["role_id"]] = num;
+            *(int*)temp[result.names["role_id"]] = num;
         }
+
+        return result;
     }
+
+    static std::string uploadFile(crow::multipart::message& aMsg,
+                                  data::DatabaseQuery& aDBQ,
+                                  std::string aPathPrefix = "");
 };
 } // namespace core
 

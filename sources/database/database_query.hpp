@@ -54,8 +54,14 @@ public:
     {
         for (int i = 0; i < aData.size(); ++i)
         {
-            mDatabase.deleteRow(T::tableName, aData.getCondition(i));
+            mDatabase.drop(T::tableName, aData.getCondition(i));
         }
+    }
+
+    template <typename T>
+    void dropByID(const std::vector<int>& aIDs) noexcept
+    {
+        mDatabase.dropByID(T::tableName, aIDs);
     }
 
     // TODO: delete

@@ -241,12 +241,25 @@ data::Postgresql::update(const std::string& aTableName,
 }
 
 void
-data::Postgresql::deleteRow(const std::string& aTableName,
-                            const std::string& aConditon) noexcept
+data::Postgresql::drop(const std::string& aTableName,
+                       const std::string& aConditon) noexcept
 {
     std::string tableName = mShame + "." + aTableName;
     std::string statement = "DELETE FROM " + tableName + " WHERE " + aConditon;
     exec({std::move(statement)});
+}
+
+void
+data::Postgresql::dropByID(const std::string& aTableName,
+                           const std::vector<int>& aIDs) noexcept
+{
+    std::string tableName = mShame + "." + aTableName;
+    for (auto& i : aIDs)
+    {
+        std::string statement =
+            "DELETE FROM " + tableName + " WHERE id = " + wrap(i);
+        exec({std::move(statement)});
+    }
 }
 
 //--------------------------------------------------------------------------------

@@ -97,11 +97,11 @@ core::Core::run(const std::vector<std::string>& argv) noexcept
     createDatabaseFromFile("database.data");
     populateDatabaseFromFile("populate_basic.data");
 
-// #ifdef LINUS_LINUX
+#ifdef LINUS_LINUX
     populateDatabaseFromFile("populate_database.data");
     createPlans();
     createJournals();
-// #endif
+#endif
 
     std::cout << "8888888888888888\n";
 
