@@ -1,5 +1,4 @@
 role
-	'submitor'
 	'student'
 	'teacher'
 	'grade_head'
@@ -9,6 +8,7 @@ role
 	'add_plan'
 	'director'
 	'admin'
+	'submitor'
 END
 
 file

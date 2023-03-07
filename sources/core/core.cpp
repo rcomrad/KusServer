@@ -73,6 +73,23 @@ core::Core::createPlans() noexcept
 }
 
 void
+core::Core::restart()
+{
+    deleteEnvironment();
+    createEnvironment();
+    createDatabaseFromFile("database.data");
+    populateDatabaseFromFile("populate_basic.data");
+
+    // #ifdef LINUS_LINUX
+    populateDatabaseFromFile("populate_database.data");
+    createPlans();
+    createJournals();
+    // #endif
+
+    std::cout << "8888888888888888\n";
+}
+
+void
 core::Core::run(const std::vector<std::string>& argv) noexcept
 {
     // mCommand.process(argv);
@@ -92,18 +109,7 @@ core::Core::run(const std::vector<std::string>& argv) noexcept
     //     if (mCommand.getCommand() == i.first) i.second;
     // }
 
-    deleteEnvironment();
-    createEnvironment();
-    createDatabaseFromFile("database.data");
-    populateDatabaseFromFile("populate_basic.data");
-
-#ifdef LINUS_LINUX
-    populateDatabaseFromFile("populate_database.data");
-    createPlans();
-    createJournals();
-#endif
-
-    std::cout << "8888888888888888\n";
+    restart();
 
     bool flag = true;
     while (true)
@@ -119,6 +125,12 @@ core::Core::run(const std::vector<std::string>& argv) noexcept
         {
             createDatabaseFromFile("database");
             populateDatabaseFromFile("populate_database");
+        }
+
+        if (kostil)
+        {
+            kostil = false;
+            restart();
         }
 
         // std::cin >> n;
@@ -138,7 +150,13 @@ core::Core::serverThread() noexcept
 {
     serv::Server app(mDBS);
     while (true)
-        ;
+    {
+        if (app.kostil)
+        {
+            kostil     = true;
+            app.kostil = false;
+        }
+    }
 }
 
 void

@@ -1,6 +1,7 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
+#include <atomic>
 #include <functional>
 #include <set>
 
@@ -105,7 +106,7 @@ public:
                         bool kostil = false;
                         if (name == "group_id" && !*(bool*)i[3])
                         {
-                            name = "grade_id";
+                            name   = "grade_id";
                             kostil = true;
                         }
 
@@ -177,6 +178,13 @@ public:
     crow::response get(const std::string& aRequest,
                        std::string&& aCondition) noexcept
     {
+        bool flag = true;
+        if (aCondition[0] == '~')
+        {
+            flag          = false;
+            aCondition[0] = ' ';
+        }
+
         for (auto& i : aCondition)
         {
             if (i == ';') i = ' ';
@@ -198,7 +206,7 @@ public:
         {
             crow::json::wvalue temp;
             std::string tempName(req.name);
-            if (data.size() > 1)
+            if (flag)
             {
                 tempName += "s";
                 temp[tempName] = std::move(data);
@@ -219,6 +227,8 @@ public:
     }
 
     //--------------------------------------------------------------------------------
+
+    static std::atomic<bool> kostil;
 
 private:
     data::DBSettings mDBS;

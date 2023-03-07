@@ -9,6 +9,8 @@
 
 #include "crow/middlewares/cors.h"
 
+std::atomic<bool> serv::Server::kostil = false;
+
 serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
 {
     crow::App<crow::CORSHandler> app;
@@ -35,6 +37,14 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
     CROW_ROUTE(app, "/api/test")
     ([]() { return "All fine!"; });
 
+    CROW_ROUTE(app, "/api/restart")
+    (
+        [&]()
+        {
+            kostil = true;
+            return "All restarted!";
+        });
+
     //---------------------------------------------------------------------
 
     CROW_ROUTE(app, "/api/get/all/<string>")
@@ -42,7 +52,7 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
 
     CROW_ROUTE(app, "/api/get/by_id/<string>/<string>")
     ([&](std::string aRequest, std::string aID)
-     { return get(aRequest, "id = " + aID); });
+     { return get(aRequest, "~id = " + aID); });
 
     CROW_ROUTE(app, "/api/get/if/<string>/<string>")
     ([&](std::string aRequest, std::string aCondition)

@@ -10,7 +10,7 @@
 #include "database/database_query.hpp"
 
 //--------------------------------------------------------------------------------
-
+#include <atomic>
 namespace core
 {
 class Core
@@ -29,6 +29,8 @@ public:
 
     // static data::DBSettings mDBS;
     // static void databaseSettingsInit() noexcept;
+    void restart();
+    std::atomic<bool> kostil = false;
 
 private:
     std::map<std::string, std::thread> mApps;
