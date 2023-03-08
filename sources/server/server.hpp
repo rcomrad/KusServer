@@ -1,7 +1,6 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-#include <atomic>
 #include <functional>
 #include <set>
 
@@ -227,8 +226,6 @@ public:
     }
 
     //--------------------------------------------------------------------------------
-
-    static std::atomic<bool> kostil;
 
 private:
     data::DBSettings mDBS;

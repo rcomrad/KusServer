@@ -29,8 +29,8 @@ public:
 
     // static data::DBSettings mDBS;
     // static void databaseSettingsInit() noexcept;
-    void restart();
-    std::atomic<bool> kostil = false;
+    void remakeDatabase();
+    void populate();
 
 private:
     std::map<std::string, std::thread> mApps;

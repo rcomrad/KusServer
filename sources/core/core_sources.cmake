@@ -14,4 +14,7 @@ set(
 
     post_handler.cpp
     post_handler.hpp
+
+    program_state.cpp
+    program_state.hpp
 )

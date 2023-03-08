@@ -7,9 +7,8 @@
 
 #include "domain/path.hpp"
 
+#include "core/program_state.hpp"
 #include "crow/middlewares/cors.h"
-
-std::atomic<bool> serv::Server::kostil = false;
 
 serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
 {
@@ -37,12 +36,25 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
     CROW_ROUTE(app, "/api/test")
     ([]() { return "All fine!"; });
 
-    CROW_ROUTE(app, "/api/restart")
+    CROW_ROUTE(app, "/api/restart/<string>")
     (
-        [&]()
+        [](std::string aType)
         {
-            kostil = true;
-            return "All restarted!";
+            std::string res = "ERROR\nNo restart!";
+
+            auto& state = core::ProgramState::getInstance();
+            if (aType == "full")
+            {
+                state.fullReset();
+                res = "OK\nFull restart!";
+            }
+            else if (aType == "empty")
+            {
+                state.emptyReset();
+                res = "OK\nEmpty restart!";
+            }
+
+            return res;
         });
 
     //---------------------------------------------------------------------

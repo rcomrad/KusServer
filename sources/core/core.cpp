@@ -16,6 +16,7 @@
 
 #include "journal_handler.hpp"
 #include "plan_handler.hpp"
+#include "program_state.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -73,20 +74,20 @@ core::Core::createPlans() noexcept
 }
 
 void
-core::Core::restart()
+core::Core::remakeDatabase()
 {
     deleteEnvironment();
     createEnvironment();
     createDatabaseFromFile("database.data");
     populateDatabaseFromFile("populate_basic.data");
+}
 
-    // #ifdef LINUS_LINUX
+void
+core::Core::populate()
+{
     populateDatabaseFromFile("populate_database.data");
     createPlans();
     createJournals();
-    // #endif
-
-    std::cout << "8888888888888888\n";
 }
 
 void
@@ -109,28 +110,30 @@ core::Core::run(const std::vector<std::string>& argv) noexcept
     //     if (mCommand.getCommand() == i.first) i.second;
     // }
 
-    restart();
+    auto& state = ProgramState::getInstance();
 
     bool flag = true;
     while (true)
     {
-        std::string s;
-        std::cin >> s;
+        // std::string s;
+        // std::cin >> s;
 
-        if (s == "create") createDatabaseFromFile("database.data");
-        else if (s == "populate")
-            populateDatabaseFromFile("populate_database.data");
-        else if (s == "set_up") createEnvironment();
-        else if (s == "remake")
-        {
-            createDatabaseFromFile("database");
-            populateDatabaseFromFile("populate_database");
-        }
+        // if (s == "create") createDatabaseFromFile("database.data");
+        // else if (s == "populate")
+        //     populateDatabaseFromFile("populate_database.data");
+        // else if (s == "set_up") createEnvironment();
+        // else if (s == "remake")
+        // {
+        //     createDatabaseFromFile("database");
+        //     populateDatabaseFromFile("populate_database");
+        // }
 
-        if (kostil)
+        if (state.needRestart())
         {
-            kostil = false;
-            restart();
+            state.startRestart();
+            if (state.needRemakeDB()) remakeDatabase();
+            if (state.needPopulateDB()) populate();
+            state.endRestart();
         }
 
         // std::cin >> n;
@@ -150,13 +153,7 @@ core::Core::serverThread() noexcept
 {
     serv::Server app(mDBS);
     while (true)
-    {
-        if (app.kostil)
-        {
-            kostil     = true;
-            app.kostil = false;
-        }
-    }
+        ;
 }
 
 void
