@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "addb9bae-3e34-482b-a307-b71a40e4199a",
+		"_postman_id": "2a6f0cb8-1ad3-406b-ab75-7acbdcfd97bd",
 		"name": "KusJournalTester",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "25083981"
@@ -736,6 +736,60 @@
 			"response": []
 		},
 		{
+			"name": "Create grade with students",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 0,\r\n    \"name\": \"AUF\",\r\n    \"head_id\": 4,\r\n    \"grade_student\": [\r\n        1,\r\n        2,\r\n        3\r\n    ]\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/post/grade",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"post",
+						"grade"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add students to grade",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"grade_student\": [\r\n        1,\r\n        2,\r\n        3\r\n    ],\r\n    \"add\" : true\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/post/grade",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"post",
+						"grade"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Check grade",
 			"event": [
 				{
@@ -956,6 +1010,81 @@
 							"            \"id\": 1,\r",
 							"            \"url\": \"D:/projects/data/upload/1-1.csv\",\r",
 							"            \"name\": \"Sus\"\r",
+							"        }\r",
+							"    };\r",
+							"\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:18080/api/get/by_id/plan/1",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"get",
+						"by_id",
+						"plan",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change plan",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"GAGA\"\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/post/plan",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"post",
+						"plan"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check changed plan",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Plan created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"plan\": {\r",
+							"            \"subject_id\": 1,\r",
+							"            \"id\": 1,\r",
+							"            \"url\": \"D:/projects/data/upload/1-1.csv\",\r",
+							"            \"name\": \"GAGA\"\r",
 							"        }\r",
 							"    };\r",
 							"\r",
