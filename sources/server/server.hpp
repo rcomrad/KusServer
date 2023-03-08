@@ -6,18 +6,9 @@
 
 #include "database/database_query.hpp"
 
+#include "crow.h"
 #include "get_request.hpp"
 #include "request_handler.hpp"
-
-// #undef CROW_STATIC_DIRECTORY
-// #define CROW_STATIC_DIRECTORY "assets/"
-
-// #undef CROW_STATIC_ENDPOINT
-// #define CROW_STATIC_ENDPOINT "/assets/<path>"
-
-#include "core/journal_handler.hpp"
-
-#include "crow.h"
 
 //--------------------------------------------------------------------------------
 namespace serv

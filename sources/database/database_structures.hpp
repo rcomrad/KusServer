@@ -318,9 +318,10 @@ struct Submission : public UpperDataStruct<SubmissionBase>
 {
 };
 
-struct User_uploadBase : public BaseDataStruct<2>
+struct User_uploadBase : public BaseDataStruct<3>
 {
     int id = 0;
+    std::string index;
     std::string name;
 
     static std::string tableName;
@@ -334,9 +335,10 @@ struct User_upload : public UpperDataStruct<User_uploadBase>
 {
 };
 
-struct Plan_uploadBase : public BaseDataStruct<2>
+struct Plan_uploadBase : public BaseDataStruct<3>
 {
     int id = 0;
+    std::string index;
     std::string name;
 
     static std::string tableName;
@@ -350,9 +352,10 @@ struct Plan_upload : public UpperDataStruct<Plan_uploadBase>
 {
 };
 
-struct Journal_uploadBase : public BaseDataStruct<2>
+struct Journal_uploadBase : public BaseDataStruct<3>
 {
     int id = 0;
+    std::string index;
     std::string name;
 
     static std::string tableName;
@@ -366,9 +369,10 @@ struct Journal_upload : public UpperDataStruct<Journal_uploadBase>
 {
 };
 
-struct Journal_downloadBase : public BaseDataStruct<2>
+struct Journal_downloadBase : public BaseDataStruct<3>
 {
     int id = 0;
+    std::string index;
     std::string name;
 
     static std::string tableName;

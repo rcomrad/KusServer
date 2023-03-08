@@ -107,9 +107,19 @@ struct Table
         data.emplace_back();
     }
 
+    void pop_back()
+    {
+        data.pop_back();
+    }
+
     void clear()
     {
         data.clear();
+    }
+
+    void reserve(int aSize)
+    {
+        data.reserve(aSize);
     }
 
     void emplace_back(T&& other)

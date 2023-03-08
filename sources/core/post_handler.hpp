@@ -1,122 +1,117 @@
 #ifndef POST_HANDLER_HPP
 #define POST_HANDLER_HPP
 
-//--------------------------------------------------------------------------------
-
-#include <set>
-#include <string_view>
-#include <vector>
-
-#include "database/database_query.hpp"
-
-#include "crow.h"
-
-//--------------------------------------------------------------------------------
+#include "post_handler_base.hpp"
 
 namespace core
 {
-class PostHandler
+class PostHandler : public PostHandlerBase
 {
 public:
-    template <typename T>
-    static crow::json::wvalue process(const crow::request& aReq,
-                                      data::DatabaseQuery& aDBQ)
+    template <typename... Args>
+    static crow::json::wvalue supportingPost(std::string_view aTableName,
+                                             Args&&... args) noexcept
     {
-        auto req   = crow::json::load(aReq.body);
-        auto table = getStructTable<T>(req, aDBQ);
-        auto res   = aDBQ.update<T>(table);
-        return {res};
-    }
+        crow::json::wvalue res{400};
+        auto hasher   = std::hash<std::string_view>{};
+        auto str_hash = hasher(aTableName);
 
-    template <typename T>
-    static crow::json::wvalue drop(const crow::request& aReq,
-                                   data::DatabaseQuery& aDBQ)
-    {
-        auto req = crow::json::load(aReq.body);
-        if (req.begin()->t() != crow::json::type::List)
+        if (str_hash == hasher("school"))
         {
-            auto table = getStructTable<T>(req, aDBQ);
-            aDBQ.drop<T>(table);
+            res = core::PostHandler::supportingProcess<data::School>(args...);
         }
-        else
+        else if (str_hash == hasher("user"))
         {
-            for (crow::json::rvalue& i : *req.begin())
-            {
-                auto IDs = getIDs(req);
-                aDBQ.dropByID<T>(IDs);
-            }
+            res = core::PostHandler::supportingProcess<data::User>(args...);
+        }
+        else if (str_hash == hasher("role"))
+        {
+            res = core::PostHandler::supportingProcess<data::Role>(args...);
+        }
+        else if (str_hash == hasher("grade"))
+        {
+            res = core::PostHandler::supportingProcess<data::Grade>(args...);
+        }
+        else if (str_hash == hasher("grade_student"))
+        {
+            res = core::PostHandler::supportingProcess<data::Grade_student>(
+                args...);
+        }
+        else if (str_hash == hasher("group"))
+        {
+            res = core::PostHandler::supportingProcess<data::Group>(args...);
+        }
+        else if (str_hash == hasher("group_student"))
+        {
+            res = core::PostHandler::supportingProcess<data::Group_student>(
+                args...);
+        }
+        else if (str_hash == hasher("lesson"))
+        {
+            res = core::PostHandler::supportingProcess<data::Lesson>(args...);
+        }
+        else if (str_hash == hasher("journal_table"))
+        {
+            res = core::PostHandler::supportingProcess<data::Journal_table>(
+                args...);
+        }
+        else if (str_hash == hasher("subject"))
+        {
+            res = core::PostHandler::supportingProcess<data::Subject>(args...);
+        }
+        else if (str_hash == hasher("mark"))
+        {
+            res = core::PostHandler::supportingProcess<data::Mark>(args...);
+        }
+        else if (str_hash == hasher("plan"))
+        {
+            res = core::PostHandler::supportingProcess<data::Plan>(args...);
+        }
+        else if (str_hash == hasher("theme"))
+        {
+            res = core::PostHandler::supportingProcess<data::Theme>(args...);
+        }
+        else if (str_hash == hasher("file"))
+        {
+            res = core::PostHandler::supportingProcess<data::File>(args...);
+        }
+        else if (str_hash == hasher("holiday"))
+        {
+            res = core::PostHandler::supportingProcess<data::Holiday>(args...);
+        }
+        else if (str_hash == hasher("problem"))
+        {
+            res = core::PostHandler::supportingProcess<data::Problem>(args...);
+        }
+        else if (str_hash == hasher("submission"))
+        {
+            res =
+                core::PostHandler::supportingProcess<data::Submission>(args...);
+        }
+        else if (str_hash == hasher("user_upload"))
+        {
+            res = core::PostHandler::supportingProcess<data::User_upload>(
+                args...);
+        }
+        else if (str_hash == hasher("plan_upload"))
+        {
+            res = core::PostHandler::supportingProcess<data::Plan_upload>(
+                args...);
+        }
+        else if (str_hash == hasher("journal_upload"))
+        {
+            res = core::PostHandler::supportingProcess<data::Journal_upload>(
+                args...);
+        }
+        else if (str_hash == hasher("journal_download"))
+        {
+            res = core::PostHandler::supportingProcess<data::Journal_download>(
+                args...);
         }
 
-        return {};
-    }
-
-    static std::vector<int> getIDs(const crow::json::rvalue& aReq) noexcept
-    {
-        std::vector<int> res;
-        for (auto& i : *aReq.begin()) res.push_back(i.i());
         return res;
     }
-
-    // TODO: remove aDBQ!
-    template <typename T>
-    static auto getStructTable(const crow::json::rvalue& aReq,
-                               data::DatabaseQuery& aDBQ) noexcept
-    {
-        data::Table<T> result(1);
-        auto& temp = result.back();
-        
-        for (auto& i : aReq)
-        {
-            auto ind = result.getIndex(i.key());
-            if (ind == -1) continue;
-
-            switch (result.types[ind])
-            {
-                case data::Type::INT:
-                    *(int*)temp[ind] = i.i();
-                    break;
-                case data::Type::BOOL:
-                    *(bool*)temp[ind] = i.b();
-                    break;
-                case data::Type::CHARS:
-                    strcpy((char*)temp[ind], i.s().s_);
-                    break;
-                case data::Type::STRING:
-                    *(std::string*)temp[ind] = i.s();
-                    break;
-            }
-        }
-
-        if (T::tableName == "user" && aReq.has("role"))
-        {
-            std::set<std::string> roles;
-            for (auto it = aReq["role"].begin(); it != aReq["role"].end(); ++it)
-            {
-                roles.insert(it->s());
-            }
-
-            int num    = 0;
-            auto table = aDBQ.getData<data::Role>();
-            for (auto& i : table)
-            {
-                if (roles.count(*(std::string*)i[1]))
-                {
-                    num += 1 << (*(int*)i[0] - 1);
-                }
-            }
-
-            *(int*)temp[result.names["role_id"]] = num;
-        }
-
-        return result;
-    }
-
-    static std::string uploadFile(crow::multipart::message& aMsg,
-                                  data::DatabaseQuery& aDBQ,
-                                  std::string aPathPrefix = "");
 };
 } // namespace core
-
-//--------------------------------------------------------------------------------
 
 #endif // !POST_HANDLER_HPP

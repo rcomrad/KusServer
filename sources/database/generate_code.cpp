@@ -216,7 +216,6 @@ generateRequestHandlerFile()
 {
 
     std::ofstream file("../sources/server/request_handler.hpp");
-    // std::ofstream file("request_handler.hpp");
 
     file << "#ifndef REQUEST_HANDLER_HPP\n";
     file << "#define REQUEST_HANDLER_HPP\n";
@@ -244,6 +243,7 @@ generateRequestHandlerFile()
     std::ifstream database("database.data");
     std::string temp;
     std::string tempGG;
+    std::string tempSup;
 
     bool flag = true;
     while (true)
@@ -263,12 +263,14 @@ generateRequestHandlerFile()
                 file << "        if";
                 temp += "        if";
                 tempGG += "        if";
+                tempSup += "        if";
             }
             else
             {
                 file << "        else if";
                 temp += "        else if";
                 tempGG += "        else if";
+                tempSup += "        else if";
             }
             flag = false;
 
@@ -320,11 +322,85 @@ generateRequestHandlerFile()
     file << "        auto hasher   = std::hash<std::string_view>{}; \\\n";
     file << "        auto str_hash = hasher(aTableName); \\\n \\\n";
     file << tempGG;
-    file << "\\\n        return res; \\\n     }\n";
+    file << "\\\n        return res; \\\n     } \\\n\\\n";
+
+    file << "\n#endif // !REQUEST_HANDLER_HPP\n";
+}
+
+void
+generatePostHandlerFile()
+{
+
+    std::ofstream fileHPP("../sources/core/post_handler.hpp");
+
+    fileHPP << "#ifndef POST_HANDLER_HPP\n";
+    fileHPP << "#define POST_HANDLER_HPP\n";
+    fileHPP << "\n";
+
+    fileHPP << "#include \"post_handler_base.hpp\" \n";
+
+    fileHPP << "\n";
+
+    fileHPP << "namespace core \n";
+    fileHPP << "{ \n";
+    fileHPP << "class PostHandler : public PostHandlerBase \n";
+    fileHPP << "{ \n";
+    fileHPP << "public: \n";
+
+    fileHPP << "    template <typename... Args> \n";
+    fileHPP << "    static crow::json::wvalue supportingPost(std::string_view "
+               "aTableName, \n";
+    fileHPP << "                            Args&&... args) "
+               "noexcept \n";
+    fileHPP << "    { \n";
+    fileHPP << "        crow::json::wvalue res{400}; \n";
+    fileHPP << "        auto hasher   = std::hash<std::string_view>{}; \n";
+    fileHPP << "        auto str_hash = hasher(aTableName); \n \n";
+
+    std::ifstream database("database.data");
+    std::string tempSup;
+
+    bool flag = true;
+    while (true)
+    {
+        std::string s1, s2;
+        if (!(database >> s1)) break;
+        getline(database, s2, ' ');
+        getline(database, s2);
+
+        if (s1 == "TABLE" && s2 != "NUN")
+        {
+            std::string structName = s2;
+            structName[0] += 'A' - 'a';
+
+            if (flag)
+            {
+                tempSup += "        if";
+            }
+            else
+            {
+                tempSup += "        else if";
+            }
+            flag = false;
+
+            tempSup += " (str_hash == hasher(\"" + s2 + "\")) \n";
+            tempSup += "        { \n";
+            tempSup += "            res = "
+                       "core::PostHandler::supportingProcess<data::" +
+                       structName + ">(args...); \n";
+            tempSup += "        } \n";
+        }
+    }
+
+    fileHPP << tempSup;
+    fileHPP << "\n        return res; \n     } \n";
 
     //---------------------------------------------------------------------
 
-    file << "#endif // !REQUEST_HANDLER_HPP\n";
+    fileHPP << "}; \n";
+    fileHPP << "} \n\n";
+
+    fileHPP << "\n#endif // !POST_HANDLER_HPP\n";
 }
 
 void
@@ -395,5 +471,6 @@ data::generateDatabaseStructuresFiles()
     generateDatabaseStructuresHPPFile();
     generateDatabaseStructuresCPPFile();
     generateRequestHandlerFile();
+    generatePostHandlerFile();
     generateAsteriskHendler();
 }

@@ -104,15 +104,6 @@ public:
         int res;
         std::vector<std::string> data;
 
-        if (T::tableName == "grade")
-        {
-            drop("grade_student", "grade_id = " + wrap(aData[0].id));
-        }
-        if (T::tableName == "group")
-        {
-            drop("group_student", "group_id = " + wrap(aData[0].id));
-        }
-
         for (int i = 0; i < aData.size(); ++i)
         {
             int id = res = *((int*)aData[i][0]);

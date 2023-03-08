@@ -16,17 +16,17 @@ file
 END
 
 user_upload
-	'Стандартный ввод'
+	'data';'Файл .data'
 END
 
 plan_upload
-	'CSV файл'
+	'csv';'Файл .csv'
 END
 
 journal_upload
-	'Стандартный ввод'
+	'data';'Файл .data'
 END
 
 journal_download
-	'Стандартный вывод'
+	'data';'Файл .data'
 END

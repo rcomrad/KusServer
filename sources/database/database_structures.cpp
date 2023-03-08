@@ -343,63 +343,71 @@ data::SubmissionBase::reset()
 }
 
 std::string data::User_uploadBase::tableName         = "user_upload";
-std::vector<data::Type> data::User_uploadBase::types = {data::Type::INT,
-                                                        data::Type::STRING};
+std::vector<data::Type> data::User_uploadBase::types = {
+    data::Type::INT, data::Type::STRING, data::Type::STRING};
 std::unordered_map<std::string, uint8_t> data::User_uploadBase::columnNames = {
-    {"id",   0},
-    {"name", 1}
+    {"id",    0},
+    {"index", 1},
+    {"name",  2}
 };
 
 void
 data::User_uploadBase::reset()
 {
     ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&name);
+    ptrs[1] = (void*)(&index);
+    ptrs[2] = (void*)(&name);
 }
 
 std::string data::Plan_uploadBase::tableName         = "plan_upload";
-std::vector<data::Type> data::Plan_uploadBase::types = {data::Type::INT,
-                                                        data::Type::STRING};
+std::vector<data::Type> data::Plan_uploadBase::types = {
+    data::Type::INT, data::Type::STRING, data::Type::STRING};
 std::unordered_map<std::string, uint8_t> data::Plan_uploadBase::columnNames = {
-    {"id",   0},
-    {"name", 1}
+    {"id",    0},
+    {"index", 1},
+    {"name",  2}
 };
 
 void
 data::Plan_uploadBase::reset()
 {
     ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&name);
+    ptrs[1] = (void*)(&index);
+    ptrs[2] = (void*)(&name);
 }
 
 std::string data::Journal_uploadBase::tableName         = "journal_upload";
-std::vector<data::Type> data::Journal_uploadBase::types = {data::Type::INT,
-                                                           data::Type::STRING};
+std::vector<data::Type> data::Journal_uploadBase::types = {
+    data::Type::INT, data::Type::STRING, data::Type::STRING};
 std::unordered_map<std::string, uint8_t> data::Journal_uploadBase::columnNames =
     {
-        {"id",   0},
-        {"name", 1}
+        {"id",    0},
+        {"index", 1},
+        {"name",  2}
 };
 
 void
 data::Journal_uploadBase::reset()
 {
     ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&name);
+    ptrs[1] = (void*)(&index);
+    ptrs[2] = (void*)(&name);
 }
 
 std::string data::Journal_downloadBase::tableName         = "journal_download";
 std::vector<data::Type> data::Journal_downloadBase::types = {
-    data::Type::INT, data::Type::STRING};
+    data::Type::INT, data::Type::STRING, data::Type::STRING};
 std::unordered_map<std::string, uint8_t>
     data::Journal_downloadBase::columnNames = {
-        {"id",   0},
-        {"name", 1}
+        {"id",    0},
+        {"index", 1},
+        {"name",  2}
 };
 
 void
 data::Journal_downloadBase::reset()
 {
     ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&name);
+    ptrs[1] = (void*)(&index);
+    ptrs[2] = (void*)(&name);
 }

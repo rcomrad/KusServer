@@ -294,4 +294,5 @@
                                                                                \
         return res;                                                            \
     }
+
 #endif // !REQUEST_HANDLER_HPP
