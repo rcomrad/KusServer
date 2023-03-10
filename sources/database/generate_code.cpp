@@ -1,6 +1,7 @@
 #include "generate_code.hpp"
 
 #include <fstream>
+#include <map>
 #include <string>
 
 void
@@ -338,6 +339,8 @@ generatePostHandlerFile()
     fileHPP << "\n";
 
     fileHPP << "#include \"post_handler_base.hpp\" \n";
+    fileHPP << "#include \"plan_handler.hpp\" \n";
+    fileHPP << "#include \"journal_handler.hpp\" \n";
 
     fileHPP << "\n";
 
@@ -359,6 +362,11 @@ generatePostHandlerFile()
 
     std::ifstream database("database.data");
     std::string tempSup;
+    std::string tempLoad;
+    std::map<std::string, std::string> loadFileClasses = {
+        {"journal_table", "JournalHandler::loadFromFile"},
+        {"plan",          "PlanHandler::loadFromFile"   }
+    };
 
     bool flag = true;
     while (true)
@@ -376,10 +384,12 @@ generatePostHandlerFile()
             if (flag)
             {
                 tempSup += "        if";
+                tempLoad += "        if";
             }
             else
             {
                 tempSup += "        else if";
+                tempLoad += "        if";
             }
             flag = false;
 
@@ -389,10 +399,39 @@ generatePostHandlerFile()
                        "core::PostHandler::supportingProcess<data::" +
                        structName + ">(args...); \n";
             tempSup += "        } \n";
+
+            //---------------------------------------------------------------------
+
+            tempLoad += " (str_hash == hasher(\"" + s2 + "\")) \n";
+            tempLoad += "        { \n";
+            tempLoad += "            res = core::";
+
+            std::string className =
+                "PostHandler::loadFromFile< data::" + structName + ">";
+            if (loadFileClasses.count(s2)) className = loadFileClasses[s2];
+            tempLoad += className;
+
+            tempLoad += "(args...); \n";
+            tempLoad += "        } \n";
         }
     }
 
     fileHPP << tempSup;
+    fileHPP << "\n        return res; \n     } \n";
+
+    //---------------------------------------------------------------------
+
+    fileHPP << "    template <typename... Args> \n";
+    fileHPP << "    static crow::json::wvalue loadPost(std::string_view "
+               "aTableName, \n";
+    fileHPP << "                            Args&&... args) "
+               "noexcept \n";
+    fileHPP << "    { \n";
+    fileHPP << "        crow::json::wvalue res{400}; \n";
+    fileHPP << "        auto hasher   = std::hash<std::string_view>{}; \n";
+    fileHPP << "        auto str_hash = hasher(aTableName); \n \n";
+
+    fileHPP << tempLoad;
     fileHPP << "\n        return res; \n     } \n";
 
     //---------------------------------------------------------------------
@@ -468,9 +507,9 @@ generateAsteriskHendler()
 void
 data::generateDatabaseStructuresFiles()
 {
-    generateDatabaseStructuresHPPFile();
-    generateDatabaseStructuresCPPFile();
-    generateRequestHandlerFile();
+    // generateDatabaseStructuresHPPFile();
+    // generateDatabaseStructuresCPPFile();
+    // generateRequestHandlerFile();
     generatePostHandlerFile();
-    generateAsteriskHendler();
+    // generateAsteriskHendler();
 }

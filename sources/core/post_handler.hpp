@@ -1,6 +1,8 @@
 #ifndef POST_HANDLER_HPP
 #define POST_HANDLER_HPP
 
+#include "journal_handler.hpp"
+#include "plan_handler.hpp"
 #include "post_handler_base.hpp"
 
 namespace core

@@ -32,13 +32,38 @@ core::PlanHandler::loadFromRequest(const crow::request& aReq,
 {
     crow::multipart::message msg(aReq);
 
-    data::Table<data::Plan> plan(1);
-    plan.back().name       = msg.get_part_by_name("name").body;
-    plan.back().subject_id = std::stoi(msg.get_part_by_name("subject_id").body);
-    plan.back().url        = uploadFile(msg, aDBQ);
+    std::string type = msg.get_part_by_name("index").body;
 
-    make(plan, aDBQ);
+    if (type == "csv")
+    {
+        csvLoad(msg, aDBQ);
+    }
+    else if (type == "data")
+    {
+        csvLoad(msg, aDBQ);
+    }
 }
+
+void
+core::PlanHandler::csvLoad(crow::multipart::message& aMsg,
+                           data::DatabaseQuery& aDBQ)
+{
+    std::string path = uploadFile(aMsg, aDBQ);
+    loadFromFile(path, aDBQ);
+}
+
+// void
+// core::PlanHandler::dataLoad(crow::multipart::message& aMsg,
+//                             data::DatabaseQuery& aDBQ)
+// {
+//     data::Table<data::Plan> plan(1);
+//     plan.back().name = aMsg.get_part_by_name("name").body;
+//     plan.back().subject_id =
+//         std::stoi(aMsg.get_part_by_name("subject_id").body);
+//     plan.back().url = uploadFile(aMsg, aDBQ);
+
+//     make(plan, aDBQ);
+// }
 
 void
 core::PlanHandler::make(data::Table<data::Plan>& aPlan,

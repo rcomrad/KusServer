@@ -16,17 +16,18 @@ file
 END
 
 user_upload
-	'data';'Файл .data'
+	'data';'Файл .data','.data'
 END
 
 plan_upload
-	'csv';'Файл .csv'
+	'csv';'Файл .csv','.csv'
+	'data';'Файл .data','.data'
 END
 
 journal_upload
-	'data';'Файл .data'
+	'data';'Файл .data','.data'
 END
 
 journal_download
-	'data';'Файл .data'
+	'data';'Файл .data','.data'
 END

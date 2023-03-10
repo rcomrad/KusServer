@@ -66,6 +66,16 @@ public:
     }
 
     template <typename T>
+    static crow::json::wvalue loadFromFile(const crow::request& aReq,
+                                           data::DatabaseQuery& aDBQ)
+    {
+        crow::multipart::message msg(aReq);
+        std::string filePath = uploadFile(msg, aDBQ);
+
+        return {200};
+    }
+
+    template <typename T>
     static crow::json::wvalue drop(const crow::request& aReq,
                                    data::DatabaseQuery& aDBQ)
     {

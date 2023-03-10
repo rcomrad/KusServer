@@ -88,17 +88,21 @@ TABLE submission
 TABLE user_upload
 	index character varying(4) NOT NULL
 	name character varying(40) NOT NULL
+	extension character varying(5) NOT NULL
 
 TABLE plan_upload
 	index character varying(4) NOT NULL
 	name character varying(40) NOT NULL
+	extension character varying(5) NOT NULL
 
 TABLE journal_upload
 	index character varying(4) NOT NULL
 	name character varying(40) NOT NULL
+	extension character varying(5) NOT NULL
 
 TABLE journal_download
 	index character varying(5) NOT NULL
 	name character varying(40) NOT NULL
+	extension character varying(5) NOT NULL
 	
 TABLE NUN

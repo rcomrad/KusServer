@@ -318,11 +318,12 @@ struct Submission : public UpperDataStruct<SubmissionBase>
 {
 };
 
-struct User_uploadBase : public BaseDataStruct<3>
+struct User_uploadBase : public BaseDataStruct<4>
 {
     int id = 0;
     std::string index;
     std::string name;
+    std::string extension;
 
     static std::string tableName;
     static std::vector<data::Type> types;
@@ -335,11 +336,12 @@ struct User_upload : public UpperDataStruct<User_uploadBase>
 {
 };
 
-struct Plan_uploadBase : public BaseDataStruct<3>
+struct Plan_uploadBase : public BaseDataStruct<4>
 {
     int id = 0;
     std::string index;
     std::string name;
+    std::string extension;
 
     static std::string tableName;
     static std::vector<data::Type> types;
@@ -352,11 +354,12 @@ struct Plan_upload : public UpperDataStruct<Plan_uploadBase>
 {
 };
 
-struct Journal_uploadBase : public BaseDataStruct<3>
+struct Journal_uploadBase : public BaseDataStruct<4>
 {
     int id = 0;
     std::string index;
     std::string name;
+    std::string extension;
 
     static std::string tableName;
     static std::vector<data::Type> types;
@@ -369,11 +372,12 @@ struct Journal_upload : public UpperDataStruct<Journal_uploadBase>
 {
 };
 
-struct Journal_downloadBase : public BaseDataStruct<3>
+struct Journal_downloadBase : public BaseDataStruct<4>
 {
     int id = 0;
     std::string index;
     std::string name;
+    std::string extension;
 
     static std::string tableName;
     static std::vector<data::Type> types;

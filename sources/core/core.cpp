@@ -24,7 +24,7 @@
 
 core::Core::Core() noexcept
 {
-    // data::generateDatabaseStructuresFiles();
+    data::generateDatabaseStructuresFiles();
 
     mDBS.name     = "journal_db";
     mDBS.user     = "journal_user";

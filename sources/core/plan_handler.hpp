@@ -18,8 +18,14 @@ class PlanHandler : protected PostHandler
 {
 public:
     // void process(const crow::json::rvalue& req, data::DatabaseQuery& aDBQ);
-    static void loadFromFile(std::string_view aFileName, data::DatabaseQuery& aDBQ);
-    static void loadFromRequest(const crow::request& aReq, data::DatabaseQuery& aDBQ);
+    static void loadFromFile(std::string_view aFileName,
+                             data::DatabaseQuery& aDBQ);
+    static void loadFromRequest(const crow::request& aReq,
+                                data::DatabaseQuery& aDBQ);
+    static void csvLoad(crow::multipart::message& aMsg,
+                        data::DatabaseQuery& aDBQ);
+    // static void dataLoad(crow::multipart::message& aMsg,
+    //                      data::DatabaseQuery& aDBQ);
 
 private:
     static void make(data::Table<data::Plan>& aPlan, data::DatabaseQuery& aDBQ);
