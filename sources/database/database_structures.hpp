@@ -390,6 +390,79 @@ struct Journal_download : public UpperDataStruct<Journal_downloadBase>
 {
 };
 
+struct QuestionBase : public BaseDataStruct<5>
+{
+    int id = 0;
+    std::string title;
+    std::string legend;
+    int type    = 0;
+    int contest = 0;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::unordered_map<std::string, uint8_t> columnNames;
+
+    void reset();
+};
+
+struct Question : public UpperDataStruct<QuestionBase>
+{
+};
+
+struct Question_typeBase : public BaseDataStruct<2>
+{
+    int id = 0;
+    std::string name;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::unordered_map<std::string, uint8_t> columnNames;
+
+    void reset();
+};
+
+struct Question_type : public UpperDataStruct<Question_typeBase>
+{
+};
+
+struct Question_answerBase : public BaseDataStruct<3>
+{
+    int id          = 0;
+    int question_id = 0;
+    std::string name;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::unordered_map<std::string, uint8_t> columnNames;
+
+    void reset();
+};
+
+struct Question_answer : public UpperDataStruct<Question_answerBase>
+{
+};
+
+struct User_answerBase : public BaseDataStruct<7>
+{
+    int id          = 0;
+    int user_id     = 0;
+    int question_id = 0;
+    std::string answer;
+    std::string time;
+    std::string true_time;
+    char is_correct = -1;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::unordered_map<std::string, uint8_t> columnNames;
+
+    void reset();
+};
+
+struct User_answer : public UpperDataStruct<User_answerBase>
+{
+};
+
 } // namespace data
 
 //--------------------------------------------------------------------------------

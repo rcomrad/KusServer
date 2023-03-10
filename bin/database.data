@@ -104,5 +104,26 @@ TABLE journal_download
 	index character varying(5) NOT NULL
 	name character varying(40) NOT NULL
 	extension character varying(5) NOT NULL
+
+TABLE question
+	title character varying(5) NOT NULL
+	legend text NOT NULL
+	type smallint NOT NULL
+	contest integer NOT NULL
+	
+TABLE question_type
+	name character varying(15) NOT NULL
+
+TABLE question_answer
+	question_id integer NOT NULL
+	name character varying(15) NOT NULL
+
+TABLE user_answer
+	user_id integer NOT NULL
+	question_id integer NOT NULL
+	answer character varying(10) NOT NULL
+	time character varying(15) NOT NULL
+	true_time character varying(15) NOT NULL
+	is_correct boolean NOT NULL
 	
 TABLE NUN

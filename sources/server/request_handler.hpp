@@ -99,6 +99,22 @@
         {                                                                      \
             res = getData<data::Journal_download>(args...);                    \
         }                                                                      \
+        else if (str_hash == hasher("question"))                               \
+        {                                                                      \
+            res = getData<data::Question>(args...);                            \
+        }                                                                      \
+        else if (str_hash == hasher("question_type"))                          \
+        {                                                                      \
+            res = getData<data::Question_type>(args...);                       \
+        }                                                                      \
+        else if (str_hash == hasher("question_answer"))                        \
+        {                                                                      \
+            res = getData<data::Question_answer>(args...);                     \
+        }                                                                      \
+        else if (str_hash == hasher("user_answer"))                            \
+        {                                                                      \
+            res = getData<data::User_answer>(args...);                         \
+        }                                                                      \
                                                                                \
         return res;                                                            \
     }                                                                          \
@@ -195,6 +211,22 @@
         {                                                                      \
             res = core::PostHandler::process<data::Journal_download>(args...); \
         }                                                                      \
+        else if (str_hash == hasher("question"))                               \
+        {                                                                      \
+            res = core::PostHandler::process<data::Question>(args...);         \
+        }                                                                      \
+        else if (str_hash == hasher("question_type"))                          \
+        {                                                                      \
+            res = core::PostHandler::process<data::Question_type>(args...);    \
+        }                                                                      \
+        else if (str_hash == hasher("question_answer"))                        \
+        {                                                                      \
+            res = core::PostHandler::process<data::Question_answer>(args...);  \
+        }                                                                      \
+        else if (str_hash == hasher("user_answer"))                            \
+        {                                                                      \
+            res = core::PostHandler::process<data::User_answer>(args...);      \
+        }                                                                      \
                                                                                \
         return res;                                                            \
     }                                                                          \
@@ -290,6 +322,22 @@
         else if (str_hash == hasher("journal_download"))                       \
         {                                                                      \
             res = core::PostHandler::drop<data::Journal_download>(args...);    \
+        }                                                                      \
+        else if (str_hash == hasher("question"))                               \
+        {                                                                      \
+            res = core::PostHandler::drop<data::Question>(args...);            \
+        }                                                                      \
+        else if (str_hash == hasher("question_type"))                          \
+        {                                                                      \
+            res = core::PostHandler::drop<data::Question_type>(args...);       \
+        }                                                                      \
+        else if (str_hash == hasher("question_answer"))                        \
+        {                                                                      \
+            res = core::PostHandler::drop<data::Question_answer>(args...);     \
+        }                                                                      \
+        else if (str_hash == hasher("user_answer"))                            \
+        {                                                                      \
+            res = core::PostHandler::drop<data::User_answer>(args...);         \
         }                                                                      \
                                                                                \
         return res;                                                            \

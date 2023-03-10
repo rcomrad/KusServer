@@ -423,3 +423,85 @@ data::Journal_downloadBase::reset()
     ptrs[2] = (void*)(&name);
     ptrs[3] = (void*)(&extension);
 }
+
+std::string data::QuestionBase::tableName         = "question";
+std::vector<data::Type> data::QuestionBase::types = {
+    data::Type::INT, data::Type::STRING, data::Type::STRING, data::Type::INT,
+    data::Type::INT};
+std::unordered_map<std::string, uint8_t> data::QuestionBase::columnNames = {
+    {"id",      0},
+    {"title",   1},
+    {"legend",  2},
+    {"type",    3},
+    {"contest", 4}
+};
+
+void
+data::QuestionBase::reset()
+{
+    ptrs[0] = (void*)(&id);
+    ptrs[1] = (void*)(&title);
+    ptrs[2] = (void*)(&legend);
+    ptrs[3] = (void*)(&type);
+    ptrs[4] = (void*)(&contest);
+}
+
+std::string data::Question_typeBase::tableName         = "question_type";
+std::vector<data::Type> data::Question_typeBase::types = {data::Type::INT,
+                                                          data::Type::STRING};
+std::unordered_map<std::string, uint8_t> data::Question_typeBase::columnNames =
+    {
+        {"id",   0},
+        {"name", 1}
+};
+
+void
+data::Question_typeBase::reset()
+{
+    ptrs[0] = (void*)(&id);
+    ptrs[1] = (void*)(&name);
+}
+
+std::string data::Question_answerBase::tableName         = "question_answer";
+std::vector<data::Type> data::Question_answerBase::types = {
+    data::Type::INT, data::Type::INT, data::Type::STRING};
+std::unordered_map<std::string, uint8_t>
+    data::Question_answerBase::columnNames = {
+        {"id",          0},
+        {"question_id", 1},
+        {"name",        2}
+};
+
+void
+data::Question_answerBase::reset()
+{
+    ptrs[0] = (void*)(&id);
+    ptrs[1] = (void*)(&question_id);
+    ptrs[2] = (void*)(&name);
+}
+
+std::string data::User_answerBase::tableName         = "user_answer";
+std::vector<data::Type> data::User_answerBase::types = {
+    data::Type::INT,    data::Type::INT,    data::Type::INT, data::Type::STRING,
+    data::Type::STRING, data::Type::STRING, data::Type::BOOL};
+std::unordered_map<std::string, uint8_t> data::User_answerBase::columnNames = {
+    {"id",          0},
+    {"user_id",     1},
+    {"question_id", 2},
+    {"answer",      3},
+    {"time",        4},
+    {"true_time",   5},
+    {"is_correct",  6}
+};
+
+void
+data::User_answerBase::reset()
+{
+    ptrs[0] = (void*)(&id);
+    ptrs[1] = (void*)(&user_id);
+    ptrs[2] = (void*)(&question_id);
+    ptrs[3] = (void*)(&answer);
+    ptrs[4] = (void*)(&time);
+    ptrs[5] = (void*)(&true_time);
+    ptrs[6] = (void*)(&is_correct);
+}

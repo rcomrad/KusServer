@@ -24,7 +24,8 @@ public:
 
     template <typename T>
     crow::json::wvalue::list getData(
-        GetRequest aRequest, const std::string& aCondition = "") noexcept
+        GetRequest aRequest, const std::string& aCondition = "",
+        const std::string& aSecondCondition = "") noexcept
     {
 
         crow::json::wvalue::list res;
@@ -141,6 +142,19 @@ public:
                         }
                     }
                 }
+
+                if (!aSecondCondition.empty())
+                {
+                    auto ansTable = dbq.getData<data::User_answer>(
+                        aSecondCondition +
+                        " AND question_id = " + std::to_string(i.id));
+
+                    if (ansTable.size())
+                    {
+                        temp["ans"] = ansTable.back().answer;
+                    }
+                }
+
                 res.emplace_back(std::move(temp));
             }
         }
@@ -165,8 +179,8 @@ public:
         return getDataAsJSON(req.name, req, aCondition);
     }
 
-    crow::response get(const std::string& aRequest,
-                       std::string&& aCondition) noexcept
+    crow::response get(const std::string& aRequest, std::string&& aCondition,
+                       const std::string& aSecondCondition = "") noexcept
     {
         bool flag = true;
         if (aCondition[0] == '~')
@@ -185,7 +199,7 @@ public:
             req.args["*"];
         }
         req.reset(req.name);
-        auto data = getDataAsJSON(req.name, req, aCondition);
+        auto data = getDataAsJSON(req.name, req, aCondition, aSecondCondition);
 
         crow::response res;
         if (data.size() == 0)

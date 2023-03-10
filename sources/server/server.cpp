@@ -72,6 +72,12 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
 
     //---------------------------------------------------------------------
 
+    CROW_ROUTE(app, "/api/get_question/<string>/<string>")
+    ([&](std::string aRequest, std::string aUserID)
+     { return get("question", std::move(aRequest), aUserID); });
+
+    //---------------------------------------------------------------------
+
     CROW_ROUTE(app, "/api/drop/<string>")
         .methods("POST"_method)(
             [&](const crow::request& req, std::string aTableName)
@@ -102,7 +108,7 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
                 if (aTableName == "plan")
                 {
                     data::DatabaseQuery dbq(mDBS);
-                    core::PlanHandler::loadFromRequest(req, dbq);
+                    // core::PostRouter::loadFromRequest(req, dbq);
                     // res = PlanHandler::loadFromRequest(req, dbq);
                 }
                 return res;

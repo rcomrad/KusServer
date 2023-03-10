@@ -74,6 +74,10 @@ generateDatabaseStructuresHPPFile()
             {
                 temp += "std::string ";
             }
+            else if (s2 == "text")
+            {
+                temp += "std::string ";
+            }
             else if (s2 == "integer")
             {
                 temp += "int ";
@@ -173,6 +177,10 @@ generateDatabaseStructuresCPPFile()
         else
         {
             if (s2 == "character")
+            {
+                columnTypes += "data::Type::STRING, ";
+            }
+            else if (s2 == "text")
             {
                 columnTypes += "data::Type::STRING, ";
             }
@@ -331,14 +339,13 @@ generateRequestHandlerFile()
 void
 generatePostHandlerFile()
 {
+    std::ofstream fileHPP("../sources/core/post_router.hpp");
 
-    std::ofstream fileHPP("../sources/core/post_handler.hpp");
-
-    fileHPP << "#ifndef POST_HANDLER_HPP\n";
-    fileHPP << "#define POST_HANDLER_HPP\n";
+    fileHPP << "#ifndef POST_ROUTER_HPP\n";
+    fileHPP << "#define POST_ROUTER_HPP\n";
     fileHPP << "\n";
 
-    fileHPP << "#include \"post_handler_base.hpp\" \n";
+    fileHPP << "#include \"post_handler.hpp\" \n";
     fileHPP << "#include \"plan_handler.hpp\" \n";
     fileHPP << "#include \"journal_handler.hpp\" \n";
 
@@ -346,7 +353,7 @@ generatePostHandlerFile()
 
     fileHPP << "namespace core \n";
     fileHPP << "{ \n";
-    fileHPP << "class PostHandler : public PostHandlerBase \n";
+    fileHPP << "class PostRouter \n";
     fileHPP << "{ \n";
     fileHPP << "public: \n";
 
@@ -510,6 +517,6 @@ data::generateDatabaseStructuresFiles()
     // generateDatabaseStructuresHPPFile();
     // generateDatabaseStructuresCPPFile();
     // generateRequestHandlerFile();
-    generatePostHandlerFile();
+    // generatePostHandlerFile();
     // generateAsteriskHendler();
 }
