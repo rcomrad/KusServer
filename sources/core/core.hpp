@@ -10,6 +10,7 @@
 #include "database/database_query.hpp"
 
 //--------------------------------------------------------------------------------
+
 #include <atomic>
 namespace core
 {

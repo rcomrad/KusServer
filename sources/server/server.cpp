@@ -9,6 +9,7 @@
 
 #include "core/program_state.hpp"
 #include "crow/middlewares/cors.h"
+#include "post/post_router.hpp"
 
 serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
 {
@@ -84,7 +85,7 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
             {
                 crow::response res;
                 data::DatabaseQuery dbq(mDBS);
-                res = dropRequestHandler(aTableName, req, dbq);
+                res = post::PostRouter::dropRouter(aTableName, req, dbq);
                 return res;
             });
 
@@ -96,7 +97,7 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
             {
                 crow::response res;
                 data::DatabaseQuery dbq(mDBS);
-                res = postRequestHandler(aTableName, req, dbq);
+                res = post::PostRouter::basicRouter(aTableName, req, dbq);
                 return res;
             });
 
@@ -105,12 +106,8 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
             [&](const crow::request& req, std::string aTableName)
             {
                 crow::response res;
-                if (aTableName == "plan")
-                {
-                    data::DatabaseQuery dbq(mDBS);
-                    // core::PostRouter::loadFromRequest(req, dbq);
-                    // res = PlanHandler::loadFromRequest(req, dbq);
-                }
+                data::DatabaseQuery dbq(mDBS);
+                res = post::PostRouter::uploadRouter(aTableName, req, dbq);
                 return res;
             });
 
@@ -146,7 +143,7 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
                 submition.back().date_val  = dateTime;
                 submition.back().verdict   = "NUN";
                 submition.back().test      = -1;
-                submition.back().file_path = core::PostHandler::uploadFile(
+                submition.back().file_path = post::PostHandler::uploadFile(
                     msg, dbq, dom::Path::getPath("submition").value());
 
                 std::cout << dateTime << "\n";
@@ -168,14 +165,16 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
                 {
                     data::DatabaseQuery dbq(mDBS);
                     auto user =
-                        core::PostHandler::getStructTable<data::User>(x, dbq);
-                    std::string cond = "login = \'" + user[0].login +
+                        post::PostHandler::parseRequest<data::User>(x).table;
+                    std::string cond = "~login = \'" + user[0].login +
                                        "\' AND " + "password = \'" +
                                        user[0].password + "\'";
                     resp = get("user", std::move(cond));
                 }
                 return resp;
             });
+    // TODO:
+    // { return post::UserHandler::autorisation(req, mDBS); });
 
     //---------------------------------------------------------------------
 

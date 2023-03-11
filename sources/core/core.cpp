@@ -10,12 +10,11 @@
 
 #include <fstream>
 
-#include "database/generate_code.hpp"
-
+#include "post/journal_handler.hpp"
+#include "post/plan_handler.hpp"
 #include "server/server.hpp"
 
-#include "journal_handler.hpp"
-#include "plan_handler.hpp"
+#include "generate_code.hpp"
 #include "program_state.hpp"
 
 //--------------------------------------------------------------------------------
@@ -24,7 +23,7 @@
 
 core::Core::Core() noexcept
 {
-    data::generateDatabaseStructuresFiles();
+    generateDatabaseStructuresFiles();
 
     mDBS.name     = "journal_db";
     mDBS.user     = "journal_user";
@@ -63,14 +62,14 @@ void
 core::Core::createJournals() noexcept
 {
     data::DatabaseQuery dbq(mDBS);
-    JournalHandler::loadFromFile("journals.data", dbq);
+    post::JournalHandler::loadFromFile("journals.data", dbq);
 }
 
 void
 core::Core::createPlans() noexcept
 {
     data::DatabaseQuery dbq(mDBS);
-    PlanHandler::loadFromFile("plans.data", dbq);
+    post::PlanHandler::parseDataFile("plans.data", dbq);
 }
 
 void

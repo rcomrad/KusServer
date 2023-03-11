@@ -13,7 +13,7 @@
 
 //--------------------------------------------------------------------------------
 
-namespace core
+namespace post
 {
 class JournalHandler : protected PostHandler
 {

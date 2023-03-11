@@ -5,7 +5,7 @@
 #include "post_router.hpp"
 
 std::string
-core::PostHandler::uploadFile(crow::multipart::message& aMsg,
+post::PostHandler::uploadFile(crow::multipart::message& aMsg,
                               data::DatabaseQuery& aDBQ,
                               std::string aPathPrefix)
 {
@@ -30,10 +30,11 @@ core::PostHandler::uploadFile(crow::multipart::message& aMsg,
 }
 
 void
-core::PostHandler::transmitToPostHandler(const std::string& aTableName, int aID,
-                                         crow::json::rvalue& aPartnerIDs,
-                                         data::DatabaseQuery& aDBQ,
-                                         bool aIsAdding)
+post::PostHandler::transmitToMTMHandler(const std::string aTableName, int aID,
+                                        bool aIsAdding,
+                                        std::vector<int> aIDForInsert,
+                                        data::DatabaseQuery& aDBQ)
 {
-    PostRouter::supportingPost(aTableName, aID, aPartnerIDs, aDBQ, aIsAdding);
+    PostRouter::manyToManyRouter(aTableName, aID, aIsAdding, aIDForInsert,
+                                 aDBQ);
 }

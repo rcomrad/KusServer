@@ -12,7 +12,7 @@
 
 //--------------------------------------------------------------------------------
 
-namespace core
+namespace post
 {
 class GradeHandler : protected PostHandler
 {

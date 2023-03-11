@@ -4,18 +4,10 @@ set(
     core.cpp
     core.hpp 
 
-    grade_handler.hpp
-
-    journal_handler.cpp
-    journal_handler.hpp
-
-    plan_handler.cpp
-    plan_handler.hpp
-
-    post_router.hpp
-
-    post_handler.cpp
-    post_handler.hpp
+    generate_code.cpp
+    generate_code.hpp
+    
+    main.cpp
 
     program_state.cpp
     program_state.hpp

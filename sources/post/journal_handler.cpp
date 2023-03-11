@@ -7,11 +7,11 @@
 #include <string>
 
 crow::json::wvalue
-core::JournalHandler::process(const crow::request& aReq,
+post::JournalHandler::process(const crow::request& aReq,
                               data::DatabaseQuery& aDBQ)
 {
     auto req     = crow::json::load(aReq.body);
-    auto journal = getStructTable<data::Journal_table>(req, aDBQ);
+    auto journal = parseRequest<data::Journal_table>(req).table;
     std::vector<int> schedule;
     for (auto& day : req["schedule"])
     {
@@ -23,7 +23,7 @@ core::JournalHandler::process(const crow::request& aReq,
 }
 
 void
-core::JournalHandler::loadFromFile(std::string_view aFileName,
+post::JournalHandler::loadFromFile(std::string_view aFileName,
                                    data::DatabaseQuery& aDBQ)
 {
     std::ifstream inp(aFileName.data());
@@ -57,7 +57,7 @@ core::JournalHandler::loadFromFile(std::string_view aFileName,
 }
 
 void
-core::JournalHandler::make(data::Table<data::Journal_table>& aJournal,
+post::JournalHandler::make(data::Table<data::Journal_table>& aJournal,
                            std::vector<int> aSchedule,
                            data::DatabaseQuery& aDBQ)
 {
@@ -75,7 +75,7 @@ core::JournalHandler::make(data::Table<data::Journal_table>& aJournal,
 }
 
 void
-core::JournalHandler::makeSchedule(data::Table<data::Journal_table>& aJournal,
+post::JournalHandler::makeSchedule(data::Table<data::Journal_table>& aJournal,
                                    std::vector<int> aSchedule,
                                    data::DatabaseQuery& aDBQ)
 {

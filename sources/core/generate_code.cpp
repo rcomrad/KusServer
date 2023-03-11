@@ -4,6 +4,14 @@
 #include <map>
 #include <string>
 
+std::unordered_map<std::string, std::string> core::GenerateCode::mglobalPaths =
+    {
+        {"post", "../sources/post/"}
+};
+
+std::vector<std::string> core::GenerateCode::mDatabaseTables =
+    core::GenerateCode::getDatabaseTables();
+
 void
 drawLine(std::ofstream& file)
 {
@@ -11,6 +19,229 @@ drawLine(std::ofstream& file)
     file << "//";
     for (int i = 0; i < 80; ++i) file << "-";
     file << "\n\n";
+}
+
+void
+core::GenerateCode::setClassName(const std::string& aName)
+{
+    mClassName = aName;
+
+    mClassName[0] -= 'A' - 'a';
+    for (auto i : mClassName)
+    {
+        if (i >= 'A' && i <= 'Z')
+        {
+            mFileName.push_back('_');
+            mDefineName.push_back('_');
+            i -= 'A' - 'a';
+        }
+
+        mFileName.push_back(i);
+        i += 'A' - 'a';
+        mDefineName.push_back(i);
+    }
+    mClassName[0] += 'A' - 'a';
+}
+
+void
+core::GenerateCode::setNamespace(const std::string& aName)
+{
+    mNamespace = aName;
+    mPath      = mglobalPaths[mNamespace];
+}
+
+void
+core::GenerateCode::setDefaultTemplate(const std::string& aDefaultTemplate)
+{
+    mDefaultTemplate = aDefaultTemplate;
+}
+
+void
+core::GenerateCode::setDefaultReturnType(const std::string& aDefaultReturnType)
+{
+    mDefaultReturnType = aDefaultReturnType;
+}
+
+void
+core::GenerateCode::setDefaultResultBegin(
+    const std::string& aDefaultResultBegin)
+{
+    mDefaultResultBegin = aDefaultResultBegin;
+}
+
+void
+core::GenerateCode::setDefaultResultEnd(const std::string& aDefaultResultEnd)
+{
+    mDefaultResultEnd = aDefaultResultEnd;
+}
+
+void
+core::GenerateCode::addInclude(const std::string& aInclude)
+{
+    mIncludes.emplace_back(aInclude);
+}
+
+// void
+// core::GenerateCode::addFunction(const std::string& aTemplate,
+//                                 const std::string& aReturnType,
+//                                 const std::string& aSignature,
+//                                 const std::string& aBody)
+// {
+//     const std::string* templ = &aTemplate;
+//     if (aTemplate.empty())
+//     {
+//         templ = &mDefaultTemplate;
+//     }
+
+//     const std::string* retur = &aReturnType;
+//     if (aReturnType.empty())
+//     {
+//         retur = &mDefaultReturnType;
+//     }
+
+//     mFunctions.emplace_back(
+//         std::vector<std::string>{*templ, *retur, aSignature, aBody});
+// }
+
+void
+core::GenerateCode::pushBackFunction(const std::string& aSignature)
+{
+    mFunctions.emplace_back();
+
+    mFunctions.back()._template   = mDefaultTemplate;
+    mFunctions.back().returnType  = mDefaultReturnType;
+    mFunctions.back().signature   = aSignature;
+    mFunctions.back().resultBegin = mDefaultResultBegin;
+    mFunctions.back().resultEnd   = mDefaultResultEnd;
+}
+
+void
+core::GenerateCode::generateTableSwitcher(
+    const std::unordered_map<std::string, std::string>& aGotoTable)
+{
+    std::string& temp = mFunctions.back().body;
+
+    bool flag = true;
+    bool specialTreatment;
+    for (auto& name : mDatabaseTables)
+    {
+        auto it = aGotoTable.find(name);
+        if (it == aGotoTable.end())
+        {
+            it               = aGotoTable.find("default");
+            specialTreatment = false;
+        }
+        else
+        {
+            specialTreatment = true;
+        }
+        const std::string& funkName = it->second;
+
+        std::string structName = name;
+        structName[0] += 'A' - 'a';
+
+        if (flag)
+        {
+            temp += "        if";
+            flag = false;
+        }
+        else
+        {
+            temp += "        else if";
+        }
+        temp += " (str_hash == hasher(\"" + name + "\")) \n";
+        temp += "{ \n";
+        temp += "res = " + funkName;
+        if (!specialTreatment) temp += structName + ">";
+        temp += "(args...); \n";
+        temp += " } \n";
+    }
+}
+
+void
+core::GenerateCode::write()
+{
+    writeHPP();
+    writeCPP();
+}
+
+void
+core::GenerateCode::writeHPP()
+{
+    std::ofstream hppFle(mPath + mFileName + ".hpp");
+
+    hppFle << "#ifndef " + mDefineName + "_HPP\n";
+    hppFle << "#define " + mDefineName + "_HPP\n";
+    hppFle << "\n";
+
+    for (auto& i : mIncludes)
+    {
+        hppFle << "#include \"" + i + ".hpp\"\n";
+    }
+    hppFle << "\n";
+
+    hppFle << "namespace " + mNamespace + "\n";
+    hppFle << "{ \n";
+    hppFle << "class " + mClassName + "\n";
+    hppFle << "{ \n";
+    hppFle << "public: \n";
+
+    for (auto& funk : mFunctions)
+    {
+        if (!funk._template.empty()) hppFle << funk._template + "\n";
+        hppFle << funk.returnType + "\n";
+        hppFle << funk.signature;
+
+        if (funk._template.empty()) hppFle << ";\n";
+        else
+        {
+            hppFle << "\n{\n";
+            hppFle << funk.resultBegin;
+            hppFle << "\n\n";
+            hppFle << funk.body;
+            hppFle << "\n\n";
+            hppFle << funk.resultEnd;
+            hppFle << "\n}\n\n";
+        }
+
+        hppFle << "\n\n";
+    }
+
+    hppFle << "\n};\n";
+    hppFle << "\n} // namespace " << mNamespace << "\n";
+    hppFle << "#endif // !" << mDefineName << "\n";
+
+    hppFle.close();
+}
+
+void
+core::GenerateCode::writeCPP()
+{
+    std::ofstream cppFle;
+
+    cppFle.close();
+}
+
+std::vector<std::string>
+core::GenerateCode::getDatabaseTables()
+{
+    std::vector<std::string> res;
+
+    std::ifstream database("database.data");
+    while (true)
+    {
+        std::string s1, s2;
+        if (!(database >> s1)) break;
+        getline(database, s2, ' ');
+        getline(database, s2);
+
+        if (s1 == "TABLE" && s2 != "NUN")
+        {
+            res.push_back(s2);
+        }
+    }
+
+    return res;
 }
 
 void
@@ -339,122 +570,75 @@ generateRequestHandlerFile()
 void
 generatePostHandlerFile()
 {
-    std::ofstream fileHPP("../sources/core/post_router.hpp");
+    core::GenerateCode generator;
+    generator.setClassName("PostRouter");
+    generator.setNamespace("post");
 
-    fileHPP << "#ifndef POST_ROUTER_HPP\n";
-    fileHPP << "#define POST_ROUTER_HPP\n";
-    fileHPP << "\n";
+    //--------------------------------------------------------------------------------
 
-    fileHPP << "#include \"post_handler.hpp\" \n";
-    fileHPP << "#include \"plan_handler.hpp\" \n";
-    fileHPP << "#include \"journal_handler.hpp\" \n";
+    generator.setDefaultTemplate("template <typename... Args>");
+    generator.setDefaultReturnType("static crow::json::wvalue");
+    generator.setDefaultResultBegin(
+        "crow::json::wvalue res{400};\n"
+        "auto hasher = std::hash<std::string_view>{};\n"
+        "auto str_hash = hasher(aTableName);");
+    generator.setDefaultResultEnd("return res;");
 
-    fileHPP << "\n";
+    //--------------------------------------------------------------------------------
 
-    fileHPP << "namespace core \n";
-    fileHPP << "{ \n";
-    fileHPP << "class PostRouter \n";
-    fileHPP << "{ \n";
-    fileHPP << "public: \n";
+    generator.addInclude("journal_handler");
+    generator.addInclude("plan_handler");
+    generator.addInclude("post_handler");
+    generator.addInclude("user_handler");
 
-    fileHPP << "    template <typename... Args> \n";
-    fileHPP << "    static crow::json::wvalue supportingPost(std::string_view "
-               "aTableName, \n";
-    fileHPP << "                            Args&&... args) "
-               "noexcept \n";
-    fileHPP << "    { \n";
-    fileHPP << "        crow::json::wvalue res{400}; \n";
-    fileHPP << "        auto hasher   = std::hash<std::string_view>{}; \n";
-    fileHPP << "        auto str_hash = hasher(aTableName); \n \n";
+    //--------------------------------------------------------------------------------
 
-    std::ifstream database("database.data");
-    std::string tempSup;
-    std::string tempLoad;
-    std::map<std::string, std::string> loadFileClasses = {
-        {"journal_table", "JournalHandler::loadFromFile"},
-        {"plan",          "PlanHandler::loadFromFile"   }
-    };
+    // postHandler
+    generator.pushBackFunction("basicRouter(std::string_view aTableName, "
+                               "Args&&... args) noexcept");
+    generator.generateTableSwitcher({
+        {"default", "post::PostHandler::process<data::"},
+        {"user",    "post::UserHandler::process"       }
+    });
 
-    bool flag = true;
-    while (true)
-    {
-        std::string s1, s2;
-        if (!(database >> s1)) break;
-        getline(database, s2, ' ');
-        getline(database, s2);
+    //--------------------------------------------------------------------------------
 
-        if (s1 == "TABLE" && s2 != "NUN")
-        {
-            std::string structName = s2;
-            structName[0] += 'A' - 'a';
+    // manyToManyHandler
+    generator.pushBackFunction("manyToManyRouter(std::string_view aTableName, "
+                               "Args&&... args) noexcept");
+    generator.generateTableSwitcher({
+        {"default", "post::PostHandler::manyToMany<data::"}
+    });
 
-            if (flag)
-            {
-                tempSup += "        if";
-                tempLoad += "        if";
-            }
-            else
-            {
-                tempSup += "        else if";
-                tempLoad += "        if";
-            }
-            flag = false;
+    //--------------------------------------------------------------------------------
 
-            tempSup += " (str_hash == hasher(\"" + s2 + "\")) \n";
-            tempSup += "        { \n";
-            tempSup += "            res = "
-                       "core::PostHandler::supportingProcess<data::" +
-                       structName + ">(args...); \n";
-            tempSup += "        } \n";
+    // uploadPostHandler
+    generator.pushBackFunction("uploadRouter(std::string_view aTableName, "
+                               "Args&&... args) noexcept");
+    generator.generateTableSwitcher({
+        {"default",       "post::PostHandler::uploadFromFile<data::"},
+        // {"journal_table", "post::JournalHandler::uploadFromFile"    },
+        {"plan",          "post::PlanHandler::uploadFromFile"       }
+    });
 
-            //---------------------------------------------------------------------
+    //--------------------------------------------------------------------------------
 
-            tempLoad += " (str_hash == hasher(\"" + s2 + "\")) \n";
-            tempLoad += "        { \n";
-            tempLoad += "            res = core::";
+    // dropHandler
+    generator.pushBackFunction("dropRouter(std::string_view aTableName, "
+                               "Args&&... args) noexcept");
+    generator.generateTableSwitcher({
+        {"default", "post::PostHandler::drop<data::"}
+    });
 
-            std::string className =
-                "PostHandler::loadFromFile< data::" + structName + ">";
-            if (loadFileClasses.count(s2)) className = loadFileClasses[s2];
-            tempLoad += className;
+    //--------------------------------------------------------------------------------
 
-            tempLoad += "(args...); \n";
-            tempLoad += "        } \n";
-        }
-    }
-
-    fileHPP << tempSup;
-    fileHPP << "\n        return res; \n     } \n";
-
-    //---------------------------------------------------------------------
-
-    fileHPP << "    template <typename... Args> \n";
-    fileHPP << "    static crow::json::wvalue loadPost(std::string_view "
-               "aTableName, \n";
-    fileHPP << "                            Args&&... args) "
-               "noexcept \n";
-    fileHPP << "    { \n";
-    fileHPP << "        crow::json::wvalue res{400}; \n";
-    fileHPP << "        auto hasher   = std::hash<std::string_view>{}; \n";
-    fileHPP << "        auto str_hash = hasher(aTableName); \n \n";
-
-    fileHPP << tempLoad;
-    fileHPP << "\n        return res; \n     } \n";
-
-    //---------------------------------------------------------------------
-
-    fileHPP << "}; \n";
-    fileHPP << "} \n\n";
-
-    fileHPP << "\n#endif // !POST_HANDLER_HPP\n";
+    generator.write();
 }
 
 void
 generateAsteriskHendler()
 {
-
     std::ofstream file("../sources/server/asterisk_hendler.hpp");
-    // std::ofstream file("request_handler.hpp");
 
     file << "#ifndef ASTERISK_HENDLER_HPP\n";
     file << "#define ASTERISK_HENDLER_HPP\n";
@@ -512,7 +696,7 @@ generateAsteriskHendler()
 }
 
 void
-data::generateDatabaseStructuresFiles()
+core::generateDatabaseStructuresFiles()
 {
     // generateDatabaseStructuresHPPFile();
     // generateDatabaseStructuresCPPFile();

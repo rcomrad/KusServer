@@ -10,9 +10,6 @@ set(
     database_wrappers.cpp
     database_wrappers.hpp
 
-    generate_code.cpp
-    generate_code.hpp
-
     postgresql.cpp
     postgresql.hpp
 
