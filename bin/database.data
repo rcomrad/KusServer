@@ -110,7 +110,7 @@ TABLE question
 	legend text NOT NULL
 	type smallint NOT NULL
 	contest integer NOT NULL
-	answer character varying(15) NOT NULL
+	jury_answer character varying(15) NOT NULL
 	
 TABLE question_type
 	name character varying(15) NOT NULL
@@ -118,7 +118,7 @@ TABLE question_type
 TABLE user_answer
 	user_id integer NOT NULL
 	question_id integer NOT NULL
-	answer character varying(10) NOT NULL
+	user_answer character varying(10) NOT NULL
 	time character varying(30) NOT NULL
 	true_time character varying(20) NOT NULL
 	is_correct character varying(1) NOT NULL

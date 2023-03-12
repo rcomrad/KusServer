@@ -429,12 +429,12 @@ std::vector<data::Type> data::QuestionBase::types = {
     data::Type::INT, data::Type::STRING, data::Type::STRING,
     data::Type::INT, data::Type::INT,    data::Type::STRING};
 std::unordered_map<std::string, uint8_t> data::QuestionBase::columnNames = {
-    {"id",      0},
-    {"title",   1},
-    {"legend",  2},
-    {"type",    3},
-    {"contest", 4},
-    {"answer",  5}
+    {"id",          0},
+    {"title",       1},
+    {"legend",      2},
+    {"type",        3},
+    {"contest",     4},
+    {"jury_answer", 5}
 };
 
 void
@@ -445,7 +445,7 @@ data::QuestionBase::reset()
     ptrs[2] = (void*)(&legend);
     ptrs[3] = (void*)(&type);
     ptrs[4] = (void*)(&contest);
-    ptrs[5] = (void*)(&answer);
+    ptrs[5] = (void*)(&jury_answer);
 }
 
 std::string data::Question_typeBase::tableName         = "question_type";
@@ -473,7 +473,7 @@ std::unordered_map<std::string, uint8_t> data::User_answerBase::columnNames = {
     {"id",          0},
     {"user_id",     1},
     {"question_id", 2},
-    {"answer",      3},
+    {"user_answer", 3},
     {"time",        4},
     {"true_time",   5},
     {"is_correct",  6}
@@ -485,7 +485,7 @@ data::User_answerBase::reset()
     ptrs[0] = (void*)(&id);
     ptrs[1] = (void*)(&user_id);
     ptrs[2] = (void*)(&question_id);
-    ptrs[3] = (void*)(&answer);
+    ptrs[3] = (void*)(&user_answer);
     ptrs[4] = (void*)(&time);
     ptrs[5] = (void*)(&true_time);
     ptrs[6] = (void*)(&is_correct);

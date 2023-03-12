@@ -397,7 +397,7 @@ struct QuestionBase : public BaseDataStruct<6>
     std::string legend;
     int type    = 0;
     int contest = 0;
-    std::string answer;
+    std::string jury_answer;
 
     static std::string tableName;
     static std::vector<data::Type> types;
@@ -431,7 +431,7 @@ struct User_answerBase : public BaseDataStruct<7>
     int id          = 0;
     int user_id     = 0;
     int question_id = 0;
-    std::string answer;
+    std::string user_answer;
     std::string time;
     std::string true_time;
     std::string is_correct;

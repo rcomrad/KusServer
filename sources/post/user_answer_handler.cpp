@@ -17,9 +17,9 @@ post::UserAnswerHandler::process(const crow::request& aReq,
     {
         auto ansTable = aDBQ.getData<data::Question>(
             "id = " + data::wrap(table[0].question_id));
-        auto answer = ansTable[0].answer;
+        auto answer = ansTable[0].jury_answer;
 
-        if (answer == table[0].answer) table[0].is_correct = 'T';
+        if (answer == table[0].user_answer) table[0].is_correct = 'T';
         else table[0].is_correct = 'F';
     }
 

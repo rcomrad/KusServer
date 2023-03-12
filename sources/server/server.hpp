@@ -151,7 +151,7 @@ public:
 
                     if (ansTable.size())
                     {
-                        temp["ans"] = ansTable.back().answer;
+                        temp["user_answer"] = ansTable.back().user_answer;
                     }
                 }
 
