@@ -566,9 +566,10 @@ generatePostHandlerFile()
     generator.pushBackFunction("uploadRouter(std::string_view aTableName, "
                                "Args&&... args) noexcept");
     generator.generateTableSwitcher({
-        {"default", "post::PostHandler::uploadFromFile<data::"},
- // {"journal_table", "post::JournalHandler::uploadFromFile"    },
-        {"plan",    "post::PlanHandler::uploadFromFile"       }
+        {"default",       "post::PostHandler::uploadFromFile<data::"},
+        {"journal_table", "post::JournalHandler::uploadFromFile"    },
+        {"user",          "post::UserHandler::uploadFromFile"       },
+        {"plan",          "post::PlanHandler::uploadFromFile"       }
     });
 
     //--------------------------------------------------------------------------------

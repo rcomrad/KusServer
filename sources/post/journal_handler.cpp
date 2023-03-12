@@ -12,89 +12,83 @@ post::JournalHandler::process(const crow::request& aReq,
 {
     auto req     = crow::json::load(aReq.body);
     auto journal = parseRequest<data::Journal_table>(req).table;
+    aDBQ.insert(journal);
+    makeSchedule(journal[0], aDBQ);
+    return {journal[0].id};
+}
+
+crow::json::wvalue
+post::JournalHandler::uploadFromFile(const crow::request& aReq,
+                                     data::DatabaseQuery& aDBQ)
+{
+    crow::json::wvalue res;
+
+    crow::multipart::message msg(aReq);
+    std::string filePath = uploadFile(msg, aDBQ);
+
+    std::string type = msg.get_part_by_name("index").body;
+    if (type == "data")
+    {
+        res = dataFileUpload(filePath, aDBQ);
+    }
+
+    return res;
+}
+
+crow::json::wvalue
+post::JournalHandler::dataFileUpload(const std::string& aFilePath,
+                                     data::DatabaseQuery& aDBQ)
+{
+    auto data = dataFileParser<data::Journal_table>(aFilePath, 1);
+    for (int i = 0; i < data.table.size(); ++i)
+    {
+        data.table[i].schedule = std::move(data.additionalLines[i][0]);
+    }
+
+    aDBQ.insert(data.table);
+    for (auto& i : data.table)
+    {
+        makeSchedule(i, aDBQ);
+    }
+    return {200};
+}
+
+void
+post::JournalHandler::makeSchedule(data::Journal_table& aJournal,
+                                   data::DatabaseQuery& aDBQ)
+{
     std::vector<int> schedule;
-    for (auto& day : req["schedule"])
+    for (auto i : aJournal.schedule)
+        if (i >= '1' && i <= '7') schedule.emplace_back(i - '0');
+
+    data::Table<data::User> methodist =
+        aDBQ.getData<data::User>("id = " + data::wrap(aJournal.methodist_id));
+
+    data::Table<data::Theme> themes =
+        aDBQ.getData<data::Theme>("plan_id = " + data::wrap(aJournal.plan_id));
+
+    int methodistID = 0;
+    if (methodist.size()) methodistID = methodist[0].school_id;
+    data::Table<data::School> school =
+        aDBQ.getData<data::School>("id = " + data::wrap(methodistID));
+
+    int schoolID  = 0;
+    uint16_t year = 1991;
+    uint8_t month = 12;
+    uint8_t day   = 26;
+    if (school.size())
     {
-        schedule.emplace_back(day.i());
-    }
-    make(journal, schedule, aDBQ);
+        schoolID = school[0].id;
 
-    return {};
-}
-
-void
-post::JournalHandler::loadFromFile(std::string_view aFileName,
-                                   data::DatabaseQuery& aDBQ)
-{
-    std::ifstream inp(aFileName.data());
-
-    std::string s;
-    std::getline(inp, s);
-
-    data::Table<data::Journal_table> journal;
-    int teacherID;
-    while (inp >> teacherID)
-    {
-        journal.clear();
-        journal.emplace_back();
-
-        journal.back().teacher_id = teacherID;
-        inp >> journal.back().methodist_id;
-        inp >> journal.back().is_group;
-        inp >> journal.back().group_id;
-        inp >> journal.back().subject_id;
-        inp >> journal.back().plan_id;
-        inp >> journal.back().head_id;
-
-        std::getline(inp, s, '\n');
-        std::getline(inp, s, '\n');
-        journal.back().schedule = s;
-        std::vector<int> schedule;
-        for (auto i : s)
-            if (i != ' ') schedule.emplace_back(i - '0');
-        make(journal, schedule, aDBQ);
-    }
-}
-
-void
-post::JournalHandler::make(data::Table<data::Journal_table>& aJournal,
-                           std::vector<int> aSchedule,
-                           data::DatabaseQuery& aDBQ)
-{
-    // TODO:
-    auto temp              = aJournal[0].teacher_id;
-    aJournal[0].teacher_id = 999999;
-    aDBQ.insert<data::Journal_table>(aJournal);
-    aJournal =
-        aDBQ.getData<data::Journal_table>("teacher_id = " + data::wrap(999999));
-
-    aJournal[0].teacher_id = temp;
-    aDBQ.update<data::Journal_table>(aJournal);
-
-    makeSchedule(aJournal, aSchedule, aDBQ);
-}
-
-void
-post::JournalHandler::makeSchedule(data::Table<data::Journal_table>& aJournal,
-                                   std::vector<int> aSchedule,
-                                   data::DatabaseQuery& aDBQ)
-{
-    data::Table<data::User> methodist = aDBQ.getData<data::User>(
-        "id = " + data::wrap(aJournal[0].methodist_id));
-
-    data::Table<data::Theme> themes = aDBQ.getData<data::Theme>(
-        "plan_id = " + data::wrap(aJournal[0].plan_id));
-
-    data::Table<data::School> school = aDBQ.getData<data::School>(
-        "id = " + data::wrap(methodist[0].school_id));
+        year  = uint16_t(std::stoi(school[0].start_date.substr(0, 4)));
+        month = uint8_t(std::stoi(school[0].start_date.substr(5, 2)));
+        day   = uint8_t(std::stoi(school[0].start_date.substr(8, 2)));
+    };
 
     data::Table<data::Holiday> holidays =
-        aDBQ.getData<data::Holiday>("school_id = " + data::wrap(school[0].id));
+        aDBQ.getData<data::Holiday>("school_id = " + data::wrap(schoolID));
 
-    boost::gregorian::date startDate{
-        uint16_t(std::stoi(school[0].start_date.substr(0, 4))),
-        uint8_t(std::stoi(school[0].start_date.substr(5, 2))),
-        uint8_t(std::stoi(school[0].start_date.substr(8, 2)))};
+    boost::gregorian::date startDate{year, month, day};
     boost::gregorian::date date = startDate;
     while (date.day_of_week() != 1)
     {
@@ -102,8 +96,8 @@ post::JournalHandler::makeSchedule(data::Table<data::Journal_table>& aJournal,
     }
 
     int j = 0;
-    while (j < aSchedule.size() &&
-           date + boost::gregorian::days(aSchedule[j]) < startDate)
+    while (j < schedule.size() &&
+           date + boost::gregorian::days(schedule[j]) < startDate)
     {
         j++;
     }
@@ -120,13 +114,13 @@ post::JournalHandler::makeSchedule(data::Table<data::Journal_table>& aJournal,
     data::Table<data::Lesson> lessons;
     for (int i = 0; i < themes.size();)
     {
-        if (j == aSchedule.size())
+        if (j == schedule.size())
         {
             j = 0;
             date += boost::gregorian::days(7);
         }
 
-        auto newData = date + boost::gregorian::days(aSchedule[j++]);
+        auto newData = date + boost::gregorian::days(schedule[j++]);
         if (holidaysSet.count(newData)) continue;
 
         std::string dateStr = std::to_string(newData.year()) + "-" +
@@ -136,7 +130,7 @@ post::JournalHandler::makeSchedule(data::Table<data::Journal_table>& aJournal,
         lessons.emplace_back();
         lessons.back().theme_id         = themes.data[i].id;
         lessons.back().date_val         = dateStr;
-        lessons.back().journal_table_id = aJournal[0].id;
+        lessons.back().journal_table_id = aJournal.id;
 
         ++i;
     }

@@ -1,17 +1,12 @@
 #include "core.hpp"
 
-// #include <fstream>
-// #include <functional>
-// #include <map>
-// #include <set>
+#include <fstream>
 
 #include "domain/error_message.hpp"
-// #include "domain/file_reader.hpp"
-
-#include <fstream>
 
 #include "post/journal_handler.hpp"
 #include "post/plan_handler.hpp"
+#include "post/user_handler.hpp"
 #include "server/server.hpp"
 
 #include "generate_code.hpp"
@@ -46,32 +41,6 @@ core::Core::Core() noexcept
     mApps["server"] = std::move(std::thread(&Core::serverThread, this));
 }
 
-// void
-// core::Core::databaseSettingsInit() noexcept
-// {
-//     mDBS.name     = "journal_db";
-//     mDBS.user     = "journal_user";
-//     mDBS.password = "111";
-//     mDBS.shame    = "journal";
-
-//     std::ifstream ios("database.pass");
-//     ios >> mDBS.password >> mDBS.password;
-// }
-
-void
-core::Core::createJournals() noexcept
-{
-    data::DatabaseQuery dbq(mDBS);
-    post::JournalHandler::loadFromFile("journals.data", dbq);
-}
-
-void
-core::Core::createPlans() noexcept
-{
-    data::DatabaseQuery dbq(mDBS);
-    post::PlanHandler::parseDataFile("plans.data", dbq);
-}
-
 void
 core::Core::remakeDatabase()
 {
@@ -85,8 +54,23 @@ void
 core::Core::populate()
 {
     populateDatabaseFromFile("populate_database.data");
-    createPlans();
-    createJournals();
+
+    data::DatabaseQuery dbq(mDBS);
+
+    post::UserHandler::dataFileUpload("user.data", dbq);
+
+    post::PlanHandler::PlanData data;
+    data.subjectID = 1;
+
+    data.name = "Тест";
+    data.url  = "plan_test.csv";
+    post::PlanHandler::csvFileUpload(data, dbq);
+
+    data.name = "C++";
+    data.url  = "plan_cpp.csv";
+    post::PlanHandler::csvFileUpload(data, dbq);
+
+    post::JournalHandler::dataFileUpload("journal.data", dbq);
 }
 
 void

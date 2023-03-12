@@ -113,6 +113,69 @@ public:
         return {};
     }
 
+    template <typename T>
+    struct DataFile
+    {
+        data::Table<T> table;
+        std::vector<std::vector<std::string>> additionalLines;
+    };
+
+    template <typename T>
+    static auto dataFileParser(const std::string& aFilePath,
+                               int aAdditionalLineCount     = 0,
+                               std::set<int> aErasedIndexes = {0})
+    {
+        DataFile<T> result;
+        std::ifstream inp(aFilePath);
+
+        std::string firstString;
+        std::getline(inp, firstString);
+
+        std::string s;
+        while (std::getline(inp, s))
+        {
+            result.table.emplace_back();
+            auto& temp = result.table.back();
+
+            std::stringstream ss;
+            ss << s;
+            for (int ind = 0; ind < result.table.types.size(); ++ind)
+            {
+                if (aErasedIndexes.count(ind)) continue;
+
+                switch (result.table.types[ind])
+                {
+                    case data::Type::INT:
+                        ss >> *(int*)temp[ind];
+                        break;
+                    case data::Type::BOOL:
+                        ss >> *(bool*)temp[ind];
+                        break;
+                    // case data::Type::CHARS:
+                    //     strcpy((char*)temp[ind], i.s().s_);
+                    //     break;
+                    case data::Type::STRING:
+                        ss >> *(std::string*)temp[ind];
+                        break;
+                }
+            }
+
+            if (aAdditionalLineCount)
+            {
+                std::string additionalLine;
+
+                result.additionalLines.emplace_back();
+                for (int i = 0; i < aAdditionalLineCount; ++i)
+                {
+                    std::getline(inp, additionalLine);
+                    result.additionalLines.back().emplace_back(additionalLine);
+                }
+            }
+        }
+
+        return result;
+    }
+
     // TODO: remove public!
 public:
     template <typename T>

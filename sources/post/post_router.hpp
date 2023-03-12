@@ -243,7 +243,7 @@ public:
         }
         else if (str_hash == hasher("user"))
         {
-            res = post::PostHandler::uploadFromFile<data::User>(args...);
+            res = post::UserHandler::uploadFromFile(args...);
         }
         else if (str_hash == hasher("role"))
         {
@@ -273,8 +273,7 @@ public:
         }
         else if (str_hash == hasher("journal_table"))
         {
-            res =
-                post::PostHandler::uploadFromFile<data::Journal_table>(args...);
+            res = post::JournalHandler::uploadFromFile(args...);
         }
         else if (str_hash == hasher("subject"))
         {

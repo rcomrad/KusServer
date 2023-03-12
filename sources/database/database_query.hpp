@@ -38,7 +38,7 @@ public:
     }
 
     template <typename T>
-    int insert(const Table<T>& aData) noexcept
+    int insert(Table<T>& aData) noexcept
     {
         return mDatabase.insert<T>(aData);
     }

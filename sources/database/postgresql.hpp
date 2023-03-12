@@ -87,22 +87,23 @@ public:
     }
 
     template <typename T>
-    int insert(const Table<T>& aData) noexcept
+    int insert(Table<T>& aData) noexcept
     {
-        std::vector<std::string> data;
+        // TODO: normal return
+        int res = 0;
         for (int i = 0; i < aData.size(); ++i)
         {
-            int id = *((int*)aData[i][0]);
-            return insertWithID(aData.getTableName(), id,
-                                aData.makeStrings(i, true, true));
+            int& id = *((int*)aData[i][0]);
+            id      = insertWithID(aData.getTableName(), id,
+                                   aData.makeStrings(i, true, true));
         }
+        return res;
     }
 
     template <typename T>
     int update(const Table<T>& aData) noexcept
     {
-        int res;
-        std::vector<std::string> data;
+        int res = 0;
 
         for (int i = 0; i < aData.size(); ++i)
         {

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "2a6f0cb8-1ad3-406b-ab75-7acbdcfd97bd",
+		"_postman_id": "24ebcca9-738a-4200-adb3-86966a8a7e7b",
 		"name": "KusJournalTester",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "25083981"
@@ -1217,7 +1217,7 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "1.csv"
+							"src": "/D:/projects/VSCode/server_v4/bin/plan_cpp.csv"
 						},
 						{
 							"key": "index",
@@ -1724,6 +1724,92 @@
 						"api",
 						"post",
 						"user_answer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload users",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "filename",
+							"value": "user.data",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/D:/projects/VSCode/server_v4/bin/user.data"
+						},
+						{
+							"key": "index",
+							"value": "data",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/upload/user",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"upload",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload journal",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "filename",
+							"value": "journal.data",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/D:/projects/VSCode/server_v4/bin/journal.data"
+						},
+						{
+							"key": "index",
+							"value": "data",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/upload/journal_table",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"upload",
+						"journal_table"
 					]
 				}
 			},

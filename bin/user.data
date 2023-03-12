@@ -1,0 +1,51 @@
+login password name surname school_id
+user1   123   Полина   Субботина  1
+student
+user2   123   Иван   Вдовин  1 
+student
+user3   123   Камиль   Попов  1 
+student
+user4   123   Алиса   Соколова  1 
+student
+user5   123   Валерия   Агафонова  1 
+student
+user6   123   София   Золотарева  1 
+student
+user7   123   Фёдор   Никитин  1 
+student
+user8   123   Тимофей   Егоров  1 
+student
+user9   123   Матвей   Ильин  1 
+student
+user10   123   Стефания   Лебедева  1 
+student
+user11   123   Глеб   Денисов  1 
+student
+user12   123   Степан   Мартынов  1 
+student
+user13   123   Адам   Свиридов  1 
+student
+user14   123   Ксения   Сидорова  1 
+student
+user15   123   Тимофей   Сорокин  1 
+student
+user16   123   Артём   Аникин  1 
+student
+user17   123   Валерия   Кузнецова  1 
+student
+user18   123   Полина   Медведева  1 
+student
+user19   123   Мария   Новикова  1 
+student
+user20   123   Александра   Фирсова  1 
+student
+teach21   123   Ника   Медведева  1 
+teacher grade_head
+teach22   123   Артём   Воробьев  1 
+teacher grade_head
+teach23   123   Августина   Аникина  1 
+teacher
+all24   123   Серафима   Смирнова  1 
+add_user add_grade add_journal add_plan
+submitor   123   Tester   Testerovich  1 
+submitor

@@ -21,7 +21,6 @@ END
 
 plan_upload
 	'csv';'Файл .csv','.csv'
-	'data';'Файл .data','.data'
 END
 
 journal_upload

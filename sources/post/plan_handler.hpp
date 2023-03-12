@@ -17,17 +17,18 @@ namespace post
 class PlanHandler : protected PostHandler
 {
 public:
+    struct PlanData
+    {
+        std::string name;
+        int subjectID;
+        std::string url;
+    };
+
     static crow::json::wvalue uploadFromFile(const crow::request& aReq,
                                              data::DatabaseQuery& aDBQ);
 
-    static void csvLoad(crow::multipart::message& aMsg,
-                        data::DatabaseQuery& aDBQ);
-
-    static void parseDataFile(std::string_view aFileName,
-                              data::DatabaseQuery& aDBQ);
-
-private:
-    static void make(data::Table<data::Plan>& aPlan, data::DatabaseQuery& aDBQ);
+    static crow::json::wvalue csvFileUpload(const PlanData& aPlanData,
+                                            data::DatabaseQuery& aDBQ);
 };
 } // namespace post
 

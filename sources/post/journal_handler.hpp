@@ -18,17 +18,18 @@ namespace post
 class JournalHandler : protected PostHandler
 {
 public:
-    static crow::json::wvalue process(const crow::request& aReq, data::DatabaseQuery& aDBQ);
-    static void loadFromFile(std::string_view aFileName, data::DatabaseQuery& aDBQ);
+    static crow::json::wvalue process(const crow::request& aReq,
+                                      data::DatabaseQuery& aDBQ);
+    static crow::json::wvalue uploadFromFile(const crow::request& aReq,
+                                             data::DatabaseQuery& aDBQ);
+    static crow::json::wvalue dataFileUpload(const std::string& aFilePath,
+                                             data::DatabaseQuery& aDBQ);
 
 private:
-    static void make(data::Table<data::Journal_table>& aJournal,
-              std::vector<int> aSchedule, data::DatabaseQuery& aDBQ);
-
-    static void makeSchedule(data::Table<data::Journal_table>& aJournal,
-                      std::vector<int> aSchedule, data::DatabaseQuery& aDBQ);
+    static void makeSchedule(data::Journal_table& aJournal,
+                             data::DatabaseQuery& aDBQ);
 };
-} // namespace core
+} // namespace post
 
 //--------------------------------------------------------------------------------
 

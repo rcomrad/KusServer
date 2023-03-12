@@ -43,8 +43,6 @@ private:
     void populateDatabaseFromFile(std::string aFileName) noexcept;
     void createEnvironment() noexcept;
     void deleteEnvironment() noexcept;
-    void createJournals() noexcept;
-    void createPlans() noexcept;
 };
 } // namespace core
 
