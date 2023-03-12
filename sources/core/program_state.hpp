@@ -21,6 +21,13 @@ public:
         // POPULATE
     };
 
+    enum class State
+    {
+        NUN,
+        ON,
+        OFF
+    };
+
     static ProgramState& getInstance();
 
     void fullReset();
@@ -33,11 +40,22 @@ public:
     void startRestart();
     void endRestart();
 
+    void setCheckAnswers(State aTurn);
+    void setSettingTime(State aTurn);
+
+    bool isCheckAnswersTurnOn();
+    bool isSetTimeTurnOn();
+
 private:
     static ProgramState mThis;
 
     Restart mRestartState;
-    mutable std::mutex mMutex;
+    mutable std::mutex mRestartMutex;
+    mutable std::mutex mCheckMutex;
+    mutable std::mutex mSetTimeMutex;
+
+    bool mAutoCheckAnswers;
+    bool mSetTimeForAnswers;
 
     ProgramState();
 };

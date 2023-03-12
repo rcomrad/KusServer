@@ -78,45 +78,9 @@ public:
     std::unordered_map<std::string, uint8_t> getColumnNames(
         const std::string& aTableName) noexcept;
 
-    // void insert(const std::string& aTableName,
-    //             const std::vector<std::string>& aData) noexcept;
-
-    // std::vector<Journal> getJournalByTeacher(int aTeacherID = 0,
-    //                                          bool aHeadFlag = false)
-    //                                          noexcept;
-
-    // void updateLesson(int aID, const std::string& aHomework,
-    //                   const std::string& aControl) noexcept;
-    // int updateMark(int aID, int aLessonID, int aStudentID,
-    //                const std::string& aValue) noexcept;
-
-    // std::vector<std::string> getSubjects() noexcept;
-    // RowArray getSubjects2() noexcept;
-    // Table<Subject> getSubjects3() noexcept;
-
-    // int manageUser(User&& aUser) noexcept;
-    // int manageJournal(JournalInfo&& aJournal) noexcept;
-    // void setHead(JournalInfo& aJournal) noexcept;
-    // std::vector<JournalInfo> getJournalSimple(int id) noexcept;
-
-    // int manageGrade(Grade aGrade, std::string aType) noexcept;
-
-    // void dropGrade(const std::vector<int>& aIDs, std::string aType) noexcept;
-    // void dropUsers(const std::vector<int>& aIDs) noexcept;
-    // void dropJournal(const std::vector<int>& aIDs) noexcept;
-
-    // std::vector<Plan> getPlan(int aID = 0) noexcept;
-    // int managePlan(Plan aPlan) noexcept;
-
-    // int getNextFileNumber() noexcept;
-
-    // void turnHead(int aID, bool flag) noexcept;
 
 private:
     Postgresql mDatabase;
-
-    // std::vector<data::Grade> getStudents(int aID,
-    //                                      const std::string& type) noexcept;
 };
 } // namespace data
 

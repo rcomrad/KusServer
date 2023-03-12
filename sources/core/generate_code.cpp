@@ -461,11 +461,6 @@ generateRequestHandlerFile()
     file << "#define REQUEST_HANDLER_HPP\n";
     file << "\n";
 
-    file << "#include \"core/grade_handler.hpp\" \n";
-    file << "#include \"core/journal_handler.hpp\" \n";
-    file << "#include \"core/plan_handler.hpp\" \n";
-    file << "#include \"core/post_handler.hpp\" \n";
-
     file << "\n";
 
     file << "#define SERVER_FUNCTIONS \\\n";
@@ -482,8 +477,6 @@ generateRequestHandlerFile()
 
     std::ifstream database("database.data");
     std::string temp;
-    std::string tempGG;
-    std::string tempSup;
 
     bool flag = true;
     while (true)
@@ -502,15 +495,11 @@ generateRequestHandlerFile()
             {
                 file << "        if";
                 temp += "        if";
-                tempGG += "        if";
-                tempSup += "        if";
             }
             else
             {
                 file << "        else if";
                 temp += "        else if";
-                tempGG += "        else if";
-                tempSup += "        else if";
             }
             flag = false;
 
@@ -519,51 +508,10 @@ generateRequestHandlerFile()
             file << "            res = getData<data::" << structName
                  << ">(args...); \\\n";
             file << "        } \\\n";
-            //---------------------------------------------------------------------
-            temp += " (str_hash == hasher(\"" + s2 + "\")) \\\n";
-            temp += "        { \\\n";
-            temp += "            res = core::PostHandler::process<data::" +
-                    structName + ">(args...); \\\n";
-            temp += "        } \\\n";
-            //---------------------------------------------------------------------
-            tempGG += " (str_hash == hasher(\"" + s2 + "\")) \\\n";
-            tempGG += "        { \\\n";
-            tempGG += "            res = core::PostHandler::drop<data::" +
-                      structName + ">(args...); \\\n";
-            tempGG += "        } \\\n";
         }
     }
 
     file << "\\\n        return res; \\\n    } \\\n\\\n";
-
-    //---------------------------------------------------------------------
-
-    file << "    template <typename... Args> \\\n";
-    file << "    crow::json::wvalue postRequestHandler(std::string_view "
-            "aTableName, \\\n";
-    file << "                            Args&&... args) "
-            "noexcept \\\n";
-    file << "    { \\\n";
-    file << "        crow::json::wvalue res{400}; \\\n";
-    file << "        auto hasher   = std::hash<std::string_view>{}; \\\n";
-    file << "        auto str_hash = hasher(aTableName); \\\n \\\n";
-    file << temp;
-    file << "\\\n        return res; \\\n     } \\\n\\\n";
-
-    //---------------------------------------------------------------------
-
-    file << "    template <typename... Args> \\\n";
-    file << "    crow::json::wvalue dropRequestHandler(std::string_view "
-            "aTableName, \\\n";
-    file << "                            Args&&... args) "
-            "noexcept \\\n";
-    file << "    { \\\n";
-    file << "        crow::json::wvalue res{400}; \\\n";
-    file << "        auto hasher   = std::hash<std::string_view>{}; \\\n";
-    file << "        auto str_hash = hasher(aTableName); \\\n \\\n";
-    file << tempGG;
-    file << "\\\n        return res; \\\n     } \\\n\\\n";
-
     file << "\n#endif // !REQUEST_HANDLER_HPP\n";
 }
 
@@ -589,6 +537,7 @@ generatePostHandlerFile()
     generator.addInclude("journal_handler");
     generator.addInclude("plan_handler");
     generator.addInclude("post_handler");
+    generator.addInclude("user_answer_handler");
     generator.addInclude("user_handler");
 
     //--------------------------------------------------------------------------------
@@ -597,8 +546,9 @@ generatePostHandlerFile()
     generator.pushBackFunction("basicRouter(std::string_view aTableName, "
                                "Args&&... args) noexcept");
     generator.generateTableSwitcher({
-        {"default", "post::PostHandler::process<data::"},
-        {"user",    "post::UserHandler::process"       }
+        {"default",     "post::PostHandler::process<data::"},
+        {"user",        "post::UserHandler::process"       },
+        {"user_answer", "post::UserAnswerHandler::process" }
     });
 
     //--------------------------------------------------------------------------------
@@ -616,9 +566,9 @@ generatePostHandlerFile()
     generator.pushBackFunction("uploadRouter(std::string_view aTableName, "
                                "Args&&... args) noexcept");
     generator.generateTableSwitcher({
-        {"default",       "post::PostHandler::uploadFromFile<data::"},
-        // {"journal_table", "post::JournalHandler::uploadFromFile"    },
-        {"plan",          "post::PlanHandler::uploadFromFile"       }
+        {"default", "post::PostHandler::uploadFromFile<data::"},
+ // {"journal_table", "post::JournalHandler::uploadFromFile"    },
+        {"plan",    "post::PlanHandler::uploadFromFile"       }
     });
 
     //--------------------------------------------------------------------------------

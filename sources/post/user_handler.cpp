@@ -1,7 +1,5 @@
 #include "user_handler.hpp"
 
-#include "server/server.hpp"
-
 crow::json::wvalue
 post::UserHandler::process(const crow::request& aReq, data::DatabaseQuery& aDBQ)
 {

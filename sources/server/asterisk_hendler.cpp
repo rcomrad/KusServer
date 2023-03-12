@@ -158,16 +158,11 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "legend",
              "type",
              "contest",
+             "answer",
          }             },
         {"question_type",
          {
              "id",
-             "name",
-         }             },
-        {"question_answer",
-         {
-             "id",
-             "question_id",
              "name",
          }             },
         {"user_answer",

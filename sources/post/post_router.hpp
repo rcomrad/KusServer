@@ -4,6 +4,7 @@
 #include "journal_handler.hpp"
 #include "plan_handler.hpp"
 #include "post_handler.hpp"
+#include "user_answer_handler.hpp"
 #include "user_handler.hpp"
 
 namespace post
@@ -13,7 +14,7 @@ class PostRouter
 public:
     template <typename... Args>
     static crow::json::wvalue basicRouter(std::string_view aTableName,
-                                         Args&&... args) noexcept
+                                          Args&&... args) noexcept
     {
         crow::json::wvalue res{400};
         auto hasher   = std::hash<std::string_view>{};
@@ -111,13 +112,9 @@ public:
         {
             res = post::PostHandler::process<data::Question_type>(args...);
         }
-        else if (str_hash == hasher("question_answer"))
-        {
-            res = post::PostHandler::process<data::Question_answer>(args...);
-        }
         else if (str_hash == hasher("user_answer"))
         {
-            res = post::PostHandler::process<data::User_answer>(args...);
+            res = post::UserAnswerHandler::process(args...);
         }
 
         return res;
@@ -224,10 +221,6 @@ public:
         {
             res = post::PostHandler::manyToMany<data::Question_type>(args...);
         }
-        else if (str_hash == hasher("question_answer"))
-        {
-            res = post::PostHandler::manyToMany<data::Question_answer>(args...);
-        }
         else if (str_hash == hasher("user_answer"))
         {
             res = post::PostHandler::manyToMany<data::User_answer>(args...);
@@ -280,7 +273,8 @@ public:
         }
         else if (str_hash == hasher("journal_table"))
         {
-            res = post::PostHandler::uploadFromFile<data::Lesson>(args...);
+            res =
+                post::PostHandler::uploadFromFile<data::Journal_table>(args...);
         }
         else if (str_hash == hasher("subject"))
         {
@@ -340,11 +334,6 @@ public:
         {
             res =
                 post::PostHandler::uploadFromFile<data::Question_type>(args...);
-        }
-        else if (str_hash == hasher("question_answer"))
-        {
-            res = post::PostHandler::uploadFromFile<data::Question_answer>(
-                args...);
         }
         else if (str_hash == hasher("user_answer"))
         {
@@ -453,10 +442,6 @@ public:
         else if (str_hash == hasher("question_type"))
         {
             res = post::PostHandler::drop<data::Question_type>(args...);
-        }
-        else if (str_hash == hasher("question_answer"))
-        {
-            res = post::PostHandler::drop<data::Question_answer>(args...);
         }
         else if (str_hash == hasher("user_answer"))
         {

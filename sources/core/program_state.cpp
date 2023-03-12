@@ -2,7 +2,9 @@
 
 core::ProgramState core::ProgramState::mThis;
 
-core::ProgramState::ProgramState() : mRestartState(Restart::NUN)
+core::ProgramState::ProgramState()
+    : mRestartState(Restart::NUN), mAutoCheckAnswers(false),
+      mSetTimeForAnswers(false)
 {
 }
 
@@ -15,30 +17,30 @@ core::ProgramState::getInstance()
 void
 core::ProgramState::fullReset()
 {
-    mMutex.lock();
+    mRestartMutex.lock();
     mRestartState = Restart::FULL;
-    mMutex.unlock();
+    mRestartMutex.unlock();
 }
 
 void
 core::ProgramState::emptyReset()
 {
-    mMutex.lock();
+    mRestartMutex.lock();
     mRestartState = Restart::EMPTY;
-    mMutex.unlock();
+    mRestartMutex.unlock();
 }
 
 // void
 // core::ProgramState::repopulateReset()
 // {
-//     const std::lock_guard<std::mutex> lock(mMutex);
+//     const std::lock_guard<std::mutex> lock(mRestartMutex);
 //     mRestartState = Restart::POPULATE;
 // }
 
 bool
 core::ProgramState::needRestart()
 {
-    const std::lock_guard<std::mutex> lock(mMutex);
+    const std::lock_guard<std::mutex> lock(mRestartMutex);
     return mRestartState != Restart::NUN;
 }
 
@@ -59,12 +61,40 @@ core::ProgramState::needRemakeDB()
 void
 core::ProgramState::startRestart()
 {
-    mMutex.lock();
+    mRestartMutex.lock();
 }
 
 void
 core::ProgramState::endRestart()
 {
     mRestartState = Restart::NUN;
-    mMutex.unlock();
+    mRestartMutex.unlock();
+}
+
+void
+core::ProgramState::setCheckAnswers(core::ProgramState::State aTurn)
+{
+    const std::lock_guard<std::mutex> lock(mCheckMutex);
+    mAutoCheckAnswers = aTurn == State::ON;
+}
+
+void
+core::ProgramState::setSettingTime(core::ProgramState::State aTurn)
+{
+    const std::lock_guard<std::mutex> lock(mSetTimeMutex);
+    mSetTimeForAnswers = aTurn == State::ON;
+}
+
+bool
+core::ProgramState::isCheckAnswersTurnOn()
+{
+    const std::lock_guard<std::mutex> lock(mCheckMutex);
+    return mAutoCheckAnswers;
+}
+
+bool
+core::ProgramState::isSetTimeTurnOn()
+{
+    const std::lock_guard<std::mutex> lock(mSetTimeMutex);
+    return mSetTimeForAnswers;
 }

@@ -37,7 +37,65 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
     CROW_ROUTE(app, "/api/test")
     ([]() { return "All fine!"; });
 
-    CROW_ROUTE(app, "/api/restart/<string>")
+    CROW_ROUTE(app, "/api/command/<string>/<string>")
+    (
+        [](std::string aType, std::string aValue)
+        {
+            std::string res = "ERROR\nInvalid command!\n>:(\n";
+
+            auto& state = core::ProgramState::getInstance();
+
+            // std::cout << "======= \'" << aType << "\'\n";
+
+            if (aType == "restart")
+            {
+                res = "ERROR\nNo restart :( \n Invalid restart value.)";
+
+                if (aValue == "full")
+                {
+                    state.fullReset();
+                    res = "OK\nFull restart!";
+                }
+                else if (aValue == "empty")
+                {
+                    state.emptyReset();
+                    res = "OK\nEmpty restart!";
+                }
+            }
+            else if (aType == "check")
+            {
+                res = "ERROR\nInvalid value!";
+                if (aValue == "on")
+                {
+                    state.setCheckAnswers(core::ProgramState::State::ON);
+                    res = "ERROR\nChecking turned on!";
+                }
+                else if (aValue == "off")
+                {
+                    state.setCheckAnswers(core::ProgramState::State::OFF);
+                    res = "ERROR\nChecking turned off!";
+                }
+            }
+            else if (aType == "time")
+            {
+                res = "ERROR\nInvalid value!";
+                if (aValue == "on")
+
+                {
+                    state.setSettingTime(core::ProgramState::State::ON);
+                    res = "ERROR\nSetting time turned on!";
+                }
+                else if (aValue == "off")
+                {
+                    state.setSettingTime(core::ProgramState::State::OFF);
+                    res = "ERROR\nSetting time turned off!";
+                }
+            }
+
+            return res;
+        });
+
+    CROW_ROUTE(app, "/api/command/restart/<string>")
     (
         [](std::string aType)
         {
