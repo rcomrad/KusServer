@@ -46,31 +46,31 @@ core::Core::remakeDatabase()
 {
     deleteEnvironment();
     createEnvironment();
-    createDatabaseFromFile("database.data");
-    populateDatabaseFromFile("populate_basic.data");
+    createDatabaseFromFile("database.psql_db");
+    populateDatabaseFromFile("database.populate");
 }
 
 void
 core::Core::populate()
 {
-    populateDatabaseFromFile("populate_database.data");
+    populateDatabaseFromFile("../tests/example.populate");
 
     data::DatabaseQuery dbq(mDBS);
 
-    post::UserHandler::dataFileUpload("user.data", dbq);
+    post::UserHandler::dataFileUpload("../tests/user.data", dbq);
 
     post::PlanHandler::PlanData data;
     data.subjectID = 1;
 
     data.name = "Тест";
-    data.url  = "plan_test.csv";
+    data.url  = "../tests/plan_test.csv";
     post::PlanHandler::csvFileUpload(data, dbq);
 
     data.name = "C++";
-    data.url  = "plan_cpp.csv";
+    data.url  = "../tests/plan_cpp.csv";
     post::PlanHandler::csvFileUpload(data, dbq);
 
-    post::JournalHandler::dataFileUpload("journal.data", dbq);
+    post::JournalHandler::dataFileUpload("../tests/journal.data", dbq);
 }
 
 void

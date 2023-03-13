@@ -2,6 +2,7 @@
 #define POST_ROUTER_HPP
 
 #include "journal_handler.hpp"
+#include "mark_handler.hpp"
 #include "plan_handler.hpp"
 #include "post_handler.hpp"
 #include "user_answer_handler.hpp"
@@ -54,7 +55,7 @@ public:
         }
         else if (str_hash == hasher("journal_table"))
         {
-            res = post::PostHandler::process<data::Journal_table>(args...);
+            res = post::JournalHandler::process(args...);
         }
         else if (str_hash == hasher("subject"))
         {
@@ -62,7 +63,7 @@ public:
         }
         else if (str_hash == hasher("mark"))
         {
-            res = post::PostHandler::process<data::Mark>(args...);
+            res = post::MarkHandler::process(args...);
         }
         else if (str_hash == hasher("plan"))
         {

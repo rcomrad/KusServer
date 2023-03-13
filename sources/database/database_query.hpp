@@ -44,7 +44,7 @@ public:
     }
 
     template <typename T>
-    int update(const Table<T>& aData) noexcept
+    int update(Table<T>& aData) noexcept
     {
         return mDatabase.update<T>(aData);
     }
@@ -77,7 +77,6 @@ public:
         const std::string& aTableName) noexcept;
     std::unordered_map<std::string, uint8_t> getColumnNames(
         const std::string& aTableName) noexcept;
-
 
 private:
     Postgresql mDatabase;

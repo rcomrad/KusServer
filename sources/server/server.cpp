@@ -49,7 +49,7 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
 
             if (aType == "restart")
             {
-                res = "ERROR\nNo restart :( \n Invalid restart value.)";
+                res = "ERROR\nNo restart :( \nInvalid restart value.";
 
                 if (aValue == "full")
                 {

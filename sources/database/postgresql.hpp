@@ -101,19 +101,20 @@ public:
     }
 
     template <typename T>
-    int update(const Table<T>& aData) noexcept
+    int update(Table<T>& aData) noexcept
     {
         int res = 0;
 
         for (int i = 0; i < aData.size(); ++i)
         {
-            int id = res = *((int*)aData[i][0]);
+            int& id = res = *((int*)aData[i][0]);
             if (id == 0)
-                res = insertWithID(aData.getTableName(), id,
-                                   aData.makeStrings(i, true, true));
+                id = insertWithID(aData.getTableName(), id,
+                                  aData.makeStrings(i, true, true));
             else
                 update(aData.getTableName(), aData.makeStrings(i, false, true),
                        "id = " + wrap(id));
+            res = id;
         }
 
         return res;

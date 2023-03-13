@@ -6,6 +6,9 @@ set(
     journal_handler.cpp
     journal_handler.hpp
 
+    mark_handler.cpp
+    mark_handler.hpp
+
     plan_handler.cpp
     plan_handler.hpp
 

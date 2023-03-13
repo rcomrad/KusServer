@@ -12,7 +12,7 @@ post::JournalHandler::process(const crow::request& aReq,
 {
     auto req     = crow::json::load(aReq.body);
     auto journal = parseRequest<data::Journal_table>(req).table;
-    aDBQ.insert(journal);
+    aDBQ.update(journal);
     makeSchedule(journal[0], aDBQ);
     return {journal[0].id};
 }

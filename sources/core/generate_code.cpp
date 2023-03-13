@@ -227,7 +227,7 @@ core::GenerateCode::getDatabaseTables()
 {
     std::vector<std::string> res;
 
-    std::ifstream database("database.data");
+    std::ifstream database("database.psql_db");
     while (true)
     {
         std::string s1, s2;
@@ -539,6 +539,7 @@ generatePostHandlerFile()
     generator.addInclude("post_handler");
     generator.addInclude("user_answer_handler");
     generator.addInclude("user_handler");
+    generator.addInclude("mark_handler");
 
     //--------------------------------------------------------------------------------
 
@@ -546,9 +547,11 @@ generatePostHandlerFile()
     generator.pushBackFunction("basicRouter(std::string_view aTableName, "
                                "Args&&... args) noexcept");
     generator.generateTableSwitcher({
-        {"default",     "post::PostHandler::process<data::"},
-        {"user",        "post::UserHandler::process"       },
-        {"user_answer", "post::UserAnswerHandler::process" }
+        {"default",       "post::PostHandler::process<data::"},
+        {"user",          "post::UserHandler::process"       },
+        {"user_answer",   "post::UserAnswerHandler::process" },
+        {"journal_table", "post::JournalHandler::process"    },
+        {"mark",          "post::MarkHandler::process"       }
     });
 
     //--------------------------------------------------------------------------------

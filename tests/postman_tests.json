@@ -1,11 +1,123 @@
 {
 	"info": {
-		"_postman_id": "24ebcca9-738a-4200-adb3-86966a8a7e7b",
+		"_postman_id": "b72d501a-dbbb-4655-b4e0-23391dd60941",
 		"name": "KusJournalTester",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "25083981"
 	},
 	"item": [
+		{
+			"name": "Check school emptiness",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"No any journals\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:18080/api/get/all/school",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"get",
+						"all",
+						"school"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create school",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"full_name\": \"ГБКНОУХ имени Дениса Абрамовича Ежова\",\r\n    \"short_name\": \"СГОШ №777\",\r\n    \"start_date\": \"2022-09-1\"\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/post/school",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"post",
+						"school"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check school",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Plan created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"school\": {\r",
+							"            \"short_name\": \"СГОШ №777\",\r",
+							"            \"id\": 1,\r",
+							"            \"full_name\": \"ГБКНОУХ имени Дениса Абрамовича Ежова\",\r",
+							"            \"start_date\": \"2022-09-01\"\r",
+							"        }\r",
+							"    };\r",
+							"\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:18080/api/get/by_id/school/1",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"get",
+						"by_id",
+						"school",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
 		{
 			"name": "Check user emptiness",
 			"event": [
@@ -100,7 +212,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"login\": \"test1\",\r\n    \"password\": \"abba\",\r\n    \"name\": \"Абба\",\r\n    \"surname\": \"Агамовна\",\r\n    \"role\": \r\n    [\r\n        \"teacher\",\r\n        \"grade_head\",\r\n        \"add_user\",\r\n        \"add_plan\"\r\n    ],\r\n    \"school_id\": 10\r\n}",
+					"raw": "{\r\n    \"login\": \"test1\",\r\n    \"password\": \"abba\",\r\n    \"name\": \"Абба\",\r\n    \"surname\": \"Агамовна\",\r\n    \"role\": \r\n    [\r\n        \"teacher\",\r\n        \"grade_head\",\r\n        \"add_user\",\r\n        \"add_plan\"\r\n    ],\r\n    \"school_id\": 1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -147,7 +259,7 @@
 							"                \"add_user\",\r",
 							"                \"add_plan\"\r",
 							"            ],\r",
-							"            \"school_id\": 10\r",
+							"            \"school_id\": 1\r",
 							"        }\r",
 							"    };\r",
 							"\r",
@@ -200,7 +312,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"login\": \"teacher\",\r\n    \"password\": \"teacher123\",\r\n    \"name\": \"teacherN\",\r\n    \"surname\": \"teacherS\",\r\n    \"role\": \r\n    [\r\n        \"teacher\"\r\n    ],\r\n    \"school_id\": 10\r\n}",
+					"raw": "{\r\n    \"login\": \"teacher\",\r\n    \"password\": \"teacher123\",\r\n    \"name\": \"teacherN\",\r\n    \"surname\": \"teacherS\",\r\n    \"role\": \r\n    [\r\n        \"teacher\"\r\n    ],\r\n    \"school_id\": 1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -244,7 +356,7 @@
 							"            \"role\": [\r",
 							"                \"teacher\"\r",
 							"            ],\r",
-							"            \"school_id\": 10\r",
+							"            \"school_id\": 1\r",
 							"        }\r",
 							"    };\r",
 							"\r",
@@ -297,7 +409,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"login\": \"methodist\",\r\n    \"password\": \"methodist123\",\r\n    \"name\": \"methodistN\",\r\n    \"surname\": \"methodistS\",\r\n    \"role\": \r\n    [\r\n        \"add_journal\"\r\n    ],\r\n    \"school_id\": 10\r\n}",
+					"raw": "{\r\n    \"login\": \"methodist\",\r\n    \"password\": \"methodist123\",\r\n    \"name\": \"methodistN\",\r\n    \"surname\": \"methodistS\",\r\n    \"role\": \r\n    [\r\n        \"add_journal\"\r\n    ],\r\n    \"school_id\": 1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -341,7 +453,7 @@
 							"            \"role\": [\r",
 							"                \"add_journal\"\r",
 							"            ],\r",
-							"            \"school_id\": 10\r",
+							"            \"school_id\": 1\r",
 							"        }\r",
 							"    };\r",
 							"\r",
@@ -394,7 +506,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"login\": \"head\",\r\n    \"password\": \"head123\",\r\n    \"name\": \"headN\",\r\n    \"surname\": \"headS\",\r\n    \"role\": \r\n    [\r\n        \"teacher\",\r\n        \"grade_head\"\r\n    ],\r\n    \"school_id\": 10\r\n}",
+					"raw": "{\r\n    \"login\": \"head\",\r\n    \"password\": \"head123\",\r\n    \"name\": \"headN\",\r\n    \"surname\": \"headS\",\r\n    \"role\": \r\n    [\r\n        \"teacher\",\r\n        \"grade_head\"\r\n    ],\r\n    \"school_id\": 1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -439,7 +551,7 @@
 							"                \"teacher\",\r",
 							"                \"grade_head\"\r",
 							"            ],\r",
-							"            \"school_id\": 10\r",
+							"            \"school_id\": 1\r",
 							"        }\r",
 							"    };\r",
 							"\r",
@@ -469,6 +581,353 @@
 					"path": [
 						"api",
 						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check plan emptiness",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"No any journals\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:18080/api/get/all/plan",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"get",
+						"all",
+						"plan"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check theme emptiness",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"No any journals\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:18080/api/get/all/theme",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"get",
+						"all",
+						"theme"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create plan",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "Sus",
+							"type": "text"
+						},
+						{
+							"key": "subject_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "filename",
+							"value": "plan_test.csv",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/D:/projects/VSCode/server_v4/tests/plan_test.csv"
+						},
+						{
+							"key": "index",
+							"value": "csv",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/upload/plan",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"upload",
+						"plan"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check plan",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Plan created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"plan\": {\r",
+							"            \"subject_id\": 1,\r",
+							"            \"id\": 1,\r",
+							"            \"url\": \"D:/projects/data/upload/1-plan_test.csv\",\r",
+							"            \"name\": \"Sus\"\r",
+							"        }\r",
+							"    };\r",
+							"\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:18080/api/get/by_id/plan/1",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"get",
+						"by_id",
+						"plan",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check themes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Plan created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"themes\": [\r",
+							"            {\r",
+							"                \"id\": 1,\r",
+							"                \"plan_id\": 1,\r",
+							"                \"name\": \"Вводное занятие. Техника_безопасности\",\r",
+							"                \"hour_count\": 1\r",
+							"            },\r",
+							"            {\r",
+							"                \"id\": 2,\r",
+							"                \"plan_id\": 1,\r",
+							"                \"name\": \"Первая программа на С++\",\r",
+							"                \"hour_count\": 1\r",
+							"            },\r",
+							"            {\r",
+							"                \"id\": 3,\r",
+							"                \"plan_id\": 1,\r",
+							"                \"name\": \"*НЕНАВИДИТ ПРОБЕЛЫ И ВРЕМЯ*\",\r",
+							"                \"hour_count\": 1\r",
+							"            },\r",
+							"            {\r",
+							"                \"id\": 4,\r",
+							"                \"plan_id\": 1,\r",
+							"                \"name\": \"Тема 1\",\r",
+							"                \"hour_count\": 1\r",
+							"            },\r",
+							"            {\r",
+							"                \"id\": 5,\r",
+							"                \"plan_id\": 1,\r",
+							"                \"name\": \"Тема 2\",\r",
+							"                \"hour_count\": 1\r",
+							"            },\r",
+							"            {\r",
+							"                \"id\": 6,\r",
+							"                \"plan_id\": 1,\r",
+							"                \"name\": \"Тема 3\",\r",
+							"                \"hour_count\": 1\r",
+							"            },\r",
+							"            {\r",
+							"                \"id\": 7,\r",
+							"                \"plan_id\": 1,\r",
+							"                \"name\": \"Тема 4\",\r",
+							"                \"hour_count\": 1\r",
+							"            },\r",
+							"            {\r",
+							"                \"id\": 8,\r",
+							"                \"plan_id\": 1,\r",
+							"                \"name\": \"Тема 5\",\r",
+							"                \"hour_count\": 1\r",
+							"            },\r",
+							"            {\r",
+							"                \"id\": 9,\r",
+							"                \"plan_id\": 1,\r",
+							"                \"name\": \"Тема 6\",\r",
+							"                \"hour_count\": 1\r",
+							"            }\r",
+							"        ]\r",
+							"    };\r",
+							"\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:18080/api/get/all/theme",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"get",
+						"all",
+						"theme"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change plan",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"GAGA\"\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/post/plan",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"post",
+						"plan"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check changed plan",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Plan created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"plan\": {\r",
+							"            \"subject_id\": 1,\r",
+							"            \"id\": 1,\r",
+							"            \"url\": \"D:/projects/data/upload/1-plan_test.csv\",\r",
+							"            \"name\": \"GAGA\"\r",
+							"        }\r",
+							"    };\r",
+							"\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:18080/api/get/by_id/plan/1",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"get",
+						"by_id",
+						"plan",
+						"1"
 					]
 				}
 			},
@@ -506,6 +965,43 @@
 						"get",
 						"all",
 						"journal_table"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check lesson emptiness",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"No any journals\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:18080/api/get/all/lesson",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"get",
+						"all",
+						"lesson"
 					]
 				}
 			},
@@ -592,13 +1088,317 @@
 			"response": []
 		},
 		{
+			"name": "Check lessons",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Journal created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"lessons\": [\r",
+							"            {\r",
+							"                \"journal_table_id\": 1,\r",
+							"                \"id\": 1,\r",
+							"                \"theme_id\": 1,\r",
+							"                \"date_val\": \"2022-09-01\",\r",
+							"                \"homework\": \"\",\r",
+							"                \"control\": \"\"\r",
+							"            },\r",
+							"            {\r",
+							"                \"journal_table_id\": 1,\r",
+							"                \"id\": 2,\r",
+							"                \"theme_id\": 2,\r",
+							"                \"date_val\": \"2022-09-06\",\r",
+							"                \"homework\": \"\",\r",
+							"                \"control\": \"\"\r",
+							"            },\r",
+							"            {\r",
+							"                \"journal_table_id\": 1,\r",
+							"                \"id\": 3,\r",
+							"                \"theme_id\": 3,\r",
+							"                \"date_val\": \"2022-09-07\",\r",
+							"                \"homework\": \"\",\r",
+							"                \"control\": \"\"\r",
+							"            },\r",
+							"            {\r",
+							"                \"journal_table_id\": 1,\r",
+							"                \"id\": 4,\r",
+							"                \"theme_id\": 4,\r",
+							"                \"date_val\": \"2022-09-08\",\r",
+							"                \"homework\": \"\",\r",
+							"                \"control\": \"\"\r",
+							"            },\r",
+							"            {\r",
+							"                \"journal_table_id\": 1,\r",
+							"                \"id\": 5,\r",
+							"                \"theme_id\": 5,\r",
+							"                \"date_val\": \"2022-09-13\",\r",
+							"                \"homework\": \"\",\r",
+							"                \"control\": \"\"\r",
+							"            },\r",
+							"            {\r",
+							"                \"journal_table_id\": 1,\r",
+							"                \"id\": 6,\r",
+							"                \"theme_id\": 6,\r",
+							"                \"date_val\": \"2022-09-14\",\r",
+							"                \"homework\": \"\",\r",
+							"                \"control\": \"\"\r",
+							"            },\r",
+							"            {\r",
+							"                \"journal_table_id\": 1,\r",
+							"                \"id\": 7,\r",
+							"                \"theme_id\": 7,\r",
+							"                \"date_val\": \"2022-09-15\",\r",
+							"                \"homework\": \"\",\r",
+							"                \"control\": \"\"\r",
+							"            },\r",
+							"            {\r",
+							"                \"journal_table_id\": 1,\r",
+							"                \"id\": 8,\r",
+							"                \"theme_id\": 8,\r",
+							"                \"date_val\": \"2022-09-20\",\r",
+							"                \"homework\": \"\",\r",
+							"                \"control\": \"\"\r",
+							"            },\r",
+							"            {\r",
+							"                \"journal_table_id\": 1,\r",
+							"                \"id\": 9,\r",
+							"                \"theme_id\": 9,\r",
+							"                \"date_val\": \"2022-09-21\",\r",
+							"                \"homework\": \"\",\r",
+							"                \"control\": \"\"\r",
+							"            }\r",
+							"        ]\r",
+							"    };\r",
+							"\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:18080/api/get/all/lesson",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"get",
+						"all",
+						"lesson"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check mark emptiness",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"No any grades\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:18080/api/get/all/mark",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"get",
+						"all",
+						"mark"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create mark",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mark_value\": \"5\",\r\n    \"student_id\": 1,\r\n    \"lesson_id\": 1\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/post/mark",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"post",
+						"mark"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check mark",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Journal created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"mark\": {\r",
+							"            \"journal_table_id\": 1,\r",
+							"            \"student_id\": 1,\r",
+							"            \"id\": 1,\r",
+							"            \"mark_value\": \"5\",\r",
+							"            \"lesson_id\": 1\r",
+							"        }\r",
+							"    };\r",
+							"\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:18080/api/get/by_id/mark/1",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"get",
+						"by_id",
+						"mark",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change mark",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"mark_value\": \"Н\"\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/post/mark",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"post",
+						"mark"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check changed mark",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Journal created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"mark\": {\r",
+							"            \"journal_table_id\": 1,\r",
+							"            \"student_id\": 1,\r",
+							"            \"id\": 1,\r",
+							"            \"mark_value\": \"Н\",\r",
+							"            \"lesson_id\": 1\r",
+							"        }\r",
+							"    };\r",
+							"\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:18080/api/get/by_id/mark/1",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"get",
+						"by_id",
+						"mark",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Change jornal",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": 1,\r\n    \"teacher_id\": 10,\r\n    \"methodist_id\": 10,\r\n    \"is_group\": true,\r\n    \"group_id\": 10,\r\n    \"subject_id\": 1,\r\n    \"plan_id\": 1,\r\n    \"head_id\": 4,\r\n    \"schedule\": \"1 3\"\r\n}"
+					"raw": "{\r\n    \"id\": 1,\r\n    \"teacher_id\": 10,\r\n    \"methodist_id\": 10,\r\n    \"is_group\": true,\r\n    \"group_id\": 10,\r\n    \"head_id\": 4,\r\n    \"schedule\": \"1 3\"\r\n}"
 				},
 				"url": {
 					"raw": "127.0.0.1:18080/api/post/journal_table",
@@ -1155,219 +1955,6 @@
 			"response": []
 		},
 		{
-			"name": "Check plan emptiness",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"No any journals\", function () {\r",
-							"    pm.response.to.have.status(401);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "127.0.0.1:18080/api/get/all/plan",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "18080",
-					"path": [
-						"api",
-						"get",
-						"all",
-						"plan"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create plan",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "name",
-							"value": "Sus",
-							"type": "text"
-						},
-						{
-							"key": "subject_id",
-							"value": "1",
-							"type": "text"
-						},
-						{
-							"key": "filename",
-							"value": "1.csv",
-							"type": "text"
-						},
-						{
-							"key": "file",
-							"type": "file",
-							"src": "/D:/projects/VSCode/server_v4/bin/plan_cpp.csv"
-						},
-						{
-							"key": "index",
-							"value": "csv",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "127.0.0.1:18080/api/upload/plan",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "18080",
-					"path": [
-						"api",
-						"upload",
-						"plan"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Check plan",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Plan created successfully\", () => {\r",
-							"    const expectedObject = \r",
-							"    {\r",
-							"        \"plan\": {\r",
-							"            \"subject_id\": 1,\r",
-							"            \"id\": 1,\r",
-							"            \"url\": \"D:/projects/data/upload/1-1.csv\",\r",
-							"            \"name\": \"Sus\"\r",
-							"        }\r",
-							"    };\r",
-							"\r",
-							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "127.0.0.1:18080/api/get/by_id/plan/1",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "18080",
-					"path": [
-						"api",
-						"get",
-						"by_id",
-						"plan",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Change plan",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"GAGA\"\r\n}"
-				},
-				"url": {
-					"raw": "127.0.0.1:18080/api/post/plan",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "18080",
-					"path": [
-						"api",
-						"post",
-						"plan"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Check changed plan",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Plan created successfully\", () => {\r",
-							"    const expectedObject = \r",
-							"    {\r",
-							"        \"plan\": {\r",
-							"            \"subject_id\": 1,\r",
-							"            \"id\": 1,\r",
-							"            \"url\": \"D:/projects/data/upload/1-1.csv\",\r",
-							"            \"name\": \"GAGA\"\r",
-							"        }\r",
-							"    };\r",
-							"\r",
-							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "127.0.0.1:18080/api/get/by_id/plan/1",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "18080",
-					"path": [
-						"api",
-						"get",
-						"by_id",
-						"plan",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Check journal emptiness 2",
 			"event": [
 				{
@@ -1745,7 +2332,7 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "/D:/projects/VSCode/server_v4/bin/user.data"
+							"src": "user.data"
 						},
 						{
 							"key": "index",
@@ -1788,7 +2375,7 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "/D:/projects/VSCode/server_v4/bin/journal.data"
+							"src": "journal.data"
 						},
 						{
 							"key": "index",
