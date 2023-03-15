@@ -76,9 +76,10 @@ core::GenerateCode::setDefaultResultEnd(const std::string& aDefaultResultEnd)
 }
 
 void
-core::GenerateCode::addInclude(const std::string& aInclude)
+core::GenerateCode::addInclude(const std::string& aInclude, bool aIsSTD)
 {
-    mIncludes.emplace_back(aInclude);
+    if (aIsSTD) mIncludes.insert("<" + aInclude + ".>\n");
+    else mIncludes.insert("\"" + aInclude + ".hpp\"\n");
 }
 
 // void
@@ -116,7 +117,13 @@ core::GenerateCode::pushBackFunction(const std::string& aSignature)
 }
 
 void
-core::GenerateCode::generateTableSwitcher(
+core::GenerateCode::pushToFunctionBody(const std::string& aBody)
+{
+    mFunctions.back().body += aBody;
+}
+
+void
+core::GenerateCode::generateElseIfTable(
     const std::unordered_map<std::string, std::string>& aGotoTable)
 {
     std::string& temp = mFunctions.back().body;
@@ -159,6 +166,57 @@ core::GenerateCode::generateTableSwitcher(
 }
 
 void
+core::GenerateCode::generateMapTable(
+    const std::string& aName,
+    const std::unordered_map<std::string, std::string>& aGotoTable)
+{
+    addInclude("unordered_map", true);
+
+    mStaticVariables.emplace_back();
+    mStaticVariables.back().name = aName;
+    mStaticVariables.back().type =
+        "std::unordered_map<std::string, decltype(&" +
+        aGotoTable.find("default")->second + "User>)>";
+
+    std::string& temp = mStaticVariables.back().initialisation;
+
+    bool flag = false;
+    bool specialTreatment;
+
+    temp += "{";
+    for (auto& name : mDatabaseTables)
+    {
+        auto it = aGotoTable.find(name);
+        if (it == aGotoTable.end())
+        {
+            it               = aGotoTable.find("default");
+            specialTreatment = false;
+        }
+        else
+        {
+            specialTreatment = true;
+        }
+        const std::string& funkName = it->second;
+
+        std::string structName = name;
+        structName[0] += 'A' - 'a';
+
+        if (flag) temp += ",";
+        temp += "{";
+        temp += "\"" + name + "\"";
+        temp += ", &";
+        temp += funkName;
+        if (!specialTreatment) temp += structName + ">";
+        temp += "}";
+
+        flag = true;
+        // temp += "(args...); \n";
+        // temp += " } \n";
+    }
+    temp += "};";
+}
+
+void
 core::GenerateCode::write()
 {
     writeHPP();
@@ -176,7 +234,7 @@ core::GenerateCode::writeHPP()
 
     for (auto& i : mIncludes)
     {
-        hppFle << "#include \"" + i + ".hpp\"\n";
+        hppFle << "#include " + i;
     }
     hppFle << "\n";
 
@@ -188,23 +246,13 @@ core::GenerateCode::writeHPP()
 
     for (auto& funk : mFunctions)
     {
-        if (!funk._template.empty()) hppFle << funk._template + "\n";
-        hppFle << funk.returnType + "\n";
-        hppFle << funk.signature;
+        hppFle << funk.getDeclaration() << "\n\n";
+    }
 
-        if (funk._template.empty()) hppFle << ";\n";
-        else
-        {
-            hppFle << "\n{\n";
-            hppFle << funk.resultBegin;
-            hppFle << "\n\n";
-            hppFle << funk.body;
-            hppFle << "\n\n";
-            hppFle << funk.resultEnd;
-            hppFle << "\n}\n\n";
-        }
-
-        hppFle << "\n\n";
+    hppFle << "private: \n";
+    for (auto& i : mStaticVariables)
+    {
+        hppFle << i.getDeclaration() << "\n";
     }
 
     hppFle << "\n};\n";
@@ -217,8 +265,22 @@ core::GenerateCode::writeHPP()
 void
 core::GenerateCode::writeCPP()
 {
-    std::ofstream cppFle;
+    std::ofstream cppFle(mPath + mFileName + ".cpp");
 
+    cppFle << "#include \"" << mFileName + ".hpp\"";
+    cppFle << "\n\n";
+
+    for (auto& i : mStaticVariables)
+    {
+        cppFle << i.getInitialisation(mNamespace, mClassName) << "\n\n";
+    }
+
+    for (auto& funk : mFunctions)
+    {
+        cppFle << funk.getInitialisation(mNamespace, mClassName) << "\n\n";
+    }
+
+    cppFle << "\n";
     cppFle.close();
 }
 
@@ -526,11 +588,6 @@ generatePostHandlerFile()
 
     generator.setDefaultTemplate("template <typename... Args>");
     generator.setDefaultReturnType("static crow::json::wvalue");
-    generator.setDefaultResultBegin(
-        "crow::json::wvalue res{400};\n"
-        "auto hasher = std::hash<std::string_view>{};\n"
-        "auto str_hash = hasher(aTableName);");
-    generator.setDefaultResultEnd("return res;");
 
     //--------------------------------------------------------------------------------
 
@@ -544,44 +601,58 @@ generatePostHandlerFile()
     //--------------------------------------------------------------------------------
 
     // postHandler
-    generator.pushBackFunction("basicRouter(std::string_view aTableName, "
+    generator.pushBackFunction("basicRouter(const std::string& aTableName, "
                                "Args&&... args) noexcept");
-    generator.generateTableSwitcher({
-        {"default",       "post::PostHandler::process<data::"},
-        {"user",          "post::UserHandler::process"       },
-        {"user_answer",   "post::UserAnswerHandler::process" },
-        {"journal_table", "post::JournalHandler::process"    },
-        {"mark",          "post::MarkHandler::process"       }
+    generator.pushToFunctionBody("return mPostRouterMap[aTableName](args...);");
+    generator.generateMapTable(
+        "mPostRouterMap",
+        {
+            {"default",       "post::PostHandler::process<data::"},
+            {"user",          "post::UserHandler::process"       },
+            {"user_answer",   "post::UserAnswerHandler::process" },
+            {"journal_table", "post::JournalHandler::process"    },
+            {"mark",          "post::MarkHandler::process"       }
     });
 
     //--------------------------------------------------------------------------------
 
     // manyToManyHandler
-    generator.pushBackFunction("manyToManyRouter(std::string_view aTableName, "
-                               "Args&&... args) noexcept");
-    generator.generateTableSwitcher({
-        {"default", "post::PostHandler::manyToMany<data::"}
+    generator.pushBackFunction(
+        "manyToManyRouter(const std::string& aTableName, "
+        "Args&&... args) noexcept");
+    generator.pushToFunctionBody(
+        "return mManyToManyRouterMap[aTableName](args...);");
+    generator.generateMapTable(
+        "mManyToManyRouterMap",
+        {
+            {"default", "post::PostHandler::manyToMany<data::"}
     });
 
     //--------------------------------------------------------------------------------
 
     // uploadPostHandler
-    generator.pushBackFunction("uploadRouter(std::string_view aTableName, "
+    generator.pushBackFunction("uploadRouter(const std::string& aTableName, "
                                "Args&&... args) noexcept");
-    generator.generateTableSwitcher({
-        {"default",       "post::PostHandler::uploadFromFile<data::"},
-        {"journal_table", "post::JournalHandler::uploadFromFile"    },
-        {"user",          "post::UserHandler::uploadFromFile"       },
-        {"plan",          "post::PlanHandler::uploadFromFile"       }
+    generator.pushToFunctionBody(
+        "return mUploadRouterMap[aTableName](args...);");
+    generator.generateMapTable(
+        "mUploadRouterMap",
+        {
+            {"default",       "post::PostHandler::uploadFromFile<data::"},
+            {"journal_table", "post::JournalHandler::uploadFromFile"    },
+            {"user",          "post::UserHandler::uploadFromFile"       },
+            {"plan",          "post::PlanHandler::uploadFromFile"       }
     });
 
     //--------------------------------------------------------------------------------
 
     // dropHandler
-    generator.pushBackFunction("dropRouter(std::string_view aTableName, "
+    generator.pushBackFunction("dropRouter(const std::string& aTableName, "
                                "Args&&... args) noexcept");
-    generator.generateTableSwitcher({
-        {"default", "post::PostHandler::drop<data::"}
+    generator.pushToFunctionBody("return mDropRouterMap[aTableName](args...);");
+    generator.generateMapTable(
+        "mDropRouterMap", {
+                              {"default", "post::PostHandler::drop<data::"}
     });
 
     //--------------------------------------------------------------------------------

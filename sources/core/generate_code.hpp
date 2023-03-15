@@ -2,6 +2,7 @@
 #define GENERATE_CODE_HPP
 
 #include <fstream>
+#include <set>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -20,15 +21,19 @@ public:
     void setDefaultResultBegin(const std::string& aDefaultResultBegin);
     void setDefaultResultEnd(const std::string& aDefaultResultEnd);
 
-    void addInclude(const std::string& aInclude);
+    void addInclude(const std::string& aInclude, bool aIsSTD = false);
     // void addFunction(const std::string& aTemplate,
     //                  const std::string& aReturnType,
     //                  const std::string& aSignature, const std::string&
     //                  aBody);
 
     void pushBackFunction(const std::string& aSignature);
-    // void addFunctionBody();
-    void generateTableSwitcher(
+    void pushToFunctionBody(const std::string& aBody);
+    void generateElseIfTable(
+        const std::unordered_map<std::string, std::string>& aGotoTable = {});
+
+    void generateMapTable(
+        const std::string& aName,
         const std::unordered_map<std::string, std::string>& aGotoTable = {});
 
     void write();
@@ -44,6 +49,74 @@ private:
         std::string resultBegin;
         std::string body;
         std::string resultEnd;
+
+        std::string getDeclaration()
+        {
+            std::string result = _template + "\n";
+            result += returnType + "\n";
+            result += signature;
+
+            if (_template.empty()) result += ";\n";
+            else
+            {
+                result += "\n{\n";
+                if (!resultBegin.empty())
+                {
+                    result += resultBegin;
+                    result += "\n\n";
+                }
+                result += body;
+                if (!resultEnd.empty())
+                {
+                    result += "\n\n";
+                    result += resultEnd;
+                }
+                result += "\n}\n\n";
+            }
+
+            return result;
+        }
+
+        std::string getInitialisation(const std::string& aNamespace,
+                                      const std::string& aClassName)
+        {
+            std::string result;
+
+            if (_template.empty())
+            {
+                result += returnType + "\n";
+                result += aNamespace + "::" + aClassName + "::";
+                result += signature;
+                result += "\n{\n";
+                result += resultBegin;
+                result += "\n\n";
+                result += body;
+                result += "\n\n";
+                result += resultEnd;
+                result += "\n}\n\n";
+            }
+
+            return result;
+        }
+    };
+
+    struct StaticVar
+    {
+        std::string type;
+        std::string name;
+        std::string initialisation;
+
+        std::string getDeclaration()
+        {
+            return "static " + type + name + ";";
+        }
+
+        std::string getInitialisation(const std::string& aNamespace,
+                                      const std::string& aClassName)
+        {
+            return type + " " + aNamespace + "::" + aClassName + "::" + name +
+                   " = " + initialisation;
+        }
     };
 
     std::string mFileName;
@@ -57,8 +130,9 @@ private:
     std::string mDefaultResultBegin;
     std::string mDefaultResultEnd;
 
-    std::vector<std::string> mIncludes;
+    std::set<std::string> mIncludes;
     std::vector<Function> mFunctions;
+    std::vector<StaticVar> mStaticVariables;
 
     static std::unordered_map<std::string, std::string> mglobalPaths;
     static std::vector<std::string> mDatabaseTables;
@@ -69,6 +143,6 @@ private:
 void
 generateDatabaseStructuresFiles();
 
-} // namespace data
+} // namespace core
 
 #endif // !GENERATE_CODE_HPP

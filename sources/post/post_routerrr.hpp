@@ -1,5 +1,5 @@
-#ifndef POST_ROUTER_HPP
-#define POST_ROUTER_HPP
+#ifndef POST_ROUTERRR_HPP
+#define POST_ROUTERRR_HPP
 
 #include <unordered_map.>
 
@@ -12,32 +12,32 @@
 
 namespace post
 {
-class PostRouter
+class PostRouterrr
 {
 public:
     template <typename... Args>
-    static crow::json::wvalue basicRouter(const std::string& aTableName,
+    static crow::json::wvalue basicRouter(std::string_view aTableName,
                                           Args&&... args) noexcept
     {
         return mPostRouterMap[aTableName](args...);
     }
 
     template <typename... Args>
-    static crow::json::wvalue manyToManyRouter(const std::string& aTableName,
+    static crow::json::wvalue manyToManyRouter(std::string_view aTableName,
                                                Args&&... args) noexcept
     {
         return mManyToManyRouterMap[aTableName](args...);
     }
 
     template <typename... Args>
-    static crow::json::wvalue uploadRouter(const std::string& aTableName,
+    static crow::json::wvalue uploadRouter(std::string_view aTableName,
                                            Args&&... args) noexcept
     {
         return mUploadRouterMap[aTableName](args...);
     }
 
     template <typename... Args>
-    static crow::json::wvalue dropRouter(const std::string& aTableName,
+    static crow::json::wvalue dropRouter(std::string_view aTableName,
                                          Args&&... args) noexcept
     {
         return mDropRouterMap[aTableName](args...);
@@ -59,4 +59,4 @@ private:
 };
 
 } // namespace post
-#endif // !POST_ROUTER
+#endif // !POST_ROUTERRR

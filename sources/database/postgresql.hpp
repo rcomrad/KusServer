@@ -107,7 +107,7 @@ public:
 
         for (int i = 0; i < aData.size(); ++i)
         {
-            int& id = res = *((int*)aData[i][0]);
+            int& id = *((int*)aData[i][0]);
             if (id == 0)
                 id = insertWithID(aData.getTableName(), id,
                                   aData.makeStrings(i, true, true));

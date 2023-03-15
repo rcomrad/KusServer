@@ -15,6 +15,7 @@ set(
     post_handler.cpp
     post_handler.hpp
 
+    post_router.cpp
     post_router.hpp
 
     user_answer_handler.cpp
