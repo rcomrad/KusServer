@@ -1,6 +1,9 @@
 set(
     DATABASE_SOURCES 
 
+    data_request.cpp
+    data_request.hpp
+
     database_query.cpp
     database_query.hpp
 

@@ -24,6 +24,14 @@ BreakBeforeConceptDeclarations: Always
 AllowShortLoopsOnASingleLine: true
 AllowShortIfStatementsOnASingleLine : AllIfsAndElse
 
+AllowAllArgumentsOnNextLine : true
+BinPackArguments: true
+AlignAfterOpenBracket : Align
+AllowAllParametersOfDeclarationOnNextLine : true
+BinPackParameters : false
+PackConstructorInitializers : NextLine
+InsertNewlineAtEOF : true
+
 SortIncludes: CaseSensitive
 IncludeBlocks: Regroup
 IncludeCategories:

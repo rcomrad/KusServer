@@ -6,7 +6,8 @@
 
 std::unordered_map<std::string, std::string> core::GenerateCode::mglobalPaths =
     {
-        {"post", "../sources/post/"}
+        {"post", "../sources/post/"},
+        {"get",  "../sources/get/" }
 };
 
 std::vector<std::string> core::GenerateCode::mDatabaseTables =
@@ -514,67 +515,61 @@ generateDatabaseStructuresCPPFile()
 }
 
 void
-generateRequestHandlerFile()
+generateGetRouterFile()
 {
+    core::GenerateCode generator;
+    generator.setClassName("GetRouter");
+    generator.setNamespace("get");
 
-    std::ofstream file("../sources/server/request_handler.hpp");
+    //--------------------------------------------------------------------------------
 
-    file << "#ifndef REQUEST_HANDLER_HPP\n";
-    file << "#define REQUEST_HANDLER_HPP\n";
-    file << "\n";
+    generator.setDefaultTemplate("template <typename... Args>");
+    generator.setDefaultReturnType("void");
 
-    file << "\n";
+    //--------------------------------------------------------------------------------
 
-    file << "#define SERVER_FUNCTIONS \\\n";
+    generator.addInclude("get_handler");
 
-    file << "    template <typename... Args> \\\n";
-    file << "    crow::json::wvalue::list getDataAsJSON(std::string_view "
-            "aTableName, \\\n";
-    file
-        << "                                     Args&&... args) noexcept \\\n";
-    file << "    { \\\n";
-    file << "        crow::json::wvalue::list res{400}; \\\n";
-    file << "        auto hasher   = std::hash<std::string_view>{}; \\\n";
-    file << "        auto str_hash = hasher(aTableName); \\\n \\\n";
+    //--------------------------------------------------------------------------------
 
-    std::ifstream database("database.data");
-    std::string temp;
+    // postHandler
+    // generator.p
+    generator.pushBackFunction("getRouter(const data::TableInfoAray& request, "
+                               "data::DBSettings& aDBS, "
+                               "Args&&... args) noexcept");
 
-    bool flag = true;
-    while (true)
-    {
-        std::string s1, s2;
-        if (!(database >> s1)) break;
-        getline(database, s2, ' ');
-        getline(database, s2);
+    generator.pushToFunctionBody("auto temp = request.popTableName();\n"
+                                 "if (temp){\n"
+                                 "getRouter(request, aDBS, args..., );\n"
+                                 "}\n"
+                                 "else{\n"
+                                 "get::GetHandler::process(request, aDBS, args...);\n"
+                                 "}\n"
+                                 
+                                 );
 
-        if (s1 == "TABLE" && s2 != "NUN")
-        {
-            std::string structName = s2;
-            structName[0] += 'A' - 'a';
+    // generator.generateMapTable("mPostRouterMap",
+    //                            {
+    //                                {"default", "get::GetHandler::process"}
+    // });
 
-            if (flag)
-            {
-                file << "        if";
-                temp += "        if";
-            }
-            else
-            {
-                file << "        else if";
-                temp += "        else if";
-            }
-            flag = false;
+    //--------------------------------------------------------------------------------
 
-            file << " (str_hash == hasher(\"" << s2 << "\")) \\\n";
-            file << "        { \\\n";
-            file << "            res = getData<data::" << structName
-                 << ">(args...); \\\n";
-            file << "        } \\\n";
-        }
-    }
+    // manyToManyHandler
+    // generator.pushBackFunction(
+    //     "manyToManyRouter(const std::string& aTableName, "
+    //     "Args&&... args) noexcept");
+    // generator.pushToFunctionBody(
+    //     "return mManyToManyRouterMap[aTableName](args...);");
+    // generator.generateMapTable(
+    //     "mManyToManyRouterMap",
+    //     {
+    //         {"default", "post::PostHandler::manyToMany<data::"}
+    // });
 
-    file << "\\\n        return res; \\\n    } \\\n\\\n";
-    file << "\n#endif // !REQUEST_HANDLER_HPP\n";
+    //--------------------------------------------------------------------------------
+
+    generator.write();
 }
 
 void
@@ -603,7 +598,11 @@ generatePostHandlerFile()
     // postHandler
     generator.pushBackFunction("basicRouter(const std::string& aTableName, "
                                "Args&&... args) noexcept");
-    generator.pushToFunctionBody("return mPostRouterMap[aTableName](args...);");
+    generator.pushToFunctionBody(
+        "crow::json::wvalue result;\n"
+        "auto it = mPostRouterMap.find(aTableName);\n"
+        "if (it != mPostRouterMap.end())\n"
+        "result= mPostRouterMap[aTableName](args...);return result;\n");
     generator.generateMapTable(
         "mPostRouterMap",
         {
@@ -663,61 +662,97 @@ generatePostHandlerFile()
 void
 generateAsteriskHendler()
 {
-    std::ofstream file("../sources/server/asterisk_hendler.hpp");
+    core::GenerateCode generator;
+    generator.setClassName("GetRouter");
+    generator.setNamespace("get");
 
-    file << "#ifndef ASTERISK_HENDLER_HPP\n";
-    file << "#define ASTERISK_HENDLER_HPP\n";
-    file << "\n";
-    file << "#include <string>\n";
-    file << "#include <vector>\n";
-    file << "#include <unordered_map>\n";
-    file << "\n";
-    file << "struct AsteriskHendler\n";
-    file << "{ \n";
+    //--------------------------------------------------------------------------------
 
-    file << "    static std::unordered_map<std::string_view, "
-            "std::vector<std::string>> "
-            "table;\n";
+    generator.setDefaultTemplate("template <typename... Args>");
+    generator.setDefaultReturnType("static crow::json::wvalue");
 
-    file << "};\n\n";
-    file << "#endif // !ASTERISK_HENDLER_HPP\n";
+    //--------------------------------------------------------------------------------
 
-    file.close();
+    // generator.addInclude("journal_handler");
+    // generator.addInclude("plan_handler");
+    // generator.addInclude("post_handler");
+    // generator.addInclude("user_answer_handler");
+    // generator.addInclude("user_handler");
+    // generator.addInclude("mark_handler");
 
-    file.open("../sources/server/asterisk_hendler.cpp");
-    std::ifstream database("database.data");
-    file << "#include \"asterisk_hendler.hpp\"\n\n";
-    file << "std::unordered_map<std::string_view, std::vector<std::string>> "
-            "AsteriskHendler::table = \n{\n";
+    //--------------------------------------------------------------------------------
 
-    std::string temp;
-    while (true)
-    {
-        std::string s1, s2;
-        database >> s1;
-        getline(database, s2, ' ');
-        getline(database, s2);
-        if (s2 == "NUN") break;
-
-        if (s1 == "TABLE")
+    // postHandler
+    generator.pushBackFunction("basicRouter(const std::string& aTableName, "
+                               "Args&&... args) noexcept");
+    generator.pushToFunctionBody("return mPostRouterMap[aTableName](args...);");
+    generator.generateMapTable(
+        "mPostRouterMap",
         {
-            temp += "}}, { \"" + s2 + "\", { \"id\", ";
-        }
-        else
-        {
-            temp += "\"" + s1 + "\", ";
-        }
-    }
-    temp[0] = ' ';
-    temp[1] = ' ';
-    temp[2] = ' ';
+            {"default",       "post::PostHandler::process<data::"},
+            {"user",          "post::UserHandler::process"       },
+            {"user_answer",   "post::UserAnswerHandler::process" },
+            {"journal_table", "post::JournalHandler::process"    },
+            {"mark",          "post::MarkHandler::process"       }
+    });
 
-    temp[temp.size() - 2] = ' ';
-    temp += "}}};";
+    generator.write();
 
-    file << temp;
+    // std::ofstream file("../sources/server/asterisk_hendler.hpp");
 
-    file << "\n";
+    // file << "#ifndef ASTERISK_HENDLER_HPP\n";
+    // file << "#define ASTERISK_HENDLER_HPP\n";
+    // file << "\n";
+    // file << "#include <string>\n";
+    // file << "#include <vector>\n";
+    // file << "#include <unordered_map>\n";
+    // file << "\n";
+    // file << "struct AsteriskHendler\n";
+    // file << "{ \n";
+
+    // file << "    static std::unordered_map<std::string_view, "
+    //         "std::vector<std::string>> "
+    //         "table;\n";
+
+    // file << "};\n\n";
+    // file << "#endif // !ASTERISK_HENDLER_HPP\n";
+
+    // file.close();
+
+    // file.open("../sources/server/asterisk_hendler.cpp");
+    // std::ifstream database("database.data");
+    // file << "#include \"asterisk_hendler.hpp\"\n\n";
+    // file << "std::unordered_map<std::string_view, std::vector<std::string>> "
+    //         "AsteriskHendler::table = \n{\n";
+
+    // std::string temp;
+    // while (true)
+    // {
+    //     std::string s1, s2;
+    //     database >> s1;
+    //     getline(database, s2, ' ');
+    //     getline(database, s2);
+    //     if (s2 == "NUN") break;
+
+    //     if (s1 == "TABLE")
+    //     {
+    //         temp += "}}, { \"" + s2 + "\", { \"id\", ";
+    //     }
+    //     else
+    //     {
+    //         temp += "\"" + s1 + "\", ";
+    //     }
+    // }
+    // temp[0] = ' ';
+    // temp[1] = ' ';
+    // temp[2] = ' ';
+
+    // temp[temp.size() - 2] = ' ';
+    // temp += "}}};";
+
+    // file << temp;
+
+    // file << "\n";
 }
 
 void
@@ -727,5 +762,6 @@ core::generateDatabaseStructuresFiles()
     // generateDatabaseStructuresCPPFile();
     // generateRequestHandlerFile();
     // generatePostHandlerFile();
+    generateGetRouterFile();
     // generateAsteriskHendler();
 }

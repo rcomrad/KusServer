@@ -16,8 +16,7 @@ dom::FileReader::getAllStrings(const std::string& aFileName) noexcept
     std::ifstream file(aFileName);
     std::vector<std::string> result;
     std::string temp;
-    while (getline(file, temp))
-        result.emplace_back(std::move(temp));
+    while (getline(file, temp)) result.emplace_back(std::move(temp));
     file.close();
     return result;
 }

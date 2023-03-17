@@ -26,8 +26,7 @@ dom::CharArray::CharArray(const CharArrayTable& aStr, char aDelimiter) noexcept
 {
     size_t size = 0;
     if (aDelimiter != '\0') size += aStr.size() - 1;
-    for (const auto& str : aStr)
-        size += str.getSize();
+    for (const auto& str : aStr) size += str.getSize();
     reserve(size);
 
     char del[] = {aDelimiter, 0};
@@ -80,8 +79,7 @@ dom::CharArray::reserve(size_t aSize) noexcept
 
     if (aSize > mCapacity)
     {
-        while (aSize > mCapacity)
-            mCapacity *= 2;
+        while (aSize > mCapacity) mCapacity *= 2;
         auto temp = std::make_unique<char[]>(mCapacity);
         if (mData != nullptr) mSize = copyArray(temp, mData, 0);
         mData = std::move(temp);
@@ -116,8 +114,7 @@ dom::CharArray::getString() const noexcept
 std::ostream&
 dom::operator<<(std::ostream& os, const dom::CharArray& aStr) noexcept
 {
-    for (size_t i = 0; aStr.mData[i]; ++i)
-        os << aStr.mData[i];
+    for (size_t i = 0; aStr.mData[i]; ++i) os << aStr.mData[i];
     return os;
 }
 
@@ -152,8 +149,7 @@ dom::CharArray::backSubStr(char aDelimiter) const noexcept
     {
         std::string temp;
         temp.reserve(mSize - pos - 2);
-        for (size_t i = pos + 2; i < mSize; ++i)
-            temp.push_back(mData[i]);
+        for (size_t i = pos + 2; i < mSize; ++i) temp.push_back(mData[i]);
         result = temp;
     }
 

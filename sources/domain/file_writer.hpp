@@ -22,7 +22,8 @@ public:
     FileWrite(FileWrite&& other) noexcept            = default;
     FileWrite& operator=(FileWrite&& other) noexcept = default;
 
-    template <typename... Args> void write(Args... args) noexcept
+    template <typename... Args>
+    void write(Args... args) noexcept
     {
         (void)std::initializer_list<bool>{
             static_cast<bool>(mOut << args << mDelimiter)...};

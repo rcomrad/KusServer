@@ -34,7 +34,7 @@ post::PlanHandler::csvFileUpload(const PlanData& aPlanData,
     plan.back().subject_id = aPlanData.subjectID;
     plan.back().url        = aPlanData.url;
 
-    aDBQ.insert<data::Plan>(plan);
+    aDBQ.update<data::Plan>(plan);
     plan = aDBQ.getData<data::Plan>("url = " + data::wrap(plan[0].url));
     std::ifstream file(plan[0].url);
 
@@ -49,7 +49,7 @@ post::PlanHandler::csvFileUpload(const PlanData& aPlanData,
         themes.back().plan_id    = plan[0].id;
         std::getline(file, name, '\n');
     }
-    aDBQ.insert<data::Theme>(themes);
+    aDBQ.update<data::Theme>(themes);
 
     return {200};
 }

@@ -447,6 +447,15 @@ struct User_answer : public UpperDataStruct<User_answerBase>
 {
 };
 
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+struct TableColumnNames
+{
+    static std::unordered_map<std::string, std::vector<std::string>> dict;
+};
+
 } // namespace data
 
 //--------------------------------------------------------------------------------

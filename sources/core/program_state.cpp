@@ -3,7 +3,8 @@
 core::ProgramState core::ProgramState::mThis;
 
 core::ProgramState::ProgramState()
-    : mRestartState(Restart::NUN), mAutoCheckAnswers(false),
+    : mRestartState(Restart::NUN),
+      mAutoCheckAnswers(false),
       mSetTimeForAnswers(false)
 {
 }

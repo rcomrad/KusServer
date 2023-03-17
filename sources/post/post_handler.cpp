@@ -30,7 +30,8 @@ post::PostHandler::uploadFile(crow::multipart::message& aMsg,
 }
 
 void
-post::PostHandler::transmitToMTMHandler(const std::string aTableName, int aID,
+post::PostHandler::transmitToMTMHandler(const std::string aTableName,
+                                        int aID,
                                         bool aIsAdding,
                                         std::vector<int> aIDForInsert,
                                         data::DatabaseQuery& aDBQ)

@@ -29,24 +29,22 @@ public:
     DatabaseQuery(DatabaseQuery&& other) noexcept            = default;
     DatabaseQuery& operator=(DatabaseQuery&& other) noexcept = default;
 
-    std::vector<data::User> getUser(const std::string& aLogin = "") noexcept;
-
     template <typename T>
     Table<T> getData(const std::string& aCondition = "") noexcept
     {
-        return mDatabase.selectAll<T>({}, aCondition);
+        return mDatabase.select<T>({}, aCondition);
     }
 
-    template <typename T>
-    int insert(Table<T>& aData) noexcept
+    template <typename... Args>
+    void select(Args&&... args) noexcept
     {
-        return mDatabase.insert<T>(aData);
+        return mDatabase.select(args...);
     }
 
     template <typename T>
     int update(Table<T>& aData) noexcept
     {
-        return mDatabase.update<T>(aData);
+        return mDatabase.update(aData);
     }
 
     template <typename T>
@@ -63,10 +61,6 @@ public:
     {
         mDatabase.dropByID(T::tableName, aIDs);
     }
-
-    // TODO: delete
-    int insert(const std::string& aTableName,
-               const std::vector<std::string>& aData) noexcept;
 
     void createTable(const std::string& aTableName,
                      const std::vector<ColumnSetting>& aColumns) noexcept;

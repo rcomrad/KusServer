@@ -10,7 +10,7 @@ class DateAndTime
 public:
     static std::string getCurentTime();
 };
-} // namespace post
+} // namespace dom
 
 //--------------------------------------------------------------------------------
 

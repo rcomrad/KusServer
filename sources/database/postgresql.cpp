@@ -201,7 +201,8 @@ data::Postgresql::insert(const std::string& aTableName,
 }
 
 int
-data::Postgresql::insertWithID(const std::string& aTableName, int id,
+data::Postgresql::insertWithID(const std::string& aTableName,
+                               int id,
                                const std::vector<std::string>& aData) noexcept
 {
     std::string tableName = mShame + "." + aTableName;

@@ -48,10 +48,12 @@ private:
                               decltype(&post::PostHandler::process<data::User>)>
         mPostRouterMap;
     static std::unordered_map<
-        std::string, decltype(&post::PostHandler::manyToMany<data::User>)>
+        std::string,
+        decltype(&post::PostHandler::manyToMany<data::User>)>
         mManyToManyRouterMap;
     static std::unordered_map<
-        std::string, decltype(&post::PostHandler::uploadFromFile<data::User>)>
+        std::string,
+        decltype(&post::PostHandler::uploadFromFile<data::User>)>
         mUploadRouterMap;
     static std::unordered_map<std::string,
                               decltype(&post::PostHandler::drop<data::User>)>

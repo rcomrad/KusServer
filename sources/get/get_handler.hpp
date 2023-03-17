@@ -1,67 +1,77 @@
-#ifndef SERVER_HPP
-#define SERVER_HPP
+#ifndef GET_HANDLER_HPP
+#define GET_HANDLER_HPP
 
-#include <functional>
-#include <set>
+//--------------------------------------------------------------------------------
 
+#include "database/data_request.hpp"
 #include "database/database_query.hpp"
 
 #include "crow.h"
-#include "get_request.hpp"
-#include "request_handler.hpp"
 
 //--------------------------------------------------------------------------------
-namespace serv
+
+namespace get
 {
-class Server //: public RequestHandler<Server>
+class GetHandler
 {
 public:
-    Server(data::DBSettings aDBS);
+    static crow::json::wvalue mainGet(const std::string& aRequest,
+                                      const std::string& aCondition,
+                                      data::DBSettings& aDBS) noexcept
+    {
+        crow::json::wvalue result;
+        data::DataRequest req(aRequest, aCondition);
+        for (const auto& i : req)
+        {
+            transmitter(i, aDBS);
+        }
+        return result;
+    }
 
-    // std::string uploadFile(crow::multipart::message& msg);
+    template <typename... Args>
+    static crow::json::wvalue process(const data::TableInfoAray& request,
+                                      data::DBSettings& aDBS,
+                                      Args&&... args) noexcept
+    {
+        // auto tabl = request.getTables();
+        // auto col  = request.getColumns();
+        // auto con  = request.getCondition();
 
-    //--------------------------------------------------------------------------------
+        crow::json::wvalue result;
 
-    // template <typename T>
-    // crow::json::wvalue::list getData(
-    //     GetRequest aRequest,
-    //     const std::string& aCondition       = "",
-    //     const std::string& aSecondCondition = "") noexcept
-    // {
+        data::DatabaseQuery dbq(aDBS);
+        dbq.select(request, args...);
 
-    //     crow::json::wvalue::list res;
+        ([&] { args; }(), ...);
 
-    //     if (T::tableName == "role" && aCondition.size() > 0)
+        return result;
+    }
+
+private:
+    static void transmitter(const data::TableInfoAray& request,
+                            data::DBSettings& aDBS);
+    static void transmitter(const std::string& aTableName, void* aTable);
+
+    //     template <typename... Args>
+    //     void makeDataRequest(data::DataRequest& aRequest,
+    //                          int num1,
+    //                          int num2,
+    //                          const std::string& aCondition,
+    //                          Args&&... args) noexcept
     //     {
-    //         data::DatabaseQuery dbq(mDBS);
-    //         auto table  = dbq.getData<data::Role>();
-    //         int nameNum = table.names["name"];
-    //         for (auto& i : table)
+    //         if (num2 >= aRequest.request[num1].size())
     //         {
-    //             roles.emplace_back(*(std::string*)i[nameNum]);
+    //             х
     //         }
-
-    //         auto it = aCondition.end();
-    //         while (*(--it) != ' ')
-    //             ;
-    //         std::string temp(it, aCondition.end());
-    //         // std::cout << temp << "\n";
-    //         int rol = std::stoi(temp);
-
-    //         for (int i = 0; rol; ++i)
+    //         else
     //         {
-    //             if (rol & 1)
-    //             {
-    //                 res.emplace_back(roles[i]);
-    //             }
-
-    //             rol >>= 1;
+    //             data::DatabaseQuery dbq(mDBS);
+    //             dbq.getData(aRequest, num1, aCondition, args...);
     //         }
     //     }
-    //     else
+
     //     {
-    //         data::DatabaseQuery dbq(mDBS);
-    //         auto table = dbq.getData<T>(aCondition);
+    //         crow::json::wvalue res;
 
     //         for (auto& i : table)
     //         {
@@ -90,7 +100,8 @@ public:
     //                 {
     //                     temp["role"] =
     //                         getDataAsJSON("role", GetRequest(),
-    //                                       "id = " + data::wrap(*(int*)i[indx]));
+    //                                       "id = " +
+    //                                       data::wrap(*(int*)i[indx]));
     //                 }
     //                 // else
     //                 else if (j.second.size() > 0)
@@ -112,7 +123,8 @@ public:
     //                     auto req = GetRequest(j.second, name);
 
     //                     auto jList = getDataAsJSON(
-    //                         req.name, req, cond + data::wrap(*(int*)i[indx]));
+    //                         req.name, req, cond +
+    //                         data::wrap(*(int*)i[indx]));
 
     //                     if (kostil) name = "group";
     //                     if (jList.size() != 1)
@@ -162,10 +174,11 @@ public:
     //     return res;
     // }
 
-    //--------------------------------------------------------------------------------
+    // //--------------------------------------------------------------------------------
 
-    // crow::json::wvalue::list getDataHendler(const std::string& aRequest,
-    //                                         std::string&& aCondition) noexcept
+    // crow::json::wvalue::list
+    // getDataHendler(const std::string& aRequest, std::string&& aCondition)
+    // noexcept
     // {
     //     for (auto& i : aCondition)
     //     {
@@ -180,9 +193,10 @@ public:
     //     return getDataAsJSON(req.name, req, aCondition);
     // }
 
-    // crow::response get(const std::string& aRequest,
-    //                    std::string&& aCondition,
-    //                    const std::string& aSecondCondition = "") noexcept
+    // crow::response
+    // get(const std::string& aRequest,
+    //     std::string&& aCondition,
+    //     const std::string& aSecondCondition = "") noexcept
     // {
     //     bool flag = true;
     //     if (aCondition[0] == '~')
@@ -201,7 +215,8 @@ public:
     //         req.args["*"];
     //     }
     //     req.reset(req.name);
-    //     auto data = getDataAsJSON(req.name, req, aCondition, aSecondCondition);
+    //     auto data = getDataAsJSON(req.name, req, aCondition,
+    //     aSecondCondition);
 
     //     crow::response res;
     //     if (data.size() == 0)
@@ -231,17 +246,9 @@ public:
 
     //     return res;
     // }
-
-    //--------------------------------------------------------------------------------
-
-private:
-    data::DBSettings mDBS;
-
-    // std::vector<std::string> roles;
-
-    // SERVER_FUNCTIONS
 };
-} // namespace serv
+} // namespace get
+
 //--------------------------------------------------------------------------------
 
-#endif // !SERVER_HPP
+#endif // !GET_HANDLER_HPP

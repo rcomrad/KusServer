@@ -22,7 +22,8 @@ struct ColumnSetting
     std::string info;
 
     // For stupid GNU!
-    ColumnSetting(std::string aName, std::string aType,
+    ColumnSetting(std::string aName,
+                  std::string aType,
                   std::string aInfo = "") noexcept;
 };
 
@@ -85,12 +86,9 @@ struct UpperDataStruct : public T
 };
 
 template <typename T>
-struct Table
+class Table
 {
-    std::unordered_map<std::string, uint8_t> names;
-    std::vector<data::Type> types;
-    std::vector<T> data;
-
+public:
     Table(int aSize = 0)
     {
         reset();
@@ -107,6 +105,11 @@ struct Table
         data.emplace_back();
     }
 
+    void emplace_back(T&& other)
+    {
+        data.emplace_back(std::move(other));
+    }
+
     void pop_back()
     {
         data.pop_back();
@@ -120,11 +123,6 @@ struct Table
     void reserve(int aSize)
     {
         data.reserve(aSize);
-    }
-
-    void emplace_back(T&& other)
-    {
-        data.emplace_back(std::move(other));
     }
 
     size_t getIndex(const std::string& aName)
@@ -204,8 +202,9 @@ struct Table
         return res;
     }
 
-    std::vector<std::string> makeStrings(int num, bool aSkipName = false,
-                                         bool aSkipID = false) const noexcept
+    std::vector<std::string> makeStrings(int num,
+                                         bool aSkipName = false,
+                                         bool aSkipID   = false) const noexcept
     {
         std::vector<std::string> res(names.size());
 
@@ -260,27 +259,13 @@ struct Table
 
         res.resize(l);
 
-        // while (res.size() && res.back().empty()) res.pop_back();
-
-        // int l = 0, r = 1;
-        // while (r < res.size())
-        // {
-        //     while (l < res.size() && res[l].size() == 0)
-        //     {
-        //         ++l;
-        //     }
-        //     r = l + 1;
-        //     while (r < res.size() && res[r].size() == 0)
-        //     {
-        //         ++r;
-        //     }
-        //     if (l < res.size() && r < res.size())
-        //         res[l++] = std::move(res[r++]);
-        // }
-        // res.resize(l);
-
         return res;
     }
+
+public:
+    std::unordered_map<std::string, uint8_t> names;
+    std::vector<data::Type> types;
+    std::vector<T> data;
 };
 
 } // namespace data

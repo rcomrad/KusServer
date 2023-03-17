@@ -9,7 +9,8 @@
 
 namespace dom
 {
-template <typename T1, typename T2 = T1> union Pair
+template <typename T1, typename T2 = T1>
+union Pair
 {
     struct
     {

@@ -18,7 +18,8 @@ class GradeHandler : protected PostHandler
 {
 public:
     template <typename T1, typename T2>
-    static crow::json::wvalue process(const crow::request& aReq, data::DatabaseQuery& aDBQ)
+    static crow::json::wvalue process(const crow::request& aReq,
+                                      data::DatabaseQuery& aDBQ)
     {
         auto req              = crow::json::load(req.body);
         data::Table<T1> table = getStruct<T1>(req, aDBQ);
@@ -37,7 +38,7 @@ public:
         return {};
     }
 };
-} // namespace core
+} // namespace post
 
 //--------------------------------------------------------------------------------
 

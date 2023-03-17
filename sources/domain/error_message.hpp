@@ -67,24 +67,28 @@ class Message
 public:
     static Message globalMessages;
 
-    template <typename... Args> void startLogBlock(Args&&... args) noexcept
+    template <typename... Args>
+    void startLogBlock(Args&&... args) noexcept
     {
         write(mLogStream, std::forward<Args>(args)...);
         ++mLogBlockCount;
     }
 
-    template <typename... Args> void endLogBlock(Args&&... args) noexcept
+    template <typename... Args>
+    void endLogBlock(Args&&... args) noexcept
     {
         write(mLogStream, std::forward<Args>(args)...);
         --mLogBlockCount;
     }
 
-    template <typename... Args> void writeLog(Args&&... args) noexcept
+    template <typename... Args>
+    void writeLog(Args&&... args) noexcept
     {
         write(mLogStream, std::forward<Args>(args)...);
     }
 
-    template <typename... Args> void writeError(Args&&... args) noexcept
+    template <typename... Args>
+    void writeError(Args&&... args) noexcept
     {
 #ifdef ERRORS_TO_LOG_OUTPUT
         write(mErrorStream, "ERROR", std::forward<Args>(args)...);

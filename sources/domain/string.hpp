@@ -129,7 +129,8 @@ private:
 
     //--------------------------------------------------------------------------------
 
-    template <typename S> void add(S&& aStr) noexcept
+    template <typename S>
+    void add(S&& aStr) noexcept
     {
         reserve(mSize + getSize(aStr));
         mSize += copyArray(mData, aStr, mSize);

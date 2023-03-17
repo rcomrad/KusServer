@@ -45,7 +45,7 @@ post::JournalHandler::dataFileUpload(const std::string& aFilePath,
         data.table[i].schedule = std::move(data.additionalLines[i][0]);
     }
 
-    aDBQ.insert(data.table);
+    aDBQ.update(data.table);
     for (auto& i : data.table)
     {
         makeSchedule(i, aDBQ);
@@ -135,5 +135,5 @@ post::JournalHandler::makeSchedule(data::Journal_table& aJournal,
         ++i;
     }
 
-    aDBQ.insert<data::Lesson>(lessons);
+    aDBQ.update<data::Lesson>(lessons);
 }

@@ -58,7 +58,8 @@ public:
     }
 
     template <typename T>
-    static crow::json::wvalue manyToMany(int aID, bool aIsAdding,
+    static crow::json::wvalue manyToMany(int aID,
+                                         bool aIsAdding,
                                          std::vector<int> aIDForInsert,
                                          data::DatabaseQuery& aDBQ)
     {
@@ -228,7 +229,8 @@ public:
                                   std::string aPathPrefix = "");
 
 private:
-    static void transmitToMTMHandler(const std::string aTableName, int aID,
+    static void transmitToMTMHandler(const std::string aTableName,
+                                     int aID,
                                      bool aIsAdding,
                                      std::vector<int> aIDForInsert,
                                      data::DatabaseQuery& aDBQ);

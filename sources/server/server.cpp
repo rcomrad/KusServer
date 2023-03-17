@@ -11,6 +11,8 @@
 #include "crow/middlewares/cors.h"
 #include "post/post_router.hpp"
 
+#include "get/get_handler.hpp"
+
 serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
 {
     crow::App<crow::CORSHandler> app;
@@ -119,21 +121,25 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
     //---------------------------------------------------------------------
 
     CROW_ROUTE(app, "/api/get/all/<string>")
-    ([&](std::string aRequest) { return get(aRequest, ""); });
+    ([&](std::string aRequest)
+     { return get::GetHandler::mainGet(aRequest, "", mDBS); });
 
     CROW_ROUTE(app, "/api/get/by_id/<string>/<string>")
     ([&](std::string aRequest, std::string aID)
-     { return get(aRequest, "~id = " + aID); });
+     { return get::GetHandler::mainGet(aRequest, "~id = " + aID, mDBS); });
 
     CROW_ROUTE(app, "/api/get/if/<string>/<string>")
-    ([&](std::string aRequest, std::string aCondition)
-     { return get(aRequest, std::move(aCondition)); });
+    (
+        [&](std::string aRequest, std::string aCondition) {
+            return get::GetHandler::mainGet(aRequest, std::move(aCondition),
+                                            mDBS);
+        });
 
     //---------------------------------------------------------------------
 
-    CROW_ROUTE(app, "/api/get_question/<string>/<string>")
-    ([&](std::string aRequest, std::string aUserID)
-     { return get("question", std::move(aRequest), aUserID); });
+    // CROW_ROUTE(app, "/api/get_question/<string>/<string>")
+    // ([&](std::string aRequest, std::string aUserID)
+    //  { return get("question", std::move(aRequest), aUserID); });
 
     //---------------------------------------------------------------------
 
@@ -169,163 +175,164 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
                 return res;
             });
 
-    CROW_ROUTE(app, "/api/submit")
-        .methods("POST"_method)(
-            [&](const crow::request& req)
-            {
-                crow::response res;
+    // CROW_ROUTE(app, "/api/submit")
+    //     .methods("POST"_method)(
+    //         [&](const crow::request& req)
+    //         {
+    //             crow::response res;
 
-                boost::posix_time::ptime timeLocal =
-                    boost::posix_time::second_clock::local_time();
-                std::string dateTime;
-                dateTime += std::to_string(timeLocal.date().year()) + "-";
-                dateTime += std::to_string(timeLocal.date().month()) + "-";
-                dateTime += std::to_string(timeLocal.date().day()) + " ";
-                dateTime +=
-                    std::to_string(timeLocal.time_of_day().hours()) + ":";
-                dateTime +=
-                    std::to_string(timeLocal.time_of_day().minutes()) + ":";
-                if (timeLocal.time_of_day().seconds() < 10) dateTime += "0";
-                dateTime += std::to_string(timeLocal.time_of_day().seconds());
+    //             boost::posix_time::ptime timeLocal =
+    //                 boost::posix_time::second_clock::local_time();
+    //             std::string dateTime;
+    //             dateTime += std::to_string(timeLocal.date().year()) + "-";
+    //             dateTime += std::to_string(timeLocal.date().month()) + "-";
+    //             dateTime += std::to_string(timeLocal.date().day()) + " ";
+    //             dateTime +=
+    //                 std::to_string(timeLocal.time_of_day().hours()) + ":";
+    //             dateTime +=
+    //                 std::to_string(timeLocal.time_of_day().minutes()) + ":";
+    //             if (timeLocal.time_of_day().seconds() < 10) dateTime += "0";
+    //             dateTime +=
+    //             std::to_string(timeLocal.time_of_day().seconds());
 
-                data::DatabaseQuery dbq(mDBS);
-                data::Table<data::Submission> submition;
-                submition.emplace_back();
+    //             data::DatabaseQuery dbq(mDBS);
+    //             data::Table<data::Submission> submition;
+    //             submition.emplace_back();
 
-                crow::multipart::message msg(req);
-                submition.back().user_id =
-                    std::stoi(msg.get_part_by_name("user_id").body);
-                submition.back().problem_id =
-                    std::stoi(msg.get_part_by_name("problem_id").body);
+    //             crow::multipart::message msg(req);
+    //             submition.back().user_id =
+    //                 std::stoi(msg.get_part_by_name("user_id").body);
+    //             submition.back().problem_id =
+    //                 std::stoi(msg.get_part_by_name("problem_id").body);
 
-                submition.back().date_val  = dateTime;
-                submition.back().verdict   = "NUN";
-                submition.back().test      = -1;
-                submition.back().file_path = post::PostHandler::uploadFile(
-                    msg, dbq, dom::Path::getPath("submition").value());
+    //             submition.back().date_val  = dateTime;
+    //             submition.back().verdict   = "NUN";
+    //             submition.back().test      = -1;
+    //             submition.back().file_path = post::PostHandler::uploadFile(
+    //                 msg, dbq, dom::Path::getPath("submition").value());
 
-                std::cout << dateTime << "\n";
+    //             std::cout << dateTime << "\n";
 
-                dbq.insert<data::Submission>(submition);
+    //             dbq.insert<data::Submission>(submition);
 
-                return res;
-            });
+    //             return res;
+    //         });
 
     //---------------------------------------------------------------------
 
-    CROW_ROUTE(app, "/api/login")
-        .methods("POST"_method)(
-            [&](const crow::request& req)
-            {
-                auto x    = crow::json::load(req.body);
-                auto resp = crow::response(400);
-                if (x)
-                {
-                    data::DatabaseQuery dbq(mDBS);
-                    auto user =
-                        post::PostHandler::parseRequest<data::User>(x).table;
-                    std::string cond = "~login = \'" + user[0].login +
-                                       "\' AND " + "password = \'" +
-                                       user[0].password + "\'";
-                    resp = get("user", std::move(cond));
-                }
-                return resp;
-            });
+    // CROW_ROUTE(app, "/api/login")
+    //     .methods("POST"_method)(
+    //         [&](const crow::request& req)
+    //         {
+    //             auto x    = crow::json::load(req.body);
+    //             auto resp = crow::response(400);
+    //             if (x)
+    //             {
+    //                 data::DatabaseQuery dbq(mDBS);
+    //                 auto user =
+    //                     post::PostHandler::parseRequest<data::User>(x).table;
+    //                 std::string cond = "~login = \'" + user[0].login +
+    //                                    "\' AND " + "password = \'" +
+    //                                    user[0].password + "\'";
+    //                 resp = get("user", std::move(cond));
+    //             }
+    //             return resp;
+    //         });
     // TODO:
     // { return post::UserHandler::autorisation(req, mDBS); });
 
     //---------------------------------------------------------------------
 
-    CROW_ROUTE(app, "/api/problem/<string>/<string>")
-    (
-        [&](std::string aProblemID, std::string aUserID)
-        {
-            data::DatabaseQuery dbq(mDBS);
-            auto problem = dbq.getData<data::Problem>("id = " + aProblemID);
-            auto submissions =
-                getDataHendler("submission", "problem_id = " + aProblemID +
-                                                 " AND user_id = " + aUserID);
+    // CROW_ROUTE(app, "/api/problem/<string>/<string>")
+    // (
+    //     [&](std::string aProblemID, std::string aUserID)
+    //     {
+    //         data::DatabaseQuery dbq(mDBS);
+    //         auto problem = dbq.getData<data::Problem>("id = " + aProblemID);
+    //         auto submissions =
+    //             getDataHendler("submission", "problem_id = " + aProblemID +
+    //                                              " AND user_id = " +
+    //                                              aUserID);
 
-            crow::json::wvalue result;
-            result["submissions"] = std::move(submissions);
+    //         crow::json::wvalue result;
+    //         result["submissions"] = std::move(submissions);
 
-            std::string path = dom::Path::getPath("problem").value() +
-                               (*((std::string*)problem[0][2])) + "/";
-            std::cout << path + "data.txt\n";
-            std::ifstream inp;
+    //         std::string path = dom::Path::getPath("problem").value() +
+    //                            (*((std::string*)problem[0][2])) + "/";
+    //         std::cout << path + "data.txt\n";
+    //         std::ifstream inp;
 
-            inp.open(path + "data.txt");
-            std::string temp, s;
-            std::getline(inp, temp);
-            result["name"] = temp;
-            std::getline(inp, temp);
-            result["time_limit"] = temp;
-            std::getline(inp, temp);
-            result["memory_limit"] = temp;
-            int count;
-            inp >> count;
-            inp.close();
+    //         inp.open(path + "data.txt");
+    //         std::string temp, s;
+    //         std::getline(inp, temp);
+    //         result["name"] = temp;
+    //         std::getline(inp, temp);
+    //         result["time_limit"] = temp;
+    //         std::getline(inp, temp);
+    //         result["memory_limit"] = temp;
+    //         int count;
+    //         inp >> count;
+    //         inp.close();
 
-            inp.open(path + "legend.txt");
-            temp = "";
-            while (getline(inp, s))
-            {
-                temp += s;
-            }
-            result["legend"] = temp;
-            inp.close();
+    //         inp.open(path + "legend.txt");
+    //         temp = "";
+    //         while (getline(inp, s))
+    //         {
+    //             temp += s;
+    //         }
+    //         result["legend"] = temp;
+    //         inp.close();
 
-            inp.open(path + "input_format.txt");
-            temp = "";
-            while (getline(inp, s))
-            {
-                temp += s;
-            }
-            result["input_format"] = temp;
-            inp.close();
+    //         inp.open(path + "input_format.txt");
+    //         temp = "";
+    //         while (getline(inp, s))
+    //         {
+    //             temp += s;
+    //         }
+    //         result["input_format"] = temp;
+    //         inp.close();
 
-            inp.open(path + "output_format.txt");
-            temp = "";
-            while (getline(inp, s))
-            {
-                temp += s;
-            }
-            result["output_format"] = temp;
-            inp.close();
+    //         inp.open(path + "output_format.txt");
+    //         temp = "";
+    //         while (getline(inp, s))
+    //         {
+    //             temp += s;
+    //         }
+    //         result["output_format"] = temp;
+    //         inp.close();
 
-            crow::json::wvalue::list examples;
-            for (int i = 1; i < count + 1; ++i)
-            {
-                crow::json::wvalue ex;
-                inp.open(path + "tests/input/" + std::to_string(i));
-                std::cout << path + "tests/input/" + std::to_string(i) << "\n";
-                temp = "";
-                while (getline(inp, s))
-                {
-                    temp += s;
-                }
-                ex["input"] = temp;
-                inp.close();
+    //         crow::json::wvalue::list examples;
+    //         for (int i = 1; i < count + 1; ++i)
+    //         {
+    //             crow::json::wvalue ex;
+    //             inp.open(path + "tests/input/" + std::to_string(i));
+    //             std::cout << path + "tests/input/" + std::to_string(i) <<
+    //             "\n"; temp = ""; while (getline(inp, s))
+    //             {
+    //                 temp += s;
+    //             }
+    //             ex["input"] = temp;
+    //             inp.close();
 
-                inp.open(path + "tests/output/" + std::to_string(i));
-                temp = "";
-                while (getline(inp, s))
-                {
-                    temp += s;
-                }
-                ex["output"] = temp;
-                inp.close();
+    //             inp.open(path + "tests/output/" + std::to_string(i));
+    //             temp = "";
+    //             while (getline(inp, s))
+    //             {
+    //                 temp += s;
+    //             }
+    //             ex["output"] = temp;
+    //             inp.close();
 
-                examples.emplace_back(std::move(ex));
-            }
-            result["examples"] = std::move(examples);
+    //             examples.emplace_back(std::move(ex));
+    //         }
+    //         result["examples"] = std::move(examples);
 
-            crow::json::wvalue tempJson;
-            tempJson["problem"] = std::move(result);
+    //         crow::json::wvalue tempJson;
+    //         tempJson["problem"] = std::move(result);
 
-            crow::response response{tempJson};
-            return response;
-        });
+    //         crow::response response{tempJson};
+    //         return response;
+    //     });
 
     //--------------------------------------------------------------------------------
 

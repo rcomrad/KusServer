@@ -19,6 +19,8 @@
 #include "boost/unordered_map.hpp"
 #include "pqxx/pqxx"
 
+#include "data_request.hpp"
+
 //--------------------------------------------------------------------------------
 
 namespace data
@@ -38,21 +40,17 @@ public:
     Postgresql(Postgresql&& other) noexcept            = default;
     Postgresql& operator=(Postgresql&& other) noexcept = default;
 
-    // RowArray selectAll(const std::string& aTableName,
-    //                    const std::vector<std::string>& aColums   = {},
-    //                    const std::vector<std::string>& aConditon = {})
-    //                    noexcept;
-
     std::unordered_map<std::string, uint8_t> getColumnNames() noexcept;
 
+    // TODO: aColums
     template <typename T>
-    Table<T> selectAll(const std::vector<std::string>& aColums = {},
-                       const std::string& aConditon            = "") noexcept
+    Table<T> select(const std::vector<std::string>& aColums = {},
+                    const std::string& aConditon            = "") noexcept
     {
         Table<T> result;
 
         select(T::tableName, aColums, aConditon);
-        step();
+        step(); // ?
 
         while (true)
         {
@@ -79,27 +77,14 @@ public:
                         break;
                 }
             }
-            step();
+            step(); // ?
         }
         closeStatment();
 
         return result;
     }
 
-    template <typename T>
-    int insert(Table<T>& aData) noexcept
-    {
-        // TODO: normal return
-        int res = 0;
-        for (int i = 0; i < aData.size(); ++i)
-        {
-            int& id = *((int*)aData[i][0]);
-            id      = insertWithID(aData.getTableName(), id,
-                                   aData.makeStrings(i, true, true));
-        }
-        return res;
-    }
-
+    // TODO: to database_query
     template <typename T>
     int update(Table<T>& aData) noexcept
     {
@@ -120,6 +105,66 @@ public:
         return res;
     }
 
+    // TODO: to database_query
+    template <typename... Args>
+    void select(const data::TableInfoAray& request, Args&&... args) noexcept
+    {
+        auto tabl = request.getTables();
+        auto col  = request.getColumns();
+        auto con  = request.getCondition();
+        // if (columns.empty()) columns = "*";
+
+        // std::vector<std::vector<int>> colNum;
+        // for (auto& i : aDataRequest.request[aNum])
+        // {
+        //     ([&] { colNum.emplace_back(args.getColumnNums(i.rowNames)); }(),
+        //      ...);
+        // }
+
+        std::string statement = "SELECT "s + col + " FROM " + tabl +
+                                (con == "" ? "" : " WHERE ") + con;
+
+        prepare({std::move(statement)});
+
+        while (true)
+        {
+            step();
+            size_t cnt = 0;
+            if (!hasData()) break;
+
+            (
+                [&]
+                {
+                    args.data.emplace_back();
+                    for (auto i : request[cnt].rowNumbers)
+                    {
+                        auto ptr = args.back()[i];
+                        if (!hasData(i)) break;
+                        switch (args.types[i])
+                        {
+                            case data::Type::INT:
+                                *((int*)ptr) = getColumnIntUnsafe(i);
+                                break;
+                            case data::Type::BOOL:
+                                *((bool*)ptr) = getColumnBoolUnsafe(i);
+                                break;
+                            case data::Type::CHARS:
+                                strcpy((char*)ptr, getColumnAsCharsUnsafe(i));
+                                break;
+                            case data::Type::STRING:
+                                *((std::string*)ptr) =
+                                    getColumnAsStringUnsafe(i);
+                                break;
+                        }
+                    }
+                    cnt++;
+                }(),
+                ...);
+        }
+
+        closeStatment();
+    }
+
     std::vector<data::Type> getColumnTypes(
         const std::string& aTableName) noexcept;
     std::unordered_map<std::string, uint8_t> getColumnNames(
@@ -130,7 +175,8 @@ public:
                 const std::string& aConditon           = "") noexcept;
     int insert(const std::string& aTableName,
                const std::vector<std::string>& aData) noexcept;
-    int insertWithID(const std::string& aTableName, int id,
+    int insertWithID(const std::string& aTableName,
+                     int id,
                      const std::vector<std::string>& aData) noexcept;
     void update(const std::string& aTableName,
                 const std::vector<std::string>& aValue,
@@ -165,6 +211,7 @@ private:
     pqxx::result mResult;
     pqxx::result::const_iterator mResultIterator;
 
+    // TODO: to database_query?
     std::string mShame;
     std::string mUser;
     std::string mDatabase;

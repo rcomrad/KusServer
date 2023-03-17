@@ -19,6 +19,4 @@ dom::Math::getHash(const std::string& aStr) noexcept
     return result;
 }
 
-
-
 //--------------------------------------------------------------------------------

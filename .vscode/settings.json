@@ -99,6 +99,7 @@
         "cstdbool": "cpp",
         "string_view": "cpp",
         "valarray": "cpp",
-        "cfenv": "cpp"
+        "cfenv": "cpp",
+        "unordered_set": "cpp"
     }
 }
