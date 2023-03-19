@@ -212,8 +212,8 @@ core::Core::populateDatabaseFromFile(std::string aFileName) noexcept
                 if (s2.back() == ';') s2.back() = ' ';
                 data.emplace_back(s2);
             }
-            // TODO: 
-            // DBQ.update(s1, data);
+            // TODO:
+            DBQ.insert(s1, data);
             std::getline(ios, s2);
         }
     }

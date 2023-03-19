@@ -1,34 +1,25 @@
 #include "get_handler.hpp"
 
-void
-get::GetHandler::transmitter(const data::TableInfoAray& request,
-                             data::DBSettings& aDBS)
+#include "get_router.hpp"
+
+crow::json::wvalue
+get::GetHandler::mainGet(const std::string& aRequest,
+                         const std::string& aCondition,
+                         data::DBSettings& aDBS) noexcept
 {
-    // data::DataRequest req(aRequest, aCondition);
-    // auto temp = request.popTableName();
-    // if (temp)
-    // {
-    // }
+    crow::json::wvalue result;
+
+    data::DataRequest req(aRequest, aCondition);
+    data::DatabaseQuery dbq(aDBS);
+    for (const auto& i : req)
+    {
+        dbq.handSelect(i);
+        for (const auto& j : i)
+        {
+            get::GetRouter::basicRouter(j.trueName, j.rowNumbers, dbq);
+        }
+        dbq.handClose();
+    }
+
+    return result;
 }
-
-void
-get::GetHandler::transmitter(const std::string& aTableName, void* aTable)
-{
-}
-
-/*
-
-select  * from
-journal.journal_table
-inner join journal.user on journal.journal_table.teacher_id = journal.user.id
-inner join journal.school on journal.user.school_id = journal.school.id;
-
-
-journal.journal_table
-inner join journal.user on journal.journal_table.teacher_id = journal.user.id
-inner join journal.user on journal.journal_table.methodist_id = journal.user.id
-inner join journal.school on journal.user.school_id = journal.school.id
-
-
-
-*/

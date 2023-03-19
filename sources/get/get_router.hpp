@@ -1,6 +1,8 @@
 #ifndef GET_ROUTER_HPP
 #define GET_ROUTER_HPP
 
+#include <unordered_map.>
+
 #include "get_handler.hpp"
 
 namespace get
@@ -9,22 +11,20 @@ class GetRouter
 {
 public:
     template <typename... Args>
-    void getRouter(const data::TableInfoAray& request,
-                   data::DBSettings& aDBS,
-                   Args&&... args) noexcept
+    static crow::json::wvalue basicRouter(const std::string& aTableName,
+                                          Args&&... args) noexcept
     {
-        auto temp = request.popTableName();
-        if (temp)
-        {
-            getRouter(request, aDBS, args..., );
-        }
-        else
-        {
-            get::GetHandler::process(request, aDBS, args...);
-        }
+        crow::json::wvalue result;
+        auto it = mBasicRouterMap.find(aTableName);
+        if (it != mBasicRouterMap.end())
+            result = mBasicRouterMap[aTableName](args...);
+        return result;
     }
 
 private:
+    static std::unordered_map<std::string,
+                              decltype(&get::GetHandler::process<data::User>)>
+        mBasicRouterMap;
 };
 
 } // namespace get

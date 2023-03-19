@@ -39,7 +39,7 @@ data::DataRequest::DataRequest(const std::string& aRequest,
                                const std::string& aCondition) noexcept
     : curNum(0), last(0), iter(0), requestCellNum(0), brackets(0)
 {
-    for (iter = 0; iter < aRequest.size(); ++iter)
+    for (iter = 0; iter < aRequest.size() + 1; ++iter)
     {
         switch (aRequest[iter])
         {
@@ -90,16 +90,16 @@ data::DataRequest::DataRequest(const std::string& aRequest,
             if (flag)
             {
                 j.trueName = getTableName(j.tableName);
-                flag = false;
+                flag       = false;
             }
             else
             {
                 j.trueName =
-                    getTableName(j.tableName.substr(0, j.tableName.size() -
-                    3));
+                    getTableName(j.tableName.substr(0, j.tableName.size() - 3));
             }
 
-            if (j.rowNames.size() == 1 && j.rowNames.count("*"))
+            if (j.rowNames.size() == 1 && j.rowNames.count("*") ||
+                j.rowNames.size() == 0)
             {
                 j.rowNames.clear();
                 for (auto& k : TableColumnNames::dict[j.trueName])

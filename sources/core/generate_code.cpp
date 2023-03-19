@@ -517,6 +517,41 @@ generateDatabaseStructuresCPPFile()
 void
 generateGetRouterFile()
 {
+    //     core::GenerateCode generator;
+    //     generator.setClassName("GetRouter");
+    //     generator.setNamespace("get");
+
+    //     //--------------------------------------------------------------------------------
+
+    //     generator.setDefaultTemplate("template <typename... Args>");
+    //     generator.setDefaultReturnType("void");
+
+    //     //--------------------------------------------------------------------------------
+
+    //     generator.addInclude("get_handler");
+
+    //     //--------------------------------------------------------------------------------
+
+    //     // postHandler
+    //     // generator.p
+    //     generator.pushBackFunction("getRouter(const data::TableInfoAray&
+    //     request, "
+    //                                "data::DBSettings& aDBS, "
+    //                                "Args&&... args) noexcept");
+
+    //     generator.pushToFunctionBody(
+    //         "auto temp = request.popTableName();\n"
+    //         "if (temp){\n"
+    //         "getRouter(request, aDBS, args..., );\n"
+    //         "}\n"
+    //         "else{\n"
+    //         "get::GetHandler::process(request, aDBS, args...);\n"
+    //         "}\n"
+
+    //     );
+
+    //     generator.write();
+
     core::GenerateCode generator;
     generator.setClassName("GetRouter");
     generator.setNamespace("get");
@@ -524,7 +559,7 @@ generateGetRouterFile()
     //--------------------------------------------------------------------------------
 
     generator.setDefaultTemplate("template <typename... Args>");
-    generator.setDefaultReturnType("void");
+    generator.setDefaultReturnType("static crow::json::wvalue");
 
     //--------------------------------------------------------------------------------
 
@@ -533,39 +568,18 @@ generateGetRouterFile()
     //--------------------------------------------------------------------------------
 
     // postHandler
-    // generator.p
-    generator.pushBackFunction("getRouter(const data::TableInfoAray& request, "
-                               "data::DBSettings& aDBS, "
+    generator.pushBackFunction("basicRouter(const std::string& aTableName, "
                                "Args&&... args) noexcept");
-
-    generator.pushToFunctionBody("auto temp = request.popTableName();\n"
-                                 "if (temp){\n"
-                                 "getRouter(request, aDBS, args..., );\n"
-                                 "}\n"
-                                 "else{\n"
-                                 "get::GetHandler::process(request, aDBS, args...);\n"
-                                 "}\n"
-                                 
-                                 );
-
-    // generator.generateMapTable("mPostRouterMap",
-    //                            {
-    //                                {"default", "get::GetHandler::process"}
-    // });
-
-    //--------------------------------------------------------------------------------
-
-    // manyToManyHandler
-    // generator.pushBackFunction(
-    //     "manyToManyRouter(const std::string& aTableName, "
-    //     "Args&&... args) noexcept");
-    // generator.pushToFunctionBody(
-    //     "return mManyToManyRouterMap[aTableName](args...);");
-    // generator.generateMapTable(
-    //     "mManyToManyRouterMap",
-    //     {
-    //         {"default", "post::PostHandler::manyToMany<data::"}
-    // });
+    generator.pushToFunctionBody(
+        "crow::json::wvalue result;\n"
+        "auto it = mBasicRouterMap.find(aTableName);\n"
+        "if (it != mBasicRouterMap.end())\n"
+        "result= mBasicRouterMap[aTableName](args...);return result;\n");
+    generator.generateMapTable(
+        "mBasicRouterMap",
+        {
+            {"default", "get::GetHandler::process<data::"}
+    });
 
     //--------------------------------------------------------------------------------
 
@@ -762,6 +776,6 @@ core::generateDatabaseStructuresFiles()
     // generateDatabaseStructuresCPPFile();
     // generateRequestHandlerFile();
     // generatePostHandlerFile();
-    generateGetRouterFile();
+    // generateGetRouterFile();
     // generateAsteriskHendler();
 }

@@ -35,10 +35,26 @@ public:
         return mDatabase.select<T>({}, aCondition);
     }
 
-    template <typename... Args>
-    void select(Args&&... args) noexcept
+    template <typename T, typename... Args>
+    Table<T> select(Args&&... args) noexcept
     {
-        return mDatabase.select(args...);
+        return mDatabase.select<T>(args...);
+    }
+
+    template <typename T, typename... Args>
+    Table<T> select2(Args&&... args) noexcept
+    {
+        return mDatabase.select2<T>(args...);
+    }
+
+    void handSelect(const data::TableInfoAray& request) noexcept
+    {
+        mDatabase.handSelect(request);
+    }
+
+    void handClose() noexcept
+    {
+        mDatabase.handClose();
     }
 
     template <typename T>
@@ -61,6 +77,10 @@ public:
     {
         mDatabase.dropByID(T::tableName, aIDs);
     }
+
+    // TODO: delete
+    int insert(const std::string& aTableName,
+               const std::vector<std::string>& aData) noexcept;
 
     void createTable(const std::string& aTableName,
                      const std::vector<ColumnSetting>& aColumns) noexcept;

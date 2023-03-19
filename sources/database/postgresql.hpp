@@ -50,11 +50,10 @@ public:
         Table<T> result;
 
         select(T::tableName, aColums, aConditon);
-        step(); // ?
 
         while (true)
         {
-            // std::cout << "SUS!\n";
+            step();
             if (!hasData()) break;
             result.data.emplace_back();
             for (size_t i = 0; i < result.types.size(); ++i)
@@ -77,9 +76,58 @@ public:
                         break;
                 }
             }
-            step(); // ?
         }
+
         closeStatment();
+
+        return result;
+    }
+
+    // TODO: aColums
+    template <typename T>
+    Table<T> select2(const std::vector<int>& aColums = {},
+                     const std::string& aConditon    = "") noexcept
+    {
+        Table<T> result;
+
+        const std::vector<int>* colums = &aColums;
+        std::vector<int> stock;
+        // TODO: vector from table
+        if (aColums.empty())
+        {
+            for (size_t i = 0; i < result.types.size(); ++i)
+            {
+                stock.emplace_back(i);
+            }
+            colums = &stock;
+        }
+
+        while (true)
+        {
+            step();
+            if (!hasData()) break;
+            result.data.emplace_back();
+            for (auto i : *colums)
+            {
+                auto ptr = result.back()[i];
+                if (!hasData(i)) break;
+                switch (result.types[i])
+                {
+                    case data::Type::INT:
+                        *((int*)ptr) = getColumnIntUnsafe(i);
+                        break;
+                    case data::Type::BOOL:
+                        *((bool*)ptr) = getColumnBoolUnsafe(i);
+                        break;
+                    case data::Type::CHARS:
+                        strcpy((char*)ptr, getColumnAsCharsUnsafe(i));
+                        break;
+                    case data::Type::STRING:
+                        *((std::string*)ptr) = getColumnAsStringUnsafe(i);
+                        break;
+                }
+            }
+        }
 
         return result;
     }
@@ -106,63 +154,84 @@ public:
     }
 
     // TODO: to database_query
-    template <typename... Args>
-    void select(const data::TableInfoAray& request, Args&&... args) noexcept
+    // template <typename... Args>
+    // void select(const data::TableInfoAray& request, Args&&... args) noexcept
+    // {
+    //     auto tabl = request.getTables();
+    //     auto col  = request.getColumns();
+    //     auto con  = request.getCondition();
+    //     // if (columns.empty()) columns = "*";
+
+    //     // std::vector<std::vector<int>> colNum;
+    //     // for (auto& i : aDataRequest.request[aNum])
+    //     // {
+    //     //     ([&] { colNum.emplace_back(args.getColumnNums(i.rowNames));
+    //     }(),
+    //     //      ...);
+    //     // }
+
+    //     std::string statement = "SELECT "s + col + " FROM " + tabl +
+    //                             (con == "" ? "" : " WHERE ") + con;
+
+    //     prepare({std::move(statement)});
+
+    //     while (true)
+    //     {
+    //         step();
+    //         size_t cnt = 0;
+    //         if (!hasData()) break;
+
+    //         (
+    //             [&]
+    //             {
+    //                 args.data.emplace_back();
+    //                 for (auto i : request[cnt].rowNumbers)
+    //                 {
+    //                     auto ptr = args.back()[i];
+    //                     if (!hasData(i)) break;
+    //                     switch (args.types[i])
+    //                     {
+    //                         case data::Type::INT:
+    //                             *((int*)ptr) = getColumnIntUnsafe(i);
+    //                             break;
+    //                         case data::Type::BOOL:
+    //                             *((bool*)ptr) = getColumnBoolUnsafe(i);
+    //                             break;
+    //                         case data::Type::CHARS:
+    //                             strcpy((char*)ptr,
+    //                             getColumnAsCharsUnsafe(i)); break;
+    //                         case data::Type::STRING:
+    //                             *((std::string*)ptr) =
+    //                                 getColumnAsStringUnsafe(i);
+    //                             break;
+    //                     }
+    //                 }
+    //                 cnt++;
+    //             }(),
+    //             ...);
+    //     }
+
+    //     closeStatment();
+    // }
+
+    void handSelect(const data::TableInfoAray& request) noexcept
     {
         auto tabl = request.getTables();
         auto col  = request.getColumns();
         auto con  = request.getCondition();
-        // if (columns.empty()) columns = "*";
-
-        // std::vector<std::vector<int>> colNum;
-        // for (auto& i : aDataRequest.request[aNum])
-        // {
-        //     ([&] { colNum.emplace_back(args.getColumnNums(i.rowNames)); }(),
-        //      ...);
-        // }
 
         std::string statement = "SELECT "s + col + " FROM " + tabl +
                                 (con == "" ? "" : " WHERE ") + con;
 
         prepare({std::move(statement)});
 
-        while (true)
-        {
-            step();
-            size_t cnt = 0;
-            if (!hasData()) break;
+        mMakeDBRequest = false;
+    }
 
-            (
-                [&]
-                {
-                    args.data.emplace_back();
-                    for (auto i : request[cnt].rowNumbers)
-                    {
-                        auto ptr = args.back()[i];
-                        if (!hasData(i)) break;
-                        switch (args.types[i])
-                        {
-                            case data::Type::INT:
-                                *((int*)ptr) = getColumnIntUnsafe(i);
-                                break;
-                            case data::Type::BOOL:
-                                *((bool*)ptr) = getColumnBoolUnsafe(i);
-                                break;
-                            case data::Type::CHARS:
-                                strcpy((char*)ptr, getColumnAsCharsUnsafe(i));
-                                break;
-                            case data::Type::STRING:
-                                *((std::string*)ptr) =
-                                    getColumnAsStringUnsafe(i);
-                                break;
-                        }
-                    }
-                    cnt++;
-                }(),
-                ...);
-        }
-
+    void handClose() noexcept
+    {
         closeStatment();
+        mMakeDBRequest = true;
     }
 
     std::vector<data::Type> getColumnTypes(
@@ -224,6 +293,8 @@ private:
 
     std::string merge(const std::vector<std::string>& aStrings);
     void merge(std::string& aResult, const std::vector<std::string>& aStrings);
+
+    bool mMakeDBRequest = true;
 };
 } // namespace data
 

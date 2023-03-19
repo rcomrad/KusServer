@@ -40,7 +40,7 @@ TABLE lesson
 TABLE journal_table
 	teacher_id integer NOT NULL
 	methodist_id integer NOT NULL
-	is_group boolean NOT NULL DEFAULT FALSE
+	is_group boolean NOT NULL
 	group_id integer NOT NULL
 	subject_id smallint NOT NULL
 	plan_id integer NOT NULL
