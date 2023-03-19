@@ -320,7 +320,7 @@ generateDatabaseStructuresHPPFile()
     drawLine(file);
     file << "namespace data\n{\n";
 
-    std::ifstream database("database.data");
+    std::ifstream database("database.psql_db");
     std::string structName = "";
     std::string baseName   = "";
     std::string smallName  = "";
@@ -409,6 +409,25 @@ generateDatabaseStructuresHPPFile()
 
     drawLine(file);
     file << "#endif // !DATABASE_STRUCTURES_HPP\n";
+
+    file << "#ifndef ASTERISK_HENDLER_HPP\n";
+    file << "#define ASTERISK_HENDLER_HPP\n";
+    file << "\n";
+    file << "#include <string>\n";
+    file << "#include <vector>\n";
+    file << "#include <unordered_map>\n";
+    file << "\n";
+    file << "struct AsteriskHendler\n";
+    file << "{ \n";
+
+    file << "    static std::unordered_map<std::string_view, "
+            "std::vector<std::string>> "
+            "table;\n";
+
+    file << "};\n\n";
+    file << "#endif // !ASTERISK_HENDLER_HPP\n";
+
+    file.close();
 }
 
 void
@@ -420,7 +439,7 @@ generateDatabaseStructuresCPPFile()
     fileCPP << "#include <cstring>\n\n";
     fileCPP << "#include \"core/core.hpp\"\n\n";
 
-    std::ifstream database("database.data");
+    std::ifstream database("database.psql_db");
     std::string structName = "";
     std::string baseName   = "";
     std::string smallName  = "";
@@ -428,6 +447,7 @@ generateDatabaseStructuresCPPFile()
     std::string tempCPP;
     std::string columnNames = "{ {\"id\", 0},";
     std::string columnTypes = "{ data::Type::INT, ";
+    std::string temp;
     while (true)
     {
         std::string s1, s2;
@@ -435,6 +455,7 @@ generateDatabaseStructuresCPPFile()
 
         if (s1 == "TABLE")
         {
+            temp += "}}, { \"" + s2 + "\", { \"id\", ";
             if (columnCount)
             {
                 columnNames.resize(columnNames.size() - 2);
@@ -470,6 +491,8 @@ generateDatabaseStructuresCPPFile()
         }
         else
         {
+            temp += "\"" + s1 + "\", ";
+
             if (s2 == "character")
             {
                 columnTypes += "data::Type::STRING, ";
@@ -512,6 +535,22 @@ generateDatabaseStructuresCPPFile()
         columnCount++;
         std::getline(database, s2);
     }
+
+    fileCPP << "std::unordered_map<std::string_view, std::vector<std::string>> "
+               "AsteriskHendler::table = \n{\n";
+
+    temp[0] = ' ';
+    temp[1] = ' ';
+    temp[2] = ' ';
+
+    temp[temp.size() - 2] = ' ';
+    temp += "}}};";
+
+    fileCPP << temp;
+
+    fileCPP << "\n";
+
+    fileCPP.close();
 }
 
 void
@@ -576,9 +615,8 @@ generateGetRouterFile()
         "if (it != mBasicRouterMap.end())\n"
         "result= mBasicRouterMap[aTableName](args...);return result;\n");
     generator.generateMapTable(
-        "mBasicRouterMap",
-        {
-            {"default", "get::GetHandler::process<data::"}
+        "mBasicRouterMap", {
+                               {"default", "get::GetHandler::process<data::"}
     });
 
     //--------------------------------------------------------------------------------
@@ -774,6 +812,7 @@ core::generateDatabaseStructuresFiles()
 {
     // generateDatabaseStructuresHPPFile();
     // generateDatabaseStructuresCPPFile();
+
     // generateRequestHandlerFile();
     // generatePostHandlerFile();
     // generateGetRouterFile();

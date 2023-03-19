@@ -102,18 +102,30 @@ data::DataRequest::DataRequest(const std::string& aRequest,
                 j.rowNames.size() == 0)
             {
                 j.rowNames.clear();
-                for (auto& k : TableColumnNames::dict[j.trueName])
+                for (auto& k : AsteriskHendler::table[j.trueName])
                 {
                     j.rowNames.insert(k);
                 }
             }
 
-            for (size_t k = 0; k < TableColumnNames::dict[j.trueName].size();
-                 ++k)
+            // for (size_t k = 0; k < AsteriskHendler::table[j.trueName].size();
+            //      ++k)
+            // {
+            //     if (j.rowNames.count(AsteriskHendler::table[j.trueName][k]))
+            //     {
+            //         j.rowNumbers.emplace_back(k);
+            //     }
+            // }
+
+            for (auto& i : j.rowNames)
             {
-                if (j.rowNames.count(TableColumnNames::dict[j.trueName][k]))
+                for (size_t k = 0;
+                     k < AsteriskHendler::table[j.trueName].size(); ++k)
                 {
-                    j.rowNumbers.emplace_back(k);
+                    if (AsteriskHendler::table[j.trueName][k] == i)
+                    {
+                        j.rowNumbers.emplace_back(k);
+                    }
                 }
             }
 

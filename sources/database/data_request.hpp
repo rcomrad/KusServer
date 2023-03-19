@@ -19,6 +19,7 @@ struct TableInfo
     std::string tableName;
     std::string trueName;
     std::string fullName;
+    // std::unordered_set<std::string> rowNames;
     std::unordered_set<std::string> rowNames;
     std::vector<int> rowNumbers;
     int parantNum;

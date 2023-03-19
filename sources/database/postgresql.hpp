@@ -107,9 +107,9 @@ public:
             step();
             if (!hasData()) break;
             result.data.emplace_back();
-            for (auto i : *colums)
+            for (int i = 0; i < colums->size(); ++i)
             {
-                auto ptr = result.back()[i];
+                auto ptr = result.back()[(*colums)[i]];
                 if (!hasData(i)) break;
                 switch (result.types[i])
                 {

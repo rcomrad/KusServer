@@ -491,15 +491,15 @@ data::User_answerBase::reset()
     ptrs[6] = (void*)(&is_correct);
 }
 
-std::unordered_map<std::string, std::vector<std::string>>
-    data::TableColumnNames::dict = {
+std::unordered_map<std::string_view, std::vector<std::string>>
+    AsteriskHendler::table = {
         {"school",
          {
              "id",
              "full_name",
              "short_name",
              "start_date",
-         }             },
+         }                         },
         {"user",
          {
              "id",
@@ -509,36 +509,36 @@ std::unordered_map<std::string, std::vector<std::string>>
              "surname",
              "role_id",
              "school_id",
-         }             },
+         }                         },
         {"role",
          {
              "id",
              "name",
-         }             },
+         }                         },
         {"grade",
          {
              "id",
              "name",
              "head_id",
-         }             },
+         }                         },
         {"grade_student",
          {
              "id",
              "grade_id",
              "student_id",
-         }             },
+         }                         },
         {"group",
          {
              "id",
              "name",
              "grade_id",
-         }             },
+         }                         },
         {"group_student",
          {
              "id",
              "group_id",
              "student_id",
-         }             },
+         }                         },
         {"lesson",
          {
              "id",
@@ -547,7 +547,7 @@ std::unordered_map<std::string, std::vector<std::string>>
              "journal_table_id",
              "homework",
              "control",
-         }             },
+         }                         },
         {"journal_table",
          {
              "id",
@@ -559,12 +559,12 @@ std::unordered_map<std::string, std::vector<std::string>>
              "plan_id",
              "head_id",
              "schedule",
-         }             },
+         }                         },
         {"subject",
          {
              "id",
              "name",
-         }             },
+         }                         },
         {"mark",
          {
              "id",
@@ -572,38 +572,38 @@ std::unordered_map<std::string, std::vector<std::string>>
              "student_id",
              "lesson_id",
              "journal_table_id",
-         }             },
+         }                         },
         {"plan",
          {
              "id",
              "subject_id",
              "name",
              "url",
-         }             },
+         }                         },
         {"theme",
          {
              "id",
              "plan_id",
              "name",
              "hour_count",
-         }             },
+         }                         },
         {"file",
          {
              "id",
              "num",
-         }             },
+         }                         },
         {"holiday",
          {
              "id",
              "school_id",
              "date_val",
-         }             },
+         }                         },
         {"problem",
          {
              "id",
              "name",
              "nickname",
-         }             },
+         }                         },
         {"submission",
          {
              "id",
@@ -613,35 +613,35 @@ std::unordered_map<std::string, std::vector<std::string>>
              "verdict",
              "test",
              "file_path",
-         }             },
+         }                         },
         {"user_upload",
          {
              "id",
              "index",
              "name",
              "extension",
-         }             },
+         }                         },
         {"plan_upload",
          {
              "id",
              "index",
              "name",
              "extension",
-         }             },
+         }                         },
         {"journal_upload",
          {
              "id",
              "index",
              "name",
              "extension",
-         }             },
+         }                         },
         {"journal_download",
          {
              "id",
              "index",
              "name",
              "extension",
-         }             },
+         }                         },
         {"question",
          {
              "id",
@@ -650,13 +650,21 @@ std::unordered_map<std::string, std::vector<std::string>>
              "type",
              "contest",
              "jury_answer",
-         }             },
+         }                         },
         {"question_type",
          {
              "id",
              "name",
-         }             },
+         }                         },
         {"user_answer",
-         {"id", "user_id", "question_id", "user_answer", "time", "true_time",
-          "is_correct"}}
+         {
+             "id",
+             "user_id",
+             "question_id",
+             "user_answer",
+             "time",
+             "true_time",
+             "is_correct",
+         }                         },
+        {"NUN",              {"id"}}
 };
