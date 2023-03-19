@@ -36,16 +36,17 @@ public:
                 switch (table.types[indx])
                 {
                     case data::Type::INT:
-                        temp[name] = *(int*)i[indx];
+                        if (*(int*)i[indx] != 0) temp[name] = *(int*)i[indx];
                         break;
                     case data::Type::BOOL:
+                    // TODO: 
                         temp[name] = *(bool*)i[indx];
                         break;
                     case data::Type::CHARS:
                         temp[name] = std::string((char*)i[indx]);
                         break;
                     case data::Type::STRING:
-                        temp[name] = *(std::string*)i[indx];
+                        if ((*(std::string*)i[indx])[0] != 0) temp[name] = *(std::string*)i[indx];
                         break;
                 }
             }
@@ -56,11 +57,11 @@ public:
 
         if (tableList.size() == 1)
         {
-            result["a"] = std::move(result[0]);
+            result[table.getTableName()] = std::move(tableList[0]);
         }
         else
         {
-            result["a"] = std::move(result);
+            result[table.getTableName() + "s"] = std::move(tableList);
         }
 
         return result;

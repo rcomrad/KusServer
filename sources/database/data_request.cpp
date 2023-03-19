@@ -7,9 +7,16 @@ std::unordered_map<std::string, std::string> data::DataRequest::aTableNames = {
     {"teacher",   "user"}
 };
 
-data::TableInfo::TableInfo(std::string&& aTableName, int aParantNum) noexcept
-    : tableName(std::move(aTableName)), parantNum(aParantNum)
+data::TableInfo::TableInfo(std::string&& aTableName, int aParentNum) noexcept
+    : tableName(std::move(aTableName)), parentNum(aParentNum)
 {
+    jsonName = tableName;
+    int sz   = jsonName.size();
+    if (jsonName[sz - 1] == 'd' && jsonName[sz - 2] == 'i' &&
+        jsonName[sz - 3] == '_')
+    {
+        jsonName.resize(jsonName.size() - 3);
+    }
 }
 
 data::TableInfo&
@@ -50,7 +57,7 @@ data::DataRequest::DataRequest(const std::string& aRequest,
 
             case ']':
                 pushName(aRequest);
-                curNum = request[requestCellNum][curNum].parantNum;
+                curNum = request[requestCellNum][curNum].parentNum;
                 brackets--;
                 break;
 
@@ -125,6 +132,7 @@ data::DataRequest::DataRequest(const std::string& aRequest,
                     if (AsteriskHendler::table[j.trueName][k] == i)
                     {
                         j.rowNumbers.emplace_back(k);
+                        break;
                     }
                 }
             }
@@ -158,7 +166,7 @@ data::TableInfoAray::getTables() const noexcept
     {
         auto& temp = arr[i];
         result += "inner join " + temp.fullName + " on " +
-                  arr[temp.parantNum].fullName + "." + temp.tableName + " = " +
+                  arr[temp.parentNum].fullName + "." + temp.tableName + " = " +
                   temp.fullName + ".id ";
     }
     return result;
@@ -173,7 +181,7 @@ data::TableInfoAray::getColumns() const noexcept
     {
         for (auto& j : i.rowNames)
         {
-            result += j + ", ";
+            result += i.fullName + "." + j + ", ";
         }
     }
 

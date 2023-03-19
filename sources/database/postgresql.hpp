@@ -111,7 +111,7 @@ public:
             {
                 auto ptr = result.back()[(*colums)[i]];
                 if (!hasData(i)) break;
-                switch (result.types[i])
+                switch (result.types[(*colums)[i]])
                 {
                     case data::Type::INT:
                         *((int*)ptr) = getColumnIntUnsafe(i);

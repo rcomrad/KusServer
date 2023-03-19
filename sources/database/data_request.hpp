@@ -22,9 +22,10 @@ struct TableInfo
     // std::unordered_set<std::string> rowNames;
     std::unordered_set<std::string> rowNames;
     std::vector<int> rowNumbers;
-    int parantNum;
+    int parentNum;
+    std::string jsonName;
 
-    TableInfo(std::string&& aTableName, int aParantNum) noexcept;
+    TableInfo(std::string&& aTableName, int aParentNum) noexcept;
 };
 
 class TableInfoAray
@@ -99,6 +100,11 @@ public:
     auto end() const noexcept
     {
         return request.cend();
+    }
+
+    auto& operator[](size_t num)
+    {
+        return request[num];
     }
 
 private:
