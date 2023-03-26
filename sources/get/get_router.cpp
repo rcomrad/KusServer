@@ -3,7 +3,7 @@
 std::unordered_map<std::string, decltype(&get::GetHandler::process<data::User>)>
     get::GetRouter::mBasicRouterMap = {
         {"school",           &get::GetHandler::process<data::School>          },
-        {"user",             &get::GetHandler::process<data::User>            },
+        {"user",             &get::UserHandler::process                       },
         {"role",             &get::GetHandler::process<data::Role>            },
         {"grade",            &get::GetHandler::process<data::Grade>           },
         {"grade_student",    &get::GetHandler::process<data::Grade_student>   },

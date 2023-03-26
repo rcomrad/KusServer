@@ -55,22 +55,20 @@ core::Core::populate()
 {
     populateDatabaseFromFile("../tests/example.populate");
 
-    data::DatabaseQuery dbq(mDBS);
-
-    post::UserHandler::dataFileUpload("../tests/user.data", dbq);
+    post::UserHandler::dataFileUpload("../tests/user.data");
 
     post::PlanHandler::PlanData data;
     data.subjectID = 1;
 
     data.name = "Тест";
     data.url  = "../tests/plan_test.csv";
-    post::PlanHandler::csvFileUpload(data, dbq);
+    post::PlanHandler::csvFileUpload(data);
 
     data.name = "C++";
     data.url  = "../tests/plan_cpp.csv";
-    post::PlanHandler::csvFileUpload(data, dbq);
+    post::PlanHandler::csvFileUpload(data);
 
-    post::JournalHandler::dataFileUpload("../tests/journal.data", dbq);
+    post::JournalHandler::dataFileUpload("../tests/journal.data");
 }
 
 void
@@ -134,7 +132,7 @@ core::Core::run(const std::vector<std::string>& argv) noexcept
 void
 core::Core::serverThread() noexcept
 {
-    serv::Server app(mDBS);
+    serv::Server app;
     while (true)
         ;
 }
@@ -142,7 +140,7 @@ core::Core::serverThread() noexcept
 void
 core::Core::createDatabaseFromFile(std::string aFileName) noexcept
 {
-    data::DatabaseQuery DBQ(mDBS);
+    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::ADMIN);
 
     std::vector<data::ColumnSetting> colums;
     std::ifstream ios(aFileName);
@@ -163,7 +161,7 @@ core::Core::createDatabaseFromFile(std::string aFileName) noexcept
         std::getline(ios, s2);
         if (s1 == "TABLE")
         {
-            if (name.size()) DBQ.createTable(name, colums);
+            if (name.size()) dbq.createTable(name, colums);
             colums.clear();
             name = s2;
         }
@@ -180,7 +178,7 @@ core::Core::createDatabaseFromFile(std::string aFileName) noexcept
 void
 core::Core::populateDatabaseFromFile(std::string aFileName) noexcept
 {
-    data::DatabaseQuery DBQ(mDBS);
+    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
 
     std::vector<data::ColumnSetting> colums;
     std::ifstream ios(aFileName);
@@ -213,7 +211,7 @@ core::Core::populateDatabaseFromFile(std::string aFileName) noexcept
                 data.emplace_back(s2);
             }
             // TODO:
-            DBQ.insert(s1, data);
+            dbq.insert(s1, data);
             std::getline(ios, s2);
         }
     }

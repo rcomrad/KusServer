@@ -25,6 +25,15 @@
 
 namespace data
 {
+
+struct DBSettings
+{
+    std::string name;
+    std::string user;
+    std::string password;
+    std::string shame;
+};
+
 // using RowArray = std::vector<std::unordered_map<std::string, dom::Any>>;
 using RowArray =
     std::vector<boost::unordered::unordered_map<std::string, dom::Any>>;
@@ -83,6 +92,7 @@ public:
         return result;
     }
 
+    int cnt = 0;
     // TODO: aColums
     template <typename T>
     Table<T> select2(const std::vector<int>& aColums = {},
@@ -102,6 +112,7 @@ public:
             colums = &stock;
         }
 
+        mResultIterator = --mResult.begin();
         while (true)
         {
             step();
@@ -109,25 +120,28 @@ public:
             result.data.emplace_back();
             for (int i = 0; i < colums->size(); ++i)
             {
+                auto num = cnt + i;
+                if (!hasData(num)) break;
                 auto ptr = result.back()[(*colums)[i]];
-                if (!hasData(i)) break;
+
                 switch (result.types[(*colums)[i]])
                 {
                     case data::Type::INT:
-                        *((int*)ptr) = getColumnIntUnsafe(i);
+                        *((int*)ptr) = getColumnIntUnsafe(num);
                         break;
                     case data::Type::BOOL:
-                        *((bool*)ptr) = getColumnBoolUnsafe(i);
+                        *((bool*)ptr) = getColumnBoolUnsafe(num);
                         break;
                     case data::Type::CHARS:
-                        strcpy((char*)ptr, getColumnAsCharsUnsafe(i));
+                        strcpy((char*)ptr, getColumnAsCharsUnsafe(num));
                         break;
                     case data::Type::STRING:
-                        *((std::string*)ptr) = getColumnAsStringUnsafe(i);
+                        *((std::string*)ptr) = getColumnAsStringUnsafe(num);
                         break;
                 }
             }
         }
+        cnt += aColums.size();
 
         return result;
     }
@@ -214,7 +228,7 @@ public:
     //     closeStatment();
     // }
 
-    void handSelect(const data::TableInfoAray& request) noexcept
+    void handSelect(data::TableInfoAray& request) noexcept
     {
         auto tabl = request.getTables();
         auto col  = request.getColumns();

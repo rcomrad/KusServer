@@ -603,6 +603,7 @@ generateGetRouterFile()
     //--------------------------------------------------------------------------------
 
     generator.addInclude("get_handler");
+    generator.addInclude("user_handler");
 
     //--------------------------------------------------------------------------------
 
@@ -616,7 +617,8 @@ generateGetRouterFile()
         "result= mBasicRouterMap[aTableName](args...);return result;\n");
     generator.generateMapTable(
         "mBasicRouterMap", {
-                               {"default", "get::GetHandler::process<data::"}
+                               {"default", "get::GetHandler::process<data::"},
+                               {"user",    "get::UserHandler::process"      }
     });
 
     //--------------------------------------------------------------------------------

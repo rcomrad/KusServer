@@ -24,11 +24,9 @@ public:
         std::string url;
     };
 
-    static crow::json::wvalue uploadFromFile(const crow::request& aReq,
-                                             data::DatabaseQuery& aDBQ);
+    static crow::json::wvalue uploadFromFile(const crow::request& aReq);
 
-    static crow::json::wvalue csvFileUpload(const PlanData& aPlanData,
-                                            data::DatabaseQuery& aDBQ);
+    static crow::json::wvalue csvFileUpload(const PlanData& aPlanData);
 };
 } // namespace post
 

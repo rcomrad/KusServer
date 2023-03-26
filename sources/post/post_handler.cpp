@@ -6,7 +6,6 @@
 
 std::string
 post::PostHandler::uploadFile(crow::multipart::message& aMsg,
-                              data::DatabaseQuery& aDBQ,
                               std::string aPathPrefix)
 {
     if (aPathPrefix.empty()) aPathPrefix = dom::Path::getPath("upload").value();
@@ -15,12 +14,13 @@ post::PostHandler::uploadFile(crow::multipart::message& aMsg,
     auto fileName = aMsg.get_part_by_name("filename").body;
     auto file     = aMsg.get_part_by_name("file").body;
 
-    auto table = aDBQ.getData<data::File>();
+    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
+    auto table = dbq.getData<data::File>();
 
     std::string filePath =
         aPathPrefix + std::to_string(table[0].num++) + "-" + fileName;
 
-    aDBQ.update<data::File>(table);
+    dbq.update<data::File>(table);
 
     auto file_handler = std::ofstream(filePath);
     file_handler << file;
@@ -33,9 +33,7 @@ void
 post::PostHandler::transmitToMTMHandler(const std::string aTableName,
                                         int aID,
                                         bool aIsAdding,
-                                        std::vector<int> aIDForInsert,
-                                        data::DatabaseQuery& aDBQ)
+                                        std::vector<int> aIDForInsert)
 {
-    PostRouter::manyToManyRouter(aTableName, aID, aIsAdding, aIDForInsert,
-                                 aDBQ);
+    PostRouter::manyToManyRouter(aTableName, aID, aIsAdding, aIDForInsert);
 }

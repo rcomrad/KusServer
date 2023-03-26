@@ -16,15 +16,35 @@ class GetHandler
 {
 public:
     static crow::json::wvalue mainGet(const std::string& aRequest,
-                                      const std::string& aCondition,
-                                      data::DBSettings& aDBS) noexcept;
+                                      const std::string& aCondition) noexcept;
 
     template <typename T>
     static crow::json::wvalue process(const std::vector<int>& aColumn,
                                       data::DatabaseQuery& aDBQ) noexcept
     {
+        auto tableList = getTableAsList<T>(aColumn, aDBQ);
+        crow::json::wvalue result;
+        result[T::tableName] = std::move(tableList);
+        return result;
+
+        // crow::json::wvalue result;
+        // if (tableList.size() == 1)
+        // {
+        //     result[table.getTableName()] = std::move(tableList[0]);
+        // }
+        // else
+        // {
+        //     result[table.getTableName() + "s"] = std::move(tableList);
+        // }
+    }
+
+protected:
+    template <typename T>
+    static crow::json::wvalue::list getTableAsList(
+        const std::vector<int>& aColumn, data::DatabaseQuery& aDBQ) noexcept
+    {
         auto table = aDBQ.select2<T>(aColumn);
-        crow::json::wvalue::list tableList;
+        crow::json::wvalue::list result;
 
         for (auto& i : table)
         {
@@ -39,29 +59,19 @@ public:
                         if (*(int*)i[indx] != 0) temp[name] = *(int*)i[indx];
                         break;
                     case data::Type::BOOL:
-                    // TODO: 
+                        // TODO:
                         temp[name] = *(bool*)i[indx];
                         break;
                     case data::Type::CHARS:
                         temp[name] = std::string((char*)i[indx]);
                         break;
                     case data::Type::STRING:
-                        if ((*(std::string*)i[indx])[0] != 0) temp[name] = *(std::string*)i[indx];
+                        if ((*(std::string*)i[indx])[0] != 0)
+                            temp[name] = *(std::string*)i[indx];
                         break;
                 }
             }
-            tableList.emplace_back(std::move(temp));
-        }
-
-        crow::json::wvalue result;
-
-        if (tableList.size() == 1)
-        {
-            result[table.getTableName()] = std::move(tableList[0]);
-        }
-        else
-        {
-            result[table.getTableName() + "s"] = std::move(tableList);
+            result.emplace_back(std::move(temp));
         }
 
         return result;

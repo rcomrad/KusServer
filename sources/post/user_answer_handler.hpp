@@ -10,8 +10,7 @@ namespace post
 class UserAnswerHandler : public PostHandler
 {
 public:
-    static crow::json::wvalue process(const crow::request& aReq,
-                                      data::DatabaseQuery& aDBQ);
+    static crow::json::wvalue process(const crow::request& aReq);
 
 private:
     static core::ProgramState& mProgramState;

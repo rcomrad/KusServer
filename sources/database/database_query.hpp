@@ -7,6 +7,7 @@
 #include <mutex>
 #include <optional>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "domain/string.hpp"
@@ -20,7 +21,14 @@ namespace data
 class DatabaseQuery
 {
 public:
+    enum class UserType
+    {
+        ADMIN,
+        USER
+    };
+
     DatabaseQuery(const DBSettings& aDBS) noexcept;
+    DatabaseQuery(const UserType& aType) noexcept;
     ~DatabaseQuery() = default;
 
     DatabaseQuery(const DatabaseQuery& other)            = delete;
@@ -47,7 +55,7 @@ public:
         return mDatabase.select2<T>(args...);
     }
 
-    void handSelect(const data::TableInfoAray& request) noexcept
+    void handSelect(data::TableInfoAray& request) noexcept
     {
         mDatabase.handSelect(request);
     }
@@ -94,6 +102,11 @@ public:
 
 private:
     Postgresql mDatabase;
+
+    static std::unordered_map<UserType, data::DBSettings> mUserTypeSettings;
+
+    static std::unordered_map<UserType, data::DBSettings> getUserTypeSettings()
+        noexcept;
 };
 } // namespace data
 

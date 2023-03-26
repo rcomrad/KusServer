@@ -173,15 +173,17 @@ data::TableInfoAray::getTables() const noexcept
 }
 
 std::string
-data::TableInfoAray::getColumns() const noexcept
+data::TableInfoAray::getColumns() noexcept
 {
     std::string result;
 
+    // int cnt = 0;
     for (auto& i : arr)
     {
         for (auto& j : i.rowNames)
         {
             result += i.fullName + "." + j + ", ";
+            // i.rowNumbers.emplace_back(cnt++);
         }
     }
 

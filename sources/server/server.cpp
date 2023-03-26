@@ -13,7 +13,7 @@
 
 #include "get/get_handler.hpp"
 
-serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
+serv::Server::Server()
 {
     crow::App<crow::CORSHandler> app;
     auto& cors = app.get_middleware<crow::CORSHandler>();
@@ -122,17 +122,17 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
 
     CROW_ROUTE(app, "/api/get/all/<string>")
     ([&](std::string aRequest)
-     { return get::GetHandler::mainGet(aRequest, "", mDBS); });
+     { return get::GetHandler::mainGet(aRequest, ""); });
 
     CROW_ROUTE(app, "/api/get/by_id/<string>/<string>")
     ([&](std::string aRequest, std::string aID)
-     { return get::GetHandler::mainGet(aRequest, "~id = " + aID, mDBS); });
+     { return get::GetHandler::mainGet(aRequest, "~id = " + aID); });
 
     CROW_ROUTE(app, "/api/get/if/<string>/<string>")
     (
         [&](std::string aRequest, std::string aCondition) {
-            return get::GetHandler::mainGet(aRequest, std::move(aCondition),
-                                            mDBS);
+            return get::GetHandler::mainGet(aRequest, std::move(aCondition)
+                                            );
         });
 
     //---------------------------------------------------------------------
@@ -148,8 +148,7 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
             [&](const crow::request& req, std::string aTableName)
             {
                 crow::response res;
-                data::DatabaseQuery dbq(mDBS);
-                res = post::PostRouter::dropRouter(aTableName, req, dbq);
+                res = post::PostRouter::dropRouter(aTableName, req);
                 return res;
             });
 
@@ -160,8 +159,7 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
             [&](const crow::request& req, std::string aTableName)
             {
                 crow::response res;
-                data::DatabaseQuery dbq(mDBS);
-                res = post::PostRouter::basicRouter(aTableName, req, dbq);
+                res = post::PostRouter::basicRouter(aTableName, req);
                 return res;
             });
 
@@ -170,8 +168,7 @@ serv::Server::Server(data::DBSettings aDBS) : mDBS(aDBS)
             [&](const crow::request& req, std::string aTableName)
             {
                 crow::response res;
-                data::DatabaseQuery dbq(mDBS);
-                res = post::PostRouter::uploadRouter(aTableName, req, dbq);
+                res = post::PostRouter::uploadRouter(aTableName, req);
                 return res;
             });
 

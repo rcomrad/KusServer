@@ -6,39 +6,35 @@
 
 crow::json::wvalue
 get::GetHandler::mainGet(const std::string& aRequest,
-                         const std::string& aCondition,
-                         data::DBSettings& aDBS) noexcept
+                         const std::string& aCondition) noexcept
 {
     crow::json::wvalue result;
 
     data::DataRequest req(aRequest, aCondition);
-    data::DatabaseQuery dbq(aDBS);
+    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
     for (auto& i : req)
     {
         dbq.handSelect(i);
 
-        // crow::json::wvalue::list temp;
         std::vector<crow::json::wvalue> temp;
         for (auto& j : i)
         {
-            // result = get::GetRouter::basicRouter(j.trueName, j.rowNumbers,
-            // dbq);
             temp.emplace_back(
                 get::GetRouter::basicRouter(j.trueName, j.rowNumbers, dbq));
         }
         dbq.handClose();
 
-        // for (auto& i : std::ranges::reverse_view(temp))
         for (size_t j = temp.size() - 1; j >= 1; --j)
         {
-            auto& curName    = i[j].jsonName;
-            auto num         = i[j].parentNum;
-            auto& targetName = i[num].jsonName;
+            auto& curName1   = i[j].jsonName;
+            auto& curName2   = i[j].trueName;
+            auto& targetNum  = i[j].parentNum;
+            auto& targetName = i[targetNum].trueName;
 
-            for (size_t k = 0; k < temp[num][targetName].size(); ++k)
+            for (size_t k = 0; k < temp[targetNum][targetName].size(); ++k)
             {
-                temp[num][targetName][k][curName] =
-                    std::move(temp[j][curName][k]);
+                temp[targetNum][targetName][k][curName1] =
+                    std::move(temp[j][curName2][k]);
             }
         }
 

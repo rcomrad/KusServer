@@ -18,8 +18,7 @@ namespace post
 class MarkHandler : protected PostHandler
 {
 public:
-    static crow::json::wvalue process(const crow::request& aReq,
-                                      data::DatabaseQuery& aDBQ);
+    static crow::json::wvalue process(const crow::request& aReq);
 };
 } // namespace post
 

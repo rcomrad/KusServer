@@ -4,8 +4,7 @@
 #include <string>
 
 crow::json::wvalue
-post::PlanHandler::uploadFromFile(const crow::request& aReq,
-                                  data::DatabaseQuery& aDBQ)
+post::PlanHandler::uploadFromFile(const crow::request& aReq)
 {
     crow::json::wvalue res;
     crow::multipart::message msg(aReq);
@@ -13,29 +12,30 @@ post::PlanHandler::uploadFromFile(const crow::request& aReq,
     std::string type = msg.get_part_by_name("index").body;
 
     PlanData data;
-    data.url = uploadFile(msg, aDBQ);
+    data.url = uploadFile(msg);
 
     if (type == "csv")
     {
         data.name      = msg.get_part_by_name("name").body;
         data.subjectID = std::stoi(msg.get_part_by_name("subject_id").body);
-        res            = csvFileUpload(data, aDBQ);
+        res            = csvFileUpload(data);
     }
 
     return res;
 }
 
 crow::json::wvalue
-post::PlanHandler::csvFileUpload(const PlanData& aPlanData,
-                                 data::DatabaseQuery& aDBQ)
+post::PlanHandler::csvFileUpload(const PlanData& aPlanData)
 {
+    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
+
     data::Table<data::Plan> plan(1);
     plan.back().name       = aPlanData.name;
     plan.back().subject_id = aPlanData.subjectID;
     plan.back().url        = aPlanData.url;
 
-    aDBQ.update<data::Plan>(plan);
-    plan = aDBQ.getData<data::Plan>("url = " + data::wrap(plan[0].url));
+    dbq.update<data::Plan>(plan);
+    plan = dbq.getData<data::Plan>("url = " + data::wrap(plan[0].url));
     std::ifstream file(plan[0].url);
 
     std::string name;
@@ -49,7 +49,7 @@ post::PlanHandler::csvFileUpload(const PlanData& aPlanData,
         themes.back().plan_id    = plan[0].id;
         std::getline(file, name, '\n');
     }
-    aDBQ.update<data::Theme>(themes);
+    dbq.update<data::Theme>(themes);
 
     return {200};
 }

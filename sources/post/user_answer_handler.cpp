@@ -6,16 +6,16 @@ core::ProgramState& post::UserAnswerHandler::mProgramState =
     core::ProgramState::getInstance();
 
 crow::json::wvalue
-post::UserAnswerHandler::process(const crow::request& aReq,
-                                 data::DatabaseQuery& aDBQ)
+post::UserAnswerHandler::process(const crow::request& aReq)
 {
     auto body  = crow::json::load(aReq.body);
     auto table = parseRequest<data::User_answer>(body).table;
+    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
 
     table[0].is_correct = '?';
     if (mProgramState.isCheckAnswersTurnOn())
     {
-        auto ansTable = aDBQ.getData<data::Question>(
+        auto ansTable = dbq.getData<data::Question>(
             "id = " + data::wrap(table[0].question_id));
         auto answer = ansTable[0].jury_answer;
 
@@ -32,6 +32,6 @@ post::UserAnswerHandler::process(const crow::request& aReq,
         table[0].true_time = "NUN";
     }
 
-    auto res = aDBQ.update(table);
+    auto res = dbq.update(table);
     return {res};
 }

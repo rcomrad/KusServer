@@ -40,18 +40,18 @@ private:
 
 public:
     template <typename T>
-    static crow::json::wvalue process(const crow::request& aReq,
-                                      data::DatabaseQuery& aDBQ)
+    static crow::json::wvalue process(const crow::request& aReq)
     {
+        data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
         auto body = crow::json::load(aReq.body);
 
         auto request = parseRequest<T>(body);
-        auto res     = aDBQ.update<T>(request.table);
+        auto res     = dbq.update<T>(request.table);
 
         for (auto& i : request.manyToMany)
         {
             transmitToMTMHandler(i.first, res, request.other.count("add"),
-                                 i.second, aDBQ);
+                                 i.second);
         }
 
         return {res};
@@ -60,9 +60,9 @@ public:
     template <typename T>
     static crow::json::wvalue manyToMany(int aID,
                                          bool aIsAdding,
-                                         std::vector<int> aIDForInsert,
-                                         data::DatabaseQuery& aDBQ)
+                                         std::vector<int> aIDForInsert)
     {
+        data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
         data::Table<T> table;
         table.reserve(16);
 
@@ -70,7 +70,7 @@ public:
         {
             table.emplace_back();
             *(int*)table.back()[1] = aID;
-            aDBQ.drop<T>(table);
+            dbq.drop<T>(table);
             table.pop_back();
         }
 
@@ -80,13 +80,12 @@ public:
             *(int*)table.back()[1] = aID;
             *(int*)table.back()[2] = i;
         }
-        auto res = aDBQ.update<T>(table);
+        auto res = dbq.update<T>(table);
         return {res};
     }
 
     template <typename T>
-    static crow::json::wvalue uploadFromFile(const crow::request& aReq,
-                                             data::DatabaseQuery& aDBQ)
+    static crow::json::wvalue uploadFromFile(const crow::request& aReq)
     {
         // crow::multipart::message msg(aReq);
         // std::string filePath = uploadFile(msg, aDBQ);
@@ -95,20 +94,20 @@ public:
     }
 
     template <typename T>
-    static crow::json::wvalue drop(const crow::request& aReq,
-                                   data::DatabaseQuery& aDBQ)
+    static crow::json::wvalue drop(const crow::request& aReq)
     {
+        data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
         auto req = crow::json::load(aReq.body);
         if (req.begin()->t() != crow::json::type::List)
         {
             auto table = parseRequest<T>(req).table;
-            aDBQ.drop<T>(table);
+            dbq.drop<T>(table);
         }
         else
         {
             std::vector<int> ids;
             for (auto& i : *req.begin()) ids.push_back(i.i());
-            aDBQ.dropByID<T>(ids);
+            dbq.dropByID<T>(ids);
         }
 
         return {};
@@ -225,15 +224,13 @@ public:
     }
 
     static std::string uploadFile(crow::multipart::message& aMsg,
-                                  data::DatabaseQuery& aDBQ,
                                   std::string aPathPrefix = "");
 
 private:
     static void transmitToMTMHandler(const std::string aTableName,
                                      int aID,
                                      bool aIsAdding,
-                                     std::vector<int> aIDForInsert,
-                                     data::DatabaseQuery& aDBQ);
+                                     std::vector<int> aIDForInsert);
 };
 } // namespace post
 

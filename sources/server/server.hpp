@@ -16,7 +16,7 @@ namespace serv
 class Server //: public RequestHandler<Server>
 {
 public:
-    Server(data::DBSettings aDBS);
+    Server();
 
     // std::string uploadFile(crow::multipart::message& msg);
 
@@ -233,9 +233,6 @@ public:
     // }
 
     //--------------------------------------------------------------------------------
-
-private:
-    data::DBSettings mDBS;
 
     // std::vector<std::string> roles;
 

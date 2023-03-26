@@ -7,37 +7,36 @@
 #include <string>
 
 crow::json::wvalue
-post::JournalHandler::process(const crow::request& aReq,
-                              data::DatabaseQuery& aDBQ)
+post::JournalHandler::process(const crow::request& aReq)
 {
+    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
     auto req     = crow::json::load(aReq.body);
     auto journal = parseRequest<data::Journal_table>(req).table;
-    aDBQ.update(journal);
-    makeSchedule(journal[0], aDBQ);
+    dbq.update(journal);
+    makeSchedule(journal[0]);
     return {journal[0].id};
 }
 
 crow::json::wvalue
-post::JournalHandler::uploadFromFile(const crow::request& aReq,
-                                     data::DatabaseQuery& aDBQ)
+post::JournalHandler::uploadFromFile(const crow::request& aReq)
 {
     crow::json::wvalue res;
 
     crow::multipart::message msg(aReq);
-    std::string filePath = uploadFile(msg, aDBQ);
+    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
+    std::string filePath = uploadFile(msg);
 
     std::string type = msg.get_part_by_name("index").body;
     if (type == "data")
     {
-        res = dataFileUpload(filePath, aDBQ);
+        res = dataFileUpload(filePath);
     }
 
     return res;
 }
 
 crow::json::wvalue
-post::JournalHandler::dataFileUpload(const std::string& aFilePath,
-                                     data::DatabaseQuery& aDBQ)
+post::JournalHandler::dataFileUpload(const std::string& aFilePath)
 {
     auto data = dataFileParser<data::Journal_table>(aFilePath, 1);
     for (int i = 0; i < data.table.size(); ++i)
@@ -45,32 +44,34 @@ post::JournalHandler::dataFileUpload(const std::string& aFilePath,
         data.table[i].schedule = std::move(data.additionalLines[i][0]);
     }
 
-    aDBQ.update(data.table);
+    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
+    dbq.update(data.table);
     for (auto& i : data.table)
     {
-        makeSchedule(i, aDBQ);
+        makeSchedule(i);
     }
     return {200};
 }
 
 void
-post::JournalHandler::makeSchedule(data::Journal_table& aJournal,
-                                   data::DatabaseQuery& aDBQ)
+post::JournalHandler::makeSchedule(data::Journal_table& aJournal)
 {
+    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
+
     std::vector<int> schedule;
     for (auto i : aJournal.schedule)
         if (i >= '1' && i <= '7') schedule.emplace_back(i - '0');
 
     data::Table<data::User> methodist =
-        aDBQ.getData<data::User>("id = " + data::wrap(aJournal.methodist_id));
+        dbq.getData<data::User>("id = " + data::wrap(aJournal.methodist_id));
 
     data::Table<data::Theme> themes =
-        aDBQ.getData<data::Theme>("plan_id = " + data::wrap(aJournal.plan_id));
+        dbq.getData<data::Theme>("plan_id = " + data::wrap(aJournal.plan_id));
 
     int methodistID = 0;
     if (methodist.size()) methodistID = methodist[0].school_id;
     data::Table<data::School> school =
-        aDBQ.getData<data::School>("id = " + data::wrap(methodistID));
+        dbq.getData<data::School>("id = " + data::wrap(methodistID));
 
     int schoolID  = 0;
     uint16_t year = 1991;
@@ -86,7 +87,7 @@ post::JournalHandler::makeSchedule(data::Journal_table& aJournal,
     };
 
     data::Table<data::Holiday> holidays =
-        aDBQ.getData<data::Holiday>("school_id = " + data::wrap(schoolID));
+        dbq.getData<data::Holiday>("school_id = " + data::wrap(schoolID));
 
     boost::gregorian::date startDate{year, month, day};
     boost::gregorian::date date = startDate;
@@ -135,5 +136,5 @@ post::JournalHandler::makeSchedule(data::Journal_table& aJournal,
         ++i;
     }
 
-    aDBQ.update<data::Lesson>(lessons);
+    dbq.update<data::Lesson>(lessons);
 }

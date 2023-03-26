@@ -5,6 +5,7 @@
 
 #include <boost/date_time/gregorian/gregorian.hpp>
 
+#include <fstream>
 #include <set>
 #include <vector>
 
@@ -12,8 +13,42 @@
 
 #include "sql_wrapper.hpp"
 
+//--------------------------------------------------------------------------------
+
+std::unordered_map<data::DatabaseQuery::UserType, data::DBSettings>
+    data::DatabaseQuery::mUserTypeSettings = getUserTypeSettings();
+
+std::unordered_map<data::DatabaseQuery::UserType, data::DBSettings>
+data::DatabaseQuery::getUserTypeSettings() noexcept
+{
+    std::unordered_map<UserType, data::DBSettings> result;
+
+    std::ifstream inp("database.pass");
+    data::DBSettings DBS;
+    int num;
+    while (inp >> num)
+    {
+        inp >> DBS.name;
+        inp >> DBS.user;
+        inp >> DBS.password;
+        inp >> DBS.shame;
+
+        result[data::DatabaseQuery::UserType(num)] = DBS;
+    }
+
+    return result;
+}
+
+//--------------------------------------------------------------------------------
+
 data::DatabaseQuery::DatabaseQuery(const DBSettings& aDBS) noexcept
     : mDatabase(aDBS)
+{
+    WRITE_LOG("Creating_database_quare");
+}
+
+data::DatabaseQuery::DatabaseQuery(const UserType& aType) noexcept
+    : mDatabase(mUserTypeSettings[aType])
 {
     WRITE_LOG("Creating_database_quare");
 }

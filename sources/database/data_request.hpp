@@ -32,7 +32,7 @@ class TableInfoAray
 {
 public:
     std::string getTables() const noexcept;
-    std::string getColumns() const noexcept;
+    std::string getColumns() noexcept;
     const std::string& getCondition() const noexcept;
 
     TableInfo& operator[](size_t num) noexcept;
@@ -127,13 +127,13 @@ private:
         auto it = aTableNames.find(aName);
         if (it != aTableNames.end())
         {
-            aName = it->second;
+            result = it->second;
         }
         else
         {
             result = std::forward<T>(aName);
         }
-        return aName;
+        return result;
     }
 };
 

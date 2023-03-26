@@ -18,11 +18,11 @@ class GradeHandler : protected PostHandler
 {
 public:
     template <typename T1, typename T2>
-    static crow::json::wvalue process(const crow::request& aReq,
-                                      data::DatabaseQuery& aDBQ)
+    static crow::json::wvalue process(const crow::request& aReq)
     {
+        data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
         auto req              = crow::json::load(req.body);
-        data::Table<T1> table = getStruct<T1>(req, aDBQ);
+        data::Table<T1> table = getStruct<T1>(req, dbq);
         aDBQ.update<T1>(table);
 
         data::Table<T2> students;

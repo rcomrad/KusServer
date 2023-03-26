@@ -27,14 +27,6 @@ struct ColumnSetting
                   std::string aInfo = "") noexcept;
 };
 
-struct DBSettings
-{
-    std::string name;
-    std::string user;
-    std::string password;
-    std::string shame;
-};
-
 enum class Type
 {
     NUN,
