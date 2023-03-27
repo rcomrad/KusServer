@@ -11,6 +11,7 @@
 #include "crow/middlewares/cors.h"
 #include "get/get_handler.hpp"
 #include "post/post_router.hpp"
+#include "post/user_handler.hpp"
 
 serv::Server::Server()
 {
@@ -216,26 +217,28 @@ serv::Server::Server()
 
     //---------------------------------------------------------------------
 
-    // CROW_ROUTE(app, "/api/login")
-    //     .methods("POST"_method)(
-    //         [&](const crow::request& req)
-    //         {
-    //             auto x    = crow::json::load(req.body);
-    //             auto resp = crow::response(400);
-    //             if (x)
-    //             {
-    //                 data::DatabaseQuery dbq(mDBS);
-    //                 auto user =
-    //                     post::PostHandler::parseRequest<data::User>(x).table;
-    //                 std::string cond = "~login = \'" + user[0].login +
-    //                                    "\' AND " + "password = \'" +
-    //                                    user[0].password + "\'";
-    //                 resp = get("user", std::move(cond));
-    //             }
-    //             return resp;
-    //         });
-    // TODO:
-    // { return post::UserHandler::autorisation(req, mDBS); });
+    CROW_ROUTE(app, "/api/login")
+        .methods("POST"_method)(
+            [&](const crow::request& req)
+            {
+                crow::response res;
+                res = post::UserHandler::autorisation(req);
+                return res;
+
+                // auto x    = crow::json::load(req.body);
+                // auto resp = crow::response(400);
+                // if (x)
+                // {
+                //     data::DatabaseQuery dbq(mDBS);
+                //     auto user =
+                //         post::PostHandler::parseRequest<data::User>(x).table;
+                //     std::string cond = "~login = \'" + user[0].login +
+                //                        "\' AND " + "password = \'" +
+                //                        user[0].password + "\'";
+                //     resp = get("user", std::move(cond));
+                // }
+                // return resp;
+            });
 
     //---------------------------------------------------------------------
 

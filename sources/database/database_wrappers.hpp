@@ -254,6 +254,16 @@ public:
         return res;
     }
 
+    void turnOffEmptyColumns()
+    {
+    }
+
+    void turnOffColumn(const std::string& aColumnName)
+    {
+        // names[aColumnName] *= -1;
+        names.erase(aColumnName);
+    }
+
 public:
     std::unordered_map<std::string, uint8_t> names;
     std::vector<data::Type> types;

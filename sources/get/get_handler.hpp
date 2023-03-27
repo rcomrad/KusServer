@@ -3,6 +3,8 @@
 
 //--------------------------------------------------------------------------------
 
+#include <unordered_set>
+
 #include "database/data_request.hpp"
 #include "database/database_query.hpp"
 
@@ -37,8 +39,7 @@ public:
 
 protected:
     template <typename T>
-    static crow::json::wvalue::list getTableAsList(
-        const data::Table<T>& aTable) noexcept
+    static crow::json::wvalue::list getTableAsList(const data::Table<T>& aTable) noexcept
     {
         crow::json::wvalue::list result;
 

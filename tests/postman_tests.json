@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "8babbc00-fdbd-41c7-9bc3-416f21547c81",
+		"_postman_id": "1a130d45-5612-44a7-8208-0836bc702bca",
 		"name": "KusJournalTester",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "25083981"
+		"_exporter_id": "3947988"
 	},
 	"item": [
 		{
@@ -13,8 +13,12 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"No any journals\", function () {\r",
-							"    pm.response.to.have.status(401);\r",
+							"pm.test(\"Plan created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"schools\": []\r",
+							"    };\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -125,8 +129,12 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"User table is empty\", function () {\r",
-							"    pm.response.to.have.status(401);\r",
+							"pm.test(\"Plan created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"users\": []\r",
+							"    };\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -593,8 +601,12 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"No any journals\", function () {\r",
-							"    pm.response.to.have.status(401);\r",
+							"pm.test(\"Plan created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"plans\": []\r",
+							"    };\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -630,8 +642,12 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"No any journals\", function () {\r",
-							"    pm.response.to.have.status(401);\r",
+							"pm.test(\"Plan created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"themes\": []\r",
+							"    };\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -940,8 +956,12 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"No any journals\", function () {\r",
-							"    pm.response.to.have.status(401);\r",
+							"pm.test(\"Plan created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"journal_tables\": []\r",
+							"    };\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -977,8 +997,12 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"No any journals\", function () {\r",
-							"    pm.response.to.have.status(401);\r",
+							"pm.test(\"Plan created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"lessons\": []\r",
+							"    };\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -1209,8 +1233,12 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"No any grades\", function () {\r",
-							"    pm.response.to.have.status(401);\r",
+							"pm.test(\"Plan created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"marks\": []\r",
+							"    };\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -1506,8 +1534,12 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"No any journals\", function () {\r",
-							"    pm.response.to.have.status(401);\r",
+							"pm.test(\"Plan created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"journal_tables\": []\r",
+							"    };\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -1543,8 +1575,12 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"No any grades\", function () {\r",
-							"    pm.response.to.have.status(401);\r",
+							"pm.test(\"Plan created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"grades\": []\r",
+							"    };\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -1961,8 +1997,12 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"No any journals\", function () {\r",
-							"    pm.response.to.have.status(401);\r",
+							"pm.test(\"Plan created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"journal_tables\": []\r",
+							"    };\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -2080,8 +2120,12 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"No any journals\", function () {\r",
-							"    pm.response.to.have.status(401);\r",
+							"pm.test(\"Plan created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"journal_tables\": []\r",
+							"    };\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
 							"});"
 						],
 						"type": "text/javascript"

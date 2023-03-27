@@ -4,7 +4,8 @@ crow::json::wvalue
 get::UserHandler::process(const std::vector<int>& aColumn,
                           data::DatabaseQuery& aDBQ) noexcept
 {
-    auto table     = aDBQ.select2<data::User>(aColumn);
+    auto table = aDBQ.select2<data::User>(aColumn);
+    table.turnOffColumn("role_id");
     auto tableList = getTableAsList(table);
 
     if (table.size() > 0 && table[0].role_id != 0)

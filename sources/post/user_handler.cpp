@@ -2,6 +2,8 @@
 
 #include <sstream>
 
+#include "get/get_handler.hpp"
+
 crow::json::wvalue
 post::UserHandler::process(const crow::request& aReq)
 {
@@ -96,10 +98,19 @@ post::UserHandler::autorisation(const crow::request& aReq)
     {
         // data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
         auto user        = parseRequest<data::User>(x).table;
-        std::string cond = "~login = \'" + user[0].login + "\' AND " +
+        std::string cond = "login = \'" + user[0].login + "\' AND " +
                            "password = \'" + user[0].password + "\'";
         // TODO:
-        // resp = serv::Server::get("user", std::move(cond));
+        auto userJson = get::GetHandler::singlGet("user", std::move(cond));
+        if (userJson.t() != crow::json::type::Null)
+        {
+            resp = userJson;
+        }
+        else
+        {
+            resp = {401};
+        }
     }
+    // resp = crow::response(401);
     return resp;
 }
