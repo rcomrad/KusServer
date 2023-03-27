@@ -5,6 +5,38 @@
 #include "get_router.hpp"
 
 crow::json::wvalue
+get::GetHandler::singlGet(const std::string& aRequest,
+                          const std::string& aCondition) noexcept
+{
+    crow::json::wvalue result = {401};
+
+    auto temp = mainGet(aRequest, aCondition);
+    auto keys = temp.keys();
+    if (keys.size() > 0)
+    {
+        result[keys[0]] = std::move(temp[keys[0]][0]);
+    }
+
+    return result;
+}
+
+crow::json::wvalue
+get::GetHandler::multiplelGet(const std::string& aRequest,
+                              const std::string& aCondition) noexcept
+{
+    crow::json::wvalue result = {401};
+
+    auto temp = mainGet(aRequest, aCondition);
+    auto keys = temp.keys();
+    if (keys.size() > 0)
+    {
+        result[keys[0] + "s"] = std::move(temp[keys[0]]);
+    }
+
+    return result;
+}
+
+crow::json::wvalue
 get::GetHandler::mainGet(const std::string& aRequest,
                          const std::string& aCondition) noexcept
 {

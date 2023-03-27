@@ -9,9 +9,8 @@
 
 #include "core/program_state.hpp"
 #include "crow/middlewares/cors.h"
-#include "post/post_router.hpp"
-
 #include "get/get_handler.hpp"
+#include "post/post_router.hpp"
 
 serv::Server::Server()
 {
@@ -122,17 +121,17 @@ serv::Server::Server()
 
     CROW_ROUTE(app, "/api/get/all/<string>")
     ([&](std::string aRequest)
-     { return get::GetHandler::mainGet(aRequest, ""); });
+     { return get::GetHandler::multiplelGet(aRequest, ""); });
 
     CROW_ROUTE(app, "/api/get/by_id/<string>/<string>")
     ([&](std::string aRequest, std::string aID)
-     { return get::GetHandler::mainGet(aRequest, "~id = " + aID); });
+     { return get::GetHandler::singlGet(aRequest, "id = " + aID); });
 
     CROW_ROUTE(app, "/api/get/if/<string>/<string>")
     (
         [&](std::string aRequest, std::string aCondition) {
-            return get::GetHandler::mainGet(aRequest, std::move(aCondition)
-                                            );
+            return get::GetHandler::multiplelGet(aRequest,
+                                                 std::move(aCondition));
         });
 
     //---------------------------------------------------------------------

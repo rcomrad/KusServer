@@ -17,6 +17,11 @@ class UserHandler : public GetHandler
 public:
     static crow::json::wvalue process(const std::vector<int>& aColumn,
                                       data::DatabaseQuery& aDBQ) noexcept;
+
+    static std::vector<std::string> mRoles;
+
+private:
+    static std::vector<std::string> getAllRoles() noexcept;
 };
 } // namespace get
 

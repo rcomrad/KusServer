@@ -142,16 +142,18 @@ data::DataRequest::DataRequest(const std::string& aRequest,
         }
     }
 
+    if (aCondition.size() == 0) return;
     curNum = 0;
     last   = 0;
-    for (iter = 0; iter < aCondition.size(); ++iter)
+    for (iter = 0; iter < aCondition.size() + 1; ++iter)
     {
         if (aCondition[iter] == ';' || aCondition[iter] == '\0')
         {
             if (curNum >= request.size()) break;
 
-            request[curNum].mCondition = aCondition.substr(last, iter);
-            last                       = iter + 1;
+            request[curNum].mCondition += request[0][0].fullName + ".";
+            request[curNum].mCondition += aCondition.substr(last, iter);
+            last = iter + 1;
 
             curNum++;
         }

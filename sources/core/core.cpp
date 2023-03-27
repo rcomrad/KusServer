@@ -19,25 +19,6 @@
 core::Core::Core() noexcept
 {
     generateDatabaseStructuresFiles();
-
-    mDBS.name     = "journal_db";
-    mDBS.user     = "journal_user";
-    mDBS.password = "111";
-    mDBS.shame    = "journal";
-
-    mAdminDBS.name     = "postgres";
-    mAdminDBS.user     = "postgres";
-    mAdminDBS.password = "111";
-    mAdminDBS.shame    = "public";
-
-    std::ifstream ios("database.pass");
-    if (!ios.is_open())
-    {
-        std::cout << "NO DATABASE PASSWORD FILE DETECTED!\n";
-        exit(0);
-    }
-    ios >> mAdminDBS.password >> mDBS.password;
-
     mApps["server"] = std::move(std::thread(&Core::serverThread, this));
 }
 
@@ -140,7 +121,7 @@ core::Core::serverThread() noexcept
 void
 core::Core::createDatabaseFromFile(std::string aFileName) noexcept
 {
-    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::ADMIN);
+    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
 
     std::vector<data::ColumnSetting> colums;
     std::ifstream ios(aFileName);
@@ -220,13 +201,13 @@ core::Core::populateDatabaseFromFile(std::string aFileName) noexcept
 void
 core::Core::createEnvironment() noexcept
 {
-    data::DatabaseQuery DBQ(mAdminDBS);
-    DBQ.createEnvironment(mDBS);
+    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::ADMIN);
+    dbq.createEnvironment(data::DatabaseQuery::UserType::USER);
 }
 
 void
 core::Core::deleteEnvironment() noexcept
 {
-    data::DatabaseQuery DBQ(mAdminDBS);
-    DBQ.dropDatabase(mDBS);
+    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::ADMIN);
+    dbq.dropDatabase(data::DatabaseQuery::UserType::USER);
 }

@@ -92,8 +92,8 @@ public:
 
     void createTable(const std::string& aTableName,
                      const std::vector<ColumnSetting>& aColumns) noexcept;
-    void createEnvironment(const DBSettings& aDBS) noexcept;
-    void dropDatabase(const DBSettings& aDBS) noexcept;
+    void createEnvironment(const UserType& aType) noexcept;
+    void dropDatabase(const UserType& aType) noexcept;
 
     std::vector<data::Type> getColumnTypes(
         const std::string& aTableName) noexcept;
@@ -105,8 +105,8 @@ private:
 
     static std::unordered_map<UserType, data::DBSettings> mUserTypeSettings;
 
-    static std::unordered_map<UserType, data::DBSettings> getUserTypeSettings()
-        noexcept;
+    static std::unordered_map<UserType, data::DBSettings>
+    getUserTypeSettings() noexcept;
 };
 } // namespace data
 

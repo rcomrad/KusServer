@@ -35,8 +35,6 @@ public:
 
 private:
     std::map<std::string, std::thread> mApps;
-    data::DBSettings mAdminDBS;
-    data::DBSettings mDBS;
 
     void serverThread() noexcept;
     void createDatabaseFromFile(std::string aFileName) noexcept;

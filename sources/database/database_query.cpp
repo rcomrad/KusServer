@@ -64,15 +64,15 @@ data::DatabaseQuery::createTable(
 }
 
 void
-data::DatabaseQuery::createEnvironment(const DBSettings& aDBS) noexcept
+data::DatabaseQuery::createEnvironment(const UserType& aType) noexcept
 {
-    mDatabase.createEnvironment(aDBS);
+    mDatabase.createEnvironment(mUserTypeSettings[aType]);
 }
 
 void
-data::DatabaseQuery::dropDatabase(const DBSettings& aDBS) noexcept
+data::DatabaseQuery::dropDatabase(const UserType& aType) noexcept
 {
-    mDatabase.deleteDatabase(aDBS.name);
+    mDatabase.deleteDatabase(mUserTypeSettings[aType].name);
 }
 
 //--------------------------------------------------------------------------------

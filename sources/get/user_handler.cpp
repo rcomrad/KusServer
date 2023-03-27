@@ -4,38 +4,43 @@ crow::json::wvalue
 get::UserHandler::process(const std::vector<int>& aColumn,
                           data::DatabaseQuery& aDBQ) noexcept
 {
-    auto tableList = getTableAsList<data::User>(aColumn, aDBQ);
+    auto table     = aDBQ.select2<data::User>(aColumn);
+    auto tableList = getTableAsList(table);
+
+    if (table.size() > 0 && table[0].role_id != 0)
+    {
+        for (int num = 0; num < table.size(); ++num)
+        {
+            crow::json::wvalue::list roleList;
+            int role = table[num].role_id;
+            for (int i = 0; i < mRoles.size(); ++i, role >>= 1)
+            {
+                if (role & 1)
+                {
+                    roleList.emplace_back(mRoles[i]);
+                }
+            }
+            tableList[num]["role"] = std::move(roleList);
+        }
+    }
+
     crow::json::wvalue result;
     result["user"] = std::move(tableList);
-    // result[data::User::tableName] = std::move(tableList);
+    return result;
+}
 
-    // if ()
-    // {
-    // }
-    // data::DatabaseQuery dbq(mDBS);
-    // auto table  = dbq.getData<data::Role>();
-    // int nameNum = table.names["name"];
-    // for (auto& i : table)
-    // {
-    //     roles.emplace_back(*(std::string*)i[nameNum]);
-    // }
+std::vector<std::string> get::UserHandler::mRoles = getAllRoles();
 
-    // auto it = aCondition.end();
-    // while (*(--it) != ' ')
-    //     ;
-    // std::string temp(it, aCondition.end());
-    // // std::cout << temp << "\n";
-    // int rol = std::stoi(temp);
-
-    // for (int i = 0; rol; ++i)
-    // {
-    //     if (rol & 1)
-    //     {
-    //         res.emplace_back(roles[i]);
-    //     }
-
-    //     rol >>= 1;
-    // }
-
+std::vector<std::string>
+get::UserHandler::getAllRoles() noexcept
+{
+    std::vector<std::string> result;
+    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
+    auto table = dbq.getData<data::Role>();
+    result.reserve(table.size());
+    for (auto& rol : table)
+    {
+        result.emplace_back(std::move(rol.name));
+    }
     return result;
 }

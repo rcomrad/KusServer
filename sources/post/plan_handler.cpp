@@ -34,8 +34,8 @@ post::PlanHandler::csvFileUpload(const PlanData& aPlanData)
     plan.back().subject_id = aPlanData.subjectID;
     plan.back().url        = aPlanData.url;
 
-    dbq.update<data::Plan>(plan);
-    plan = dbq.getData<data::Plan>("url = " + data::wrap(plan[0].url));
+    plan.back().id = dbq.update<data::Plan>(plan);
+
     std::ifstream file(plan[0].url);
 
     std::string name;

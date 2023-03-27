@@ -15,6 +15,12 @@ namespace get
 class GetHandler
 {
 public:
+    static crow::json::wvalue singlGet(const std::string& aRequest,
+                                       const std::string& aCondition) noexcept;
+
+    static crow::json::wvalue multiplelGet(
+        const std::string& aRequest, const std::string& aCondition) noexcept;
+
     static crow::json::wvalue mainGet(const std::string& aRequest,
                                       const std::string& aCondition) noexcept;
 
@@ -22,38 +28,28 @@ public:
     static crow::json::wvalue process(const std::vector<int>& aColumn,
                                       data::DatabaseQuery& aDBQ) noexcept
     {
-        auto tableList = getTableAsList<T>(aColumn, aDBQ);
+        auto table     = aDBQ.select2<T>(aColumn);
+        auto tableList = getTableAsList(table);
         crow::json::wvalue result;
         result[T::tableName] = std::move(tableList);
         return result;
-
-        // crow::json::wvalue result;
-        // if (tableList.size() == 1)
-        // {
-        //     result[table.getTableName()] = std::move(tableList[0]);
-        // }
-        // else
-        // {
-        //     result[table.getTableName() + "s"] = std::move(tableList);
-        // }
     }
 
 protected:
     template <typename T>
     static crow::json::wvalue::list getTableAsList(
-        const std::vector<int>& aColumn, data::DatabaseQuery& aDBQ) noexcept
+        const data::Table<T>& aTable) noexcept
     {
-        auto table = aDBQ.select2<T>(aColumn);
         crow::json::wvalue::list result;
 
-        for (auto& i : table)
+        for (auto& i : aTable)
         {
             crow::json::wvalue temp;
-            for (auto& col : table.names)
+            for (auto& col : aTable.names)
             {
                 auto& name = col.first;
                 auto indx  = col.second;
-                switch (table.types[indx])
+                switch (aTable.types[indx])
                 {
                     case data::Type::INT:
                         if (*(int*)i[indx] != 0) temp[name] = *(int*)i[indx];
