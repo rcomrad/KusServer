@@ -176,8 +176,7 @@ public:
         return result;
     }
 
-    // TODO: remove public!
-public:
+protected:
     template <typename T>
     static auto parseRequest(const crow::json::rvalue& aReq) noexcept
     {

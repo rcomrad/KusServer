@@ -11,4 +11,7 @@ set(
 
     program_state.cpp
     program_state.hpp
+    
+    server.cpp
+    server.hpp
 )

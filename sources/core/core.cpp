@@ -7,7 +7,7 @@
 #include "post/journal_handler.hpp"
 #include "post/plan_handler.hpp"
 #include "post/user_handler.hpp"
-#include "server/server.hpp"
+#include "server.hpp"
 
 #include "generate_code.hpp"
 #include "program_state.hpp"
@@ -113,7 +113,7 @@ core::Core::run(const std::vector<std::string>& argv) noexcept
 void
 core::Core::serverThread() noexcept
 {
-    serv::Server app;
+    Server app;
     while (true)
         ;
 }

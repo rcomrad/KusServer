@@ -1126,73 +1126,55 @@
 							"                \"journal_table_id\": 1,\r",
 							"                \"id\": 1,\r",
 							"                \"theme_id\": 1,\r",
-							"                \"date_val\": \"2022-09-01\",\r",
-							"                \"homework\": \"\",\r",
-							"                \"control\": \"\"\r",
+							"                \"date_val\": \"2022-09-01\"\r",
 							"            },\r",
 							"            {\r",
 							"                \"journal_table_id\": 1,\r",
 							"                \"id\": 2,\r",
 							"                \"theme_id\": 2,\r",
-							"                \"date_val\": \"2022-09-06\",\r",
-							"                \"homework\": \"\",\r",
-							"                \"control\": \"\"\r",
+							"                \"date_val\": \"2022-09-06\"\r",
 							"            },\r",
 							"            {\r",
 							"                \"journal_table_id\": 1,\r",
 							"                \"id\": 3,\r",
 							"                \"theme_id\": 3,\r",
-							"                \"date_val\": \"2022-09-07\",\r",
-							"                \"homework\": \"\",\r",
-							"                \"control\": \"\"\r",
+							"                \"date_val\": \"2022-09-07\"\r",
 							"            },\r",
 							"            {\r",
 							"                \"journal_table_id\": 1,\r",
 							"                \"id\": 4,\r",
 							"                \"theme_id\": 4,\r",
-							"                \"date_val\": \"2022-09-08\",\r",
-							"                \"homework\": \"\",\r",
-							"                \"control\": \"\"\r",
+							"                \"date_val\": \"2022-09-08\"\r",
 							"            },\r",
 							"            {\r",
 							"                \"journal_table_id\": 1,\r",
 							"                \"id\": 5,\r",
 							"                \"theme_id\": 5,\r",
-							"                \"date_val\": \"2022-09-13\",\r",
-							"                \"homework\": \"\",\r",
-							"                \"control\": \"\"\r",
+							"                \"date_val\": \"2022-09-13\"\r",
 							"            },\r",
 							"            {\r",
 							"                \"journal_table_id\": 1,\r",
 							"                \"id\": 6,\r",
 							"                \"theme_id\": 6,\r",
-							"                \"date_val\": \"2022-09-14\",\r",
-							"                \"homework\": \"\",\r",
-							"                \"control\": \"\"\r",
+							"                \"date_val\": \"2022-09-14\"\r",
 							"            },\r",
 							"            {\r",
 							"                \"journal_table_id\": 1,\r",
 							"                \"id\": 7,\r",
 							"                \"theme_id\": 7,\r",
-							"                \"date_val\": \"2022-09-15\",\r",
-							"                \"homework\": \"\",\r",
-							"                \"control\": \"\"\r",
+							"                \"date_val\": \"2022-09-15\"\r",
 							"            },\r",
 							"            {\r",
 							"                \"journal_table_id\": 1,\r",
 							"                \"id\": 8,\r",
 							"                \"theme_id\": 8,\r",
-							"                \"date_val\": \"2022-09-20\",\r",
-							"                \"homework\": \"\",\r",
-							"                \"control\": \"\"\r",
+							"                \"date_val\": \"2022-09-20\"\r",
 							"            },\r",
 							"            {\r",
 							"                \"journal_table_id\": 1,\r",
 							"                \"id\": 9,\r",
 							"                \"theme_id\": 9,\r",
-							"                \"date_val\": \"2022-09-21\",\r",
-							"                \"homework\": \"\",\r",
-							"                \"control\": \"\"\r",
+							"                \"date_val\": \"2022-09-21\"\r",
 							"            }\r",
 							"        ]\r",
 							"    };\r",
@@ -2441,6 +2423,53 @@
 						"api",
 						"upload",
 						"journal_table"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Submit source file",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "filename",
+							"value": "source.cpp",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "source.cpp"
+						},
+						{
+							"key": "user_id",
+							"value": "25",
+							"type": "text"
+						},
+						{
+							"key": "problem_id",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/submit",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"submit"
 					]
 				}
 			},

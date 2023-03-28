@@ -1,6 +1,9 @@
 set(
     GET_SOURCES
 
+    command_handler.cpp
+    command_handler.hpp
+
     get_handler.cpp
     get_handler.hpp
 
