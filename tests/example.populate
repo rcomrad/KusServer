@@ -70,8 +70,7 @@ submission
 END
 
 problem
-	'HELL BINGO';'1'
-	'BOBRORALLY';'2'
+	'Квадратное уравнение';'quadratic-equation';'';100;1000;1000
 END
 
 holiday

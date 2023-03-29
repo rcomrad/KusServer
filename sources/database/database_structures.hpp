@@ -280,11 +280,15 @@ struct Holiday : public UpperDataStruct<HolidayBase>
 {
 };
 
-struct ProblemBase : public BaseDataStruct<3>
+struct ProblemBase : public BaseDataStruct<7>
 {
     int id = 0;
     std::string name;
     std::string nickname;
+    std::string checker_name;
+    int test_count   = 0;
+    int time_limit   = 0;
+    int memory_limit = 0;
 
     static std::string tableName;
     static std::vector<data::Type> types;
@@ -305,7 +309,7 @@ struct SubmissionBase : public BaseDataStruct<7>
     std::string date_val;
     std::string verdict;
     int test = 0;
-    std::string file_path;
+    std::string source_name;
 
     static std::string tableName;
     static std::vector<data::Type> types;

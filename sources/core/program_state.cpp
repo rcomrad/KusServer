@@ -1,5 +1,7 @@
 #include "program_state.hpp"
 
+#include <utility>
+
 core::ProgramState core::ProgramState::mThis;
 
 core::ProgramState::ProgramState()
@@ -98,4 +100,29 @@ core::ProgramState::isSetTimeTurnOn()
 {
     const std::lock_guard<std::mutex> lock(mSetTimeMutex);
     return mSetTimeForAnswers;
+}
+
+void
+core::ProgramState::pushSubmition(
+    data::Table<data::Submission>&& aSubmition) noexcept
+{
+    mSubmitionMutex.lock();
+    mSubmitionsQueue.push(std::move(aSubmition));
+    mSubmitionMutex.unlock();
+}
+
+data::Table<data::Submission>
+core::ProgramState::getSubmition() noexcept
+{
+    const std::lock_guard<std::mutex> lock(mSetTimeMutex);
+    data::Table<data::Submission> temp = std::move(mSubmitionsQueue.front());
+    mSubmitionsQueue.pop();
+    return std::move(temp);
+}
+
+bool
+core::ProgramState::hasSubmition() noexcept
+{
+    const std::lock_guard<std::mutex> lock(mSetTimeMutex);
+    return !mSubmitionsQueue.empty();
 }

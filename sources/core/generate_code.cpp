@@ -437,7 +437,6 @@ generateDatabaseStructuresCPPFile()
     // std::ofstream fileCPP("database_structures.cpp");
     fileCPP << "#include \"database_structures.hpp\"\n\n";
     fileCPP << "#include <cstring>\n\n";
-    fileCPP << "#include \"core/core.hpp\"\n\n";
 
     std::ifstream database("database.psql_db");
     std::string structName = "";

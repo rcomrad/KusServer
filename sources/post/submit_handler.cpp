@@ -6,6 +6,9 @@
 
 #include "database/database_query.hpp"
 
+#include "core/program_state.hpp"
+// #include "tester/tester.hpp"
+
 crow::json::wvalue
 post::SubmitHandler::process(const crow::request& aReq) noexcept
 {
@@ -23,11 +26,17 @@ post::SubmitHandler::process(const crow::request& aReq) noexcept
     submition.back().date_val = getCurentTime();
     submition.back().verdict  = "NUN";
     submition.back().test     = -1;
-    submition.back().file_path =
+    submition.back().source_name =
         uploadFile(msg, dom::Path::getPath("submition").value());
 
     data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
     dbq.update<data::Submission>(submition);
+
+    auto& state = core::ProgramState::getInstance();
+    state.pushSubmition(std::move(submition));
+
+    // test::Tester tester(10);
+    // tester.run(submition);
 
     return res;
 }

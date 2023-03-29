@@ -28,6 +28,8 @@ public:
 
     void close() noexcept;
 
+    static std::string getAllData(const std::string& aFileName) noexcept;
+
 private:
     std::ifstream mInp;
 };

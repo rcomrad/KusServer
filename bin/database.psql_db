@@ -74,8 +74,12 @@ TABLE holiday
 	date_val date NOT NULL
 
 TABLE problem
-	name character varying(20) NOT NULL
-	nickname character varying(15) NOT NULL
+	name character varying(50) NOT NULL
+	nickname character varying(20) NOT NULL
+	checker_name character varying(50) NOT NULL
+	test_count integer NOT NULL
+	time_limit integer NOT NULL
+	memory_limit integer NOT NULL
 
 TABLE submission
 	user_id integer NOT NULL
@@ -83,7 +87,7 @@ TABLE submission
 	date_val timestamp NOT NULL
 	verdict character varying(3) NOT NULL
 	test integer NOT NULL
-	file_path character varying(30) NOT NULL
+	source_name character varying(50) NOT NULL
 
 TABLE user_upload
 	index character varying(4) NOT NULL

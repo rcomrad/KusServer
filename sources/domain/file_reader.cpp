@@ -26,3 +26,15 @@ dom::FileReader::close() noexcept
 {
     mInp.close();
 }
+
+std::string
+dom::FileReader::getAllData(const std::string& aFileName) noexcept
+{
+    std::ifstream inp(aFileName);
+    std::string s, result;
+    while (std::getline(inp, s, '\0'))
+    {
+        result += s;
+    }
+    return result;
+}

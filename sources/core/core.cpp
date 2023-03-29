@@ -7,10 +7,11 @@
 #include "post/journal_handler.hpp"
 #include "post/plan_handler.hpp"
 #include "post/user_handler.hpp"
-#include "server.hpp"
+#include "tester/tester.hpp"
 
 #include "generate_code.hpp"
 #include "program_state.hpp"
+#include "server.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -96,6 +97,13 @@ core::Core::run(const std::vector<std::string>& argv) noexcept
             if (state.needRemakeDB()) remakeDatabase();
             if (state.needPopulateDB()) populate();
             state.endRestart();
+        }
+
+        if (state.hasSubmition())
+        {
+            test::Tester tester(10);
+            // data::Table<data::Submission> temp = ;
+            tester.run(state.getSubmition());
         }
 
         // std::cin >> n;

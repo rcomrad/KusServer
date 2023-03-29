@@ -4,6 +4,9 @@
 //--------------------------------------------------------------------------------
 
 #include <mutex>
+#include <queue>
+
+#include "database/database_query.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -46,6 +49,10 @@ public:
     bool isCheckAnswersTurnOn();
     bool isSetTimeTurnOn();
 
+    void pushSubmition(data::Table<data::Submission>&& aSubmition) noexcept;
+    data::Table<data::Submission> getSubmition() noexcept;
+    bool hasSubmition() noexcept;
+
 private:
     static ProgramState mThis;
 
@@ -58,6 +65,9 @@ private:
     bool mSetTimeForAnswers;
 
     ProgramState();
+
+    std::queue<data::Table<data::Submission>> mSubmitionsQueue;
+    mutable std::mutex mSubmitionMutex;
 };
 } // namespace core
 

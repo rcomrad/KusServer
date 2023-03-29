@@ -2,8 +2,6 @@
 
 #include <cstring>
 
-#include "core/core.hpp"
-
 std::string data::SchoolBase::tableName         = "school";
 std::vector<data::Type> data::SchoolBase::types = {
     data::Type::INT, data::Type::STRING, data::Type::STRING,
@@ -301,11 +299,16 @@ data::HolidayBase::reset()
 
 std::string data::ProblemBase::tableName         = "problem";
 std::vector<data::Type> data::ProblemBase::types = {
-    data::Type::INT, data::Type::STRING, data::Type::STRING};
+    data::Type::INT, data::Type::STRING, data::Type::STRING, data::Type::STRING,
+    data::Type::INT, data::Type::INT,    data::Type::INT};
 std::unordered_map<std::string, uint8_t> data::ProblemBase::columnNames = {
-    {"id",       0},
-    {"name",     1},
-    {"nickname", 2}
+    {"id",           0},
+    {"name",         1},
+    {"nickname",     2},
+    {"checker_name", 3},
+    {"test_count",   4},
+    {"time_limit",   5},
+    {"memory_limit", 6}
 };
 
 void
@@ -314,6 +317,10 @@ data::ProblemBase::reset()
     ptrs[0] = (void*)(&id);
     ptrs[1] = (void*)(&name);
     ptrs[2] = (void*)(&nickname);
+    ptrs[3] = (void*)(&checker_name);
+    ptrs[4] = (void*)(&test_count);
+    ptrs[5] = (void*)(&time_limit);
+    ptrs[6] = (void*)(&memory_limit);
 }
 
 std::string data::SubmissionBase::tableName         = "submission";
@@ -321,13 +328,13 @@ std::vector<data::Type> data::SubmissionBase::types = {
     data::Type::INT,    data::Type::INT, data::Type::INT,   data::Type::STRING,
     data::Type::STRING, data::Type::INT, data::Type::STRING};
 std::unordered_map<std::string, uint8_t> data::SubmissionBase::columnNames = {
-    {"id",         0},
-    {"user_id",    1},
-    {"problem_id", 2},
-    {"date_val",   3},
-    {"verdict",    4},
-    {"test",       5},
-    {"file_path",  6}
+    {"id",          0},
+    {"user_id",     1},
+    {"problem_id",  2},
+    {"date_val",    3},
+    {"verdict",     4},
+    {"test",        5},
+    {"source_name", 6}
 };
 
 void
@@ -339,7 +346,7 @@ data::SubmissionBase::reset()
     ptrs[3] = (void*)(&date_val);
     ptrs[4] = (void*)(&verdict);
     ptrs[5] = (void*)(&test);
-    ptrs[6] = (void*)(&file_path);
+    ptrs[6] = (void*)(&source_name);
 }
 
 std::string data::User_uploadBase::tableName         = "user_upload";
@@ -603,6 +610,10 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "id",
              "name",
              "nickname",
+             "checker_name",
+             "test_count",
+             "time_limit",
+             "memory_limit",
          }                         },
         {"submission",
          {
@@ -612,7 +623,7 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "date_val",
              "verdict",
              "test",
-             "file_path",
+             "source_name",
          }                         },
         {"user_upload",
          {
