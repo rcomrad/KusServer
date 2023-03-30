@@ -348,10 +348,14 @@ data::Postgresql::createTable(
 }
 
 void
-data::Postgresql::deleteDatabase(const std::string& aDBName) noexcept
+data::Postgresql::deleteDatabase(const std::string& aDBName,
+                                 const std::string& aUserName) noexcept
 {
     std::string statement = "DROP DATABASE " + aDBName;
     statement += ";";
+    nontransaction(statement);
+
+    statement = "DROP USER " + aDBName + ";";
     nontransaction(statement);
 }
 

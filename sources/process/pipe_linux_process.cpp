@@ -4,18 +4,19 @@
 
 //--------------------------------------------------------------------------------
 
-#include <cstring>
-#include <wait.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/time.h>
-#include <sys/resource.h>
+#    include <sys/resource.h>
+#    include <sys/time.h>
 
-#include "domain/error_message.hpp"
+#    include <cstring>
+#    include <fcntl.h>
+#    include <unistd.h>
+#    include <wait.h>
+
+#    include "domain/error_message.hpp"
 
 //--------------------------------------------------------------------------------
 
-proc::PipeLinuxProcess::PipeLinuxProcess(const PipeLinuxProcess& other)  noexcept
+proc::PipeLinuxProcess::PipeLinuxProcess(const PipeLinuxProcess& other) noexcept
 {
     *this = other;
 }
@@ -25,18 +26,18 @@ proc::PipeLinuxProcess::PipeLinuxProcess(const PipeLinuxProcess& other)  noexcep
 proc::PipeLinuxProcess&
 proc::PipeLinuxProcess::operator=(const PipeLinuxProcess& other) noexcept
 {
-    mParameters.reserve(other.mParameters.size());
-    for(auto& str : other.mParameters) mParameters.emplace_back(str.getCopy());
+    mParameters = other.mParameters;
     getRawParameters();
     return *this;
 }
 
 //--------------------------------------------------------------------------------
 
-void 
-proc::PipeLinuxProcess::setComand(dom::CharArrayTable&& aParameters) noexcept
+void
+proc::PipeLinuxProcess::setComand(
+    const std::vector<std::string>& aParameters) noexcept
 {
-    mParameters = std::move(aParameters);
+    mParameters = aParameters;
     getRawParameters();
 }
 
@@ -58,7 +59,7 @@ proc::PipeLinuxProcess::create() noexcept
     {
         dup2(mPipeA[0], STDIN_FILENO);
         dup2(mPipeB[1], STDOUT_FILENO);
-        auto itt  = &mRawParameters[0];
+        auto itt = &mRawParameters[0];
         execvp(mRawParameters[0], &mRawParameters[0]);
     }
     else
@@ -78,14 +79,14 @@ proc::PipeLinuxProcess::run() noexcept
 
 //--------------------------------------------------------------------------------
 
-std::optional<dom::Pair<uint64_t>> 
+std::optional<dom::Pair<uint64_t>>
 proc::PipeLinuxProcess::runWithLimits() noexcept
 {
     START_LOG_BLOCK("Runing_process_with_time_and_memory_evaluation");
 
-    std::optional<dom::Pair<uint64_t>> result = {}; 
+    std::optional<dom::Pair<uint64_t>> result = {};
 
-    uint64_t timeUsage = 0;
+    uint64_t timeUsage   = 0;
     uint64_t memoryUsage = 0;
 
     rusage resourseUsage;
@@ -98,17 +99,17 @@ proc::PipeLinuxProcess::runWithLimits() noexcept
     timeUsage += resourseUsage.ru_stime.tv_sec * 1000000L;
     timeUsage += resourseUsage.ru_stime.tv_usec;
 
-    WRITE_LOG("status:",            status);
-    WRITE_LOG("WIFEXITED:",         WIFEXITED(status));
-    WRITE_LOG("WEXITSTATUS:",       WEXITSTATUS(status));
-    WRITE_LOG("WIFSIGNALED:",       WIFSIGNALED(status));
-    WRITE_LOG("WTERMSIG:",          WTERMSIG(status));
-    WRITE_LOG("WIFSTOPPED:",        WIFSTOPPED(status));
+    WRITE_LOG("status:", status);
+    WRITE_LOG("WIFEXITED:", WIFEXITED(status));
+    WRITE_LOG("WEXITSTATUS:", WEXITSTATUS(status));
+    WRITE_LOG("WIFSIGNALED:", WIFSIGNALED(status));
+    WRITE_LOG("WTERMSIG:", WTERMSIG(status));
+    WRITE_LOG("WIFSTOPPED:", WIFSTOPPED(status));
 
-    WRITE_LOG       ("time_usage:",    timeUsage);
-    END_LOG_BLOCK   ("memory_usage:",  memoryUsage);
+    WRITE_LOG("time_usage:", timeUsage);
+    END_LOG_BLOCK("memory_usage:", memoryUsage);
 
-    if (WIFEXITED(status)) 
+    if (WIFEXITED(status))
     {
         result = {timeUsage, memoryUsage};
     }
@@ -117,7 +118,7 @@ proc::PipeLinuxProcess::runWithLimits() noexcept
 
 //--------------------------------------------------------------------------------
 
-#define BUFFER_SIZE 65336 * 10
+#    define BUFFER_SIZE 65336 * 10
 
 //--------------------------------------------------------------------------------
 
@@ -128,7 +129,6 @@ proc::PipeLinuxProcess::IORedirection() noexcept
 
     pipe(mPipeA);
     pipe(mPipeB);
-
 
     fcntl(mPipeA[0], F_SETPIPE_SZ, BUFFER_SIZE);
     fcntl(mPipeA[1], F_SETPIPE_SZ, BUFFER_SIZE);
@@ -165,10 +165,9 @@ proc::PipeLinuxProcess::writeData(const std::string& aMessage) noexcept
 void
 proc::PipeLinuxProcess::getRawParameters() noexcept
 {
-    mRawParameters.reserve(mParameters.size());
-    for(auto& ptr : mParameters)
+    for (auto& s : mParameters)
     {
-        mRawParameters.emplace_back(ptr);
+        mRawParameters.emplace_back((char*)s.c_str());
     }
     mRawParameters.push_back(NULL);
 }

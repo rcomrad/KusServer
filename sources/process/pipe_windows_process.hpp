@@ -1,7 +1,7 @@
 #ifndef WINDOWS_PIPE_PROCESS_HPP
 #define WINDOWS_PIPE_PROCESS_HPP
 
-// #ifdef BILL_WINDOWS
+#ifdef BILL_WINDOWS
 
 //--------------------------------------------------------------------------------
 
@@ -40,6 +40,6 @@ private:
 
 //--------------------------------------------------------------------------------
 
-// #endif // !BILL_WINDOWS
+#endif // !BILL_WINDOWS
 
 #endif // !WINDOWS_PIPE_PROCESS_HPP

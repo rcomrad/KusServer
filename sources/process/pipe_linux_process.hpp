@@ -5,50 +5,48 @@
 
 //--------------------------------------------------------------------------------
 
-#include <string>
+#    include <string>
 
-#include "base_process.hpp"
+#    include "base_process.hpp"
 
 namespace proc
 {
-    class PipeLinuxProcess : public BaseProcess
-    {
-    public:
-        PipeLinuxProcess() noexcept = default;
-        virtual ~PipeLinuxProcess() = default;
+class PipeLinuxProcess : public BaseProcess
+{
+public:
+    PipeLinuxProcess() noexcept = default;
+    virtual ~PipeLinuxProcess() = default;
 
-        PipeLinuxProcess(const PipeLinuxProcess& other) noexcept;
-        PipeLinuxProcess& operator=(const PipeLinuxProcess& other) noexcept;
+    PipeLinuxProcess(const PipeLinuxProcess& other) noexcept;
+    PipeLinuxProcess& operator=(const PipeLinuxProcess& other) noexcept;
 
-        PipeLinuxProcess(PipeLinuxProcess&& other) noexcept = default;
-        PipeLinuxProcess& operator=(PipeLinuxProcess&& other) noexcept = default;
+    PipeLinuxProcess(PipeLinuxProcess&& other) noexcept            = default;
+    PipeLinuxProcess& operator=(PipeLinuxProcess&& other) noexcept = default;
 
+    void setComand(
+        const std::vector<std::string>& aParameters) noexcept final override;
 
-        void setComand(dom::CharArrayTable&& aParameters) 
-            noexcept final override;
+    void create() noexcept final override;
 
-        void create() noexcept final override;
+    bool run() noexcept final override;
+    std::optional<dom::Pair<uint64_t>> runWithLimits() noexcept final override;
 
-        bool run() noexcept final override;
-        std::optional<dom::Pair<uint64_t>> runWithLimits() noexcept final override;
-        
-        virtual void IORedirection() noexcept
-        ;
-        void readData(std::string& result) noexcept final override;
-        void writeData(const std::string& aMessage) noexcept final override;
+    virtual void IORedirection() noexcept;
+    void readData(std::string& result) noexcept final override;
+    void writeData(const std::string& aMessage) noexcept final override;
 
-    private:
-        dom::CharArrayTable mParameters;
-        std::vector<char*> mRawParameters;
+private:
+    std::vector<std::string> mParameters;
+    std::vector<char*> mRawParameters;
 
-        void getRawParameters() noexcept;
+    int mChildPID;
 
-        int mChildPID;
+    int mPipeA[2];
+    int mPipeB[2];
 
-        int mPipeA[2];
-        int mPipeB[2];
-    };
-}
+    void getRawParameters() noexcept;
+};
+} // namespace proc
 
 //--------------------------------------------------------------------------------
 

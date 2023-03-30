@@ -272,7 +272,8 @@ public:
     void createEnvironment(const DBSettings& aDBS) noexcept;
     void createTable(const std::string& aTableName,
                      const std::vector<ColumnSetting>& aColums) noexcept;
-    void deleteDatabase(const std::string& aTableName) noexcept;
+    void deleteDatabase(const std::string& aTableName,
+                        const std::string& aUserName) noexcept;
 
     void step() noexcept;
     bool hasData(int num = 0) const noexcept;

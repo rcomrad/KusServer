@@ -72,7 +72,8 @@ data::DatabaseQuery::createEnvironment(const UserType& aType) noexcept
 void
 data::DatabaseQuery::dropDatabase(const UserType& aType) noexcept
 {
-    mDatabase.deleteDatabase(mUserTypeSettings[aType].name);
+    mDatabase.deleteDatabase(mUserTypeSettings[aType].name,
+                             mUserTypeSettings[aType].user);
 }
 
 //--------------------------------------------------------------------------------
