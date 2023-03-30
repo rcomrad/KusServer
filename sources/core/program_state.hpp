@@ -33,6 +33,8 @@ public:
 
     static ProgramState& getInstance();
 
+    void reloadSettings() noexcept;
+
     void fullReset();
     void emptyReset();
 
@@ -53,9 +55,12 @@ public:
     data::Table<data::Submission> getSubmition() noexcept;
     bool hasSubmition() noexcept;
 
+    int getTesterThreadCount() noexcept;
+
 private:
     static ProgramState mThis;
 
+    std::string mRestartOnStart;
     Restart mRestartState;
     mutable std::mutex mRestartMutex;
     mutable std::mutex mCheckMutex;
@@ -63,6 +68,8 @@ private:
 
     bool mAutoCheckAnswers;
     bool mSetTimeForAnswers;
+
+    int mTesterThreadCount;
 
     ProgramState();
 

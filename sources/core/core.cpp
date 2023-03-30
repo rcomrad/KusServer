@@ -97,11 +97,12 @@ core::Core::run(const std::vector<std::string>& argv) noexcept
             if (state.needRemakeDB()) remakeDatabase();
             if (state.needPopulateDB()) populate();
             state.endRestart();
+            state.reloadSettings();
         }
 
         if (state.hasSubmition())
         {
-            test::Tester tester(10);
+            test::Tester tester(state.getTesterThreadCount());
             // data::Table<data::Submission> temp = ;
             tester.run(state.getSubmition());
         }

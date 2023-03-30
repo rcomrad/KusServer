@@ -12,7 +12,7 @@ test::Test::Test(std::shared_ptr<proc::Process> aSolutionTemplate,
                  std::shared_ptr<proc::Process> aCheckerTemplate,
                  ThreadSignals* aThreadSignals,
                  uint8_t aTesterID) noexcept
-    : mTesterID(0),
+    : mTesterID(aTesterID),
       mTestNumber(0),
       mSolutionTemplate(aSolutionTemplate),
       mCheckerTemplate(aCheckerTemplate),
@@ -89,7 +89,7 @@ test::Test::runTesting(TestReader& aTestReader) noexcept
     checkTest();
     mThreadSignals->push(mTesterID);
 
-    END_LOG_BLOCK("End_test#", mTestNumber, "Test_cell_num:", mTesterID);
+    END_LOG_BLOCK("End_test#", mTLM.mTestNumber, "Test_cell_num:", mTesterID);
 }
 
 //--------------------------------------------------------------------------------
@@ -97,7 +97,8 @@ test::Test::runTesting(TestReader& aTestReader) noexcept
 void
 test::Test::checkTest() noexcept
 {
-    START_LOG_BLOCK("Checking_test#", mTestNumber, "Test_cell_num:", mTesterID);
+    START_LOG_BLOCK("Checking_test#", mTLM.mTestNumber,
+                    "Test_cell_num:", mTesterID);
 
     mSolutionProcess = *mSolutionTemplate;
     mSolutionProcess.create();

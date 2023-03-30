@@ -1,14 +1,50 @@
 #include "program_state.hpp"
 
+#include <sstream>
 #include <utility>
+
+#include "domain/file_reader.hpp"
 
 core::ProgramState core::ProgramState::mThis;
 
 core::ProgramState::ProgramState()
     : mRestartState(Restart::NUN),
       mAutoCheckAnswers(false),
-      mSetTimeForAnswers(false)
+      mSetTimeForAnswers(false),
+      mTesterThreadCount(0)
 {
+    reloadSettings();
+    if (mRestartOnStart == "full")
+    {
+        fullReset();
+    }
+    else if (mRestartOnStart == "empty")
+    {
+        emptyReset();
+    }
+}
+
+void
+core::ProgramState::reloadSettings() noexcept
+{
+    auto settings = dom::FileReader::getAllStrings("main_settings.config");
+    for (auto& i : settings)
+    {
+        std::stringstream ss;
+        ss << i;
+        std::string s;
+        ss >> s;
+
+        if (s == "tester_thread_count")
+        {
+            ss >> s;
+            mTesterThreadCount = std::stoi(s);
+        }
+        else if (s == "restart_on_start")
+        {
+            ss >> mRestartOnStart;
+        }
+    }
 }
 
 core::ProgramState&
@@ -125,4 +161,10 @@ core::ProgramState::hasSubmition() noexcept
 {
     const std::lock_guard<std::mutex> lock(mSetTimeMutex);
     return !mSubmitionsQueue.empty();
+}
+
+int
+core::ProgramState::getTesterThreadCount() noexcept
+{
+    return mTesterThreadCount;
 }

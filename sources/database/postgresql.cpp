@@ -355,8 +355,8 @@ data::Postgresql::deleteDatabase(const std::string& aDBName,
     statement += ";";
     nontransaction(statement);
 
-    statement = "DROP USER " + aDBName + ";";
-    nontransaction(statement);
+//     statement = "DROP USER " + aDBName + ";";
+//     nontransaction(statement);
 }
 
 //--------------------------------------------------------------------------------
