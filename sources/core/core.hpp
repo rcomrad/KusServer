@@ -37,6 +37,7 @@ private:
     std::map<std::string, std::thread> mApps;
 
     void serverThread() noexcept;
+    void testerThread() noexcept;
     void createDatabaseFromFile(std::string aFileName) noexcept;
     void populateDatabaseFromFile(std::string aFileName) noexcept;
     void createEnvironment() noexcept;

@@ -21,6 +21,7 @@ core::Core::Core() noexcept
 {
     generateDatabaseStructuresFiles();
     mApps["server"] = std::move(std::thread(&Core::serverThread, this));
+    mApps["tester"] = std::move(std::thread(&Core::testerThread, this));
 }
 
 void
@@ -96,15 +97,16 @@ core::Core::run(const std::vector<std::string>& argv) noexcept
             state.startRestart();
             if (state.needRemakeDB()) remakeDatabase();
             if (state.needPopulateDB()) populate();
+            if (state.needReloadSubmitions())
+            {
+                // mApps.erase("tester");
+                // mApps["tester"] =
+                //     std::move(std::thread(&Core::testerThread, this));
+                state.reloadSubmitionsQueue();
+            }
+
             state.endRestart();
             state.reloadSettings();
-        }
-
-        if (state.hasSubmition())
-        {
-            test::Tester tester(state.getTesterThreadCount());
-            // data::Table<data::Submission> temp = ;
-            tester.run(state.getSubmition());
         }
 
         // std::cin >> n;
@@ -125,6 +127,20 @@ core::Core::serverThread() noexcept
     Server app;
     while (true)
         ;
+}
+
+void
+core::Core::testerThread() noexcept
+{
+    auto& state = ProgramState::getInstance();
+    while (true)
+    {
+        if (state.hasSubmition())
+        {
+            test::Tester tester(state.getTesterThreadCount());
+            tester.run(state.getSubmition());
+        }
+    }
 }
 
 void

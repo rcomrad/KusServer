@@ -22,6 +22,11 @@ core::ProgramState::ProgramState()
     {
         emptyReset();
     }
+    else if (mRestartOnStart == "tester")
+    {
+        testerReset();
+    }
+    // reloadSubmitionsQueue();
 }
 
 void
@@ -69,6 +74,14 @@ core::ProgramState::emptyReset()
     mRestartMutex.unlock();
 }
 
+void
+core::ProgramState::testerReset()
+{
+    mRestartMutex.lock();
+    mRestartState = Restart::TESTER;
+    mRestartMutex.unlock();
+}
+
 // void
 // core::ProgramState::repopulateReset()
 // {
@@ -87,14 +100,18 @@ bool
 core::ProgramState::needPopulateDB()
 {
     return mRestartState == Restart::FULL;
-    // ||
-    //        mRestartState == Restart::POPULATE;
 }
 
 bool
 core::ProgramState::needRemakeDB()
 {
     return mRestartState == Restart::FULL || mRestartState == Restart::EMPTY;
+}
+
+bool
+core::ProgramState::needReloadSubmitions()
+{
+    return mRestartState == Restart::FULL || mRestartState == Restart::TESTER;
 }
 
 void
@@ -167,4 +184,30 @@ int
 core::ProgramState::getTesterThreadCount() noexcept
 {
     return mTesterThreadCount;
+}
+
+// void
+// core::ProgramState::checkSubmitionsQueue() noexcept
+// {
+//     mSubmitionMutex.lock();
+//     decltype(mSubmitionsQueue) empty;
+//     std::swap(mSubmitionsQueue, empty);
+//     if (mRestartState != Restart::EMPTY) reloadSubmitionsQueue();
+//     mSubmitionMutex.unlock();
+// }
+
+void
+core::ProgramState::reloadSubmitionsQueue() noexcept
+{
+    mSubmitionMutex.lock();
+    decltype(mSubmitionsQueue) empty;
+    std::swap(mSubmitionsQueue, empty);
+    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
+    auto problemTable = dbq.getData<data::Submission>("verdict=\'NUN\'");
+    for (auto& i : problemTable)
+    {
+        data::Table<data::Submission> sub;
+        sub.emplace_back(std::move(i));
+    }
+    mSubmitionMutex.unlock();
 }

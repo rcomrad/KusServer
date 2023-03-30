@@ -17,7 +17,7 @@
 
 //--------------------------------------------------------------------------------
 
-data::Postgresql::Postgresql(const DBSettings& aDBS) noexcept
+data::Postgresql::Postgresql(const DBSettings& aDBS)
     : mShame(aDBS.shame), mUser(aDBS.user), mDatabase(aDBS.name)
 {
     WRITE_LOG("Creating_postgresql_database_connection");
@@ -34,8 +34,8 @@ data::Postgresql::Postgresql(const DBSettings& aDBS) noexcept
     }
     catch (const std::exception& e)
     {
-        WRITE_ERROR(e.what());
-        exit(0);
+        WRITE_ERROR("Postgresql::Postgresql() ", e.what());
+        // exit(0);
     }
 
     WRITE_LOG("Opening_postgresql_database");
@@ -46,7 +46,7 @@ data::Postgresql::Postgresql(const DBSettings& aDBS) noexcept
     else
     {
         WRITE_LOG("Can't_open_database");
-        exit(0);
+        // exit(0);
     }
 }
 
@@ -355,8 +355,8 @@ data::Postgresql::deleteDatabase(const std::string& aDBName,
     statement += ";";
     nontransaction(statement);
 
-//     statement = "DROP USER " + aDBName + ";";
-//     nontransaction(statement);
+    //     statement = "DROP USER " + aDBName + ";";
+    //     nontransaction(statement);
 }
 
 //--------------------------------------------------------------------------------
@@ -451,7 +451,7 @@ data::Postgresql::prepare(const std::string& aStatment) noexcept
     {
         std::string s(e.what());
         auto str = dom::Cyrilic::global.translit(s);
-        WRITE_ERROR(str);
+        WRITE_ERROR("Postgresql::prepare() ", str);
     }
 }
 

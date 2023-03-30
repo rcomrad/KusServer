@@ -160,7 +160,7 @@ test::Test::resultEvoluation() noexcept
         START_LOG_BLOCK("Result_not_okay");
         END_LOG_BLOCK("Checker_output:", temp);
     }
-    else if (mUsedTime > mTimeLimit * 1000000)
+    else if (mUsedTime > mTimeLimit)
     {
         mVerdict = TestVerdict::TLE;
         START_LOG_BLOCK("Result_is_TLE");

@@ -12,7 +12,7 @@ StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=KusManager
 Restart=on-failure
-RestartSec=10
+RestartSec=1
 KillMode=process
 
 [Install]
@@ -39,3 +39,7 @@ WantedBy=multi-user.target
 # Restart=on-failure
 # RestartSec=10
 # KillMode=process
+
+# sudo ps axu
+# sudo netstat -ntlp
+# sudo kill -9

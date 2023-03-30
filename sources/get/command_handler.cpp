@@ -4,7 +4,7 @@
 
 std::string
 get::CommandHandler::process(const std::string& aType,
-                              const std::string& aValue) noexcept
+                             const std::string& aValue) noexcept
 {
     std::string res = "ERROR\nInvalid command!\n>:(\n";
 
@@ -25,6 +25,11 @@ get::CommandHandler::process(const std::string& aType,
         {
             state.emptyReset();
             res = "OK\nEmpty restart!";
+        }
+        else if (aValue == "tester")
+        {
+            state.testerReset();
+            res = "OK\nTester restart!";
         }
     }
     else if (aType == "check")

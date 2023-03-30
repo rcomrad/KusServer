@@ -1,6 +1,6 @@
 cd ../..
 git config --global --add safe.directory ./server
-sudo -S apt install gcc g++ make curl zip unzip tar pkg-config autoconf postgresql -y
+sudo -S apt install gcc g++ make curl zip unzip tar pkg-config autoconf postgresql net-tools -y
 
 cd server
 git switch autocommit

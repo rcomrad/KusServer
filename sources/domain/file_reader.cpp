@@ -36,5 +36,6 @@ dom::FileReader::getAllData(const std::string& aFileName) noexcept
     {
         result += s;
     }
+    inp.close();
     return result;
 }

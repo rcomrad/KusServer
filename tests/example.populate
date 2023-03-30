@@ -65,10 +65,6 @@ subject
 	'ОБЖ'
 END
 
-submission
-	1;1;'2001-09-28 01:00:00';'OK';0;'NUN'
-END
-
 problem
 	'Квадратное уравнение';'quadratic-equation';'';100;1000;1000
 END

@@ -40,7 +40,7 @@ using RowArray =
 class Postgresql
 {
 public:
-    Postgresql(const DBSettings& aDBS) noexcept;
+    Postgresql(const DBSettings& aDBS);
     ~Postgresql() = default;
 
     Postgresql(const Postgresql& other)            = delete;

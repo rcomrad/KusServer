@@ -19,8 +19,8 @@ public:
     {
         NUN,
         FULL,
-        EMPTY
-        // ,
+        EMPTY,
+        TESTER
         // POPULATE
     };
 
@@ -37,10 +37,12 @@ public:
 
     void fullReset();
     void emptyReset();
+    void testerReset();
 
     bool needRestart();
     bool needPopulateDB();
     bool needRemakeDB();
+    bool needReloadSubmitions();
 
     void startRestart();
     void endRestart();
@@ -57,6 +59,9 @@ public:
 
     int getTesterThreadCount() noexcept;
 
+    // void checkSubmitionsQueue() noexcept;
+    void reloadSubmitionsQueue() noexcept;
+
 private:
     static ProgramState mThis;
 
@@ -71,10 +76,11 @@ private:
 
     int mTesterThreadCount;
 
-    ProgramState();
-
+    bool mSubmitionRestart;
     std::queue<data::Table<data::Submission>> mSubmitionsQueue;
     mutable std::mutex mSubmitionMutex;
+
+    ProgramState();
 };
 } // namespace core
 

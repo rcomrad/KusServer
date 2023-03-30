@@ -7,6 +7,6 @@ cd devops
 chmod +x ./build.sh
 ./build.sh
 
-cp Server.exe Server0.exe
+cp ../bin/Server.exe ../bin/Server0.exe
 
 sudo systemctl restart KusManager
