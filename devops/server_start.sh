@@ -27,6 +27,7 @@ sudo -u postgres psql -c "ALTER USER postgres password '$1';"
 # add demon
 sudo chmod +x make_servis.sh
 sudo ./make_servis.sh
+sudo ./nginx.sh
 
 # compile
 sudo chmod +x remake.sh
