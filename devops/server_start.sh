@@ -7,8 +7,8 @@ git switch autocommit
 
 cd devops
 # install cmake
-sudo chmod +x ./cmake_install.sh
-sudo ./cmake_install.sh
+# sudo chmod +x ./cmake_install.sh
+# sudo ./cmake_install.sh
 
 cd ../..
 git clone https://github.com/Microsoft/vcpkg.git
