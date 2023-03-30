@@ -4,11 +4,12 @@ sudo -S apt install gcc g++ make curl zip unzip tar pkg-config autoconf postgres
 
 cd server
 git switch autocommit
+git config --global --add safe.directory /home/rcomrad/server
 
 cd devops
 # install cmake
-# sudo chmod +x ./cmake_install.sh
-# sudo ./cmake_install.sh
+sudo chmod +x ./cmake_install.sh
+sudo ./cmake_install.sh
 
 cd ../..
 git clone https://github.com/Microsoft/vcpkg.git
