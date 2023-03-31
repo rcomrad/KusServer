@@ -94,10 +94,11 @@ proc::PipeLinuxProcess::runWithLimits() noexcept
     wait4(mChildPID, &status, 0, &resourseUsage);
     int gg = WIFEXITED(status);
 
-    timeUsage += resourseUsage.ru_utime.tv_sec * 1000000L;
+    timeUsage += resourseUsage.ru_utime.tv_sec * 1'000'000;
     timeUsage += resourseUsage.ru_utime.tv_usec;
-    timeUsage += resourseUsage.ru_stime.tv_sec * 1000000L;
+    timeUsage += resourseUsage.ru_stime.tv_sec * 1'000'000;
     timeUsage += resourseUsage.ru_stime.tv_usec;
+    timeUsage /= 1000;
 
     WRITE_LOG("status:", status);
     WRITE_LOG("WIFEXITED:", WIFEXITED(status));

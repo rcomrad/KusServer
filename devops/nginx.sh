@@ -5,7 +5,12 @@ echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx
 echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" sudo tee /etc/apt/preferences.d/99nginx
 sudo apt update
 sudo apt install nginx -y
-sudo default.conf /etc/nginx/conf.d/default.conf
 sudo systemctl restart nginx
+
+sudo ./ssl.sh
+sudo ./ssl.sh
+sudo cp default.conf /etc/nginx/conf.d/default.conf
+
+sudo nginx -s reload
 
 # sudo systemctl status nginx
