@@ -36,7 +36,7 @@ get::CompetitionHandler::process(int aUserID, int aCompetitionID) noexcept
             p[cnt] = std::move(problemTemp);
 
             auto submissionTemp = connection.val.select<data::Submission>(
-                probV, "problem_id=" + data::wrap(i.problem_id) + " AND " +
+                empty, "problem_id=" + data::wrap(i.problem_id) + " AND " +
                            "user_id=" + data::wrap(aUserID));
             s[cnt] = std::move(submissionTemp);
             ++cnt;
@@ -55,9 +55,13 @@ get::CompetitionHandler::process(int aUserID, int aCompetitionID) noexcept
         problems[i].turnOffColumn("checker_name");
         problems[i].turnOffColumn("example_count");
 
-        auto probJ         = getTableAsList(problems[i])[0];
-        probJ["solutions"] = getTableAsList(submissions[i]);
-        probJ["legend"]    = dom::FileReader::getAllData(
+        submissions[i].turnOffColumn("user_id");
+        submissions[i].turnOffColumn("problem_id");
+        submissions[i].turnOffColumn("source_name");
+
+        auto probJ          = getTableAsList(problems[i])[0];
+        probJ["submission"] = getTableAsList(submissions[i]);
+        probJ["legend"]     = dom::FileReader::getAllData(
             mProblemPath + problems[i][0].nickname + "/legend.txt");
         probJ["input_format"] = dom::FileReader::getAllData(
             mProblemPath + problems[i][0].nickname + "/input_format.txt");

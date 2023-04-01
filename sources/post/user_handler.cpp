@@ -12,6 +12,14 @@ post::UserHandler::process(const crow::request& aReq)
     auto body    = crow::json::load(aReq.body);
     auto request = parseRequest<data::User>(body);
 
+// //TODO: move somevere
+//     int tt;
+//     for (auto& i : request.manyToMany)
+//     {
+//         transmitToMTMHandler(i.first, tt, request.other.count("add"),
+//                              i.second);
+//     }
+
     auto it         = request.other.find("role");
     auto connection = data::ConnectionManager::getUserConnection();
     if (it != request.other.end())
