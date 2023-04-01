@@ -65,13 +65,23 @@ data::DatabaseConnection
 data::ConnectionManager::getConnection(
     const data::ConnectionType& aType) noexcept
 {
-    std::optional<DatabaseConnection> temp = {};
-    while (!temp.has_value())
+    // TODO: gnu can't make rvo here for some reason and failse!
+    //  std::optional<DatabaseConnection> temp = {};
+    //  while (!temp.has_value())
+    //  {
+    //      temp = mConnectionPools[int(aType)].tryGetConnection();
+    //  }
+
+    while (true)
     {
-        temp = mConnectionPools[int(aType)].tryGetConnection();
+        std::optional<DatabaseConnection> temp =
+            mConnectionPools[int(aType)].tryGetConnection();
+        if (temp.has_value())
+        {
+            data::DatabaseConnection res = std::move(temp.value());
+            return res;
+        }
     }
-    data::DatabaseConnection res = std::move(temp.value());
-    return res;
 }
 
 void

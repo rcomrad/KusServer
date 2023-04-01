@@ -16,7 +16,7 @@ data::ConnectionPool::tryGetConnection() noexcept
     std::optional<data::DatabaseConnection> res = {};
     if (!mConnections.empty())
     {
-        res = std::move(mConnections.back());
+        res.emplace(std::move(mConnections.back()));
         mConnections.pop_back();
     }
     return res;
