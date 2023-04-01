@@ -73,11 +73,25 @@ TABLE holiday
 	school_id integer NOT NULL
 	date_val date NOT NULL
 
+TABLE competition
+	name character varying(50) NOT NULL
+	start_time timestamp NOT NULL
+	end_time timestamp NOT NULL
+
+TABLE user_competition
+	user_id integer NOT NULL
+	competition_id integer NOT NULL
+
+TABLE competition_problem
+	competition_id integer NOT NULL
+	problem_id integer NOT NULL
+
 TABLE problem
 	name character varying(50) NOT NULL
 	nickname character varying(20) NOT NULL
 	checker_name character varying(50) NOT NULL
 	test_count integer NOT NULL
+	example_count integer NOT NULL
 	time_limit integer NOT NULL
 	memory_limit integer NOT NULL
 

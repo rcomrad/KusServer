@@ -297,18 +297,75 @@ data::HolidayBase::reset()
     ptrs[2] = (void*)(&date_val);
 }
 
+std::string data::CompetitionBase::tableName         = "competition";
+std::vector<data::Type> data::CompetitionBase::types = {
+    data::Type::INT, data::Type::STRING, data::Type::STRING,
+    data::Type::STRING};
+std::unordered_map<std::string, uint8_t> data::CompetitionBase::columnNames = {
+    {"id",         0},
+    {"name",       1},
+    {"start_time", 2},
+    {"end_time",   3}
+};
+
+void
+data::CompetitionBase::reset()
+{
+    ptrs[0] = (void*)(&id);
+    ptrs[1] = (void*)(&name);
+    ptrs[2] = (void*)(&start_time);
+    ptrs[3] = (void*)(&end_time);
+}
+
+std::string data::User_competitionBase::tableName         = "user_competition";
+std::vector<data::Type> data::User_competitionBase::types = {
+    data::Type::INT, data::Type::INT, data::Type::INT};
+std::unordered_map<std::string, uint8_t>
+    data::User_competitionBase::columnNames = {
+        {"id",             0},
+        {"user_id",        1},
+        {"competition_id", 2}
+};
+
+void
+data::User_competitionBase::reset()
+{
+    ptrs[0] = (void*)(&id);
+    ptrs[1] = (void*)(&user_id);
+    ptrs[2] = (void*)(&competition_id);
+}
+
+std::string data::Competition_problemBase::tableName = "competition_problem";
+std::vector<data::Type> data::Competition_problemBase::types = {
+    data::Type::INT, data::Type::INT, data::Type::INT};
+std::unordered_map<std::string, uint8_t>
+    data::Competition_problemBase::columnNames = {
+        {"id",             0},
+        {"competition_id", 1},
+        {"problem_id",     2}
+};
+
+void
+data::Competition_problemBase::reset()
+{
+    ptrs[0] = (void*)(&id);
+    ptrs[1] = (void*)(&competition_id);
+    ptrs[2] = (void*)(&problem_id);
+}
+
 std::string data::ProblemBase::tableName         = "problem";
 std::vector<data::Type> data::ProblemBase::types = {
     data::Type::INT, data::Type::STRING, data::Type::STRING, data::Type::STRING,
-    data::Type::INT, data::Type::INT,    data::Type::INT};
+    data::Type::INT, data::Type::INT,    data::Type::INT,    data::Type::INT};
 std::unordered_map<std::string, uint8_t> data::ProblemBase::columnNames = {
-    {"id",           0},
-    {"name",         1},
-    {"nickname",     2},
-    {"checker_name", 3},
-    {"test_count",   4},
-    {"time_limit",   5},
-    {"memory_limit", 6}
+    {"id",            0},
+    {"name",          1},
+    {"nickname",      2},
+    {"checker_name",  3},
+    {"test_count",    4},
+    {"example_count", 5},
+    {"time_limit",    6},
+    {"memory_limit",  7}
 };
 
 void
@@ -319,8 +376,9 @@ data::ProblemBase::reset()
     ptrs[2] = (void*)(&nickname);
     ptrs[3] = (void*)(&checker_name);
     ptrs[4] = (void*)(&test_count);
-    ptrs[5] = (void*)(&time_limit);
-    ptrs[6] = (void*)(&memory_limit);
+    ptrs[5] = (void*)(&example_count);
+    ptrs[6] = (void*)(&time_limit);
+    ptrs[7] = (void*)(&memory_limit);
 }
 
 std::string data::SubmissionBase::tableName         = "submission";
@@ -506,7 +564,7 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "full_name",
              "short_name",
              "start_date",
-         }                         },
+         }                            },
         {"user",
          {
              "id",
@@ -516,36 +574,36 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "surname",
              "role_id",
              "school_id",
-         }                         },
+         }                            },
         {"role",
          {
              "id",
              "name",
-         }                         },
+         }                            },
         {"grade",
          {
              "id",
              "name",
              "head_id",
-         }                         },
+         }                            },
         {"grade_student",
          {
              "id",
              "grade_id",
              "student_id",
-         }                         },
+         }                            },
         {"group",
          {
              "id",
              "name",
              "grade_id",
-         }                         },
+         }                            },
         {"group_student",
          {
              "id",
              "group_id",
              "student_id",
-         }                         },
+         }                            },
         {"lesson",
          {
              "id",
@@ -554,7 +612,7 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "journal_table_id",
              "homework",
              "control",
-         }                         },
+         }                            },
         {"journal_table",
          {
              "id",
@@ -566,12 +624,12 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "plan_id",
              "head_id",
              "schedule",
-         }                         },
+         }                            },
         {"subject",
          {
              "id",
              "name",
-         }                         },
+         }                            },
         {"mark",
          {
              "id",
@@ -579,32 +637,51 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "student_id",
              "lesson_id",
              "journal_table_id",
-         }                         },
+         }                            },
         {"plan",
          {
              "id",
              "subject_id",
              "name",
              "url",
-         }                         },
+         }                            },
         {"theme",
          {
              "id",
              "plan_id",
              "name",
              "hour_count",
-         }                         },
+         }                            },
         {"file",
          {
              "id",
              "num",
-         }                         },
+         }                            },
         {"holiday",
          {
              "id",
              "school_id",
              "date_val",
-         }                         },
+         }                            },
+        {"competition",
+         {
+             "id",
+             "name",
+             "start_time",
+             "end_time",
+         }                            },
+        {"user_competition",
+         {
+             "id",
+             "user_id",
+             "competition_id",
+         }                            },
+        {"competition_problem",
+         {
+             "id",
+             "competition_id",
+             "problem_id",
+         }                            },
         {"problem",
          {
              "id",
@@ -612,9 +689,10 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "nickname",
              "checker_name",
              "test_count",
+             "example_count",
              "time_limit",
              "memory_limit",
-         }                         },
+         }                            },
         {"submission",
          {
              "id",
@@ -624,35 +702,35 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "verdict",
              "test",
              "source_name",
-         }                         },
+         }                            },
         {"user_upload",
          {
              "id",
              "index",
              "name",
              "extension",
-         }                         },
+         }                            },
         {"plan_upload",
          {
              "id",
              "index",
              "name",
              "extension",
-         }                         },
+         }                            },
         {"journal_upload",
          {
              "id",
              "index",
              "name",
              "extension",
-         }                         },
+         }                            },
         {"journal_download",
          {
              "id",
              "index",
              "name",
              "extension",
-         }                         },
+         }                            },
         {"question",
          {
              "id",
@@ -661,12 +739,12 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "type",
              "contest",
              "jury_answer",
-         }                         },
+         }                            },
         {"question_type",
          {
              "id",
              "name",
-         }                         },
+         }                            },
         {"user_answer",
          {
              "id",
@@ -676,6 +754,6 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "time",
              "true_time",
              "is_correct",
-         }                         },
-        {"NUN",              {"id"}}
+         }                            },
+        {"NUN",                 {"id"}}
 };

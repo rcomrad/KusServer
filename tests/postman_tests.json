@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "1a130d45-5612-44a7-8208-0836bc702bca",
+		"_postman_id": "b98a4694-f338-4a7b-84bf-886c0372c7d9",
 		"name": "KusJournalTester",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "3947988"
@@ -2429,7 +2429,196 @@
 			"response": []
 		},
 		{
-			"name": "Submit source file",
+			"name": "Create problem 1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Введите A\",\r\n    \"nickname\": \"cin\",\r\n    \"checker_name\": \"NUN\",\r\n    \"test_count\": 2,\r\n    \"example_count\": 1,\r\n    \"time_limit\": 1000,\r\n    \"memory_limit\": 256\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/post/problem",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"post",
+						"problem"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create problem 2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"A + B\",\r\n    \"nickname\": \"summa\",\r\n    \"checker_name\": \"NUN\",\r\n    \"test_count\": 2,\r\n    \"example_count\": 1,\r\n    \"time_limit\": 1000,\r\n    \"memory_limit\": 256\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/post/problem",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"post",
+						"problem"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create problem 3",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Квадратное уравнение\",\r\n    \"nickname\": \"quadratic-equation\",\r\n    \"checker_name\": \"NUN\",\r\n    \"test_count\": 2,\r\n    \"example_count\": 3,\r\n    \"time_limit\": 1000,\r\n    \"memory_limit\": 256\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/post/problem",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"post",
+						"problem"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create competition 1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Пробный тур\",\r\n    \"start_time\": \"2023-04-02 15:00:00\",\r\n    \"end_time\": \"2023-04-03 00:00:00\"\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/post/competition",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"post",
+						"competition"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create competition 2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Очный тур\",\r\n    \"start_time\": \"2023-04-03 12:00:00\",\r\n    \"end_time\": \"2023-04-04 00:00:00\"\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/post/competition",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"post",
+						"competition"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add problems to competition 1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"competition_problem\": [\r\n        1,\r\n        2\r\n    ],\r\n    \"add\" : true\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/post/competition",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"post",
+						"competition"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add problems to competition 2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 2,\r\n    \"competition_problem\": [\r\n        3\r\n    ],\r\n    \"add\" : true\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/post/competition",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"post",
+						"competition"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Submit source file 1",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -2470,6 +2659,154 @@
 					"path": [
 						"api",
 						"submit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Submit source file 2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "filename",
+							"value": "source.cpp",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "source.cpp"
+						},
+						{
+							"key": "user_id",
+							"value": "25",
+							"type": "text"
+						},
+						{
+							"key": "problem_id",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/submit",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"submit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Submit source file 3",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "filename",
+							"value": "source.cpp",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "source.cpp"
+						},
+						{
+							"key": "user_id",
+							"value": "25",
+							"type": "text"
+						},
+						{
+							"key": "problem_id",
+							"value": "3",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/submit",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"submit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check get_all_competition",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Journal changed successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"journal_tables\": [\r",
+							"            {\r",
+							"                \"subject_id\": 1,\r",
+							"                \"id\": 6,\r",
+							"                \"teacher_id\": 1,\r",
+							"                \"methodist_id\": 1,\r",
+							"                \"group_id\": 1,\r",
+							"                \"head_id\": 4,\r",
+							"                \"is_group\": false,\r",
+							"                \"plan_id\": 1,\r",
+							"                \"schedule\": \"1 2 3\"\r",
+							"            }\r",
+							"        ]\r",
+							"    };\r",
+							"\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:18080/api/get_all_competition/25/1",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"get_all_competition",
+						"25",
+						"1"
 					]
 				}
 			},

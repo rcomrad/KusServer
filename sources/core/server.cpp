@@ -2,6 +2,7 @@
 
 #include "crow/middlewares/cors.h"
 #include "get/command_handler.hpp"
+#include "get/competition_handler.hpp"
 #include "get/get_handler.hpp"
 #include "post/post_router.hpp"
 #include "post/submit_handler.hpp"
@@ -55,6 +56,10 @@ core::Server::Server()
             return get::GetHandler::multiplelGet(aRequest,
                                                  std::move(aCondition));
         });
+
+    CROW_ROUTE(app, "/api/get_all_competition/<int>/<int>")
+    ([&](int aUserID, int aCompetitionID)
+     { return get::CompetitionHandler::process(aUserID, aCompetitionID); });
 
     //---------------------------------------------------------------------
 

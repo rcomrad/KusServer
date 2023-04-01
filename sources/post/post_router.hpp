@@ -1,7 +1,7 @@
 #ifndef POST_ROUTER_HPP
 #define POST_ROUTER_HPP
 
-#include <unordered_map>
+#include <unordered_map.>
 
 #include "journal_handler.hpp"
 #include "mark_handler.hpp"
@@ -19,7 +19,11 @@ public:
     static crow::json::wvalue basicRouter(const std::string& aTableName,
                                           Args&&... args) noexcept
     {
-        return mPostRouterMap[aTableName](args...);
+        crow::json::wvalue result;
+        auto it = mPostRouterMap.find(aTableName);
+        if (it != mPostRouterMap.end())
+            result = mPostRouterMap[aTableName](args...);
+        return result;
     }
 
     template <typename... Args>

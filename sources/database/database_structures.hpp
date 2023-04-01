@@ -280,15 +280,68 @@ struct Holiday : public UpperDataStruct<HolidayBase>
 {
 };
 
-struct ProblemBase : public BaseDataStruct<7>
+struct CompetitionBase : public BaseDataStruct<4>
+{
+    int id = 0;
+    std::string name;
+    std::string start_time;
+    std::string end_time;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::unordered_map<std::string, uint8_t> columnNames;
+
+    void reset();
+};
+
+struct Competition : public UpperDataStruct<CompetitionBase>
+{
+};
+
+struct User_competitionBase : public BaseDataStruct<3>
+{
+    int id             = 0;
+    int user_id        = 0;
+    int competition_id = 0;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::unordered_map<std::string, uint8_t> columnNames;
+
+    void reset();
+};
+
+struct User_competition : public UpperDataStruct<User_competitionBase>
+{
+};
+
+struct Competition_problemBase : public BaseDataStruct<3>
+{
+    int id             = 0;
+    int competition_id = 0;
+    int problem_id     = 0;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::unordered_map<std::string, uint8_t> columnNames;
+
+    void reset();
+};
+
+struct Competition_problem : public UpperDataStruct<Competition_problemBase>
+{
+};
+
+struct ProblemBase : public BaseDataStruct<8>
 {
     int id = 0;
     std::string name;
     std::string nickname;
     std::string checker_name;
-    int test_count   = 0;
-    int time_limit   = 0;
-    int memory_limit = 0;
+    int test_count    = 0;
+    int example_count = 0;
+    int time_limit    = 0;
+    int memory_limit  = 0;
 
     static std::string tableName;
     static std::vector<data::Type> types;
