@@ -141,7 +141,7 @@ public:
                 }
             }
         }
-        cnt += aColums.size();
+        if (!mMakeDBRequest) cnt += aColums.size();
 
         return result;
     }
@@ -245,6 +245,7 @@ public:
     void handClose() noexcept
     {
         closeStatment();
+        cnt            = 0;
         mMakeDBRequest = true;
     }
 

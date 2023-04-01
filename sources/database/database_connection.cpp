@@ -1,7 +1,4 @@
-#define DUMMY_NAME "r456rq452rrrr"s
-#define DUMMY_NUM  int(2e9)
-
-#include "database_query.hpp"
+#include "database_connection.hpp"
 
 #include <boost/date_time/gregorian/gregorian.hpp>
 
@@ -15,13 +12,13 @@
 
 //--------------------------------------------------------------------------------
 
-std::unordered_map<data::DatabaseQuery::UserType, data::DBSettings>
-    data::DatabaseQuery::mUserTypeSettings = getUserTypeSettings();
+std::unordered_map<data::ConnectionType, data::DBSettings>
+    data::DatabaseConnection::mConnectionTypeSettings = getConnectionTypeSettings();
 
-std::unordered_map<data::DatabaseQuery::UserType, data::DBSettings>
-data::DatabaseQuery::getUserTypeSettings() noexcept
+std::unordered_map<data::ConnectionType, data::DBSettings>
+data::DatabaseConnection::getConnectionTypeSettings() noexcept
 {
-    std::unordered_map<UserType, data::DBSettings> result;
+    std::unordered_map<ConnectionType, data::DBSettings> result;
 
     std::ifstream inp("database.pass");
     data::DBSettings DBS;
@@ -33,7 +30,7 @@ data::DatabaseQuery::getUserTypeSettings() noexcept
         inp >> DBS.password;
         inp >> DBS.shame;
 
-        result[data::DatabaseQuery::UserType(num)] = DBS;
+        result[data::ConnectionType(num)] = DBS;
     }
 
     return result;
@@ -41,14 +38,14 @@ data::DatabaseQuery::getUserTypeSettings() noexcept
 
 //--------------------------------------------------------------------------------
 
-data::DatabaseQuery::DatabaseQuery(const DBSettings& aDBS) noexcept
+data::DatabaseConnection::DatabaseConnection(const DBSettings& aDBS) noexcept
     : mDatabase(aDBS)
 {
     WRITE_LOG("Creating_database_quare");
 }
 
-data::DatabaseQuery::DatabaseQuery(const UserType& aType) noexcept
-    : mDatabase(mUserTypeSettings[aType])
+data::DatabaseConnection::DatabaseConnection(const ConnectionType& aType) noexcept
+    : mDatabase(mConnectionTypeSettings[aType])
 {
     WRITE_LOG("Creating_database_quare");
 }
@@ -56,7 +53,7 @@ data::DatabaseQuery::DatabaseQuery(const UserType& aType) noexcept
 //--------------------------------------------------------------------------------
 
 void
-data::DatabaseQuery::createTable(
+data::DatabaseConnection::createTable(
     const std::string& aTableName,
     const std::vector<ColumnSetting>& aColums) noexcept
 {
@@ -64,28 +61,28 @@ data::DatabaseQuery::createTable(
 }
 
 void
-data::DatabaseQuery::createEnvironment(const UserType& aType) noexcept
+data::DatabaseConnection::createEnvironment(const ConnectionType& aType) noexcept
 {
-    mDatabase.createEnvironment(mUserTypeSettings[aType]);
+    mDatabase.createEnvironment(mConnectionTypeSettings[aType]);
 }
 
 void
-data::DatabaseQuery::dropDatabase(const UserType& aType) noexcept
+data::DatabaseConnection::dropDatabase(const ConnectionType& aType) noexcept
 {
-    mDatabase.deleteDatabase(mUserTypeSettings[aType].name,
-                             mUserTypeSettings[aType].user);
+    mDatabase.deleteDatabase(mConnectionTypeSettings[aType].name,
+                             mConnectionTypeSettings[aType].user);
 }
 
 //--------------------------------------------------------------------------------
 
 std::vector<data::Type>
-data::DatabaseQuery::getColumnTypes(const std::string& aTableName) noexcept
+data::DatabaseConnection::getColumnTypes(const std::string& aTableName) noexcept
 {
     return mDatabase.getColumnTypes(aTableName);
 }
 
 std::unordered_map<std::string, uint8_t>
-data::DatabaseQuery::getColumnNames(const std::string& aTableName) noexcept
+data::DatabaseConnection::getColumnNames(const std::string& aTableName) noexcept
 {
     return mDatabase.getColumnNames(aTableName);
 }
@@ -93,8 +90,8 @@ data::DatabaseQuery::getColumnNames(const std::string& aTableName) noexcept
 //--------------------------------------------------------------------------------
 
 int
-data::DatabaseQuery::insert(const std::string& aTableName,
-                            const std::vector<std::string>& aData) noexcept
+data::DatabaseConnection::insert(const std::string& aTableName,
+                                 const std::vector<std::string>& aData) noexcept
 {
     return mDatabase.insert(aTableName, aData);
 }

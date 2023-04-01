@@ -10,12 +10,13 @@ post::UserAnswerHandler::process(const crow::request& aReq)
 {
     auto body  = crow::json::load(aReq.body);
     auto table = parseRequest<data::User_answer>(body).table;
-    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
+
+    auto connection = data::ConnectionManager::getUserConnection();
 
     table[0].is_correct = '?';
     if (mProgramState.isCheckAnswersTurnOn())
     {
-        auto ansTable = dbq.getData<data::Question>(
+        auto ansTable = connection.val.getData<data::Question>(
             "id = " + data::wrap(table[0].question_id));
         auto answer = ansTable[0].jury_answer;
 
@@ -32,6 +33,6 @@ post::UserAnswerHandler::process(const crow::request& aReq)
         table[0].true_time = "NUN";
     }
 
-    auto res = dbq.update(table);
+    auto res = connection.val.update(table);
     return {res};
 }

@@ -4,8 +4,6 @@
 
 #include "domain/error_message.hpp"
 
-#include "database/database_query.hpp"
-
 //--------------------------------------------------------------------------------
 
 test::Test::Test(std::shared_ptr<proc::Process> aSolutionTemplate,

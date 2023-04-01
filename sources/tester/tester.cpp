@@ -6,6 +6,8 @@
 
 #include "domain/path.hpp"
 
+#include "database/connection_manager.hpp"
+
 #include "process/limits.hpp"
 
 #include "compiler.hpp"
@@ -26,10 +28,14 @@ test::Tester::Tester(uint8_t aThreadCount) noexcept
 void
 test::Tester::run(data::Table<data::Submission>&& aSubmission) noexcept
 {
-    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
     auto& submission = aSubmission[0];
-    auto problemTable =
-        dbq.getData<data::Problem>("id=" + data::wrap(submission.problem_id));
+    data::Table<data::Problem> problemTable;
+    {
+        auto connection = data::ConnectionManager::getUserConnection();
+        problemTable    = connection.val.getData<data::Problem>(
+            "id=" + data::wrap(submission.problem_id));
+    }
+
     auto& problem = problemTable[0];
 
     std::string curPath = dom::Path::getPath("problem").value();
@@ -72,7 +78,11 @@ test::Tester::run(data::Table<data::Submission>&& aSubmission) noexcept
     TestReader testReader(curPath + "test/", problem.test_count);
     check(testReader);
     submission.verdict = verdictTostring(mFinalVerdict);
-    dbq.update(aSubmission);
+
+    {
+        auto connection = data::ConnectionManager::getUserConnection();
+        connection.val.update(aSubmission);
+    }
 }
 
 //--------------------------------------------------------------------------------

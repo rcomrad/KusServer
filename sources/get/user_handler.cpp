@@ -2,9 +2,9 @@
 
 crow::json::wvalue
 get::UserHandler::process(const std::vector<int>& aColumn,
-                          data::DatabaseQuery& aDBQ) noexcept
+                          data::SmartConnection& aConnection) noexcept
 {
-    auto table = aDBQ.select2<data::User>(aColumn);
+    auto table = aConnection.val.select2<data::User>(aColumn);
     table.turnOffColumn("role_id");
     auto tableList = getTableAsList(table);
 
@@ -36,8 +36,13 @@ std::vector<std::string>
 get::UserHandler::getAllRoles() noexcept
 {
     std::vector<std::string> result;
-    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
-    auto table = dbq.getData<data::Role>();
+
+    data::Table<data::Role> table;
+    {
+        auto connection = data::ConnectionManager::getUserConnection();
+        table           = connection.val.getData<data::Role>();
+    }
+
     result.reserve(table.size());
     for (auto& rol : table)
     {

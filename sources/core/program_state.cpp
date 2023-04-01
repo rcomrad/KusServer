@@ -5,13 +5,14 @@
 
 #include "domain/file_reader.hpp"
 
-core::ProgramState core::ProgramState::mThis;
+#include "database/connection_manager.hpp"
 
 core::ProgramState::ProgramState()
     : mRestartState(Restart::NUN),
       mAutoCheckAnswers(false),
       mSetTimeForAnswers(false),
-      mTesterThreadCount(0)
+      mTesterThreadCount(0),
+      mDatabaseConnectionCount(2)
 {
     reloadSettings();
     if (mRestartOnStart == "full")
@@ -49,13 +50,19 @@ core::ProgramState::reloadSettings() noexcept
         {
             ss >> mRestartOnStart;
         }
+        else if (s == "database_connection_count")
+        {
+            ss >> s;
+            mDatabaseConnectionCount = std::stoi(s);
+        }
     }
 }
 
 core::ProgramState&
 core::ProgramState::getInstance()
 {
-    return mThis;
+    static ProgramState instance;
+    return instance;
 }
 
 void
@@ -186,6 +193,12 @@ core::ProgramState::getTesterThreadCount() noexcept
     return mTesterThreadCount;
 }
 
+uint16_t
+core::ProgramState::getDatabaseConnectionCount() noexcept
+{
+    return mDatabaseConnectionCount;
+}
+
 // void
 // core::ProgramState::checkSubmitionsQueue() noexcept
 // {
@@ -202,8 +215,10 @@ core::ProgramState::reloadSubmitionsQueue() noexcept
     mSubmitionMutex.lock();
     decltype(mSubmitionsQueue) empty;
     std::swap(mSubmitionsQueue, empty);
-    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
-    auto problemTable = dbq.getData<data::Submission>("verdict=\'NUN\'");
+    auto connection = data::ConnectionManager::getUserConnection();
+    auto problemTable =
+        connection.val.getData<data::Submission>("verdict=\'NUN\'");
+
     for (auto& i : problemTable)
     {
         data::Table<data::Submission> sub;

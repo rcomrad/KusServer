@@ -4,7 +4,7 @@
 
 #include "domain/path.hpp"
 
-#include "database/database_query.hpp"
+#include "database/connection_manager.hpp"
 
 #include "core/program_state.hpp"
 // #include "tester/tester.hpp"
@@ -29,9 +29,11 @@ post::SubmitHandler::process(const crow::request& aReq) noexcept
     submition.back().source_name =
         uploadFile(msg, dom::Path::getPath("submition").value());
 
-    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
-    dbq.update<data::Submission>(submition);
-
+    {
+        auto connection = data::ConnectionManager::getUserConnection();
+        connection.val.update<data::Submission>(submition);
+    }
+    
     auto& state = core::ProgramState::getInstance();
     state.pushSubmition(std::move(submition));
 

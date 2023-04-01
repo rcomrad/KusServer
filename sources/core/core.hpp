@@ -3,15 +3,13 @@
 
 //--------------------------------------------------------------------------------
 
+#include <map>
 #include <string>
 #include <thread>
 #include <vector>
 
-#include "database/database_query.hpp"
-
 //--------------------------------------------------------------------------------
 
-#include <atomic>
 namespace core
 {
 class Core

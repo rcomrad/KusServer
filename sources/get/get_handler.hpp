@@ -5,8 +5,8 @@
 
 #include <unordered_set>
 
+#include "database/connection_manager.hpp"
 #include "database/data_request.hpp"
-#include "database/database_query.hpp"
 
 #include "crow.h"
 
@@ -27,10 +27,11 @@ public:
                                       const std::string& aCondition) noexcept;
 
     template <typename T>
-    static crow::json::wvalue process(const std::vector<int>& aColumn,
-                                      data::DatabaseQuery& aDBQ) noexcept
+    static crow::json::wvalue process(
+        const std::vector<int>& aColumn,
+        data::SmartConnection& aConnection) noexcept
     {
-        auto table     = aDBQ.select2<T>(aColumn);
+        auto table     = aConnection.val.select2<T>(aColumn);
         auto tableList = getTableAsList(table);
         crow::json::wvalue result;
         result[T::tableName] = std::move(tableList);
@@ -39,7 +40,8 @@ public:
 
 protected:
     template <typename T>
-    static crow::json::wvalue::list getTableAsList(const data::Table<T>& aTable) noexcept
+    static crow::json::wvalue::list getTableAsList(
+        const data::Table<T>& aTable) noexcept
     {
         crow::json::wvalue::list result;
 

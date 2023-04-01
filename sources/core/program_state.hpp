@@ -6,7 +6,7 @@
 #include <mutex>
 #include <queue>
 
-#include "database/database_query.hpp"
+#include "database/database_structures.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -58,13 +58,12 @@ public:
     bool hasSubmition() noexcept;
 
     int getTesterThreadCount() noexcept;
+    uint16_t getDatabaseConnectionCount() noexcept;
 
     // void checkSubmitionsQueue() noexcept;
     void reloadSubmitionsQueue() noexcept;
 
 private:
-    static ProgramState mThis;
-
     std::string mRestartOnStart;
     Restart mRestartState;
     mutable std::mutex mRestartMutex;
@@ -75,6 +74,7 @@ private:
     bool mSetTimeForAnswers;
 
     int mTesterThreadCount;
+    uint16_t mDatabaseConnectionCount;
 
     bool mSubmitionRestart;
     std::queue<data::Table<data::Submission>> mSubmitionsQueue;

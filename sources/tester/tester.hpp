@@ -5,6 +5,8 @@
 
 #include "domain/string.hpp"
 
+#include "database/database_structures.hpp"
+
 #include "process/process.hpp"
 
 #include "test.hpp"

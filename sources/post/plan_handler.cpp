@@ -27,17 +27,17 @@ post::PlanHandler::uploadFromFile(const crow::request& aReq)
 crow::json::wvalue
 post::PlanHandler::csvFileUpload(const PlanData& aPlanData)
 {
-    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
-
     data::Table<data::Plan> plan(1);
     plan.back().name       = aPlanData.name;
     plan.back().subject_id = aPlanData.subjectID;
     plan.back().url        = aPlanData.url;
 
-    plan.back().id = dbq.update<data::Plan>(plan);
+    {
+        auto connection = data::ConnectionManager::getUserConnection();
+        plan.back().id  = connection.val.update<data::Plan>(plan);
+    }
 
     std::ifstream file(plan[0].url);
-
     std::string name;
     int count;
     data::Table<data::Theme> themes;
@@ -49,7 +49,11 @@ post::PlanHandler::csvFileUpload(const PlanData& aPlanData)
         themes.back().plan_id    = plan[0].id;
         std::getline(file, name, '\n');
     }
-    dbq.update<data::Theme>(themes);
+
+    {
+        auto connection = data::ConnectionManager::getUserConnection();
+        connection.val.update<data::Theme>(themes);
+    }
 
     return {200};
 }

@@ -1,16 +1,13 @@
 #include "server.hpp"
 
-#include <cstdlib>
-#include <ctime>
-#include <fstream>
-#include <iostream>
-
 #include "crow/middlewares/cors.h"
 #include "get/command_handler.hpp"
 #include "get/get_handler.hpp"
 #include "post/post_router.hpp"
 #include "post/submit_handler.hpp"
 #include "post/user_handler.hpp"
+
+#include "crow.h"
 
 core::Server::Server()
 {

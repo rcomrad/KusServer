@@ -2,6 +2,8 @@
 
 #include <sstream>
 
+#include "database/connection_manager.hpp"
+
 #include "get/get_handler.hpp"
 
 crow::json::wvalue
@@ -9,9 +11,9 @@ post::UserHandler::process(const crow::request& aReq)
 {
     auto body    = crow::json::load(aReq.body);
     auto request = parseRequest<data::User>(body);
-    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
 
-    auto it = request.other.find("role");
+    auto it         = request.other.find("role");
+    auto connection = data::ConnectionManager::getUserConnection();
     if (it != request.other.end())
     {
 
@@ -22,7 +24,7 @@ post::UserHandler::process(const crow::request& aReq)
         }
 
         int num    = 0;
-        auto table = dbq.getData<data::Role>();
+        auto table = connection.val.getData<data::Role>();
         for (auto& i : table)
         {
             if (roles.count(*(std::string*)i[1]))
@@ -34,7 +36,7 @@ post::UserHandler::process(const crow::request& aReq)
         *(int*)request.table.back()[request.table.names["role_id"]] = num;
     }
 
-    auto res = dbq.update(request.table);
+    auto res = connection.val.update(request.table);
     return {res};
 }
 
@@ -55,13 +57,18 @@ post::UserHandler::uploadFromFile(const crow::request& aReq)
     return res;
 }
 
+// TODO: static roles!
 crow::json::wvalue
 post::UserHandler::dataFileUpload(const std::string& aFilePath)
 {
-    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
     auto data = dataFileParser<data::User>(aFilePath, 1, {0, 5});
 
-    auto roleTable = dbq.getData<data::Role>();
+    data::Table<data::Role> roleTable;
+    {
+        auto connection = data::ConnectionManager::getUserConnection();
+        roleTable       = connection.val.getData<data::Role>();
+    }
+
     for (int i = 0; i < data.table.size(); ++i)
     {
         int num = 0;
@@ -83,9 +90,10 @@ post::UserHandler::dataFileUpload(const std::string& aFilePath)
         }
         *(int*)data.table[i][data.table.names["role_id"]] = num;
     }
-
-    dbq.update(data.table);
-
+    {
+        auto connection = data::ConnectionManager::getUserConnection();
+        connection.val.update(data.table);
+    }
     return {200};
 }
 

@@ -4,6 +4,8 @@
 
 #include "domain/error_message.hpp"
 
+#include "database/connection_manager.hpp"
+
 #include "post/journal_handler.hpp"
 #include "post/plan_handler.hpp"
 #include "post/user_handler.hpp"
@@ -27,8 +29,11 @@ core::Core::Core() noexcept
 void
 core::Core::remakeDatabase()
 {
+    data::ConnectionManager::turnOff();
     deleteEnvironment();
     createEnvironment();
+    data::ConnectionManager::turnOn();
+
     createDatabaseFromFile("database.psql_db");
     populateDatabaseFromFile("database.populate");
 }
@@ -146,7 +151,7 @@ core::Core::testerThread() noexcept
 void
 core::Core::createDatabaseFromFile(std::string aFileName) noexcept
 {
-    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
+    auto connection = data::ConnectionManager::getUserConnection();
 
     std::vector<data::ColumnSetting> colums;
     std::ifstream ios(aFileName);
@@ -167,7 +172,7 @@ core::Core::createDatabaseFromFile(std::string aFileName) noexcept
         std::getline(ios, s2);
         if (s1 == "TABLE")
         {
-            if (name.size()) dbq.createTable(name, colums);
+            if (name.size()) connection.val.createTable(name, colums);
             colums.clear();
             name = s2;
         }
@@ -184,7 +189,7 @@ core::Core::createDatabaseFromFile(std::string aFileName) noexcept
 void
 core::Core::populateDatabaseFromFile(std::string aFileName) noexcept
 {
-    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
+    auto connection = data::ConnectionManager::getUserConnection();
 
     std::vector<data::ColumnSetting> colums;
     std::ifstream ios(aFileName);
@@ -217,7 +222,7 @@ core::Core::populateDatabaseFromFile(std::string aFileName) noexcept
                 data.emplace_back(s2);
             }
             // TODO:
-            dbq.insert(s1, data);
+            connection.val.insert(s1, data);
             std::getline(ios, s2);
         }
     }
@@ -226,13 +231,13 @@ core::Core::populateDatabaseFromFile(std::string aFileName) noexcept
 void
 core::Core::createEnvironment() noexcept
 {
-    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::ADMIN);
-    dbq.createEnvironment(data::DatabaseQuery::UserType::USER);
+    auto connection = data::ConnectionManager::getAdminConnection();
+    connection.val.createEnvironment(data::ConnectionType::USER);
 }
 
 void
 core::Core::deleteEnvironment() noexcept
 {
-    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::ADMIN);
-    dbq.dropDatabase(data::DatabaseQuery::UserType::USER);
+    auto connection = data::ConnectionManager::getAdminConnection();
+    connection.val.dropDatabase(data::ConnectionType::USER);
 }

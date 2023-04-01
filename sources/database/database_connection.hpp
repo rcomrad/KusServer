@@ -1,5 +1,5 @@
-#ifndef DATABASE_QUERY_HPP
-#define DATABASE_QUERY_HPP
+#ifndef DATABASE_CONNECTION_HPP
+#define DATABASE_CONNECTION_HPP
 
 //--------------------------------------------------------------------------------
 
@@ -18,24 +18,25 @@
 
 namespace data
 {
-class DatabaseQuery
+enum class ConnectionType
+{
+    ADMIN,
+    USER
+};
+
+class DatabaseConnection
 {
 public:
-    enum class UserType
-    {
-        ADMIN,
-        USER
-    };
+    DatabaseConnection(const DBSettings& aDBS) noexcept;
+    DatabaseConnection(const ConnectionType& aType) noexcept;
+    ~DatabaseConnection() = default;
 
-    DatabaseQuery(const DBSettings& aDBS) noexcept;
-    DatabaseQuery(const UserType& aType) noexcept;
-    ~DatabaseQuery() = default;
+    DatabaseConnection(const DatabaseConnection& other)            = delete;
+    DatabaseConnection& operator=(const DatabaseConnection& other) = delete;
 
-    DatabaseQuery(const DatabaseQuery& other)            = delete;
-    DatabaseQuery& operator=(const DatabaseQuery& other) = delete;
-
-    DatabaseQuery(DatabaseQuery&& other) noexcept            = default;
-    DatabaseQuery& operator=(DatabaseQuery&& other) noexcept = default;
+    DatabaseConnection(DatabaseConnection&& other) noexcept = default;
+    DatabaseConnection& operator=(DatabaseConnection&& other) noexcept =
+        default;
 
     template <typename T>
     Table<T> getData(const std::string& aCondition = "") noexcept
@@ -92,8 +93,8 @@ public:
 
     void createTable(const std::string& aTableName,
                      const std::vector<ColumnSetting>& aColumns) noexcept;
-    void createEnvironment(const UserType& aType) noexcept;
-    void dropDatabase(const UserType& aType) noexcept;
+    void createEnvironment(const ConnectionType& aType) noexcept;
+    void dropDatabase(const ConnectionType& aType) noexcept;
 
     std::vector<data::Type> getColumnTypes(
         const std::string& aTableName) noexcept;
@@ -103,13 +104,14 @@ public:
 private:
     Postgresql mDatabase;
 
-    static std::unordered_map<UserType, data::DBSettings> mUserTypeSettings;
+    static std::unordered_map<ConnectionType, data::DBSettings>
+        mConnectionTypeSettings;
 
-    static std::unordered_map<UserType, data::DBSettings>
-    getUserTypeSettings() noexcept;
+    static std::unordered_map<ConnectionType, data::DBSettings>
+    getConnectionTypeSettings() noexcept;
 };
 } // namespace data
 
 //--------------------------------------------------------------------------------
 
-#endif // !DATABASE_QUERY_HPP
+#endif // !DATABASE_CONNECTION_HPP

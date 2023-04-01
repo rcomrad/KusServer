@@ -43,18 +43,20 @@ get::GetHandler::mainGet(const std::string& aRequest,
     crow::json::wvalue result;
 
     data::DataRequest req(aRequest, aCondition);
-    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
+
     for (auto& i : req)
     {
-        dbq.handSelect(i);
-
         std::vector<crow::json::wvalue> temp;
-        for (auto& j : i)
         {
-            temp.emplace_back(
-                get::GetRouter::basicRouter(j.trueName, j.rowNumbers, dbq));
+            auto connection = data::ConnectionManager::getUserConnection();
+            connection.val.handSelect(i);
+            for (auto& j : i)
+            {
+                temp.emplace_back(get::GetRouter::basicRouter(
+                    j.trueName, j.rowNumbers, connection));
+            }
+            connection.val.handClose();
         }
-        dbq.handClose();
 
         for (size_t j = temp.size() - 1; j >= 1; --j)
         {

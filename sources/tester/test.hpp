@@ -7,8 +7,6 @@
 #include <memory>
 #include <thread>
 
-#include "database/database_query.hpp"
-
 #include "process/limits.hpp"
 #include "process/process.hpp"
 

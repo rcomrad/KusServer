@@ -5,7 +5,7 @@
 
 #include <string_view>
 
-#include "database/database_query.hpp"
+#include "database/database_structures.hpp"
 
 #include "crow.h"
 #include "post_handler.hpp"

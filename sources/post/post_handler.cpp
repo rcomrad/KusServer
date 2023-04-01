@@ -2,6 +2,8 @@
 
 #include "domain/path.hpp"
 
+#include "database/connection_manager.hpp"
+
 #include "post_router.hpp"
 
 std::string
@@ -14,13 +16,14 @@ post::PostHandler::uploadFile(crow::multipart::message& aMsg,
     auto fileName = aMsg.get_part_by_name("filename").body;
     auto file     = aMsg.get_part_by_name("file").body;
 
-    data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
-    auto table = dbq.getData<data::File>();
-
-    std::string filePath =
-        aPathPrefix + std::to_string(table[0].num++) + "-" + fileName;
-
-    dbq.update<data::File>(table);
+    std::string filePath;
+    {
+        auto connection = data::ConnectionManager::getUserConnection();
+        auto table      = connection.val.getData<data::File>();
+        filePath =
+            aPathPrefix + std::to_string(table[0].num++) + "-" + fileName;
+        connection.val.update<data::File>(table);
+    }
 
     auto file_handler = std::ofstream(filePath);
     file_handler << file;

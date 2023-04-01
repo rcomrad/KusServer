@@ -3,8 +3,8 @@
 
 //--------------------------------------------------------------------------------
 
+#include "database/connection_manager.hpp"
 #include "database/data_request.hpp"
-#include "database/database_query.hpp"
 
 #include "get_handler.hpp"
 
@@ -16,7 +16,7 @@ class UserHandler : public GetHandler
 {
 public:
     static crow::json::wvalue process(const std::vector<int>& aColumn,
-                                      data::DatabaseQuery& aDBQ) noexcept;
+                                      data::SmartConnection& aConnection) noexcept;
 
     static std::vector<std::string> mRoles;
 

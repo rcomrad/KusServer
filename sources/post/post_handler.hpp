@@ -10,7 +10,7 @@
 
 #include "domain/pair.hpp"
 
-#include "database/database_query.hpp"
+#include "database/connection_manager.hpp"
 
 #include "crow.h"
 
@@ -42,11 +42,14 @@ public:
     template <typename T>
     static crow::json::wvalue process(const crow::request& aReq)
     {
-        data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
-        auto body = crow::json::load(aReq.body);
-
+        auto body    = crow::json::load(aReq.body);
         auto request = parseRequest<T>(body);
-        auto res     = dbq.update<T>(request.table);
+
+        int res;
+        {
+            auto connection = data::ConnectionManager::getUserConnection();
+            res             = connection.val.update<T>(request.table);
+        }
 
         for (auto& i : request.manyToMany)
         {
@@ -62,7 +65,7 @@ public:
                                          bool aIsAdding,
                                          std::vector<int> aIDForInsert)
     {
-        data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
+        auto connection = data::ConnectionManager::getUserConnection();
         data::Table<T> table;
         table.reserve(16);
 
@@ -70,7 +73,7 @@ public:
         {
             table.emplace_back();
             *(int*)table.back()[1] = aID;
-            dbq.drop<T>(table);
+            connection.val.drop<T>(table);
             table.pop_back();
         }
 
@@ -80,7 +83,7 @@ public:
             *(int*)table.back()[1] = aID;
             *(int*)table.back()[2] = i;
         }
-        auto res = dbq.update<T>(table);
+        auto res = connection.val.update<T>(table);
         return {res};
     }
 
@@ -96,18 +99,18 @@ public:
     template <typename T>
     static crow::json::wvalue drop(const crow::request& aReq)
     {
-        data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
-        auto req = crow::json::load(aReq.body);
+        auto connection = data::ConnectionManager::getUserConnection();
+        auto req        = crow::json::load(aReq.body);
         if (req.begin()->t() != crow::json::type::List)
         {
             auto table = parseRequest<T>(req).table;
-            dbq.drop<T>(table);
+            connection.val.drop<T>(table);
         }
         else
         {
             std::vector<int> ids;
             for (auto& i : *req.begin()) ids.push_back(i.i());
-            dbq.dropByID<T>(ids);
+            connection.val.dropByID<T>(ids);
         }
 
         return {};
