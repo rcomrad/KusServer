@@ -134,8 +134,8 @@ test::Test::checkTest() noexcept
         mCheckerProcess.writeData(mTLM.mAnswerSize);
         mCheckerProcess.writeData(mTLM.mAnswer);
 
-        mCheckerProcess.run();
-        resultEvoluation();
+        if (mCheckerProcess.run()) resultEvoluation();
+        else mVerdict = TestVerdict::NUN;
     }
 }
 

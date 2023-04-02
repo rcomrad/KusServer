@@ -66,7 +66,8 @@ proc::BoostProcess::run() noexcept
     // mProcess.resume();
     try
     {
-        mProcess.wait();
+        mProcess.wait_for(std::chrono::milliseconds(5000));
+        flag = !mProcess.running();
     }
     catch (const std::exception& e)
     {
@@ -120,7 +121,7 @@ proc::BoostProcess::readData(std::string& result) noexcept
     while (flag && std::getline(in, line) && !line.empty())
     {
         // if (!mProcess.running() && line.empty()) break;
-        result += line;
+        result += std::move(line);
     }
 }
 

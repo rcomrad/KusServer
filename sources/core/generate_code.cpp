@@ -552,6 +552,19 @@ generateDatabaseStructuresCPPFile()
     fileCPP.close();
 }
 
+std::string
+wrap(std::string aname)
+{
+    return "crow::json::wvalue result;\n"
+           "auto it = " +
+           aname +
+           ".find(aTableName);\n"
+           "if (it != " +
+           aname +
+           ".end())\n"
+           "result= it->second(args...);return result;\n";
+}
+
 void
 generateGetRouterFile()
 {
@@ -609,11 +622,7 @@ generateGetRouterFile()
     // postHandler
     generator.pushBackFunction("basicRouter(const std::string& aTableName, "
                                "Args&&... args) noexcept");
-    generator.pushToFunctionBody(
-        "crow::json::wvalue result;\n"
-        "auto it = mBasicRouterMap.find(aTableName);\n"
-        "if (it != mBasicRouterMap.end())\n"
-        "result= mBasicRouterMap[aTableName](args...);return result;\n");
+    generator.pushToFunctionBody(wrap("mBasicRouterMap"));
     generator.generateMapTable(
         "mBasicRouterMap", {
                                {"default", "get::GetHandler::process<data::"},
@@ -628,6 +637,7 @@ generateGetRouterFile()
 void
 generatePostHandlerFile()
 {
+
     core::GenerateCode generator;
     generator.setClassName("PostRouter");
     generator.setNamespace("post");
@@ -651,11 +661,7 @@ generatePostHandlerFile()
     // postHandler
     generator.pushBackFunction("basicRouter(const std::string& aTableName, "
                                "Args&&... args) noexcept");
-    generator.pushToFunctionBody(
-        "crow::json::wvalue result;\n"
-        "auto it = mPostRouterMap.find(aTableName);\n"
-        "if (it != mPostRouterMap.end())\n"
-        "result= mPostRouterMap[aTableName](args...);return result;\n");
+    generator.pushToFunctionBody(wrap("mPostRouterMap"));
     generator.generateMapTable(
         "mPostRouterMap",
         {
@@ -672,8 +678,7 @@ generatePostHandlerFile()
     generator.pushBackFunction(
         "manyToManyRouter(const std::string& aTableName, "
         "Args&&... args) noexcept");
-    generator.pushToFunctionBody(
-        "return mManyToManyRouterMap[aTableName](args...);");
+    generator.pushToFunctionBody(wrap("mManyToManyRouterMap"));
     generator.generateMapTable(
         "mManyToManyRouterMap",
         {
@@ -685,8 +690,7 @@ generatePostHandlerFile()
     // uploadPostHandler
     generator.pushBackFunction("uploadRouter(const std::string& aTableName, "
                                "Args&&... args) noexcept");
-    generator.pushToFunctionBody(
-        "return mUploadRouterMap[aTableName](args...);");
+    generator.pushToFunctionBody(wrap("mUploadRouterMap"));
     generator.generateMapTable(
         "mUploadRouterMap",
         {
@@ -701,7 +705,7 @@ generatePostHandlerFile()
     // dropHandler
     generator.pushBackFunction("dropRouter(const std::string& aTableName, "
                                "Args&&... args) noexcept");
-    generator.pushToFunctionBody("return mDropRouterMap[aTableName](args...);");
+    generator.pushToFunctionBody(wrap("mDropRouterMap"));
     generator.generateMapTable(
         "mDropRouterMap", {
                               {"default", "post::PostHandler::drop<data::"}
@@ -738,7 +742,7 @@ generateAsteriskHendler()
     // postHandler
     generator.pushBackFunction("basicRouter(const std::string& aTableName, "
                                "Args&&... args) noexcept");
-    generator.pushToFunctionBody("return mPostRouterMap[aTableName](args...);");
+    generator.pushToFunctionBody(wrap("mPostRouterMap"));
     generator.generateMapTable(
         "mPostRouterMap",
         {

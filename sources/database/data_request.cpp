@@ -189,7 +189,7 @@ data::TableInfoAray::getColumns() noexcept
         }
     }
 
-    result.resize(result.size() - 2);
+    if (!result.empty()) result.resize(result.size() - 2);
 
     // if (arr.size() == 1 && arr.rowNames.size() == 0)
     // {

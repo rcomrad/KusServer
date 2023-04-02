@@ -1,7 +1,7 @@
 #ifndef POST_ROUTER_HPP
 #define POST_ROUTER_HPP
 
-#include <unordered_map>
+#include <unordered_map.>
 
 #include "journal_handler.hpp"
 #include "mark_handler.hpp"
@@ -21,8 +21,7 @@ public:
     {
         crow::json::wvalue result;
         auto it = mPostRouterMap.find(aTableName);
-        if (it != mPostRouterMap.end())
-            result = mPostRouterMap[aTableName](args...);
+        if (it != mPostRouterMap.end()) result = it->second(args...);
         return result;
     }
 
@@ -30,21 +29,30 @@ public:
     static crow::json::wvalue manyToManyRouter(const std::string& aTableName,
                                                Args&&... args) noexcept
     {
-        return mManyToManyRouterMap[aTableName](args...);
+        crow::json::wvalue result;
+        auto it = mManyToManyRouterMap.find(aTableName);
+        if (it != mManyToManyRouterMap.end()) result = it->second(args...);
+        return result;
     }
 
     template <typename... Args>
     static crow::json::wvalue uploadRouter(const std::string& aTableName,
                                            Args&&... args) noexcept
     {
-        return mUploadRouterMap[aTableName](args...);
+        crow::json::wvalue result;
+        auto it = mUploadRouterMap.find(aTableName);
+        if (it != mUploadRouterMap.end()) result = it->second(args...);
+        return result;
     }
 
     template <typename... Args>
     static crow::json::wvalue dropRouter(const std::string& aTableName,
                                          Args&&... args) noexcept
     {
-        return mDropRouterMap[aTableName](args...);
+        crow::json::wvalue result;
+        auto it = mDropRouterMap.find(aTableName);
+        if (it != mDropRouterMap.end()) result = it->second(args...);
+        return result;
     }
 
 private:

@@ -1,7 +1,7 @@
 #ifndef GET_ROUTER_HPP
 #define GET_ROUTER_HPP
 
-#include <unordered_map>
+#include <unordered_map.>
 
 #include "get_handler.hpp"
 #include "user_handler.hpp"
@@ -17,8 +17,7 @@ public:
     {
         crow::json::wvalue result;
         auto it = mBasicRouterMap.find(aTableName);
-        if (it != mBasicRouterMap.end())
-            result = mBasicRouterMap[aTableName](args...);
+        if (it != mBasicRouterMap.end()) result = it->second(args...);
         return result;
     }
 

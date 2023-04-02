@@ -82,7 +82,11 @@ test::Compiler::prepareCommandForCPP(
 
     // TODO: do i need double args
     // return {outputName, outputName};
-    if (compiler.run())
+    bool flag = compiler.run();
+    std::ifstream exe(outputName, std::ios::binary);
+    flag &= exe.is_open();
+    exe.close();
+    if (flag)
     {
         result = {outputName};
         std::string s;
