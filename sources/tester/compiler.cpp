@@ -14,8 +14,10 @@ std::string test::Compiler::mCPPCompiler =
 
 std::unordered_map<std::string, test::Compiler::Language>
     test::Compiler::mLanguages = {
-        {"cpp", test::Compiler::Language::CPP   },
-        {"py",  test::Compiler::Language::PYTHON}
+        {"cpp", test::Compiler::Language::CPP       },
+        {"py",  test::Compiler::Language::PYTHON    },
+        {"p",   test::Compiler::Language::PASCAL_XXA},
+        {"pas", test::Compiler::Language::PASCAL_XXA}
 };
 
 //--------------------------------------------------------------------------------
@@ -40,6 +42,10 @@ test::Compiler::getExecutableCommand(
                 break;
 
             case Language::PYTHON:
+                result = prepareCommandForPython(aFileName);
+                break;
+
+            case Language::PASCAL_XXA:
                 result = prepareCommandForPython(aFileName);
                 break;
         }
@@ -71,9 +77,20 @@ test::Compiler::prepareCommandForCPP(
     proc::Process compiler;
     compiler.setComand(compileCommand);
     compiler.create();
-    compiler.run();
 
-    return {outputName, outputName};
+    std::vector<std::string> result;
+
+    // TODO: do i need double args
+    // return {outputName, outputName};
+    if (compiler.run())
+    {
+        result = {outputName};
+        std::string s;
+        compiler.readData(s);
+        std::cout << s << "\n\n\n";
+    }
+
+    return result;
 }
 
 //--------------------------------------------------------------------------------
@@ -84,6 +101,27 @@ test::Compiler::prepareCommandForPython(const std::string& aFileName) noexcept
     std::vector<std::string> result;
     result.emplace_back("python3");
     result.emplace_back(aFileName);
+    return result;
+}
+
+std::vector<std::string>
+test::Compiler::prepareCommandForPascal(const std::string& aFileName) noexcept
+{
+    std::string temp;
+    temp = aFileName;
+    while (temp.back() != '.') temp.pop_back();
+    temp.pop_back();
+
+    std::vector<std::string> compileCommand;
+    compileCommand.emplace_back("pc");
+    compileCommand.emplace_back(aFileName);
+
+    proc::Process compiler;
+    compiler.setComand(compileCommand);
+    compiler.create();
+
+    std::vector<std::string> result;
+    if (compiler.run()) result = {temp};
     return result;
 }
 

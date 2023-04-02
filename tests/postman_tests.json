@@ -2489,7 +2489,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Квадратное уравнение\",\r\n    \"nickname\": \"quadratic-equation\",\r\n    \"checker_name\": \"NUN\",\r\n    \"test_count\": 2,\r\n    \"example_count\": 3,\r\n    \"time_limit\": 1000,\r\n    \"memory_limit\": 256\r\n}"
+					"raw": "{\r\n    \"name\": \"Квадратное уравнение\",\r\n    \"nickname\": \"quadratic-equation\",\r\n    \"checker_name\": \"NUN\",\r\n    \"test_count\": 100,\r\n    \"example_count\": 3,\r\n    \"time_limit\": 1000,\r\n    \"memory_limit\": 256\r\n}"
 				},
 				"url": {
 					"raw": "127.0.0.1:18080/api/post/problem",
@@ -2618,6 +2618,33 @@
 			"response": []
 		},
 		{
+			"name": "Add competitions to 1 user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"user_competition\": [\r\n        1,\r\n        2\r\n    ],\r\n    \"add\" : true\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/post/user",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"post",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Submit source file 1",
 			"request": {
 				"method": "POST",
@@ -2728,6 +2755,53 @@
 							"key": "file",
 							"type": "file",
 							"src": "source.cpp"
+						},
+						{
+							"key": "user_id",
+							"value": "25",
+							"type": "text"
+						},
+						{
+							"key": "problem_id",
+							"value": "3",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/submit",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"submit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Submit while true source",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "filename",
+							"value": "source.cpp",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "while_true.cpp"
 						},
 						{
 							"key": "user_id",

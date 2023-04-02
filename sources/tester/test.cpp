@@ -152,7 +152,14 @@ test::Test::resultEvoluation() noexcept
 
     mCheckerProcess.readData(temp);
 
-    if (temp.substr(0, 2) != "ok")
+    if (temp.empty())
+    {
+        mVerdict = TestVerdict::TLE;
+        START_LOG_BLOCK("Result_is_TLE");
+        WRITE_LOG("wanted:", mUsedTime);
+        END_LOG_BLOCK("received:", mTimeLimit);
+    }
+    else if (temp.substr(0, 2) != "ok")
     {
         mVerdict = TestVerdict::WA;
         START_LOG_BLOCK("Result_not_okay");

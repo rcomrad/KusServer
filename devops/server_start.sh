@@ -2,6 +2,9 @@ cd ../..
 git config --global --add safe.directory ./server
 sudo -S apt install gcc g++ make curl zip unzip tar pkg-config autoconf postgresql net-tools -y
 
+# pascal compiler
+sudo -S apt install fp-compiler -y
+
 cd server
 git switch autocommit
 git config --global --add safe.directory /home/rcomrad/server
@@ -38,12 +41,19 @@ sudo -u postgres psql -c "CREATE DATABASE journal_db;"
 sudo chmod +x make_servis.sh
 sudo ./make_servis.sh
 
+# nginx
 sudo chmod +x nginx.sh
 sudo ./nginx.sh
+
+# zsh
+# TODO autoconfirm
+# sudo chmod +x zsh.sh
+# sudo ./zsh.sh
 
 # compile
 sudo chmod +x remake.sh
 sudo ./remake.sh
+
 
 sudo apt update || sudo apt upgrade -y
 

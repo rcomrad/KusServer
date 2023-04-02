@@ -28,6 +28,8 @@ test::Tester::Tester(uint8_t aThreadCount) noexcept
 void
 test::Tester::run(data::Table<data::Submission>&& aSubmission) noexcept
 {
+    mIsmIsCorapted = false;
+
     auto& submission = aSubmission[0];
     data::Table<data::Problem> problemTable;
     {
@@ -44,7 +46,7 @@ test::Tester::run(data::Table<data::Submission>&& aSubmission) noexcept
     std::string submissionPath = submission.source_name;
     std::string checkerPath    = problem.checker_name;
 
-    if (checkerPath.empty())
+    if (checkerPath == "NUN")
     {
         checkerPath = curPath + "checker.cpp";
     }
@@ -57,28 +59,35 @@ test::Tester::run(data::Table<data::Submission>&& aSubmission) noexcept
     auto solProc   = prepareFile(submissionPath, workDir + "sus_solution");
     auto checkProc = prepareFile(checkerPath, workDir + "sus_checker");
 
-    proc::Limits limits;
-    limits.timeLimit   = problem.time_limit;
-    limits.memoryLimit = problem.memory_limit;
-    solProc->setLimits(limits);
-
-    // Test testTemplate(solProc, checkProc, &mThreadSignals);
-    // testTemplate.setLimits(limits);
-    // mTests.resize(mThreadCount, testTemplate);
-
-    mTests.reserve(mThreadCount);
-    for (size_t i = 0; i < mThreadCount; ++i)
+    if (!mIsmIsCorapted)
     {
-        mThreadSignals.push(i);
-        // mTests[i].setTesterID(i);
-        mTests.emplace_back(solProc, checkProc, &mThreadSignals, i);
-        mTests[i].setLimits(limits);
+        proc::Limits limits;
+        limits.timeLimit   = problem.time_limit;
+        limits.memoryLimit = problem.memory_limit;
+        solProc->setLimits(limits);
+
+        // Test testTemplate(solProc, checkProc, &mThreadSignals);
+        // testTemplate.setLimits(limits);
+        // mTests.resize(mThreadCount, testTemplate);
+
+        mTests.reserve(mThreadCount);
+        for (size_t i = 0; i < mThreadCount; ++i)
+        {
+            mThreadSignals.push(i);
+            // mTests[i].setTesterID(i);
+            mTests.emplace_back(solProc, checkProc, &mThreadSignals, i);
+            mTests[i].setLimits(limits);
+        }
+
+        TestReader testReader(curPath + "test/", problem.test_count);
+        check(testReader);
+    }
+    else
+    {
+        mFinalVerdict = Test::TestVerdict::CE;
     }
 
-    TestReader testReader(curPath + "test/", problem.test_count);
-    check(testReader);
     submission.verdict = verdictTostring(mFinalVerdict);
-
     {
         auto connection = data::ConnectionManager::getUserConnection();
         connection.val.update(aSubmission);
@@ -93,6 +102,7 @@ test::Tester::prepareFile(const std::string& aFileName,
 {
     std::shared_ptr<proc::Process> result = std::make_shared<proc::Process>();
     auto cmd = test::Compiler::getExecutableCommand(aFileName, aOutputFileName);
+    mIsmIsCorapted |= cmd.empty();
     result->setComand(cmd);
     return result;
 }
@@ -138,11 +148,17 @@ test::Tester::check(TestReader& aTestReader) noexcept
 std::string
 test::Tester::verdictTostring(const Test::TestVerdict& aVerdict) const noexcept
 {
-    std::string result;
+    std::string result = "ERR";
     switch (aVerdict)
     {
+        case Test::TestVerdict::NUN:
+            result = "ERR";
+            break;
         case Test::TestVerdict::OK:
             result = "OK";
+            break;
+        case Test::TestVerdict::CE:
+            result = "CE";
             break;
         case Test::TestVerdict::WA:
             result = "WA";
@@ -154,9 +170,6 @@ test::Tester::verdictTostring(const Test::TestVerdict& aVerdict) const noexcept
             result = "MLE";
             break;
         case Test::TestVerdict::PE:
-            result = "WA";
-            break;
-        case Test::TestVerdict::NUN:
             result = "WA";
             break;
     }

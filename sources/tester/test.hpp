@@ -25,6 +25,7 @@ public:
     {
         NUN,
         OK,
+        CE,
         WA,
         TLE,
         MLE,

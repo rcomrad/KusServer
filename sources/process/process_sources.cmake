@@ -4,6 +4,9 @@ set(
     base_process.cpp
     base_process.hpp
 
+    bst_process.cpp
+    bst_process.hpp
+
     limits.cpp
     limits.hpp
 

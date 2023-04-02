@@ -29,6 +29,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Libraries include
 find_package(libpqxx CONFIG REQUIRED)
 find_package(Crow CONFIG REQUIRED)
+find_package(Boost 1.64.0 REQUIRED system filesystem)
 
 # Sources include
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake_scripts/cmake_scripts.cmake)
@@ -47,6 +48,7 @@ endif()
 # Libraries include
 target_link_libraries(${PROJECT_NAME} PRIVATE libpqxx::pqxx)
 target_link_libraries(${PROJECT_NAME} PRIVATE Crow::Crow)
+target_link_libraries (${PROJECT_NAME} PRIVATE ${Boost_LIBRARIES})
 
 # Output file name settings
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)

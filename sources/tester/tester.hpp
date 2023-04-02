@@ -48,6 +48,8 @@ private:
     Test::TestVerdict mFinalVerdict;
     uint64_t mFinalTime;
     uint64_t mFinalMemory;
+
+    mutable bool mIsmIsCorapted;
 };
 } // namespace test
 

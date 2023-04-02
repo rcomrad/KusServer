@@ -25,9 +25,10 @@ class Compiler
 private:
     enum class Language
     {
-        NUN    = 0,
-        CPP    = 1,
-        PYTHON = 2
+        NUN,
+        CPP,
+        PYTHON,
+        PASCAL_XXA
     };
 
 public:
@@ -62,6 +63,9 @@ private:
         file einterpretation.
     */
     static std::vector<std::string> prepareCommandForPython(
+        const std::string& aFileName) noexcept;
+
+    static std::vector<std::string> prepareCommandForPascal(
         const std::string& aFileName) noexcept;
 };
 } // namespace test
