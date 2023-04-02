@@ -103,7 +103,7 @@ core::Server::Server()
             [&](const crow::request& req)
             {
                 crow::response res;
-                post::SubmitHandler::process(req);
+                res = post::SubmitHandler::process(req);
                 return res;
             });
 

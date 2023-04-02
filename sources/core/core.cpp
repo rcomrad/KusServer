@@ -140,11 +140,11 @@ core::Core::testerThread() noexcept
     auto& state = ProgramState::getInstance();
     while (true)
     {
-        if (state.hasSubmition())
-        {
-            test::Tester tester(state.getTesterThreadCount());
-            tester.run(state.getSubmition());
-        }
+        // if (state.hasSubmition())
+        // {
+        //     test::Tester tester(state.getTesterThreadCount());
+        //     tester.run(state.getSubmition());
+        // }
     }
 }
 

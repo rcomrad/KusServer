@@ -14,6 +14,7 @@ post::SubmitHandler::process(const crow::request& aReq) noexcept
 {
     // TODO: result
     crow::json::wvalue res;
+    res["result"] = "ok";
 
     data::Table<data::Submission> submition;
     submition.emplace_back();
@@ -33,7 +34,7 @@ post::SubmitHandler::process(const crow::request& aReq) noexcept
         auto connection = data::ConnectionManager::getUserConnection();
         connection.val.update<data::Submission>(submition);
     }
-    
+
     auto& state = core::ProgramState::getInstance();
     state.pushSubmition(std::move(submition));
 

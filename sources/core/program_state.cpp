@@ -166,9 +166,9 @@ void
 core::ProgramState::pushSubmition(
     data::Table<data::Submission>&& aSubmition) noexcept
 {
-    mSubmitionMutex.lock();
-    mSubmitionsQueue.push(std::move(aSubmition));
-    mSubmitionMutex.unlock();
+    // mSubmitionMutex.lock();
+    // mSubmitionsQueue.push(std::move(aSubmition));
+    // mSubmitionMutex.unlock();
 }
 
 data::Table<data::Submission>
@@ -212,17 +212,17 @@ core::ProgramState::getDatabaseConnectionCount() noexcept
 void
 core::ProgramState::reloadSubmitionsQueue() noexcept
 {
-    mSubmitionMutex.lock();
-    decltype(mSubmitionsQueue) empty;
-    std::swap(mSubmitionsQueue, empty);
-    auto connection = data::ConnectionManager::getUserConnection();
-    auto problemTable =
-        connection.val.getData<data::Submission>("verdict=\'NUN\'");
+    // mSubmitionMutex.lock();
+    // decltype(mSubmitionsQueue) empty;
+    // std::swap(mSubmitionsQueue, empty);
+    // auto connection = data::ConnectionManager::getUserConnection();
+    // auto problemTable =
+    //     connection.val.getData<data::Submission>("verdict=\'NUN\'");
 
-    for (auto& i : problemTable)
-    {
-        data::Table<data::Submission> sub;
-        sub.emplace_back(std::move(i));
-    }
-    mSubmitionMutex.unlock();
+    // for (auto& i : problemTable)
+    // {
+    //     data::Table<data::Submission> sub;
+    //     sub.emplace_back(std::move(i));
+    // }
+    // mSubmitionMutex.unlock();
 }
