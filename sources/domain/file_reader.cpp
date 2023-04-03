@@ -32,9 +32,10 @@ dom::FileReader::getAllData(const std::string& aFileName) noexcept
 {
     std::ifstream inp(aFileName);
     std::string s, result;
-    while (std::getline(inp, s, '\0'))
+    while (std::getline(inp, s, '\n'))
     {
         result += s;
+        result += "<br>";
     }
     inp.close();
     return result;
