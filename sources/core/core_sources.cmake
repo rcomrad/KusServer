@@ -14,4 +14,7 @@ set(
     
     server.cpp
     server.hpp
+
+    submission_queue.cpp
+    submission_queue.hpp
 )

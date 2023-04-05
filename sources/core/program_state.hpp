@@ -5,6 +5,7 @@
 
 #include <mutex>
 #include <queue>
+#include <unordered_map>
 
 #include "database/database_structures.hpp"
 
@@ -12,75 +13,62 @@
 
 namespace core
 {
+enum class RestartType
+{
+    NUN,
+    FULL,
+    EMPTY,
+    TESTER,
+    SETTINGS
+};
+
+enum class Flag
+{
+    SUB_CHECK,
+    ANS_CHECK,
+    TIME_SET
+};
+
+enum class Value
+{
+    TEST_THRD,
+    DB_THRD
+};
+
 class ProgramState
 {
 public:
-    enum class Restart
-    {
-        NUN,
-        FULL,
-        EMPTY,
-        TESTER
-        // POPULATE
-    };
-
-    enum class State
-    {
-        NUN,
-        ON,
-        OFF
-    };
-
     static ProgramState& getInstance();
 
-    void reloadSettings() noexcept;
-
-    void fullReset();
-    void emptyReset();
-    void testerReset();
+    void callRestart(const RestartType& aType);
+    void startRestart();
+    void endRestart();
 
     bool needRestart();
     bool needPopulateDB();
     bool needRemakeDB();
     bool needReloadSubmitions();
 
-    void startRestart();
-    void endRestart();
-
-    void setCheckAnswers(State aTurn);
-    void setSettingTime(State aTurn);
-
-    bool isCheckAnswersTurnOn();
-    bool isSetTimeTurnOn();
-
-    void pushSubmition(data::Table<data::Submission>&& aSubmition) noexcept;
-    data::Table<data::Submission> getSubmition() noexcept;
-    bool hasSubmition() noexcept;
-
-    int getTesterThreadCount() noexcept;
-    uint16_t getDatabaseConnectionCount() noexcept;
-
-    // void checkSubmitionsQueue() noexcept;
-    void reloadSubmitionsQueue() noexcept;
+    bool checkFlag(const Flag& aFlag) noexcept;
+    int getValue(const Value& aName) noexcept;
 
 private:
-    std::string mRestartOnStart;
-    Restart mRestartState;
-    mutable std::mutex mRestartMutex;
-    mutable std::mutex mCheckMutex;
-    mutable std::mutex mSetTimeMutex;
-
-    bool mAutoCheckAnswers;
-    bool mSetTimeForAnswers;
-
-    int mTesterThreadCount;
-    uint16_t mDatabaseConnectionCount;
-
-    bool mSubmitionRestart;
-    std::queue<data::Table<data::Submission>> mSubmitionsQueue;
-    mutable std::mutex mSubmitionMutex;
-
     ProgramState();
+    void reloadSettings() noexcept;
+
+    RestartType mStartState;
+    RestartType mRestartState;
+    mutable std::mutex mRestartMutex;
+
+    std::unordered_map<std::string, RestartType> mRestartTypes;
+
+    std::vector<uint8_t> mFlags;
+    uint8_t turnOnOff(const std::string& s) noexcept;
+    std::unordered_map<std::string, uint8_t&> mFlagNames;
+
+    std::vector<int> mValues;
+    int valueSetter(const std::string& s) noexcept;
+    std::unordered_map<std::string, int&> mValueNames;
 };
 } // namespace core
 

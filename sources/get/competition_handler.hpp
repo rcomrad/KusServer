@@ -1,5 +1,5 @@
-#ifndef COMPETITION_HANDLER_HPP
-#define COMPETITION_HANDLER_HPP
+#ifndef GET_COMPETITION_HANDLER_HPP
+#define GET_COMPETITION_HANDLER_HPP
 
 //--------------------------------------------------------------------------------
 
@@ -28,4 +28,4 @@ private:
 
 //--------------------------------------------------------------------------------
 
-#endif // !COMPETITION_HANDLER_HPP
+#endif // !GET_COMPETITION_HANDLER_HPP

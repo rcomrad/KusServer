@@ -1,5 +1,5 @@
-#ifndef SUBMIT_HANDLER_HPP
-#define SUBMIT_HANDLER_HPP
+#ifndef POST_SUBMIT_HANDLER_HPP
+#define POST_SUBMIT_HANDLER_HPP
 
 //--------------------------------------------------------------------------------
 
@@ -24,4 +24,4 @@ private:
 
 //--------------------------------------------------------------------------------
 
-#endif // !SUBMIT_HANDLER_HPP
+#endif // !POST_SUBMIT_HANDLER_HPP

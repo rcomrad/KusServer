@@ -18,6 +18,7 @@ cd ../..
 git clone https://github.com/Microsoft/vcpkg.git
 cd ./vcpkg
 ./bootstrap-vcpkg.sh
+./vcpkg install boost:x64-linux
 ./vcpkg install crow:x64-linux
 ./vcpkg install libpqxx:x64-linux
 
@@ -55,7 +56,7 @@ sudo chmod +x remake.sh
 sudo ./remake.sh
 
 
-sudo apt update || sudo apt upgrade -y
+sudo apt update && sudo apt upgrade -y
 
 # TODO: add paths.path
 # TODO: new database.pass

@@ -31,3 +31,35 @@ std::unordered_map<std::string, decltype(&get::GetHandler::process<data::User>)>
         {"question_type",       &get::GetHandler::process<data::Question_type>   },
         {"user_answer",         &get::GetHandler::process<data::User_answer>     }
 };
+
+std::unordered_map<std::string, decltype(&get::GetHandler::dump<data::User>)>
+    get::GetRouter::mDumpRouterMap = {
+        {"school",              &get::GetHandler::dump<data::School>          },
+        {"user",                &get::GetHandler::dump<data::User>            },
+        {"role",                &get::GetHandler::dump<data::Role>            },
+        {"grade",               &get::GetHandler::dump<data::Grade>           },
+        {"grade_student",       &get::GetHandler::dump<data::Grade_student>   },
+        {"group",               &get::GetHandler::dump<data::Group>           },
+        {"group_student",       &get::GetHandler::dump<data::Group_student>   },
+        {"lesson",              &get::GetHandler::dump<data::Lesson>          },
+        {"journal_table",       &get::GetHandler::dump<data::Journal_table>   },
+        {"subject",             &get::GetHandler::dump<data::Subject>         },
+        {"mark",                &get::GetHandler::dump<data::Mark>            },
+        {"plan",                &get::GetHandler::dump<data::Plan>            },
+        {"theme",               &get::GetHandler::dump<data::Theme>           },
+        {"file",                &get::GetHandler::dump<data::File>            },
+        {"holiday",             &get::GetHandler::dump<data::Holiday>         },
+        {"competition",         &get::GetHandler::dump<data::Competition>     },
+        {"user_competition",    &get::GetHandler::dump<data::User_competition>},
+        {"competition_problem",
+         &get::GetHandler::dump<data::Competition_problem>                    },
+        {"problem",             &get::GetHandler::dump<data::Problem>         },
+        {"submission",          &get::GetHandler::dump<data::Submission>      },
+        {"user_upload",         &get::GetHandler::dump<data::User_upload>     },
+        {"plan_upload",         &get::GetHandler::dump<data::Plan_upload>     },
+        {"journal_upload",      &get::GetHandler::dump<data::Journal_upload>  },
+        {"journal_download",    &get::GetHandler::dump<data::Journal_download>},
+        {"question",            &get::GetHandler::dump<data::Question>        },
+        {"question_type",       &get::GetHandler::dump<data::Question_type>   },
+        {"user_answer",         &get::GetHandler::dump<data::User_answer>     }
+};

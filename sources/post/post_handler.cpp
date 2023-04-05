@@ -36,7 +36,9 @@ void
 post::PostHandler::transmitToMTMHandler(const std::string aTableName,
                                         int aID,
                                         bool aIsAdding,
-                                        std::vector<int> aIDForInsert)
+                                        std::vector<int> aIDForInsert,
+                                        const std::string aTrueNam)
 {
-    PostRouter::manyToManyRouter(aTableName, aID, aIsAdding, aIDForInsert);
+    PostRouter::manyToManyRouter(aTableName, aID, aIsAdding, aIDForInsert,
+                                 aTrueNam);
 }

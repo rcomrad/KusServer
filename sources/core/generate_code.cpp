@@ -79,7 +79,7 @@ core::GenerateCode::setDefaultResultEnd(const std::string& aDefaultResultEnd)
 void
 core::GenerateCode::addInclude(const std::string& aInclude, bool aIsSTD)
 {
-    if (aIsSTD) mIncludes.insert("<" + aInclude + ".>\n");
+    if (aIsSTD) mIncludes.insert("<" + aInclude + ">\n");
     else mIncludes.insert("\"" + aInclude + ".hpp\"\n");
 }
 
@@ -619,7 +619,7 @@ generateGetRouterFile()
 
     //--------------------------------------------------------------------------------
 
-    // postHandler
+    // basicRouter
     generator.pushBackFunction("basicRouter(const std::string& aTableName, "
                                "Args&&... args) noexcept");
     generator.pushToFunctionBody(wrap("mBasicRouterMap"));
@@ -627,6 +627,17 @@ generateGetRouterFile()
         "mBasicRouterMap", {
                                {"default", "get::GetHandler::process<data::"},
                                {"user",    "get::UserHandler::process"      }
+    });
+
+    //--------------------------------------------------------------------------------
+
+    // dumpRouter
+    generator.pushBackFunction("dumpRouter(const std::string& aTableName, "
+                               "Args&&... args) noexcept");
+    generator.pushToFunctionBody(wrap("mDumpRouterMap"));
+    generator.generateMapTable(
+        "mDumpRouterMap", {
+                              {"default", "get::GetHandler::dump<data::"}
     });
 
     //--------------------------------------------------------------------------------
@@ -818,8 +829,6 @@ core::generateDatabaseStructuresFiles()
     // generateDatabaseStructuresHPPFile();
     // generateDatabaseStructuresCPPFile();
 
-    // generateRequestHandlerFile();
     // generatePostHandlerFile();
     // generateGetRouterFile();
-    // generateAsteriskHendler();
 }

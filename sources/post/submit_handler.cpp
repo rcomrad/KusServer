@@ -7,7 +7,7 @@
 #include "database/connection_manager.hpp"
 
 #include "core/program_state.hpp"
-// #include "tester/tester.hpp"
+#include "core/submission_queue.hpp"
 
 crow::json::wvalue
 post::SubmitHandler::process(const crow::request& aReq) noexcept
@@ -35,8 +35,8 @@ post::SubmitHandler::process(const crow::request& aReq) noexcept
         connection.val.update<data::Submission>(submition);
     }
 
-    auto& state = core::ProgramState::getInstance();
-    state.pushSubmition(std::move(submition));
+    auto& sub = core::SubmissionQueue::getInstance();
+    sub.push(std::move(submition));
 
     // test::Tester tester(10);
     // tester.run(submition);

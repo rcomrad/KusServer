@@ -14,16 +14,17 @@
 #include "generate_code.hpp"
 #include "program_state.hpp"
 #include "server.hpp"
+#include "submission_queue.hpp"
 
 //--------------------------------------------------------------------------------
-
-// data::DBSettings core::Core::mDBS;
 
 core::Core::Core() noexcept
 {
     generateDatabaseStructuresFiles();
+    auto& state     = ProgramState::getInstance();
     mApps["server"] = std::move(std::thread(&Core::serverThread, this));
-    mApps["tester"] = std::move(std::thread(&Core::testerThread, this));
+    if (state.checkFlag(Flag::SUB_CHECK))
+        mApps["tester"] = std::move(std::thread(&Core::testerThread, this));
 }
 
 void
@@ -74,29 +75,11 @@ core::Core::run(const std::vector<std::string>& argv) noexcept
     //     {Command::Type::EVALUATE,            [&]() { getResults(); }       }
     // };
 
-    // for (auto& i : methodMap)
-    // {
-    //     if (mCommand.getCommand() == i.first) i.second;
-    // }
-
     auto& state = ProgramState::getInstance();
 
     bool flag = true;
     while (true)
     {
-        // std::string s;
-        // std::cin >> s;
-
-        // if (s == "create") createDatabaseFromFile("database.data");
-        // else if (s == "populate")
-        //     populateDatabaseFromFile("populate_database.data");
-        // else if (s == "set_up") createEnvironment();
-        // else if (s == "remake")
-        // {
-        //     createDatabaseFromFile("database");
-        //     populateDatabaseFromFile("populate_database");
-        // }
-
         if (state.needRestart())
         {
             state.startRestart();
@@ -104,25 +87,11 @@ core::Core::run(const std::vector<std::string>& argv) noexcept
             if (state.needPopulateDB()) populate();
             if (state.needReloadSubmitions())
             {
-                // mApps.erase("tester");
-                // mApps["tester"] =
-                //     std::move(std::thread(&Core::testerThread, this));
-                state.reloadSubmitionsQueue();
+                SubmissionQueue::getInstance().reload();
             }
 
             state.endRestart();
-            state.reloadSettings();
         }
-
-        // std::cin >> n;
-        // std::cout << n * n << "\n";
-        // if (flag)
-        // {
-        //     mApps["server"] = std::move(std::thread(&Core::serverThread,
-        //     this));
-        // }
-
-        // flag = false;
     }
 }
 
@@ -138,13 +107,14 @@ void
 core::Core::testerThread() noexcept
 {
     auto& state = ProgramState::getInstance();
+    auto& sub   = SubmissionQueue::getInstance();
     while (true)
     {
-        // if (state.hasSubmition())
-        // {
-        //     test::Tester tester(state.getTesterThreadCount());
-        //     tester.run(state.getSubmition());
-        // }
+        if (!sub.isEmpty())
+        {
+            test::Tester tester(state.getValue(Value::TEST_THRD));
+            tester.run(sub.get());
+        }
     }
 }
 

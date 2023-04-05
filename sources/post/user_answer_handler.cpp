@@ -14,7 +14,7 @@ post::UserAnswerHandler::process(const crow::request& aReq)
     auto connection = data::ConnectionManager::getUserConnection();
 
     table[0].is_correct = '?';
-    if (mProgramState.isCheckAnswersTurnOn())
+    if (mProgramState.checkFlag(core::Flag::ANS_CHECK))
     {
         auto ansTable = connection.val.getData<data::Question>(
             "id = " + data::wrap(table[0].question_id));
@@ -24,7 +24,7 @@ post::UserAnswerHandler::process(const crow::request& aReq)
         else table[0].is_correct = 'F';
     }
 
-    if (mProgramState.isSetTimeTurnOn())
+    if (mProgramState.checkFlag(core::Flag::TIME_SET))
     {
         table[0].true_time = dom::DateAndTime::getCurentTime();
     }

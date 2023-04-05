@@ -51,39 +51,63 @@ public:
             res             = connection.val.update<T>(request.table);
         }
 
-        for (auto& i : request.manyToMany)
-        {
-            transmitToMTMHandler(i.first, res, request.other.count("add"),
-                                 i.second);
-        }
+        manyToManyTransmiter(request);
 
         return {res};
     }
 
     template <typename T>
+    static void manyToManyTransmiter(const PostRequest<T>& aReq)
+    {
+        for (auto& i : aReq.manyToMany)
+        {
+            transmitToMTMHandler(i.first, aReq.id(), aReq.other.count("add"),
+                                 i.second, aReq.table.getTableName());
+        }
+    }
+
+    template <typename T>
     static crow::json::wvalue manyToMany(int aID,
                                          bool aIsAdding,
-                                         std::vector<int> aIDForInsert)
+                                         std::vector<int> aIDForInsert,
+                                         const std::string& aTableName)
     {
         auto connection = data::ConnectionManager::getUserConnection();
         data::Table<T> table;
         table.reserve(16);
 
-        if (!aIsAdding)
+        auto ss  = aTableName + "_id";
+        auto sss = table.names;
+
+        auto it = table.names.find(aTableName + "_id");
+        crow::json::wvalue res;
+        if (it == table.names.end())
         {
-            table.emplace_back();
-            *(int*)table.back()[1] = aID;
-            connection.val.drop<T>(table);
-            table.pop_back();
+            res = {"404"};
+        }
+        else
+        {
+            int l = it->second;
+            int r = l == 1 ? 2 : 1;
+
+            if (!aIsAdding)
+            {
+                table.emplace_back();
+                *(int*)table.back()[l] = aID;
+                connection.val.drop<T>(table);
+                table.pop_back();
+            }
+
+            for (auto i : aIDForInsert)
+            {
+                table.emplace_back();
+                *(int*)table.back()[l] = aID;
+                *(int*)table.back()[r] = i;
+            }
+
+            res = connection.val.update<T>(table);
         }
 
-        for (auto i : aIDForInsert)
-        {
-            table.emplace_back();
-            *(int*)table.back()[1] = aID;
-            *(int*)table.back()[2] = i;
-        }
-        auto res = connection.val.update<T>(table);
         return {res};
     }
 
@@ -232,7 +256,8 @@ private:
     static void transmitToMTMHandler(const std::string aTableName,
                                      int aID,
                                      bool aIsAdding,
-                                     std::vector<int> aIDForInsert);
+                                     std::vector<int> aIDForInsert,
+                                     const std::string aTrueNam);
 };
 } // namespace post
 

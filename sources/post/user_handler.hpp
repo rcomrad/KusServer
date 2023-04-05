@@ -1,5 +1,5 @@
-#ifndef USER_HANDLER_HPP
-#define USER_HANDLER_HPP
+#ifndef POST_USER_HANDLER_HPP
+#define POST_USER_HANDLER_HPP
 
 #include <string>
 
@@ -20,4 +20,4 @@ public:
 
 //--------------------------------------------------------------------------------
 
-#endif // !USER_HANDLER_HPP
+#endif // !POST_USER_HANDLER_HPP

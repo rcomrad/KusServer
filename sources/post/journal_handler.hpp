@@ -1,5 +1,5 @@
-#ifndef JOURNAL_HANDLER_HPP
-#define JOURNAL_HANDLER_HPP
+#ifndef POST_JOURNAL_HANDLER_HPP
+#define POST_JOURNAL_HANDLER_HPP
 
 //--------------------------------------------------------------------------------
 
@@ -26,4 +26,4 @@ private:
 
 //--------------------------------------------------------------------------------
 
-#endif // !JOURNAL_HANDLER_HPP
+#endif // !POST_JOURNAL_HANDLER_HPP

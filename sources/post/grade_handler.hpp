@@ -1,5 +1,5 @@
-#ifndef GRADE_HANDLER_HPP
-#define GRADE_HANDLER_HPP
+#ifndef POST_GRADE_HANDLER_HPP
+#define POST_GRADE_HANDLER_HPP
 
 //--------------------------------------------------------------------------------
 
@@ -42,4 +42,4 @@ public:
 
 //--------------------------------------------------------------------------------
 
-#endif // !GRADE_HANDLER_HPP
+#endif // !POST_GRADE_HANDLER_HPP

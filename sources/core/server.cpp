@@ -4,6 +4,7 @@
 #include "get/command_handler.hpp"
 #include "get/competition_handler.hpp"
 #include "get/get_handler.hpp"
+#include "get/get_router.hpp"
 #include "post/post_router.hpp"
 #include "post/submit_handler.hpp"
 #include "post/user_handler.hpp"
@@ -56,6 +57,9 @@ core::Server::Server()
             return get::GetHandler::multiplelGet(aRequest,
                                                  std::move(aCondition));
         });
+
+    CROW_ROUTE(app, "/api/dump/<string>")
+    ([&](std::string aName) { return get::GetRouter::dumpRouter(aName); });
 
     CROW_ROUTE(app, "/api/get_all_competition/<int>/<int>")
     ([&](int aUserID, int aCompetitionID)

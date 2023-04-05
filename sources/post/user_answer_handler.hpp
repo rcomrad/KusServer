@@ -1,5 +1,5 @@
-#ifndef USER_ANSWER_HANDLER_HPP
-#define USER_ANSWER_HANDLER_HPP
+#ifndef POST_USER_ANSWER_HANDLER_HPP
+#define POST_USER_ANSWER_HANDLER_HPP
 
 #include "core/program_state.hpp"
 
@@ -19,4 +19,4 @@ private:
 
 //--------------------------------------------------------------------------------
 
-#endif // !USER_ANSWER_HANDLER_HPP
+#endif // !POST_USER_ANSWER_HANDLER_HPP

@@ -1,5 +1,5 @@
-#ifndef PLAN_HANDLER_HPP
-#define PLAN_HANDLER_HPP
+#ifndef POST_PLAN_HANDLER_HPP
+#define POST_PLAN_HANDLER_HPP
 
 //--------------------------------------------------------------------------------
 
@@ -28,4 +28,4 @@ public:
 
 //--------------------------------------------------------------------------------
 
-#endif // !PLAN_HANDLER_HPP
+#endif // !POST_PLAN_HANDLER_HPP

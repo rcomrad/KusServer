@@ -1,5 +1,5 @@
-#ifndef USER_HANDLER_HPP
-#define USER_HANDLER_HPP
+#ifndef GET_USER_HANDLER_HPP
+#define GET_USER_HANDLER_HPP
 
 //--------------------------------------------------------------------------------
 
@@ -27,4 +27,4 @@ private:
 
 //--------------------------------------------------------------------------------
 
-#endif // !USER_HANDLER_HPP
+#endif // !GET_USER_HANDLER_HPP

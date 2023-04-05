@@ -1,5 +1,5 @@
-#ifndef MARK_HANDLER_HPP
-#define MARK_HANDLER_HPP
+#ifndef POST_MARK_HANDLER_HPP
+#define POST_MARK_HANDLER_HPP
 
 //--------------------------------------------------------------------------------
 
@@ -19,4 +19,4 @@ public:
 
 //--------------------------------------------------------------------------------
 
-#endif // !MARK_HANDLER_HPP
+#endif // !POST_MARK_HANDLER_HPP

@@ -7,55 +7,33 @@
 
 #include "database/connection_manager.hpp"
 
+//--------------------------------------------------------------------------------
+
 core::ProgramState::ProgramState()
-    : mRestartState(Restart::NUN),
-      mAutoCheckAnswers(false),
-      mSetTimeForAnswers(false),
-      mTesterThreadCount(0),
-      mDatabaseConnectionCount(2)
+    : mStartState(RestartType::NUN), mRestartState(RestartType::NUN)
 {
-    reloadSettings();
-    if (mRestartOnStart == "full")
-    {
-        fullReset();
-    }
-    else if (mRestartOnStart == "empty")
-    {
-        emptyReset();
-    }
-    else if (mRestartOnStart == "tester")
-    {
-        testerReset();
-    }
-    // reloadSubmitionsQueue();
-}
 
-void
-core::ProgramState::reloadSettings() noexcept
-{
-    auto settings = dom::FileReader::getAllStrings("main_settings.config");
-    for (auto& i : settings)
-    {
-        std::stringstream ss;
-        ss << i;
-        std::string s;
-        ss >> s;
+    mFlags  = {0, 0, 1};
+    mValues = {1, 2};
 
-        if (s == "tester_thread_count")
-        {
-            ss >> s;
-            mTesterThreadCount = std::stoi(s);
-        }
-        else if (s == "restart_on_start")
-        {
-            ss >> mRestartOnStart;
-        }
-        else if (s == "database_connection_count")
-        {
-            ss >> s;
-            mDatabaseConnectionCount = std::stoi(s);
-        }
-    }
+    mRestartTypes = {
+        {"full",   RestartType::FULL  },
+        {"empty",  RestartType::EMPTY },
+        {"tester", RestartType::TESTER}
+    };
+
+    mFlagNames = {
+        {"submission_auto_check", mFlags[int(Flag::SUB_CHECK)]},
+        {"answers_auto_check",    mFlags[int(Flag::ANS_CHECK)]},
+        {"set_time_for_answer",   mFlags[int(Flag::TIME_SET)] }
+    };
+
+    mValueNames = {
+        {"tester_thread_count",       mValues[int(Value::TEST_THRD)]},
+        {"database_connection_count", mValues[int(Value::DB_THRD)]  }
+    };
+
+    mRestartState = mStartState;
 }
 
 core::ProgramState&
@@ -66,59 +44,49 @@ core::ProgramState::getInstance()
 }
 
 void
-core::ProgramState::fullReset()
+core::ProgramState::reloadSettings() noexcept
 {
-    mRestartMutex.lock();
-    mRestartState = Restart::FULL;
-    mRestartMutex.unlock();
+    auto settings = dom::FileReader::getAllStrings("main_settings.config");
+    for (auto& i : settings)
+    {
+        std::stringstream ss;
+        ss << i;
+        std::string name, state;
+        ss >> name >> state;
+
+        if (name == "restart_on_start")
+        {
+            auto it = mRestartTypes.find(state);
+            if (it != mRestartTypes.end())
+            {
+                mStartState = it->second;
+            }
+            continue;
+        }
+
+        auto it1 = mFlagNames.find(name);
+        if (it1 != mFlagNames.end())
+        {
+            it1->second = turnOnOff(state);
+            continue;
+        }
+
+        auto it2 = mValueNames.find(name);
+        if (it2 != mValueNames.end())
+        {
+            it2->second = valueSetter(state);
+        }
+    }
 }
+
+//--------------------------------------------------------------------------------
 
 void
-core::ProgramState::emptyReset()
+core::ProgramState::callRestart(const RestartType& aType)
 {
     mRestartMutex.lock();
-    mRestartState = Restart::EMPTY;
+    mRestartState = aType;
     mRestartMutex.unlock();
-}
-
-void
-core::ProgramState::testerReset()
-{
-    mRestartMutex.lock();
-    mRestartState = Restart::TESTER;
-    mRestartMutex.unlock();
-}
-
-// void
-// core::ProgramState::repopulateReset()
-// {
-//     const std::lock_guard<std::mutex> lock(mRestartMutex);
-//     mRestartState = Restart::POPULATE;
-// }
-
-bool
-core::ProgramState::needRestart()
-{
-    const std::lock_guard<std::mutex> lock(mRestartMutex);
-    return mRestartState != Restart::NUN;
-}
-
-bool
-core::ProgramState::needPopulateDB()
-{
-    return mRestartState == Restart::FULL;
-}
-
-bool
-core::ProgramState::needRemakeDB()
-{
-    return mRestartState == Restart::FULL || mRestartState == Restart::EMPTY;
-}
-
-bool
-core::ProgramState::needReloadSubmitions()
-{
-    return mRestartState == Restart::FULL || mRestartState == Restart::TESTER;
 }
 
 void
@@ -130,99 +98,70 @@ core::ProgramState::startRestart()
 void
 core::ProgramState::endRestart()
 {
-    mRestartState = Restart::NUN;
+    if (mRestartState == RestartType::SETTINGS) reloadSettings();
+    mRestartState = RestartType::NUN;
     mRestartMutex.unlock();
 }
 
-void
-core::ProgramState::setCheckAnswers(core::ProgramState::State aTurn)
-{
-    const std::lock_guard<std::mutex> lock(mCheckMutex);
-    mAutoCheckAnswers = aTurn == State::ON;
-}
+//--------------------------------------------------------------------------------
 
-void
-core::ProgramState::setSettingTime(core::ProgramState::State aTurn)
+bool
+core::ProgramState::needRestart()
 {
-    const std::lock_guard<std::mutex> lock(mSetTimeMutex);
-    mSetTimeForAnswers = aTurn == State::ON;
+    const std::lock_guard<std::mutex> lock(mRestartMutex);
+    return mRestartState != RestartType::NUN;
 }
 
 bool
-core::ProgramState::isCheckAnswersTurnOn()
+core::ProgramState::needPopulateDB()
 {
-    const std::lock_guard<std::mutex> lock(mCheckMutex);
-    return mAutoCheckAnswers;
+    return mRestartState == RestartType::FULL;
 }
 
 bool
-core::ProgramState::isSetTimeTurnOn()
+core::ProgramState::needRemakeDB()
 {
-    const std::lock_guard<std::mutex> lock(mSetTimeMutex);
-    return mSetTimeForAnswers;
-}
-
-void
-core::ProgramState::pushSubmition(
-    data::Table<data::Submission>&& aSubmition) noexcept
-{
-    // mSubmitionMutex.lock();
-    // mSubmitionsQueue.push(std::move(aSubmition));
-    // mSubmitionMutex.unlock();
-}
-
-data::Table<data::Submission>
-core::ProgramState::getSubmition() noexcept
-{
-    const std::lock_guard<std::mutex> lock(mSetTimeMutex);
-    data::Table<data::Submission> temp = std::move(mSubmitionsQueue.front());
-    mSubmitionsQueue.pop();
-    return std::move(temp);
+    return mRestartState == RestartType::FULL ||
+           mRestartState == RestartType::EMPTY;
 }
 
 bool
-core::ProgramState::hasSubmition() noexcept
+core::ProgramState::needReloadSubmitions()
 {
-    const std::lock_guard<std::mutex> lock(mSetTimeMutex);
-    return !mSubmitionsQueue.empty();
+    return mRestartState == RestartType::FULL ||
+           mRestartState == RestartType::TESTER;
+}
+
+//--------------------------------------------------------------------------------
+
+bool
+core::ProgramState::checkFlag(const Flag& aFlag) noexcept
+{
+    // TODO: is it effective?
+    // const std::lock_guard<std::mutex> lock(mRestartMutex);
+    return mFlags[int(aFlag)];
 }
 
 int
-core::ProgramState::getTesterThreadCount() noexcept
+core::ProgramState::getValue(const Value& aName) noexcept
 {
-    return mTesterThreadCount;
+    // TODO: is it effective?
+    // const std::lock_guard<std::mutex> lock(mRestartMutex);
+    return mValues[int(aName)];
 }
 
-uint16_t
-core::ProgramState::getDatabaseConnectionCount() noexcept
+//--------------------------------------------------------------------------------
+
+uint8_t
+core::ProgramState::turnOnOff(const std::string& s) noexcept
 {
-    return mDatabaseConnectionCount;
+    uint8_t result = 0;
+    if (s == "on") result = 1;
+    return result;
 }
 
-// void
-// core::ProgramState::checkSubmitionsQueue() noexcept
-// {
-//     mSubmitionMutex.lock();
-//     decltype(mSubmitionsQueue) empty;
-//     std::swap(mSubmitionsQueue, empty);
-//     if (mRestartState != Restart::EMPTY) reloadSubmitionsQueue();
-//     mSubmitionMutex.unlock();
-// }
-
-void
-core::ProgramState::reloadSubmitionsQueue() noexcept
+int
+core::ProgramState::valueSetter(const std::string& s) noexcept
 {
-    // mSubmitionMutex.lock();
-    // decltype(mSubmitionsQueue) empty;
-    // std::swap(mSubmitionsQueue, empty);
-    // auto connection = data::ConnectionManager::getUserConnection();
-    // auto problemTable =
-    //     connection.val.getData<data::Submission>("verdict=\'NUN\'");
-
-    // for (auto& i : problemTable)
-    // {
-    //     data::Table<data::Submission> sub;
-    //     sub.emplace_back(std::move(i));
-    // }
-    // mSubmitionMutex.unlock();
+    return std::stoi(s);
 }

@@ -39,7 +39,7 @@ data::ConnectionManager::ConnectionManager() noexcept
     : mConnectionPools{
           ConnectionPool(1, data::ConnectionType::ADMIN),
           ConnectionPool(
-              core::ProgramState::getInstance().getDatabaseConnectionCount(),
+              core::ProgramState::getInstance().getValue(core::Value::DB_THRD),
               data::ConnectionType::USER)}
 {
     // auto& state              = core::ProgramState::getInstance();
@@ -98,7 +98,7 @@ void
 data::ConnectionManager::turnOn() noexcept
 {
     getInstance().mConnectionPools[1].create(
-        core::ProgramState::getInstance().getDatabaseConnectionCount(),
+        core::ProgramState::getInstance().getValue(core::Value::DB_THRD),
         data::ConnectionType::USER);
 }
 
