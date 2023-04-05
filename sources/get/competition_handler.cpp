@@ -62,11 +62,12 @@ get::CompetitionHandler::process(int aUserID, int aCompetitionID) noexcept
         auto probJ          = getTableAsList(problems[i])[0];
         probJ["submission"] = getTableAsList(submissions[i]);
         probJ["legend"]     = dom::FileReader::getAllData(
-            mProblemPath + problems[i][0].nickname + "/legend.txt");
+            mProblemPath + problems[i][0].nickname + "/legend.txt", true);
         probJ["input_format"] = dom::FileReader::getAllData(
-            mProblemPath + problems[i][0].nickname + "/input_format.txt");
+            mProblemPath + problems[i][0].nickname + "/input_format.txt", true);
         probJ["output_format"] = dom::FileReader::getAllData(
-            mProblemPath + problems[i][0].nickname + "/output_format.txt");
+            mProblemPath + problems[i][0].nickname + "/output_format.txt",
+            true);
 
         crow::json::wvalue::list tests;
         for (int mTestNum = 1; mTestNum <= problems[i][0].example_count;
@@ -75,10 +76,12 @@ get::CompetitionHandler::process(int aUserID, int aCompetitionID) noexcept
             crow::json::wvalue temp;
             temp["input"] = dom::FileReader::getAllData(
                 mProblemPath + problems[i][0].nickname + "/test/" +
-                std::to_string(mTestNum) + ".in");
+                    std::to_string(mTestNum) + ".in",
+                true);
             temp["output"] = dom::FileReader::getAllData(
                 mProblemPath + problems[i][0].nickname + "/test/" +
-                std::to_string(mTestNum) + ".out");
+                    std::to_string(mTestNum) + ".out",
+                true);
             tests.emplace_back(std::move(temp));
         }
         probJ["tests"] = std::move(tests);

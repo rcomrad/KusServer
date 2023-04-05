@@ -15,7 +15,7 @@ class PipeLinuxProcess : public BaseProcess
 {
 public:
     PipeLinuxProcess() noexcept = default;
-    virtual ~PipeLinuxProcess() = default;
+    virtual ~PipeLinuxProcess();
 
     PipeLinuxProcess(const PipeLinuxProcess& other) noexcept;
     PipeLinuxProcess& operator=(const PipeLinuxProcess& other) noexcept;
@@ -39,12 +39,13 @@ private:
     std::vector<std::string> mParameters;
     std::vector<char*> mRawParameters;
 
-    int mChildPID;
+    int mChildPID = 2e9;
 
     int mPipeA[2];
     int mPipeB[2];
 
-    void getRawParameters() noexcept;
+    void makeParameters() noexcept;
+    // void getRawParameters() noexcept;
 };
 } // namespace proc
 

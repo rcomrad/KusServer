@@ -19,7 +19,7 @@ public:
     TestLibMessage getTest() noexcept;
     bool hasTest() noexcept;
 
-private:
+public:
     int mTestNum;
     int mTestCount;
     std::string mTestPath;

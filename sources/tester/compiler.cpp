@@ -69,6 +69,7 @@ test::Compiler::prepareCommandForCPP(
     compileCommand.emplace_back(outputName);
 #else
     compileCommand.emplace_back("g++");
+    compileCommand.emplace_back("-std=c++2a");
     compileCommand.emplace_back(aFileName);
     compileCommand.emplace_back("-o");
     compileCommand.emplace_back(outputName);
@@ -89,9 +90,6 @@ test::Compiler::prepareCommandForCPP(
     if (flag)
     {
         result = {outputName};
-        std::string s;
-        compiler.readData(s);
-        std::cout << s << "\n\n\n";
     }
 
     return result;

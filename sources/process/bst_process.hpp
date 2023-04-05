@@ -1,5 +1,5 @@
-#ifndef PIPE_LINUX_PROCESS_HPP
-#define PIPE_LINUX_PROCESS_HPP
+#ifndef MY_BOOST_PROCESS_HPP
+#define MY_BOOST_PROCESS_HPP
 
 //--------------------------------------------------------------------------------
 
@@ -49,4 +49,4 @@ private:
 
 //--------------------------------------------------------------------------------
 
-#endif // !PIPE_LINUX_PROCESS_HPP
+#endif // !MY_BOOST_PROCESS_HPP

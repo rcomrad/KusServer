@@ -28,14 +28,15 @@ dom::FileReader::close() noexcept
 }
 
 std::string
-dom::FileReader::getAllData(const std::string& aFileName) noexcept
+dom::FileReader::getAllData(const std::string& aFileName, bool aAddBR) noexcept
 {
     std::ifstream inp(aFileName);
     std::string s, result;
     while (std::getline(inp, s, '\n'))
     {
         result += s;
-        result += "<br>";
+        if (aAddBR) result += "<br>";
+        else result += "\n";
     }
     inp.close();
     return result;

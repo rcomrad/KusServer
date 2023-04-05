@@ -1,8 +1,6 @@
 #ifndef PROCESS_HPP
 #define PROCESS_HPP
 
-#define BOOST_PROCESS
-
 //--------------------------------------------------------------------------------
 
 #include "bst_process.hpp"

@@ -33,6 +33,7 @@ core::ProgramState::ProgramState()
         {"database_connection_count", mValues[int(Value::DB_THRD)]  }
     };
 
+    reloadSettings();
     mRestartState = mStartState;
 }
 

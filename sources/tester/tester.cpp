@@ -2,6 +2,8 @@
 
 //--------------------------------------------------------------------------------
 
+#include <boost/date_time.hpp>
+
 #include <cmath>
 
 #include "domain/path.hpp"
@@ -11,7 +13,7 @@
 #include "process/limits.hpp"
 
 #include "compiler.hpp"
-
+int ttt = 0;
 //--------------------------------------------------------------------------------
 
 test::Tester::Tester(uint8_t aThreadCount) noexcept
@@ -87,6 +89,7 @@ test::Tester::run(data::Table<data::Submission>&& aSubmission) noexcept
         mFinalVerdict = Test::TestVerdict::CE;
     }
 
+    if (mFinalVerdict != Test::TestVerdict::OK) aSubmission[0].test = ttt;
     submission.verdict = verdictTostring(mFinalVerdict);
     {
         auto connection = data::ConnectionManager::getUserConnection();
@@ -113,10 +116,13 @@ void
 test::Tester::check(TestReader& aTestReader) noexcept
 {
     START_LOG_BLOCK("Checking_participant_code");
+    boost::posix_time::ptime timeLocal =
+        boost::posix_time::second_clock::local_time();
 
-    int finished = 0;
-    while (finished < mThreadCount)
+    for (int i = -10;
+         mFinalVerdict == Test::TestVerdict::OK && i < aTestReader.mTestCount;)
     {
+        ttt         = i;
         auto signal = mThreadSignals.getSignal();
         if (signal.has_value())
         {
@@ -133,11 +139,23 @@ test::Tester::check(TestReader& aTestReader) noexcept
             if (aTestReader.hasTest() && mFinalVerdict == Test::TestVerdict::OK)
             {
                 test.run(aTestReader);
+                timeLocal = boost::posix_time::second_clock::local_time();
             }
             else
             {
-                finished++;
+                break;
             }
+
+            ++i;
+        }
+
+        boost::posix_time::ptime timeLocal2 =
+            boost::posix_time::second_clock::local_time();
+        auto dur = timeLocal2 - timeLocal;
+        if (dur.seconds() > 6)
+        {
+            mFinalVerdict = Test::TestVerdict::TLE;
+            break;
         }
     }
 

@@ -110,10 +110,13 @@ core::Core::testerThread() noexcept
     auto& sub   = SubmissionQueue::getInstance();
     while (true)
     {
+
         if (!sub.isEmpty())
         {
+            std::cout << "start_checking\n";
             test::Tester tester(state.getValue(Value::TEST_THRD));
             tester.run(sub.get());
+            std::cout << "end_checking\n";
         }
     }
 }

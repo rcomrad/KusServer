@@ -28,7 +28,8 @@ public:
 
     void close() noexcept;
 
-    static std::string getAllData(const std::string& aFileName) noexcept;
+    static std::string getAllData(const std::string& aFileName,
+                                  bool aAddBR = false) noexcept;
 
 private:
     std::ifstream mInp;

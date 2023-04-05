@@ -19,6 +19,7 @@ core::SubmissionQueue::getInstance()
 bool
 core::SubmissionQueue::isEmpty() noexcept
 {
+    const std::lock_guard<std::mutex> lock(mSubmissionMutex);
     return mQueue.empty();
 }
 
@@ -37,6 +38,7 @@ core::SubmissionQueue::push(
 data::Table<data::Submission>
 core::SubmissionQueue::get() noexcept
 {
+    const std::lock_guard<std::mutex> lock(mSubmissionMutex);
     data::Table<data::Submission> temp = std::move(mQueue.front());
     mQueue.pop();
     return std::move(temp);
