@@ -280,6 +280,21 @@ data::FileBase::reset()
     ptrs[1] = (void*)(&num);
 }
 
+std::string data::Safe_fileBase::tableName         = "safe_file";
+std::vector<data::Type> data::Safe_fileBase::types = {data::Type::INT,
+                                                      data::Type::INT};
+std::unordered_map<std::string, uint8_t> data::Safe_fileBase::columnNames = {
+    {"id",  0},
+    {"num", 1}
+};
+
+void
+data::Safe_fileBase::reset()
+{
+    ptrs[0] = (void*)(&id);
+    ptrs[1] = (void*)(&num);
+}
+
 std::string data::HolidayBase::tableName         = "holiday";
 std::vector<data::Type> data::HolidayBase::types = {
     data::Type::INT, data::Type::INT, data::Type::STRING};
@@ -333,24 +348,6 @@ data::User_competitionBase::reset()
     ptrs[0] = (void*)(&id);
     ptrs[1] = (void*)(&user_id);
     ptrs[2] = (void*)(&competition_id);
-}
-
-std::string data::Competition_problemBase::tableName = "competition_problem";
-std::vector<data::Type> data::Competition_problemBase::types = {
-    data::Type::INT, data::Type::INT, data::Type::INT};
-std::unordered_map<std::string, uint8_t>
-    data::Competition_problemBase::columnNames = {
-        {"id",             0},
-        {"competition_id", 1},
-        {"problem_id",     2}
-};
-
-void
-data::Competition_problemBase::reset()
-{
-    ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&competition_id);
-    ptrs[2] = (void*)(&problem_id);
 }
 
 std::string data::ProblemBase::tableName         = "problem";
@@ -407,126 +404,44 @@ data::SubmissionBase::reset()
     ptrs[6] = (void*)(&source_name);
 }
 
-std::string data::User_uploadBase::tableName         = "user_upload";
-std::vector<data::Type> data::User_uploadBase::types = {
-    data::Type::INT, data::Type::STRING, data::Type::STRING,
-    data::Type::STRING};
-std::unordered_map<std::string, uint8_t> data::User_uploadBase::columnNames = {
-    {"id",        0},
-    {"index",     1},
-    {"name",      2},
-    {"extension", 3}
-};
-
-void
-data::User_uploadBase::reset()
-{
-    ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&index);
-    ptrs[2] = (void*)(&name);
-    ptrs[3] = (void*)(&extension);
-}
-
-std::string data::Plan_uploadBase::tableName         = "plan_upload";
-std::vector<data::Type> data::Plan_uploadBase::types = {
-    data::Type::INT, data::Type::STRING, data::Type::STRING,
-    data::Type::STRING};
-std::unordered_map<std::string, uint8_t> data::Plan_uploadBase::columnNames = {
-    {"id",        0},
-    {"index",     1},
-    {"name",      2},
-    {"extension", 3}
-};
-
-void
-data::Plan_uploadBase::reset()
-{
-    ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&index);
-    ptrs[2] = (void*)(&name);
-    ptrs[3] = (void*)(&extension);
-}
-
-std::string data::Journal_uploadBase::tableName         = "journal_upload";
-std::vector<data::Type> data::Journal_uploadBase::types = {
-    data::Type::INT, data::Type::STRING, data::Type::STRING,
-    data::Type::STRING};
-std::unordered_map<std::string, uint8_t> data::Journal_uploadBase::columnNames =
-    {
-        {"id",        0},
-        {"index",     1},
-        {"name",      2},
-        {"extension", 3}
-};
-
-void
-data::Journal_uploadBase::reset()
-{
-    ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&index);
-    ptrs[2] = (void*)(&name);
-    ptrs[3] = (void*)(&extension);
-}
-
-std::string data::Journal_downloadBase::tableName         = "journal_download";
-std::vector<data::Type> data::Journal_downloadBase::types = {
-    data::Type::INT, data::Type::STRING, data::Type::STRING,
-    data::Type::STRING};
+std::string data::Competition_problemBase::tableName = "competition_problem";
+std::vector<data::Type> data::Competition_problemBase::types = {
+    data::Type::INT, data::Type::INT, data::Type::INT};
 std::unordered_map<std::string, uint8_t>
-    data::Journal_downloadBase::columnNames = {
-        {"id",        0},
-        {"index",     1},
-        {"name",      2},
-        {"extension", 3}
+    data::Competition_problemBase::columnNames = {
+        {"id",             0},
+        {"competition_id", 1},
+        {"problem_id",     2}
 };
 
 void
-data::Journal_downloadBase::reset()
+data::Competition_problemBase::reset()
 {
     ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&index);
-    ptrs[2] = (void*)(&name);
-    ptrs[3] = (void*)(&extension);
+    ptrs[1] = (void*)(&competition_id);
+    ptrs[2] = (void*)(&problem_id);
 }
 
 std::string data::QuestionBase::tableName         = "question";
 std::vector<data::Type> data::QuestionBase::types = {
-    data::Type::INT, data::Type::STRING, data::Type::STRING,
-    data::Type::INT, data::Type::INT,    data::Type::STRING};
+    data::Type::INT, data::Type::STRING, data::Type::STRING, data::Type::INT,
+    data::Type::STRING};
 std::unordered_map<std::string, uint8_t> data::QuestionBase::columnNames = {
     {"id",          0},
-    {"title",       1},
-    {"legend",      2},
+    {"name",        1},
+    {"nickname",    2},
     {"type",        3},
-    {"contest",     4},
-    {"jury_answer", 5}
+    {"jury_answer", 4}
 };
 
 void
 data::QuestionBase::reset()
 {
     ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&title);
-    ptrs[2] = (void*)(&legend);
-    ptrs[3] = (void*)(&type);
-    ptrs[4] = (void*)(&contest);
-    ptrs[5] = (void*)(&jury_answer);
-}
-
-std::string data::Question_typeBase::tableName         = "question_type";
-std::vector<data::Type> data::Question_typeBase::types = {data::Type::INT,
-                                                          data::Type::STRING};
-std::unordered_map<std::string, uint8_t> data::Question_typeBase::columnNames =
-    {
-        {"id",   0},
-        {"name", 1}
-};
-
-void
-data::Question_typeBase::reset()
-{
-    ptrs[0] = (void*)(&id);
     ptrs[1] = (void*)(&name);
+    ptrs[2] = (void*)(&nickname);
+    ptrs[3] = (void*)(&type);
+    ptrs[4] = (void*)(&jury_answer);
 }
 
 std::string data::User_answerBase::tableName         = "user_answer";
@@ -556,6 +471,64 @@ data::User_answerBase::reset()
     ptrs[6] = (void*)(&is_correct);
 }
 
+std::string data::Competition_questionBase::tableName = "competition_question";
+std::vector<data::Type> data::Competition_questionBase::types = {
+    data::Type::INT, data::Type::INT, data::Type::INT};
+std::unordered_map<std::string, uint8_t>
+    data::Competition_questionBase::columnNames = {
+        {"id",             0},
+        {"competition_id", 1},
+        {"question_id",    2}
+};
+
+void
+data::Competition_questionBase::reset()
+{
+    ptrs[0] = (void*)(&id);
+    ptrs[1] = (void*)(&competition_id);
+    ptrs[2] = (void*)(&question_id);
+}
+
+std::string data::Question_typeBase::tableName         = "question_type";
+std::vector<data::Type> data::Question_typeBase::types = {data::Type::INT,
+                                                          data::Type::STRING};
+std::unordered_map<std::string, uint8_t> data::Question_typeBase::columnNames =
+    {
+        {"id",   0},
+        {"name", 1}
+};
+
+void
+data::Question_typeBase::reset()
+{
+    ptrs[0] = (void*)(&id);
+    ptrs[1] = (void*)(&name);
+}
+
+std::string data::Upload_typeBase::tableName         = "upload_type";
+std::vector<data::Type> data::Upload_typeBase::types = {
+    data::Type::INT,    data::Type::STRING, data::Type::STRING,
+    data::Type::STRING, data::Type::STRING, data::Type::STRING};
+std::unordered_map<std::string, uint8_t> data::Upload_typeBase::columnNames = {
+    {"id",        0},
+    {"type",      1},
+    {"direction", 2},
+    {"index",     3},
+    {"name",      4},
+    {"extension", 5}
+};
+
+void
+data::Upload_typeBase::reset()
+{
+    ptrs[0] = (void*)(&id);
+    ptrs[1] = (void*)(&type);
+    ptrs[2] = (void*)(&direction);
+    ptrs[3] = (void*)(&index);
+    ptrs[4] = (void*)(&name);
+    ptrs[5] = (void*)(&extension);
+}
+
 std::unordered_map<std::string_view, std::vector<std::string>>
     AsteriskHendler::table = {
         {"school",
@@ -564,7 +537,7 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "full_name",
              "short_name",
              "start_date",
-         }                            },
+         }                             },
         {"user",
          {
              "id",
@@ -574,36 +547,36 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "surname",
              "role_id",
              "school_id",
-         }                            },
+         }                             },
         {"role",
          {
              "id",
              "name",
-         }                            },
+         }                             },
         {"grade",
          {
              "id",
              "name",
              "head_id",
-         }                            },
+         }                             },
         {"grade_student",
          {
              "id",
              "grade_id",
              "student_id",
-         }                            },
+         }                             },
         {"group",
          {
              "id",
              "name",
              "grade_id",
-         }                            },
+         }                             },
         {"group_student",
          {
              "id",
              "group_id",
              "student_id",
-         }                            },
+         }                             },
         {"lesson",
          {
              "id",
@@ -612,7 +585,7 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "journal_table_id",
              "homework",
              "control",
-         }                            },
+         }                             },
         {"journal_table",
          {
              "id",
@@ -624,12 +597,12 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "plan_id",
              "head_id",
              "schedule",
-         }                            },
+         }                             },
         {"subject",
          {
              "id",
              "name",
-         }                            },
+         }                             },
         {"mark",
          {
              "id",
@@ -637,51 +610,50 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "student_id",
              "lesson_id",
              "journal_table_id",
-         }                            },
+         }                             },
         {"plan",
          {
              "id",
              "subject_id",
              "name",
              "url",
-         }                            },
+         }                             },
         {"theme",
          {
              "id",
              "plan_id",
              "name",
              "hour_count",
-         }                            },
+         }                             },
         {"file",
          {
              "id",
              "num",
-         }                            },
+         }                             },
+        {"safe_file",
+         {
+             "id",
+             "num",
+         }                             },
         {"holiday",
          {
              "id",
              "school_id",
              "date_val",
-         }                            },
+         }                             },
         {"competition",
          {
              "id",
              "name",
              "start_time",
              "end_time",
-         }                            },
+         }                             },
         {"user_competition",
          {
              "id",
              "user_id",
              "competition_id",
-         }                            },
-        {"competition_problem",
-         {
-             "id",
-             "competition_id",
-             "problem_id",
-         }                            },
+         }                             },
         {"problem",
          {
              "id",
@@ -692,7 +664,7 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "example_count",
              "time_limit",
              "memory_limit",
-         }                            },
+         }                             },
         {"submission",
          {
              "id",
@@ -702,49 +674,21 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "verdict",
              "test",
              "source_name",
-         }                            },
-        {"user_upload",
+         }                             },
+        {"competition_problem",
          {
              "id",
-             "index",
-             "name",
-             "extension",
-         }                            },
-        {"plan_upload",
-         {
-             "id",
-             "index",
-             "name",
-             "extension",
-         }                            },
-        {"journal_upload",
-         {
-             "id",
-             "index",
-             "name",
-             "extension",
-         }                            },
-        {"journal_download",
-         {
-             "id",
-             "index",
-             "name",
-             "extension",
-         }                            },
+             "competition_id",
+             "problem_id",
+         }                             },
         {"question",
          {
              "id",
-             "title",
-             "legend",
-             "type",
-             "contest",
-             "jury_answer",
-         }                            },
-        {"question_type",
-         {
-             "id",
              "name",
-         }                            },
+             "nickname",
+             "type",
+             "jury_answer",
+         }                             },
         {"user_answer",
          {
              "id",
@@ -754,6 +698,26 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "time",
              "true_time",
              "is_correct",
-         }                            },
-        {"NUN",                 {"id"}}
+         }                             },
+        {"competition_question",
+         {
+             "id",
+             "competition_id",
+             "question_id",
+         }                             },
+        {"question_type",
+         {
+             "id",
+             "name",
+         }                             },
+        {"upload_type",
+         {
+             "id",
+             "type",
+             "direction",
+             "index",
+             "name",
+             "extension",
+         }                             },
+        {"NUN",                  {"id"}}
 };

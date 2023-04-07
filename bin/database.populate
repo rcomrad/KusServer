@@ -16,17 +16,8 @@ file
 END
 
 user_upload
-	'data';'Файл .data','.data'
-END
-
-plan_upload
-	'csv';'Файл .csv','.csv'
-END
-
-journal_upload
-	'data';'Файл .data','.data'
-END
-
-journal_download
-	'data';'Файл .data','.data'
+	user;'U';'data';'Файл .data','.data'
+	plan;'U';'csv';'Файл .csv','.csv'
+	journal;'U';'data';'Файл .data','.data'
+	journal;'D';'data';'Файл .data','.data'
 END

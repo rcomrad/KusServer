@@ -263,6 +263,22 @@ struct File : public UpperDataStruct<FileBase>
 {
 };
 
+struct Safe_fileBase : public BaseDataStruct<2>
+{
+    int id  = 0;
+    int num = 0;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::unordered_map<std::string, uint8_t> columnNames;
+
+    void reset();
+};
+
+struct Safe_file : public UpperDataStruct<Safe_fileBase>
+{
+};
+
 struct HolidayBase : public BaseDataStruct<3>
 {
     int id        = 0;
@@ -315,23 +331,6 @@ struct User_competition : public UpperDataStruct<User_competitionBase>
 {
 };
 
-struct Competition_problemBase : public BaseDataStruct<3>
-{
-    int id             = 0;
-    int competition_id = 0;
-    int problem_id     = 0;
-
-    static std::string tableName;
-    static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
-
-    void reset();
-};
-
-struct Competition_problem : public UpperDataStruct<Competition_problemBase>
-{
-};
-
 struct ProblemBase : public BaseDataStruct<8>
 {
     int id = 0;
@@ -375,12 +374,11 @@ struct Submission : public UpperDataStruct<SubmissionBase>
 {
 };
 
-struct User_uploadBase : public BaseDataStruct<4>
+struct Competition_problemBase : public BaseDataStruct<3>
 {
-    int id = 0;
-    std::string index;
-    std::string name;
-    std::string extension;
+    int id             = 0;
+    int competition_id = 0;
+    int problem_id     = 0;
 
     static std::string tableName;
     static std::vector<data::Type> types;
@@ -389,71 +387,16 @@ struct User_uploadBase : public BaseDataStruct<4>
     void reset();
 };
 
-struct User_upload : public UpperDataStruct<User_uploadBase>
+struct Competition_problem : public UpperDataStruct<Competition_problemBase>
 {
 };
 
-struct Plan_uploadBase : public BaseDataStruct<4>
+struct QuestionBase : public BaseDataStruct<5>
 {
     int id = 0;
-    std::string index;
     std::string name;
-    std::string extension;
-
-    static std::string tableName;
-    static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
-
-    void reset();
-};
-
-struct Plan_upload : public UpperDataStruct<Plan_uploadBase>
-{
-};
-
-struct Journal_uploadBase : public BaseDataStruct<4>
-{
-    int id = 0;
-    std::string index;
-    std::string name;
-    std::string extension;
-
-    static std::string tableName;
-    static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
-
-    void reset();
-};
-
-struct Journal_upload : public UpperDataStruct<Journal_uploadBase>
-{
-};
-
-struct Journal_downloadBase : public BaseDataStruct<4>
-{
-    int id = 0;
-    std::string index;
-    std::string name;
-    std::string extension;
-
-    static std::string tableName;
-    static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
-
-    void reset();
-};
-
-struct Journal_download : public UpperDataStruct<Journal_downloadBase>
-{
-};
-
-struct QuestionBase : public BaseDataStruct<6>
-{
-    int id = 0;
-    std::string title;
-    std::string legend;
-    int type    = 0;
-    int contest = 0;
+    std::string nickname;
+    int type = 0;
     std::string jury_answer;
 
     static std::string tableName;
@@ -464,22 +407,6 @@ struct QuestionBase : public BaseDataStruct<6>
 };
 
 struct Question : public UpperDataStruct<QuestionBase>
-{
-};
-
-struct Question_typeBase : public BaseDataStruct<2>
-{
-    int id = 0;
-    std::string name;
-
-    static std::string tableName;
-    static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
-
-    void reset();
-};
-
-struct Question_type : public UpperDataStruct<Question_typeBase>
 {
 };
 
@@ -501,6 +428,59 @@ struct User_answerBase : public BaseDataStruct<7>
 };
 
 struct User_answer : public UpperDataStruct<User_answerBase>
+{
+};
+
+struct Competition_questionBase : public BaseDataStruct<3>
+{
+    int id             = 0;
+    int competition_id = 0;
+    int question_id    = 0;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::unordered_map<std::string, uint8_t> columnNames;
+
+    void reset();
+};
+
+struct Competition_question : public UpperDataStruct<Competition_questionBase>
+{
+};
+
+struct Question_typeBase : public BaseDataStruct<2>
+{
+    int id = 0;
+    std::string name;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::unordered_map<std::string, uint8_t> columnNames;
+
+    void reset();
+};
+
+struct Question_type : public UpperDataStruct<Question_typeBase>
+{
+};
+
+struct Upload_typeBase : public BaseDataStruct<6>
+{
+    int id = 0;
+    std::string type;
+    std::string direction;
+    std::string index;
+    std::string name;
+    std::string extension;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::unordered_map<std::string, uint8_t> columnNames;
+
+    void reset();
+};
+
+struct Upload_type : public UpperDataStruct<Upload_typeBase>
 {
 };
 

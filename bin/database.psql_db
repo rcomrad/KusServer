@@ -69,6 +69,9 @@ TABLE theme
 TABLE file
 	num integer NOT NULL
 
+TABLE safe_file
+	num integer NOT NULL
+
 TABLE holiday
 	school_id integer NOT NULL
 	date_val date NOT NULL
@@ -82,10 +85,6 @@ TABLE user_competition
 	user_id integer NOT NULL
 	competition_id integer NOT NULL
 
-TABLE competition_problem
-	competition_id integer NOT NULL
-	problem_id integer NOT NULL
-
 TABLE problem
 	name character varying(50) NOT NULL
 	nickname character varying(20) NOT NULL
@@ -94,7 +93,7 @@ TABLE problem
 	example_count integer NOT NULL
 	time_limit integer NOT NULL
 	memory_limit integer NOT NULL
-
+	
 TABLE submission
 	user_id integer NOT NULL
 	problem_id integer NOT NULL
@@ -103,35 +102,15 @@ TABLE submission
 	test integer NOT NULL
 	source_name character varying(50) NOT NULL
 
-TABLE user_upload
-	index character varying(4) NOT NULL
-	name character varying(40) NOT NULL
-	extension character varying(5) NOT NULL
-
-TABLE plan_upload
-	index character varying(4) NOT NULL
-	name character varying(40) NOT NULL
-	extension character varying(5) NOT NULL
-
-TABLE journal_upload
-	index character varying(4) NOT NULL
-	name character varying(40) NOT NULL
-	extension character varying(5) NOT NULL
-
-TABLE journal_download
-	index character varying(5) NOT NULL
-	name character varying(40) NOT NULL
-	extension character varying(5) NOT NULL
+TABLE competition_problem
+	competition_id integer NOT NULL
+	problem_id integer NOT NULL
 
 TABLE question
-	title character varying(5) NOT NULL
-	legend text NOT NULL
+	name character varying(5) NOT NULL
+	nickname character varying(20) NOT NULL
 	type smallint NOT NULL
-	contest integer NOT NULL
 	jury_answer character varying(15) NOT NULL
-	
-TABLE question_type
-	name character varying(15) NOT NULL
 
 TABLE user_answer
 	user_id integer NOT NULL
@@ -140,5 +119,19 @@ TABLE user_answer
 	time character varying(30) NOT NULL
 	true_time character varying(20) NOT NULL
 	is_correct character varying(1) NOT NULL
+
+TABLE competition_question
+	competition_id integer NOT NULL
+	question_id integer NOT NULL
+
+TABLE question_type
+	name character varying(15) NOT NULL
+
+TABLE upload_type
+	type character varying(10) NOT NULL
+	direction character varying(1) NOT NULL
+	index character varying(4) NOT NULL
+	name character varying(40) NOT NULL
+	extension character varying(5) NOT NULL
 	
 TABLE NUN
