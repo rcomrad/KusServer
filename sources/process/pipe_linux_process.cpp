@@ -108,12 +108,12 @@ proc::PipeLinuxProcess::run() noexcept
 }
 //--------------------------------------------------------------------------------
 
-std::optional<dom::Pair<uint64_t>>
+std::optional<proc::Limits>
 proc::PipeLinuxProcess::runWithLimits() noexcept
 {
     START_LOG_BLOCK("Runing_process_with_time_and_memory_evaluation");
 
-    std::optional<dom::Pair<uint64_t>> result = {};
+    std::optional<Limits> result = {};
 
     uint64_t timeUsage   = 0;
     uint64_t memoryUsage = 0;

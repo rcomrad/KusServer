@@ -23,7 +23,6 @@ file::File::dmpParser(std::string aFileName) noexcept
     {
         if (name.empty()) continue;
         auto& curArray = res.data[name];
-        curArray.name  = name;
 
         std::string row;
         while (std::getline(ios, row) && row != "END")

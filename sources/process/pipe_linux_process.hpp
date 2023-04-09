@@ -29,7 +29,7 @@ public:
     void create() noexcept final override;
 
     bool run() noexcept final override;
-    std::optional<dom::Pair<uint64_t>> runWithLimits() noexcept final override;
+    std::optional<Limits> runWithLimits() noexcept final override;
 
     virtual void IORedirection() noexcept;
     void readData(std::string& result) noexcept final override;

@@ -13,7 +13,6 @@ class FileData
 private:
     struct TableData
     {
-        std::string name;
         std::vector<std::vector<std::string>> value;
         std::vector<std::string> additionalInfo;
     };

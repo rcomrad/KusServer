@@ -13,7 +13,7 @@ file::FileRouter::process(const std::string& aFileName) noexcept
     auto data = getFileData(aFileName);
     for (auto& i : data)
     {
-        post::PostRouter::rawDataRouter(i.second.name, i.second.value);
+        post::PostRouter::rawDataRouter(i.first, i.second.value);
     }
 }
 

@@ -7,6 +7,7 @@ sudo -S apt install fp-compiler -y
 
 cd server
 git switch autocommit
+# TODO: folder name
 git config --global --add safe.directory /home/rcomrad/server
 
 cd devops
