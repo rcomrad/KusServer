@@ -72,6 +72,7 @@ core::SubmissionQueue::reload() noexcept
     {
         data::Table<data::Submission> sub;
         sub.emplace_back(std::move(i));
+        mQueue.push(std::move(sub));
     }
     mSubmissionMutex.unlock();
 }

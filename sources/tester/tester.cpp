@@ -119,8 +119,7 @@ test::Tester::check(TestReader& aTestReader) noexcept
     boost::posix_time::ptime timeLocal =
         boost::posix_time::second_clock::local_time();
 
-    for (int i = -10;
-         mFinalVerdict == Test::TestVerdict::OK && i < aTestReader.mTestCount;)
+    for (int i = 1;;)
     {
         ttt         = i;
         auto signal = mThreadSignals.getSignal();
