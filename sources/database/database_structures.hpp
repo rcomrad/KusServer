@@ -464,7 +464,7 @@ struct Question_type : public UpperDataStruct<Question_typeBase>
 {
 };
 
-struct Upload_typeBase : public BaseDataStruct<6>
+struct File_exchangeBase : public BaseDataStruct<6>
 {
     int id = 0;
     std::string type;
@@ -480,7 +480,7 @@ struct Upload_typeBase : public BaseDataStruct<6>
     void reset();
 };
 
-struct Upload_type : public UpperDataStruct<Upload_typeBase>
+struct File_exchange : public UpperDataStruct<File_exchangeBase>
 {
 };
 

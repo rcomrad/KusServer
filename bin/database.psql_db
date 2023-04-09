@@ -127,7 +127,7 @@ TABLE competition_question
 TABLE question_type
 	name character varying(15) NOT NULL
 
-TABLE upload_type
+TABLE file_exchange
 	type character varying(10) NOT NULL
 	direction character varying(1) NOT NULL
 	index character varying(4) NOT NULL

@@ -112,8 +112,8 @@ test::Test::checkTest() noexcept
     }
     else
     {
-        mUsedTime   = testRes.value().first;
-        mUsedMemory = testRes.value().second;
+        mUsedTime   = testRes.value().timeLimit;
+        mUsedMemory = testRes.value().memoryLimit;
 
         mSolutionProcess.readData(mTLM.mOutput);
         mTLM.makeOutputSizes();

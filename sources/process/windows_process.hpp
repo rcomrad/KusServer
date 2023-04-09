@@ -63,7 +63,7 @@ public:
     \return Returns the time and memory used by the process if
         the process is completed successfully.
     */
-    std::optional<dom::Pair<uint64_t>> runWithLimits() noexcept final override;
+    std::optional<Limits> runWithLimits() noexcept final override;
 
 protected:
     STARTUPINFOA mStartupInfo;

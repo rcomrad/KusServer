@@ -6,6 +6,7 @@
 
 #include "database/connection_manager.hpp"
 
+#include "file/file_router.hpp"
 #include "post/journal_handler.hpp"
 #include "post/plan_handler.hpp"
 #include "post/user_handler.hpp"
@@ -30,19 +31,16 @@ core::Core::Core() noexcept
 void
 core::Core::remakeDatabase()
 {
-    data::ConnectionManager::turnOff();
-    deleteEnvironment();
     createEnvironment();
-    data::ConnectionManager::turnOn();
-
     createDatabaseFromFile("database.psql_db");
-    populateDatabaseFromFile("database.populate");
+    file::FileRouter::process("database.dmp");
 }
 
 void
 core::Core::populate()
 {
-    populateDatabaseFromFile("../tests/example.populate");
+    // populateDatabaseFromFile("../tests/example.dmp");
+    file::FileRouter::process("../tests/example.dmp");
 
     post::UserHandler::dataFileUpload("../tests/user.data");
 
@@ -151,52 +149,7 @@ core::Core::createDatabaseFromFile(std::string aFileName) noexcept
         }
         else
         {
-            // colums.emplace_back(data::ColumSetting(s1, s2, ""));
             colums.emplace_back(s1, s2);
-        }
-    }
-}
-
-#include <sstream>
-
-void
-core::Core::populateDatabaseFromFile(std::string aFileName) noexcept
-{
-    auto connection = data::ConnectionManager::getUserConnection();
-
-    std::vector<data::ColumnSetting> colums;
-    std::ifstream ios(aFileName);
-    if (!ios.is_open())
-    {
-        std::cout << "NO_SUCH_FILE!\n";
-        return;
-    }
-    else
-    {
-        std::cout << "Extracting_file\n";
-    }
-    std::string s1, s2;
-    std::string name;
-    while (ios >> s1)
-    {
-        std::getline(ios, s2);
-        std::getline(ios, s2);
-        std::stringstream ss;
-
-        while (s2 != "END")
-        {
-            std::stringstream ss;
-            ss << s2;
-
-            std::vector<std::string> data;
-            while (std::getline(ss, s2, ';'))
-            {
-                if (s2.back() == ';') s2.back() = ' ';
-                data.emplace_back(s2);
-            }
-            // TODO:
-            connection.val.insert(s1, data);
-            std::getline(ios, s2);
         }
     }
 }
@@ -204,13 +157,14 @@ core::Core::populateDatabaseFromFile(std::string aFileName) noexcept
 void
 core::Core::createEnvironment() noexcept
 {
-    auto connection = data::ConnectionManager::getAdminConnection();
-    connection.val.createEnvironment(data::ConnectionType::USER);
-}
-
-void
-core::Core::deleteEnvironment() noexcept
-{
-    auto connection = data::ConnectionManager::getAdminConnection();
-    connection.val.dropDatabase(data::ConnectionType::USER);
+    data::ConnectionManager::turnOff();
+    {
+        auto connection = data::ConnectionManager::getAdminConnection();
+        connection.val.dropDatabase(data::ConnectionType::USER);
+    }
+    {
+        auto connection = data::ConnectionManager::getAdminConnection();
+        connection.val.createEnvironment(data::ConnectionType::USER);
+    }
+    data::ConnectionManager::turnOn();
 }

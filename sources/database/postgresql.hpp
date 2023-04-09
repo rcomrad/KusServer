@@ -10,9 +10,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "domain/any.hpp"
 #include "domain/error_message.hpp"
-#include "domain/string.hpp"
 
 #include "database_structures.hpp"
 
@@ -34,9 +32,6 @@ struct DBSettings
     std::string shame;
 };
 
-// using RowArray = std::vector<std::unordered_map<std::string, dom::Any>>;
-using RowArray =
-    std::vector<boost::unordered::unordered_map<std::string, dom::Any>>;
 class Postgresql
 {
 public:

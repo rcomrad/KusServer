@@ -1,0 +1,23 @@
+role
+	student
+	teacher
+	grade_head
+	add_user
+	add_grade
+	add_journal
+	add_plan
+	director
+	admin
+	submitor
+END
+
+file
+	1
+END
+
+file_exchange
+	user;U;data;Файл .data;.data
+	plan;U;csv;Файл .csv;.csv
+	journal;U;data;Файл .data;.data
+	journal;D;data;Файл .data;.data
+END

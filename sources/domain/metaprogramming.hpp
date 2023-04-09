@@ -29,6 +29,6 @@ template <class T>
 using isString = isOneOf<T, std::string, char*, const char*>;
 } // namespace dom
 
-//--------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------
 
 #endif // !DOM_METAPROGRAMMING_HPP

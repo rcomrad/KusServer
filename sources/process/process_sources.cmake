@@ -7,7 +7,6 @@ set(
     bst_process.cpp
     bst_process.hpp
 
-    limits.cpp
     limits.hpp
 
     pipe_linux_process.cpp

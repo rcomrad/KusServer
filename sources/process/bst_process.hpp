@@ -1,15 +1,17 @@
 #ifndef MY_BOOST_PROCESS_HPP
 #define MY_BOOST_PROCESS_HPP
 
+#ifdef BOOST_PROCESS
+
 //--------------------------------------------------------------------------------
 
-#include <string>
+#    include <string>
 
-#include "boost/process.hpp"
+#    include "boost/process.hpp"
 
 namespace bp = boost::process;
 
-#include "base_process.hpp"
+#    include "base_process.hpp"
 
 namespace proc
 {
@@ -31,7 +33,7 @@ public:
     void create() noexcept final override;
 
     bool run() noexcept final override;
-    std::optional<dom::Pair<uint64_t>> runWithLimits() noexcept final override;
+    std::optional<Limits> runWithLimits() noexcept final override;
 
     virtual void IORedirection() noexcept;
     void readData(std::string& result) noexcept final override;
@@ -48,5 +50,7 @@ private:
 } // namespace proc
 
 //--------------------------------------------------------------------------------
+
+#endif // !BOOST_PROCESS
 
 #endif // !MY_BOOST_PROCESS_HPP

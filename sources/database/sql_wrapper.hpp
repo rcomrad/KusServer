@@ -5,7 +5,8 @@
 #include <utility>
 
 #include "domain/metaprogramming.hpp"
-#include "domain/string.hpp"
+
+using namespace std::literals;
 
 namespace data
 {

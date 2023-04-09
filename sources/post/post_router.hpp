@@ -55,6 +55,16 @@ public:
         return result;
     }
 
+    template <typename... Args>
+    static crow::json::wvalue rawDataRouter(const std::string& aTableName,
+                                            Args&&... args) noexcept
+    {
+        crow::json::wvalue result;
+        auto it = mRawDataRouter.find(aTableName);
+        if (it != mRawDataRouter.end()) result = it->second(args...);
+        return result;
+    }
+
 private:
     static std::unordered_map<std::string,
                               decltype(&post::PostHandler::process<data::User>)>
@@ -70,6 +80,10 @@ private:
     static std::unordered_map<std::string,
                               decltype(&post::PostHandler::drop<data::User>)>
         mDropRouterMap;
+    static std::unordered_map<
+        std::string,
+        decltype(&post::PostHandler::rawDataInsert<data::User>)>
+        mRawDataRouter;
 };
 
 } // namespace post

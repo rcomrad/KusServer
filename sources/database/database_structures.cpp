@@ -505,21 +505,22 @@ data::Question_typeBase::reset()
     ptrs[1] = (void*)(&name);
 }
 
-std::string data::Upload_typeBase::tableName         = "upload_type";
-std::vector<data::Type> data::Upload_typeBase::types = {
+std::string data::File_exchangeBase::tableName         = "file_exchange";
+std::vector<data::Type> data::File_exchangeBase::types = {
     data::Type::INT,    data::Type::STRING, data::Type::STRING,
     data::Type::STRING, data::Type::STRING, data::Type::STRING};
-std::unordered_map<std::string, uint8_t> data::Upload_typeBase::columnNames = {
-    {"id",        0},
-    {"type",      1},
-    {"direction", 2},
-    {"index",     3},
-    {"name",      4},
-    {"extension", 5}
+std::unordered_map<std::string, uint8_t> data::File_exchangeBase::columnNames =
+    {
+        {"id",        0},
+        {"type",      1},
+        {"direction", 2},
+        {"index",     3},
+        {"name",      4},
+        {"extension", 5}
 };
 
 void
-data::Upload_typeBase::reset()
+data::File_exchangeBase::reset()
 {
     ptrs[0] = (void*)(&id);
     ptrs[1] = (void*)(&type);
@@ -710,7 +711,7 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "id",
              "name",
          }                             },
-        {"upload_type",
+        {"file_exchange",
          {
              "id",
              "type",

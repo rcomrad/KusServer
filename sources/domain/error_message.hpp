@@ -5,8 +5,9 @@
 
 #include <fstream>
 #include <iostream>
+#include <string>
 
-#include "string.hpp"
+#include "metaprogramming.hpp"
 
 //--------------------------------------------------------------------------------
 /*

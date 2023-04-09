@@ -4,9 +4,8 @@
 //--------------------------------------------------------------------------------
 
 #include <optional>
-
-#include "domain/pair.hpp"
-#include "domain/string.hpp"
+#include <string>
+#include <vector>
 
 #include "limits.hpp"
 
@@ -64,7 +63,7 @@ public:
         the process is completed successfully.
     */
 
-    virtual std::optional<dom::Pair<uint64_t>> runWithLimits() noexcept = 0;
+    virtual std::optional<Limits> runWithLimits() noexcept = 0;
 
     virtual void writeData(const std::string& aMessage) noexcept = 0;
     virtual void readData(std::string& aMessage) noexcept        = 0;

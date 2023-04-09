@@ -29,7 +29,7 @@ std::unordered_map<std::string, decltype(&get::GetHandler::process<data::User>)>
         {"competition_question",
          &get::GetHandler::process<data::Competition_question>                    },
         {"question_type",        &get::GetHandler::process<data::Question_type>   },
-        {"upload_type",          &get::GetHandler::process<data::Upload_type>     }
+        {"file_exchange",        &get::GetHandler::process<data::File_exchange>   }
 };
 
 std::unordered_map<std::string, decltype(&get::GetHandler::dump<data::User>)>
@@ -61,5 +61,5 @@ std::unordered_map<std::string, decltype(&get::GetHandler::dump<data::User>)>
         {"competition_question",
          &get::GetHandler::dump<data::Competition_question>                    },
         {"question_type",        &get::GetHandler::dump<data::Question_type>   },
-        {"upload_type",          &get::GetHandler::dump<data::Upload_type>     }
+        {"file_exchange",        &get::GetHandler::dump<data::File_exchange>   }
 };

@@ -3,7 +3,7 @@
 
 //--------------------------------------------------------------------------------
 
-#include "domain/string.hpp"
+#include <string>
 
 #include "database/database_structures.hpp"
 

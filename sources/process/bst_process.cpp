@@ -1,8 +1,10 @@
-#include "bst_process.hpp"
+#ifdef BOOST_PROCESS
+
+#    include "bst_process.hpp"
 
 //--------------------------------------------------------------------------------
 
-#include "domain/error_message.hpp"
+#    include "domain/error_message.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -79,12 +81,12 @@ proc::BoostProcess::run() noexcept
 
 //--------------------------------------------------------------------------------
 
-std::optional<dom::Pair<uint64_t>>
+std::optional<Limits>
 proc::BoostProcess::runWithLimits() noexcept
 {
     START_LOG_BLOCK("Runing_process_with_time_and_memory_evaluation");
 
-    std::optional<dom::Pair<uint64_t>> result = {};
+    std::optional<Limits> result = {};
 
     uint64_t timeUsage   = 100;
     uint64_t memoryUsage = 1;
@@ -134,3 +136,5 @@ proc::BoostProcess::writeData(const std::string& aMessage) noexcept
 }
 
 //--------------------------------------------------------------------------------
+
+#endif // !BOOST_PROCESS

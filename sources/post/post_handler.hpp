@@ -8,8 +8,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include "domain/pair.hpp"
-
 #include "database/connection_manager.hpp"
 
 #include "crow.h"
@@ -138,6 +136,17 @@ public:
         }
 
         return {};
+    }
+
+    template <typename T>
+    static crow::json::wvalue rawDataInsert(
+        const std::vector<std::vector<std::string>>& aData)
+    {
+        data::Table<T> table;
+        auto res        = table.loadFromRawData(aData);
+        auto connection = data::ConnectionManager::getUserConnection();
+        connection.val.update(table);
+        return {res};
     }
 
     template <typename T>

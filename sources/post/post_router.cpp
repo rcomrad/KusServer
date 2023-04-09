@@ -31,7 +31,7 @@ std::unordered_map<std::string,
         {"competition_question",
          &post::PostHandler::process<data::Competition_question>                 },
         {"question_type",        &post::PostHandler::process<data::Question_type>},
-        {"upload_type",          &post::PostHandler::process<data::Upload_type>  }
+        {"file_exchange",        &post::PostHandler::process<data::File_exchange>}
 };
 
 std::unordered_map<std::string,
@@ -65,7 +65,7 @@ std::unordered_map<std::string,
         {"competition_question",
          &post::PostHandler::manyToMany<data::Competition_question>                 },
         {"question_type",        &post::PostHandler::manyToMany<data::Question_type>},
-        {"upload_type",          &post::PostHandler::manyToMany<data::Upload_type>  }
+        {"file_exchange",        &post::PostHandler::manyToMany<data::File_exchange>}
 };
 
 std::unordered_map<std::string,
@@ -102,7 +102,8 @@ std::unordered_map<std::string,
          &post::PostHandler::uploadFromFile<data::Competition_question>               },
         {"question_type",
          &post::PostHandler::uploadFromFile<data::Question_type>                      },
-        {"upload_type",          &post::PostHandler::uploadFromFile<data::Upload_type>}
+        {"file_exchange",
+         &post::PostHandler::uploadFromFile<data::File_exchange>                      }
 };
 
 std::unordered_map<std::string, decltype(&post::PostHandler::drop<data::User>)>
@@ -134,5 +135,44 @@ std::unordered_map<std::string, decltype(&post::PostHandler::drop<data::User>)>
         {"competition_question",
          &post::PostHandler::drop<data::Competition_question>                    },
         {"question_type",        &post::PostHandler::drop<data::Question_type>   },
-        {"upload_type",          &post::PostHandler::drop<data::Upload_type>     }
+        {"file_exchange",        &post::PostHandler::drop<data::File_exchange>   }
+};
+
+std::unordered_map<std::string,
+                   decltype(&post::PostHandler::rawDataInsert<data::User>)>
+    post::PostRouter::mRawDataRouter = {
+        {"school",               &post::PostHandler::rawDataInsert<data::School>     },
+        {"user",                 &post::PostHandler::rawDataInsert<data::User>       },
+        {"role",                 &post::PostHandler::rawDataInsert<data::Role>       },
+        {"grade",                &post::PostHandler::rawDataInsert<data::Grade>      },
+        {"grade_student",
+         &post::PostHandler::rawDataInsert<data::Grade_student>                      },
+        {"group",                &post::PostHandler::rawDataInsert<data::Group>      },
+        {"group_student",
+         &post::PostHandler::rawDataInsert<data::Group_student>                      },
+        {"lesson",               &post::PostHandler::rawDataInsert<data::Lesson>     },
+        {"journal_table",
+         &post::PostHandler::rawDataInsert<data::Journal_table>                      },
+        {"subject",              &post::PostHandler::rawDataInsert<data::Subject>    },
+        {"mark",                 &post::PostHandler::rawDataInsert<data::Mark>       },
+        {"plan",                 &post::PostHandler::rawDataInsert<data::Plan>       },
+        {"theme",                &post::PostHandler::rawDataInsert<data::Theme>      },
+        {"file",                 &post::PostHandler::rawDataInsert<data::File>       },
+        {"safe_file",            &post::PostHandler::rawDataInsert<data::Safe_file>  },
+        {"holiday",              &post::PostHandler::rawDataInsert<data::Holiday>    },
+        {"competition",          &post::PostHandler::rawDataInsert<data::Competition>},
+        {"user_competition",
+         &post::PostHandler::rawDataInsert<data::User_competition>                   },
+        {"problem",              &post::PostHandler::rawDataInsert<data::Problem>    },
+        {"submission",           &post::PostHandler::rawDataInsert<data::Submission> },
+        {"competition_problem",
+         &post::PostHandler::rawDataInsert<data::Competition_problem>                },
+        {"question",             &post::PostHandler::rawDataInsert<data::Question>   },
+        {"user_answer",          &post::PostHandler::rawDataInsert<data::User_answer>},
+        {"competition_question",
+         &post::PostHandler::rawDataInsert<data::Competition_question>               },
+        {"question_type",
+         &post::PostHandler::rawDataInsert<data::Question_type>                      },
+        {"file_exchange",
+         &post::PostHandler::rawDataInsert<data::File_exchange>                      }
 };

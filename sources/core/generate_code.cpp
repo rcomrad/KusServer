@@ -724,6 +724,17 @@ generatePostHandlerFile()
 
     //--------------------------------------------------------------------------------
 
+    // fileHandler
+    generator.pushBackFunction("rawDataRouter(const std::string& aTableName, "
+                               "Args&&... args) noexcept");
+    generator.pushToFunctionBody(wrap("mRawDataRouter"));
+    generator.generateMapTable(
+        "mRawDataRouter",
+        {
+            {"default", "post::PostHandler::rawDataInsert<data::"}
+    });
+
+    //--------------------------------------------------------------------------------
     generator.write();
 }
 
@@ -826,9 +837,9 @@ generateAsteriskHendler()
 void
 core::generateDatabaseStructuresFiles()
 {
-    // generateDatabaseStructuresHPPFile();
-    // generateDatabaseStructuresCPPFile();
+    //     generateDatabaseStructuresHPPFile();
+    //     generateDatabaseStructuresCPPFile();
 
-    // generatePostHandlerFile();
-    // generateGetRouterFile();
+    //     generatePostHandlerFile();
+    //     generateGetRouterFile();
 }

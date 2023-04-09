@@ -37,9 +37,9 @@ private:
     void serverThread() noexcept;
     void testerThread() noexcept;
     void createDatabaseFromFile(std::string aFileName) noexcept;
-    void populateDatabaseFromFile(std::string aFileName) noexcept;
+    // void populateDatabaseFromFile(std::string aFileName) noexcept;
     void createEnvironment() noexcept;
-    void deleteEnvironment() noexcept;
+    // void deleteEnvironment() noexcept;
 };
 } // namespace core
 

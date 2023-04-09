@@ -204,7 +204,7 @@ public:
         int id = 0;
         for (const auto& j : names)
         {
-            if (aSkipID && j.first == "id")
+            if (aSkipID && j.first == "id" && j.second == 0)
             {
                 continue;
             }
@@ -263,6 +263,46 @@ public:
         // names[aColumnName] *= -1;
         names.erase(aColumnName);
     }
+
+    //--------------------------------------------------------------------------------
+
+    bool loadFromRawData(const std::vector<std::vector<std::string>>& aData)
+    {
+        bool result = false;
+
+        if (aData.size() != 0 && aData[0].size() != 0 &&
+            (aData[0].size() == names.size() ||
+             aData[0].size() == names.size() - 1))
+        {
+            result     = true;
+            int offset = names.size() - aData[0].size();
+
+            for (auto& i : aData)
+            {
+                emplace_back();
+                for (int j = 0; j < i.size(); ++j)
+                {
+                    int ind = offset + j;
+                    switch (types[ind])
+                    {
+                        case data::Type::INT:
+                            *(int*)back()[ind] = std::stoi(i[j]);
+                            break;
+                        case data::Type::BOOL:
+                            *(bool*)back()[ind] = i[j] == "true";
+                            break;
+                        case data::Type::STRING:
+                            *(std::string*)back()[ind] = i[j];
+                            break;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    //--------------------------------------------------------------------------------
 
 public:
     std::unordered_map<std::string, uint8_t> names;
