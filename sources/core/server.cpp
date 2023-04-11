@@ -1,6 +1,7 @@
 #include "server.hpp"
 
 #include "crow/middlewares/cors.h"
+#include "file/file_router.hpp"
 #include "get/command_handler.hpp"
 #include "get/competition_handler.hpp"
 #include "get/get_handler.hpp"
@@ -10,6 +11,7 @@
 #include "post/user_handler.hpp"
 
 #include "crow.h"
+#include "result_generator.hpp"
 
 core::Server::Server()
 {
@@ -36,6 +38,23 @@ core::Server::Server()
 
     CROW_ROUTE(app, "/api/test")
     ([]() { return "All fine!"; });
+
+    CROW_ROUTE(app, "/api/exload")
+    (
+        []()
+        {
+            file::FileRouter::process("exload.dmprar");
+
+            return "5";
+        });
+
+    CROW_ROUTE(app, "/api/get_results/<int>")
+    (
+        [](int aCompetitionID)
+        {
+            core::ResultGenerator::generate(aCompetitionID);
+            return "4";
+        });
 
     CROW_ROUTE(app, "/api/command/<string>/<string>")
     ([](std::string aType, std::string aValue)

@@ -4,7 +4,8 @@
 
 std::unordered_map<std::string, decltype(&file::File::dmpParser)>
     file::FileRouter::mRouter = {
-        {"dmp", &file::File::dmpParser}
+        {"dmp",    &file::File::dmpParser},
+        {"dmprar", &file::File::dmpParser}
 };
 
 void
