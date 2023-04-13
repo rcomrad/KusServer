@@ -13,7 +13,7 @@ plink.exe -batch -ssh %user_name%@%ip% -pw %user_password% "echo -e '%user_passw
 
 plink.exe -batch -ssh %user_name%@%ip% -pw %user_password% "git clone %project_url% server"
 
-./rsa.bat
+call rsa.bat
 
 @REM plink.exe -batch -ssh %user_name%@%ip% -pw %user_password% "echo -e '%user_password%\n' | (sudo -S chmod +x ./server/devops/server_start.sh)"
 @REM plink.exe -batch -ssh %user_name%@%ip% -pw %user_password% "echo -e '%user_password%\n' | (cd server/devops; sudo -S ./server_start.sh %user_password%)"
