@@ -2,7 +2,7 @@
 
 //--------------------------------------------------------------------------------
 
-#include "domain/file_reader.hpp"
+#include "file/file.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -19,10 +19,10 @@ test::TestReader::getTest() noexcept
 {
     TestLibMessage result;
     mMutex.lock();
-    result.mTest = dom::FileReader::getAllData(
-        mTestPath + std::to_string(mTestNum) + ".in");
-    result.mAnswer = dom::FileReader::getAllData(
-        mTestPath + std::to_string(mTestNum) + ".out");
+    result.mTest =
+        file::File::getAllData(mTestPath + std::to_string(mTestNum) + ".in");
+    result.mAnswer =
+        file::File::getAllData(mTestPath + std::to_string(mTestNum) + ".out");
     result.mTestNumber = mTestNum;
     mTestNum++;
     mMutex.unlock();

@@ -13,6 +13,9 @@ set(
     get_router.cpp
     get_router.hpp
 
+    problem_handler.cpp
+    problem_handler.hpp
+
     question_handler.cpp
     question_handler.hpp
 

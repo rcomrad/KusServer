@@ -1,79 +1,78 @@
 #include "path.hpp"
 
-#include <fstream>
-#include <optional>
+#include <iostream>
 
-#include "error_message.hpp"
+#include "core/program_state.hpp"
 
-//--------------------------------------------------------------------------------
-
-std::unordered_map<std::string, std::string> dom::Path::mPaths =
-    dom::Path::getPaths();
+#include "file.hpp"
 
 //--------------------------------------------------------------------------------
 
-std::unordered_map<std::string, std::string>
-dom::Path::getPaths() noexcept
+file::Path::Path() noexcept
 {
-    std::unordered_map<std::string, std::string> result;
-    std::ifstream inp("paths.path");
+    reset();
+}
 
-    if (!inp.is_open())
+file::Path&
+file::Path::getInstance() noexcept
+{
+    static Path instance;
+    return instance;
+}
+
+void
+file::Path::reset() noexcept
+{
+    auto& state       = core::ProgramState::getInstance();
+    mPaths["default"] = state.getWord(core::Word::DEF_PATH);
+
+    auto temp = File::getWords("paths.path");
+    for (auto& i : temp)
     {
-        std::cout << "ERROR: no paths file!\n";
+        mPaths[i[0]] = i[1];
+    }
+
+    if (mPaths.empty())
+    {
+        std::cout << "ERROR: no paths detected!\n";
         exit(0);
     }
-
-    std::string name, path;
-    while (inp >> name >> path)
-    {
-        result[name] = path;
-    }
-
-    return result;
 }
 
 //--------------------------------------------------------------------------------
 
 std::optional<std::string>
-dom::Path::getPath(const std::string& aName) noexcept
+file::Path::getPath(const std::string& aName) noexcept
 {
-    auto it = mPaths.find(aName);
     std::optional<std::string> result;
+
+    auto it = mPaths.find(aName);
     if (it != mPaths.end())
     {
         result = it->second;
     }
+    else if ((it = mPaths.find("default")) != mPaths.end())
+    {
+        result = it->second;
+    }
+
     return result;
 }
 
 //--------------------------------------------------------------------------------
 
 std::string
-dom::Path::getMainPath() noexcept
+file::Path::getMainPath() noexcept
 {
     static std::string globalMainPath = getMainPathOnce();
     return globalMainPath;
 }
 
-//--------------------------------------------------------------------------------
-
 std::string
-dom::Path::getExecutablePath() noexcept
+file::Path::getExecutablePath() noexcept
 {
     static std::string globalExecutablePath = getExecutablePathOnce();
     return globalExecutablePath;
-}
-
-//--------------------------------------------------------------------------------
-
-std::string
-dom::Path::getMainPathOnce() noexcept
-{
-    std::string path = getExecutablePath();
-    do path.pop_back();
-    while (path.back() != '\\' && path.back() != '/');
-    return path;
 }
 
 //--------------------------------------------------------------------------------
@@ -85,10 +84,17 @@ dom::Path::getMainPathOnce() noexcept
 #    include <unistd.h>
 #endif
 
-//--------------------------------------------------------------------------------
+std::string
+file::Path::getMainPathOnce() noexcept
+{
+    std::string path = getExecutablePath();
+    do path.pop_back();
+    while (path.back() != '\\' && path.back() != '/');
+    return path;
+}
 
 std::string
-dom::Path::getExecutablePathOnce() noexcept
+file::Path::getExecutablePathOnce() noexcept
 {
 #if defined(BILL_WINDOWS)
     CHAR buffer[MAX_PATH] = {0};

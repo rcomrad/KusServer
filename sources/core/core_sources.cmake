@@ -15,6 +15,9 @@ set(
     result_generator.cpp
     result_generator.hpp
 
+    role.cpp
+    role.hpp
+
     server.cpp
     server.hpp
 

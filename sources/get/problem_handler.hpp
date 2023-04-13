@@ -1,5 +1,5 @@
-#ifndef GET_COMPETITION_HANDLER_HPP
-#define GET_COMPETITION_HANDLER_HPP
+#ifndef PROBLEM_HANDLER_HPP
+#define PROBLEM_HANDLER_HPP
 
 //--------------------------------------------------------------------------------
 
@@ -12,20 +12,15 @@
 
 namespace get
 {
-class CompetitionHandler : public GetHandler
+class ProblemHandler : public GetHandler
 {
 public:
-    static crow::json::wvalue process(int aUserID, int aCompetitionID) noexcept;
-
-    // static std::vector<std::string> mRoles;
-
-// private:
-    // static std::string mProblemPath;
-
-    // static std::vector<std::string> getAllRoles() noexcept;
+    static crow::json::wvalue process(
+        const std::vector<int>& aColumn,
+        data::SmartConnection& aConnection) noexcept;
 };
 } // namespace get
 
 //--------------------------------------------------------------------------------
 
-#endif // !GET_COMPETITION_HANDLER_HPP
+#endif // !PROBLEM_HANDLER_HPP

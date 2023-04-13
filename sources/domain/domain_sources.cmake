@@ -10,14 +10,5 @@ set(
     error_message.cpp
     error_message.hpp 
 
-    file_reader.cpp
-    file_reader.hpp
-
-    file_writer.cpp
-    file_writer.hpp
-    
     metaprogramming.hpp
-
-    path.cpp
-    path.hpp
 )

@@ -26,13 +26,19 @@ enum class Flag
 {
     SUB_CHECK,
     ANS_CHECK,
-    TIME_SET
+    TIME_SET,
+    Authorisation
 };
 
 enum class Value
 {
     TEST_THRD,
     DB_THRD
+};
+
+enum class Word
+{
+    DEF_PATH
 };
 
 class ProgramState
@@ -51,6 +57,7 @@ public:
 
     bool checkFlag(const Flag& aFlag) noexcept;
     int getValue(const Value& aName) noexcept;
+    std::string getWord(const Word& aName) noexcept;
 
 private:
     ProgramState();
@@ -69,6 +76,9 @@ private:
     std::vector<int> mValues;
     int valueSetter(const std::string& s) noexcept;
     std::unordered_map<std::string, int&> mValueNames;
+
+    std::vector<std::string> mWords;
+    std::unordered_map<std::string, std::string&> mWordsNames;
 };
 } // namespace core
 

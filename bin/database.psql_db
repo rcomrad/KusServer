@@ -106,11 +106,10 @@ TABLE competition_problem
 	competition_id integer NOT NULL
 	problem_id integer NOT NULL
 
-TABLE question
+TABLE question_type
 	name character varying(5) NOT NULL
 	nickname character varying(20) NOT NULL
 	type smallint NOT NULL
-	jury_answer character varying(15) NOT NULL
 
 TABLE user_answer
 	user_id integer NOT NULL

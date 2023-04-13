@@ -15,13 +15,9 @@ namespace get
 class UserHandler : public GetHandler
 {
 public:
-    static crow::json::wvalue process(const std::vector<int>& aColumn,
-                                      data::SmartConnection& aConnection) noexcept;
-
-    static std::vector<std::string> mRoles;
-
-private:
-    static std::vector<std::string> getAllRoles() noexcept;
+    static crow::json::wvalue process(
+        const std::vector<int>& aColumn,
+        data::SmartConnection& aConnection) noexcept;
 };
 } // namespace get
 

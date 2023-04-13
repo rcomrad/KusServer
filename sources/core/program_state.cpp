@@ -1,11 +1,10 @@
 #include "program_state.hpp"
 
-#include <sstream>
 #include <utility>
 
-#include "domain/file_reader.hpp"
-
 #include "database/connection_manager.hpp"
+
+#include "file/file.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -13,8 +12,9 @@ core::ProgramState::ProgramState()
     : mStartState(RestartType::NUN), mRestartState(RestartType::NUN)
 {
 
-    mFlags  = {0, 0, 1};
+    mFlags  = {0, 0, 1, 1};
     mValues = {1, 2};
+    mWords  = {""};
 
     mRestartTypes = {
         {"full",   RestartType::FULL  },
@@ -23,14 +23,19 @@ core::ProgramState::ProgramState()
     };
 
     mFlagNames = {
-        {"submission_auto_check", mFlags[int(Flag::SUB_CHECK)]},
-        {"answers_auto_check",    mFlags[int(Flag::ANS_CHECK)]},
-        {"set_time_for_answer",   mFlags[int(Flag::TIME_SET)] }
+        {"submission_auto_check", mFlags[int(Flag::SUB_CHECK)]    },
+        {"answers_auto_check",    mFlags[int(Flag::ANS_CHECK)]    },
+        {"set_time_for_answer",   mFlags[int(Flag::TIME_SET)]     },
+        {"authorisation",         mFlags[int(Flag::Authorisation)]}
     };
 
     mValueNames = {
         {"tester_thread_count",       mValues[int(Value::TEST_THRD)]},
         {"database_connection_count", mValues[int(Value::DB_THRD)]  }
+    };
+
+    mWordsNames = {
+        {"default_path", mWords[int(Word::DEF_PATH)]}
     };
 
     reloadSettings();
@@ -47,13 +52,10 @@ core::ProgramState::getInstance()
 void
 core::ProgramState::reloadSettings() noexcept
 {
-    auto settings = dom::FileReader::getAllStrings("main_settings.config");
+    auto settings = file::File::getWords("main_settings.conf");
     for (auto& i : settings)
     {
-        std::stringstream ss;
-        ss << i;
-        std::string name, state;
-        ss >> name >> state;
+        std::string &name = i[0], &state = i[1];
 
         if (name == "restart_on_start")
         {
@@ -76,6 +78,13 @@ core::ProgramState::reloadSettings() noexcept
         if (it2 != mValueNames.end())
         {
             it2->second = valueSetter(state);
+            continue;
+        }
+
+        auto it3 = mWordsNames.find(name);
+        if (it3 != mWordsNames.end())
+        {
+            it3->second = state;
         }
     }
 }
@@ -149,6 +158,12 @@ core::ProgramState::getValue(const Value& aName) noexcept
     // TODO: is it effective?
     // const std::lock_guard<std::mutex> lock(mRestartMutex);
     return mValues[int(aName)];
+}
+
+std::string
+core::ProgramState::getWord(const Word& aName) noexcept
+{
+    return mWords[int(aName)];
 }
 
 //--------------------------------------------------------------------------------

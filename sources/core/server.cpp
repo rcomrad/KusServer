@@ -10,12 +10,51 @@
 #include "post/submit_handler.hpp"
 #include "post/user_handler.hpp"
 
-#include "crow.h"
 #include "result_generator.hpp"
+#include "token_handler.hpp"
+
+void
+core::TokenMiddleware::before_handle(crow::request& req,
+                                     crow::response& res,
+                                     context& ctx)
+{
+    // if (req.remote_ip_address != ADMIN_IP)
+    // {
+    //     res.code = 403;
+    //     res.end();
+    // }
+    // std::cout << req.raw_url << "\n";
+    auto& handler = core::TokenHandler::getInstance();
+    if (req.headers.find("token") != req.headers.end())
+    {
+        auto token = req.get_header_value("token");
+        if (handler.check(token, req.raw_url))
+        {
+            res.code = 403;
+            res.end();
+        }
+    }
+    else
+    {
+        if (req.raw_url != "/api/login" && handler.isActive())
+        {
+            res.code = 403;
+            res.end();
+        }
+    }
+}
+
+void
+core::TokenMiddleware::after_handle(crow::request& req,
+                                    crow::response& res,
+                                    context& ctx)
+{
+}
 
 core::Server::Server()
 {
-    crow::App<crow::CORSHandler> app;
+    crow::App<crow::CORSHandler, TokenMiddleware> app;
+    // crow::App<TokenHandler> app;
     auto& cors = app.get_middleware<crow::CORSHandler>();
     app.loglevel(crow::LogLevel::Debug);
 

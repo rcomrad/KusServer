@@ -8,4 +8,7 @@ set(
 
     file.cpp
     file.hpp
+    
+    path.cpp
+    path.hpp
 )

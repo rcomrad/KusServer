@@ -6,10 +6,9 @@
 
 #include <cmath>
 
-#include "domain/path.hpp"
-
 #include "database/connection_manager.hpp"
 
+#include "file/path.hpp"
 #include "process/limits.hpp"
 
 #include "compiler.hpp"
@@ -42,7 +41,7 @@ test::Tester::run(data::Table<data::Submission>&& aSubmission) noexcept
 
     auto& problem = problemTable[0];
 
-    std::string curPath = dom::Path::getPath("problem").value();
+    std::string curPath = file::Path::getInstance().getPath("problem").value();
     curPath += problem.nickname + "/";
 
     std::string submissionPath = submission.source_name;
@@ -54,10 +53,12 @@ test::Tester::run(data::Table<data::Submission>&& aSubmission) noexcept
     }
     else
     {
-        checkerPath = dom::Path::getPath("checker").value() + checkerPath;
+        checkerPath =
+            file::Path::getInstance().getPath("checker").value() + checkerPath;
     }
 
-    auto workDir   = dom::Path::getPath("working_directory").value();
+    auto workDir =
+        file::Path::getInstance().getPath("working_directory").value();
     auto solProc   = prepareFile(submissionPath, workDir + "sus_solution");
     auto checkProc = prepareFile(checkerPath, workDir + "sus_checker");
 

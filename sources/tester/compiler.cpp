@@ -3,14 +3,15 @@
 //--------------------------------------------------------------------------------
 
 #include "domain/error_message.hpp"
-#include "domain/path.hpp"
 
+#include "file/path.hpp"
 #include "process/process.hpp"
 
 //--------------------------------------------------------------------------------
 
 std::string test::Compiler::mCPPCompiler =
-    dom::Path::getPath("compiler").value() + "magicCPPCompiler.cmd";
+    file::Path::getInstance().getPath("compiler").value() +
+    "magicCPPCompiler.cmd";
 
 std::unordered_map<std::string, test::Compiler::Language>
     test::Compiler::mLanguages = {

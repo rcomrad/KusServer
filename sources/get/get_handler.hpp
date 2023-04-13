@@ -6,10 +6,10 @@
 #include <fstream>
 #include <unordered_set>
 
-#include "domain/path.hpp"
-
 #include "database/connection_manager.hpp"
 #include "database/data_request.hpp"
+
+#include "file/path.hpp"
 
 #include "crow.h"
 
@@ -51,7 +51,8 @@ public:
         {
             auto connection = data::ConnectionManager::getUserConnection();
             auto table      = connection.val.getData<data::File>();
-            std::string pathPrefix = dom::Path::getPath("dump").value();
+            std::string pathPrefix =
+                file::Path::getInstance().getPath("dump").value();
             filePath = pathPrefix + std::to_string(table[0].num++) + "-" +
                        T::tableName + ".dmp";
             connection.val.update<data::File>(table);

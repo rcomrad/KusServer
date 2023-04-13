@@ -1,8 +1,8 @@
 #include "post_handler.hpp"
 
-#include "domain/path.hpp"
-
 #include "database/connection_manager.hpp"
+
+#include "file/path.hpp"
 
 #include "post_router.hpp"
 
@@ -10,7 +10,8 @@ std::string
 post::PostHandler::uploadFile(crow::multipart::message& aMsg,
                               std::string aPathPrefix)
 {
-    if (aPathPrefix.empty()) aPathPrefix = dom::Path::getPath("upload").value();
+    if (aPathPrefix.empty())
+        aPathPrefix = file::Path::getInstance().getPath("upload").value();
 
     // TODO: filename
     auto fileName = aMsg.get_part_by_name("filename").body;

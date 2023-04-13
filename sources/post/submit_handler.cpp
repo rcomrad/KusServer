@@ -2,12 +2,11 @@
 
 #include <boost/date_time/gregorian/gregorian.hpp>
 
-#include "domain/path.hpp"
-
 #include "database/connection_manager.hpp"
 
 #include "core/program_state.hpp"
 #include "core/submission_queue.hpp"
+#include "file/path.hpp"
 
 crow::json::wvalue
 post::SubmitHandler::process(const crow::request& aReq) noexcept
@@ -28,7 +27,7 @@ post::SubmitHandler::process(const crow::request& aReq) noexcept
     submition.back().verdict  = "NUN";
     submition.back().test     = -1;
     submition.back().source_name =
-        uploadFile(msg, dom::Path::getPath("submition").value());
+        uploadFile(msg, file::Path::getInstance().getPath("submition").value());
 
     {
         auto connection = data::ConnectionManager::getUserConnection();

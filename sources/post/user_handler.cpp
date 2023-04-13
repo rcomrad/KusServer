@@ -4,6 +4,8 @@
 
 #include "database/connection_manager.hpp"
 
+#include "core/role.hpp"
+#include "core/token_handler.hpp"
 #include "get/get_handler.hpp"
 
 crow::json::wvalue
@@ -20,8 +22,8 @@ post::UserHandler::process(const crow::request& aReq)
     //                              i.second);
     //     }
 
-    auto it         = request.other.find("role");
-    auto connection = data::ConnectionManager::getUserConnection();
+    auto it = request.other.find("role");
+
     if (it != request.other.end())
     {
 
@@ -31,20 +33,15 @@ post::UserHandler::process(const crow::request& aReq)
             roles.insert(i.s());
         }
 
-        int num    = 0;
-        auto table = connection.val.getData<data::Role>();
-        for (auto& i : table)
-        {
-            if (roles.count(*(std::string*)i[1]))
-            {
-                num += 1 << (*(int*)i[0] - 1);
-            }
-        }
-
-        *(int*)request.table.back()[request.table.names["role_id"]] = num;
+        *(int*)request.table.back()[request.table.names["role_id"]] =
+            core::Role::getInstance().getRoleID(roles);
     }
 
-    auto res = connection.val.update(request.table);
+    int res;
+    {
+        auto connection = data::ConnectionManager::getUserConnection();
+        res             = connection.val.update(request.table);
+    }
 
     manyToManyTransmiter(request);
 
@@ -77,12 +74,11 @@ post::UserHandler::dataFileUpload(const std::string& aFilePath)
     data::Table<data::Role> roleTable;
     {
         auto connection = data::ConnectionManager::getUserConnection();
-        roleTable       = connection.val.getData<data::Role>();
+        // roleTable       = connection.val.getData<data::Role>();
     }
 
     for (int i = 0; i < data.table.size(); ++i)
     {
-        int num = 0;
         std::stringstream ss;
         ss << data.additionalLines[i][0];
         std::string singleRole;
@@ -92,14 +88,8 @@ post::UserHandler::dataFileUpload(const std::string& aFilePath)
             roles.insert(singleRole);
         }
 
-        for (auto& i : roleTable)
-        {
-            if (roles.count(*(std::string*)i[1]))
-            {
-                num += 1 << (*(int*)i[0] - 1);
-            }
-        }
-        *(int*)data.table[i][data.table.names["role_id"]] = num;
+        *(int*)data.table[i][data.table.names["role_id"]] =
+            core::Role::getInstance().getRoleID(roles);
     }
     {
         auto connection = data::ConnectionManager::getUserConnection();
@@ -120,9 +110,19 @@ post::UserHandler::autorisation(const crow::request& aReq)
         std::string cond = "login = \'" + user[0].login + "\' AND " +
                            "password = \'" + user[0].password + "\'";
         // TODO:
-        auto userJson = get::GetHandler::singlGet("user", std::move(cond));
+        auto userJson = get::GetHandler::singlGet("user", cond);
         if (userJson.t() != crow::json::type::Null)
         {
+            data::Table<data::User> us;
+            {
+                auto connection = data::ConnectionManager::getUserConnection();
+                us              = connection.val.getData<data::User>(cond);
+            }
+
+            auto& tokenHandler = core::TokenHandler::getInstance();
+            if (tokenHandler.isActive())
+                userJson["user"]["token"] = tokenHandler.generate(us[0]);
+
             resp = userJson;
         }
         else
