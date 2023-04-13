@@ -1,4 +1,5 @@
-call D:\keys\server.bat
+set keyPath=D:\keys\
+call %keyPath%server.bat
 
 @REM set ip=127.0.0.1
 

@@ -13,13 +13,13 @@ plink.exe -batch -ssh %user_name%@%ip% -pw %user_password% "echo -e '%user_passw
 
 plink.exe -batch -ssh %user_name%@%ip% -pw %user_password% "git clone %project_url% server"
 
-call rsa.bat
+@REM call rsa.bat
 
-@REM plink.exe -batch -ssh %user_name%@%ip% -pw %user_password% "echo -e '%user_password%\n' | (sudo -S chmod +x ./server/devops/server_start.sh)"
-@REM plink.exe -batch -ssh %user_name%@%ip% -pw %user_password% "echo -e '%user_password%\n' | (cd server/devops; sudo -S ./server_start.sh %user_password%)"
+plink.exe -batch -ssh %user_name%@%ip% -pw %user_password% "echo -e '%user_password%\n' | (sudo -S chmod +x ./server/devops/server_start.sh)"
+plink.exe -batch -ssh %user_name%@%ip% -pw %user_password% "echo -e '%user_password%\n' | (cd server/devops; sudo -S ./server_start.sh %user_password%)"
 
-ssh -o StrictHostKeyChecking=accept-new %user_name%@%ip% -i %key_dir%%ip% "echo -e '%user_password%\n' | (sudo -S chmod +x ./server/devops/server_start.sh)"
-ssh -o StrictHostKeyChecking=accept-new %user_name%@%ip% -i %key_dir%%ip% "echo -e '%user_password%\n' | (cd server/devops; sudo -S ./server_start.sh %user_password%)"
+@REM ssh -o StrictHostKeyChecking=accept-new %user_name%@%ip% -i %key_dir%%ip% "echo -e '%user_password%\n' | (sudo -S chmod +x ./server/devops/server_start.sh)"
+@REM ssh -o StrictHostKeyChecking=accept-new %user_name%@%ip% -i %key_dir%%ip% "echo -e '%user_password%\n' | (cd server/devops; sudo -S ./server_start.sh %user_password%)"
 
 echo FINISHED
 pause

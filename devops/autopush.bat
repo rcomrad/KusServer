@@ -9,3 +9,4 @@ git commit -m 'autocommit'
 git push -f --set-upstream origin autocommit
 git switch -
 git stash pop
+cd devops
