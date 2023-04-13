@@ -4,7 +4,6 @@
 #include <unordered_map>
 
 #include "get_handler.hpp"
-#include "user_handler.hpp"
 
 namespace get
 {

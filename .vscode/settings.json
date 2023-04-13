@@ -101,6 +101,7 @@
         "valarray": "cpp",
         "cfenv": "cpp",
         "unordered_set": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "random": "cpp"
     }
 }

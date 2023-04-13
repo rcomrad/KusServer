@@ -1,6 +1,9 @@
 set(
     POST_SOURCES
 
+    answer_handler.cpp
+    answer_handler.hpp
+    
     grade_handler.hpp
 
     journal_handler.cpp
@@ -20,9 +23,6 @@ set(
 
     submit_handler.cpp
     submit_handler.hpp
-
-    user_answer_handler.cpp
-    user_answer_handler.hpp
 
     user_handler.cpp
     user_handler.hpp

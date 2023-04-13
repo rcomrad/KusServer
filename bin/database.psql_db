@@ -88,43 +88,44 @@ TABLE user_competition
 TABLE problem
 	name character varying(50) NOT NULL
 	nickname character varying(20) NOT NULL
-	checker_name character varying(50) NOT NULL
+	checker_name character varying(20) NOT NULL
 	test_count integer NOT NULL
 	example_count integer NOT NULL
 	time_limit integer NOT NULL
 	memory_limit integer NOT NULL
 	
+TABLE competition_problem
+	name character varying(50) NOT NULL
+	competition_id integer NOT NULL
+	problem_id integer NOT NULL
+
 TABLE submission
 	user_id integer NOT NULL
 	problem_id integer NOT NULL
 	date_val timestamp NOT NULL
 	verdict character varying(3) NOT NULL
 	test integer NOT NULL
-	source_name character varying(50) NOT NULL
+	source_name character varying(12) NOT NULL
 
-TABLE competition_problem
-	competition_id integer NOT NULL
-	problem_id integer NOT NULL
-
-TABLE question_type
-	name character varying(5) NOT NULL
+TABLE question
+	name character varying(50) NOT NULL
 	nickname character varying(20) NOT NULL
 	type smallint NOT NULL
-
-TABLE user_answer
-	user_id integer NOT NULL
-	question_id integer NOT NULL
-	user_answer character varying(10) NOT NULL
-	time character varying(30) NOT NULL
-	true_time character varying(20) NOT NULL
-	is_correct character varying(1) NOT NULL
+	weight integer NOT NULL
+	jury_answer character varying(12) NOT NULL
 
 TABLE competition_question
+	name character varying(50) NOT NULL
 	competition_id integer NOT NULL
 	question_id integer NOT NULL
 
-TABLE question_type
-	name character varying(15) NOT NULL
+TABLE answer
+	user_id integer NOT NULL
+	question_id integer NOT NULL
+	time character varying(20) NOT NULL
+	is_correct character varying(1) NOT NULL
+	weight integer NOT NULL
+	value character varying(12) NOT NULL
 
 TABLE file_exchange
 	type character varying(10) NOT NULL

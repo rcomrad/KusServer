@@ -19,12 +19,15 @@ class File
 public:
     static FileData dmpParser(const std::string& aFileName) noexcept;
 
-    static std::string getAllData(
-        const std::string& aFileName) noexcept;
+    static std::string getAllData(const std::string& aFileName) noexcept;
     static std::vector<std::string> getLines(
         const std::string& aFileName) noexcept;
     static std::vector<std::vector<std::string>> getWords(
         const std::string& aFileName) noexcept;
+
+    static std::string writeData(const std::string& aFolderName,
+                                 const std::string& aFileName,
+                                 const std::string& aData) noexcept;
 
 private:
     static bool isSeparator(char c) noexcept;

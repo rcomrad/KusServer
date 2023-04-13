@@ -79,13 +79,5 @@ holiday
 END
 
 question
-	Sus1;GAGAGA;1;am1
-	Sus2;Миша ел в реку.;1;am2
-	Sus3;Миша съел всю реку.;1;am3
-	Sus4;Четвёртый Миша съел всю реку.;1;am4
-END
-
-user_answer
-	25;2;answer 2;00:00;00:00;0
-	25;3;answer 3;00:00;00:00;0
+	Задача 1;test;1;1;asas.
 END

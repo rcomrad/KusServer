@@ -53,7 +53,7 @@ file::Path::getPath(const std::string& aName) noexcept
     }
     else if ((it = mPaths.find("default")) != mPaths.end())
     {
-        result = it->second;
+        result = it->second + aName + "/";
     }
 
     return result;

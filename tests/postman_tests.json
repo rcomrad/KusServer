@@ -2317,7 +2317,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"user_id\":  2,\r\n    \"question_id\": 2,\r\n    \"user_answer\": \"am2\",\r\n    \"time\": \"10:00:00\"\r\n}",
+					"raw": "{\r\n    \"user_id\":  2,\r\n    \"question_id\": 2,\r\n    \"value\": \"12345\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -2325,7 +2325,7 @@
 					}
 				},
 				"url": {
-					"raw": "127.0.0.1:18080/api/post/user_answer",
+					"raw": "127.0.0.1:18080/api/post/answer",
 					"host": [
 						"127",
 						"0",
@@ -2336,7 +2336,7 @@
 					"path": [
 						"api",
 						"post",
-						"user_answer"
+						"answer"
 					]
 				}
 			},

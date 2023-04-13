@@ -378,6 +378,26 @@ data::ProblemBase::reset()
     ptrs[7] = (void*)(&memory_limit);
 }
 
+std::string data::Competition_problemBase::tableName = "competition_problem";
+std::vector<data::Type> data::Competition_problemBase::types = {
+    data::Type::INT, data::Type::STRING, data::Type::INT, data::Type::INT};
+std::unordered_map<std::string, uint8_t>
+    data::Competition_problemBase::columnNames = {
+        {"id",             0},
+        {"name",           1},
+        {"competition_id", 2},
+        {"problem_id",     3}
+};
+
+void
+data::Competition_problemBase::reset()
+{
+    ptrs[0] = (void*)(&id);
+    ptrs[1] = (void*)(&name);
+    ptrs[2] = (void*)(&competition_id);
+    ptrs[3] = (void*)(&problem_id);
+}
+
 std::string data::SubmissionBase::tableName         = "submission";
 std::vector<data::Type> data::SubmissionBase::types = {
     data::Type::INT,    data::Type::INT, data::Type::INT,   data::Type::STRING,
@@ -404,34 +424,17 @@ data::SubmissionBase::reset()
     ptrs[6] = (void*)(&source_name);
 }
 
-std::string data::Competition_problemBase::tableName = "competition_problem";
-std::vector<data::Type> data::Competition_problemBase::types = {
-    data::Type::INT, data::Type::INT, data::Type::INT};
-std::unordered_map<std::string, uint8_t>
-    data::Competition_problemBase::columnNames = {
-        {"id",             0},
-        {"competition_id", 1},
-        {"problem_id",     2}
-};
-
-void
-data::Competition_problemBase::reset()
-{
-    ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&competition_id);
-    ptrs[2] = (void*)(&problem_id);
-}
-
 std::string data::QuestionBase::tableName         = "question";
 std::vector<data::Type> data::QuestionBase::types = {
-    data::Type::INT, data::Type::STRING, data::Type::STRING, data::Type::INT,
-    data::Type::STRING};
+    data::Type::INT, data::Type::STRING, data::Type::STRING,
+    data::Type::INT, data::Type::INT,    data::Type::STRING};
 std::unordered_map<std::string, uint8_t> data::QuestionBase::columnNames = {
     {"id",          0},
     {"name",        1},
     {"nickname",    2},
     {"type",        3},
-    {"jury_answer", 4}
+    {"weight",      4},
+    {"jury_answer", 5}
 };
 
 void
@@ -441,68 +444,54 @@ data::QuestionBase::reset()
     ptrs[1] = (void*)(&name);
     ptrs[2] = (void*)(&nickname);
     ptrs[3] = (void*)(&type);
-    ptrs[4] = (void*)(&jury_answer);
-}
-
-std::string data::User_answerBase::tableName         = "user_answer";
-std::vector<data::Type> data::User_answerBase::types = {
-    data::Type::INT,    data::Type::INT,    data::Type::INT,
-    data::Type::STRING, data::Type::STRING, data::Type::STRING,
-    data::Type::STRING};
-std::unordered_map<std::string, uint8_t> data::User_answerBase::columnNames = {
-    {"id",          0},
-    {"user_id",     1},
-    {"question_id", 2},
-    {"user_answer", 3},
-    {"time",        4},
-    {"true_time",   5},
-    {"is_correct",  6}
-};
-
-void
-data::User_answerBase::reset()
-{
-    ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&user_id);
-    ptrs[2] = (void*)(&question_id);
-    ptrs[3] = (void*)(&user_answer);
-    ptrs[4] = (void*)(&time);
-    ptrs[5] = (void*)(&true_time);
-    ptrs[6] = (void*)(&is_correct);
+    ptrs[4] = (void*)(&weight);
+    ptrs[5] = (void*)(&jury_answer);
 }
 
 std::string data::Competition_questionBase::tableName = "competition_question";
 std::vector<data::Type> data::Competition_questionBase::types = {
-    data::Type::INT, data::Type::INT, data::Type::INT};
+    data::Type::INT, data::Type::STRING, data::Type::INT, data::Type::INT};
 std::unordered_map<std::string, uint8_t>
     data::Competition_questionBase::columnNames = {
         {"id",             0},
-        {"competition_id", 1},
-        {"question_id",    2}
+        {"name",           1},
+        {"competition_id", 2},
+        {"question_id",    3}
 };
 
 void
 data::Competition_questionBase::reset()
 {
     ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&competition_id);
-    ptrs[2] = (void*)(&question_id);
+    ptrs[1] = (void*)(&name);
+    ptrs[2] = (void*)(&competition_id);
+    ptrs[3] = (void*)(&question_id);
 }
 
-std::string data::Question_typeBase::tableName         = "question_type";
-std::vector<data::Type> data::Question_typeBase::types = {data::Type::INT,
-                                                          data::Type::STRING};
-std::unordered_map<std::string, uint8_t> data::Question_typeBase::columnNames =
-    {
-        {"id",   0},
-        {"name", 1}
+std::string data::AnswerBase::tableName         = "answer";
+std::vector<data::Type> data::AnswerBase::types = {
+    data::Type::INT,    data::Type::INT, data::Type::INT,   data::Type::STRING,
+    data::Type::STRING, data::Type::INT, data::Type::STRING};
+std::unordered_map<std::string, uint8_t> data::AnswerBase::columnNames = {
+    {"id",          0},
+    {"user_id",     1},
+    {"question_id", 2},
+    {"time",        3},
+    {"is_correct",  4},
+    {"weight",      5},
+    {"value",       6}
 };
 
 void
-data::Question_typeBase::reset()
+data::AnswerBase::reset()
 {
     ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&name);
+    ptrs[1] = (void*)(&user_id);
+    ptrs[2] = (void*)(&question_id);
+    ptrs[3] = (void*)(&time);
+    ptrs[4] = (void*)(&is_correct);
+    ptrs[5] = (void*)(&weight);
+    ptrs[6] = (void*)(&value);
 }
 
 std::string data::File_exchangeBase::tableName         = "file_exchange";
@@ -666,6 +655,13 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "time_limit",
              "memory_limit",
          }                             },
+        {"competition_problem",
+         {
+             "id",
+             "name",
+             "competition_id",
+             "problem_id",
+         }                             },
         {"submission",
          {
              "id",
@@ -676,40 +672,31 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "test",
              "source_name",
          }                             },
-        {"competition_problem",
-         {
-             "id",
-             "competition_id",
-             "problem_id",
-         }                             },
         {"question",
          {
              "id",
              "name",
              "nickname",
              "type",
+             "weight",
              "jury_answer",
-         }                             },
-        {"user_answer",
-         {
-             "id",
-             "user_id",
-             "question_id",
-             "user_answer",
-             "time",
-             "true_time",
-             "is_correct",
          }                             },
         {"competition_question",
          {
              "id",
+             "name",
              "competition_id",
              "question_id",
          }                             },
-        {"question_type",
+        {"answer",
          {
              "id",
-             "name",
+             "user_id",
+             "question_id",
+             "time",
+             "is_correct",
+             "weight",
+             "value",
          }                             },
         {"file_exchange",
          {

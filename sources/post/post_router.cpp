@@ -1,5 +1,11 @@
 #include "post_router.hpp"
 
+#include "answer_handler.hpp"
+#include "journal_handler.hpp"
+#include "mark_handler.hpp"
+#include "plan_handler.hpp"
+#include "user_handler.hpp"
+
 std::unordered_map<std::string,
                    decltype(&post::PostHandler::process<data::User>)>
     post::PostRouter::mPostRouterMap = {
@@ -23,14 +29,13 @@ std::unordered_map<std::string,
         {"user_competition",
          &post::PostHandler::process<data::User_competition>                     },
         {"problem",              &post::PostHandler::process<data::Problem>      },
-        {"submission",           &post::PostHandler::process<data::Submission>   },
         {"competition_problem",
          &post::PostHandler::process<data::Competition_problem>                  },
+        {"submission",           &post::PostHandler::process<data::Submission>   },
         {"question",             &post::PostHandler::process<data::Question>     },
-        {"user_answer",          &post::UserAnswerHandler::process               },
         {"competition_question",
          &post::PostHandler::process<data::Competition_question>                 },
-        {"question_type",        &post::PostHandler::process<data::Question_type>},
+        {"answer",               &post::AnswerHandler::process                   },
         {"file_exchange",        &post::PostHandler::process<data::File_exchange>}
 };
 
@@ -57,14 +62,13 @@ std::unordered_map<std::string,
         {"user_competition",
          &post::PostHandler::manyToMany<data::User_competition>                     },
         {"problem",              &post::PostHandler::manyToMany<data::Problem>      },
-        {"submission",           &post::PostHandler::manyToMany<data::Submission>   },
         {"competition_problem",
          &post::PostHandler::manyToMany<data::Competition_problem>                  },
+        {"submission",           &post::PostHandler::manyToMany<data::Submission>   },
         {"question",             &post::PostHandler::manyToMany<data::Question>     },
-        {"user_answer",          &post::PostHandler::manyToMany<data::User_answer>  },
         {"competition_question",
          &post::PostHandler::manyToMany<data::Competition_question>                 },
-        {"question_type",        &post::PostHandler::manyToMany<data::Question_type>},
+        {"answer",               &post::PostHandler::manyToMany<data::Answer>       },
         {"file_exchange",        &post::PostHandler::manyToMany<data::File_exchange>}
 };
 
@@ -93,15 +97,13 @@ std::unordered_map<std::string,
         {"user_competition",
          &post::PostHandler::uploadFromFile<data::User_competition>                   },
         {"problem",              &post::PostHandler::uploadFromFile<data::Problem>    },
-        {"submission",           &post::PostHandler::uploadFromFile<data::Submission> },
         {"competition_problem",
          &post::PostHandler::uploadFromFile<data::Competition_problem>                },
+        {"submission",           &post::PostHandler::uploadFromFile<data::Submission> },
         {"question",             &post::PostHandler::uploadFromFile<data::Question>   },
-        {"user_answer",          &post::PostHandler::uploadFromFile<data::User_answer>},
         {"competition_question",
          &post::PostHandler::uploadFromFile<data::Competition_question>               },
-        {"question_type",
-         &post::PostHandler::uploadFromFile<data::Question_type>                      },
+        {"answer",               &post::PostHandler::uploadFromFile<data::Answer>     },
         {"file_exchange",
          &post::PostHandler::uploadFromFile<data::File_exchange>                      }
 };
@@ -127,14 +129,13 @@ std::unordered_map<std::string, decltype(&post::PostHandler::drop<data::User>)>
         {"competition",          &post::PostHandler::drop<data::Competition>     },
         {"user_competition",     &post::PostHandler::drop<data::User_competition>},
         {"problem",              &post::PostHandler::drop<data::Problem>         },
-        {"submission",           &post::PostHandler::drop<data::Submission>      },
         {"competition_problem",
          &post::PostHandler::drop<data::Competition_problem>                     },
+        {"submission",           &post::PostHandler::drop<data::Submission>      },
         {"question",             &post::PostHandler::drop<data::Question>        },
-        {"user_answer",          &post::PostHandler::drop<data::User_answer>     },
         {"competition_question",
          &post::PostHandler::drop<data::Competition_question>                    },
-        {"question_type",        &post::PostHandler::drop<data::Question_type>   },
+        {"answer",               &post::PostHandler::drop<data::Answer>          },
         {"file_exchange",        &post::PostHandler::drop<data::File_exchange>   }
 };
 
@@ -164,15 +165,13 @@ std::unordered_map<std::string,
         {"user_competition",
          &post::PostHandler::rawDataInsert<data::User_competition>                   },
         {"problem",              &post::PostHandler::rawDataInsert<data::Problem>    },
-        {"submission",           &post::PostHandler::rawDataInsert<data::Submission> },
         {"competition_problem",
          &post::PostHandler::rawDataInsert<data::Competition_problem>                },
+        {"submission",           &post::PostHandler::rawDataInsert<data::Submission> },
         {"question",             &post::PostHandler::rawDataInsert<data::Question>   },
-        {"user_answer",          &post::PostHandler::rawDataInsert<data::User_answer>},
         {"competition_question",
          &post::PostHandler::rawDataInsert<data::Competition_question>               },
-        {"question_type",
-         &post::PostHandler::rawDataInsert<data::Question_type>                      },
+        {"answer",               &post::PostHandler::rawDataInsert<data::Answer>     },
         {"file_exchange",
          &post::PostHandler::rawDataInsert<data::File_exchange>                      }
 };

@@ -3,6 +3,10 @@
 #include <fstream>
 #include <iostream>
 
+#include "database/connection_manager.hpp"
+
+#include "path.hpp"
+
 file::FileData
 file::File::dmpParser(const std::string& aFileName) noexcept
 {
@@ -112,4 +116,41 @@ bool
 file::File::isSeparator(char c) noexcept
 {
     return c == '\t' || c == ' ' || c == ';' || c == '\0';
+}
+
+std::string
+file::File::writeData(const std::string& aFolderName,
+                      const std::string& aFileName,
+                      const std::string& aData) noexcept
+{
+    std::string resultFileName = "NUN";
+
+    auto path = Path::getInstance().getPath(aFolderName);
+    if (!path)
+    {
+        std::cout << "ERROR: no_such_folder " << aFolderName << "\n";
+        path = Path::getInstance().getPath("upload");
+    }
+
+    if (path)
+    {
+        std::string pathPrefix = path.value();
+        std::string filePath;
+        {
+            auto connection = data::ConnectionManager::getUserConnection();
+            auto table      = connection.val.getData<data::File>();
+            resultFileName  = std::to_string(table[0].num++) + "-" + aFileName;
+            filePath        = pathPrefix + resultFileName;
+            connection.val.update<data::File>(table);
+        }
+        std::ofstream out(filePath);
+        out << aData;
+        out.close();
+    }
+    else
+    {
+        std::cout << "ERROR: no_upload_folder\n";
+    }
+
+    return resultFileName;
 }

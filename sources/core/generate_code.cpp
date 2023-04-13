@@ -616,6 +616,7 @@ generateGetRouterFile()
 
     generator.addInclude("get_handler");
     generator.addInclude("user_handler");
+    generator.addInclude("question_handler");
 
     //--------------------------------------------------------------------------------
 
@@ -625,8 +626,9 @@ generateGetRouterFile()
     generator.pushToFunctionBody(wrap("mBasicRouterMap"));
     generator.generateMapTable(
         "mBasicRouterMap", {
-                               {"default", "get::GetHandler::process<data::"},
-                               {"user",    "get::UserHandler::process"      }
+                               {"default",  "get::GetHandler::process<data::"},
+                               {"user",     "get::UserHandler::process"      },
+                               {"question", "get::QuestionHandler::process"  }
     });
 
     //--------------------------------------------------------------------------------
@@ -660,10 +662,10 @@ generatePostHandlerFile()
 
     //--------------------------------------------------------------------------------
 
+    generator.addInclude("answer_handler");
     generator.addInclude("journal_handler");
     generator.addInclude("plan_handler");
     generator.addInclude("post_handler");
-    generator.addInclude("user_answer_handler");
     generator.addInclude("user_handler");
     generator.addInclude("mark_handler");
 
@@ -678,7 +680,7 @@ generatePostHandlerFile()
         {
             {"default",       "post::PostHandler::process<data::"},
             {"user",          "post::UserHandler::process"       },
-            {"user_answer",   "post::UserAnswerHandler::process" },
+            {"answer",        "post::AnswerHandler::process"     },
             {"journal_table", "post::JournalHandler::process"    },
             {"mark",          "post::MarkHandler::process"       }
     });
@@ -837,9 +839,9 @@ generateAsteriskHendler()
 void
 core::generateDatabaseStructuresFiles()
 {
-    //     generateDatabaseStructuresHPPFile();
-    //     generateDatabaseStructuresCPPFile();
+    // generateDatabaseStructuresHPPFile();
+    // generateDatabaseStructuresCPPFile();
 
-    //     generatePostHandlerFile();
-    //     generateGetRouterFile();
+    // generatePostHandlerFile();
+    // generateGetRouterFile();
 }

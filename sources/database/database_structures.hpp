@@ -353,6 +353,24 @@ struct Problem : public UpperDataStruct<ProblemBase>
 {
 };
 
+struct Competition_problemBase : public BaseDataStruct<4>
+{
+    int id = 0;
+    std::string name;
+    int competition_id = 0;
+    int problem_id     = 0;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::unordered_map<std::string, uint8_t> columnNames;
+
+    void reset();
+};
+
+struct Competition_problem : public UpperDataStruct<Competition_problemBase>
+{
+};
+
 struct SubmissionBase : public BaseDataStruct<7>
 {
     int id         = 0;
@@ -374,29 +392,13 @@ struct Submission : public UpperDataStruct<SubmissionBase>
 {
 };
 
-struct Competition_problemBase : public BaseDataStruct<3>
-{
-    int id             = 0;
-    int competition_id = 0;
-    int problem_id     = 0;
-
-    static std::string tableName;
-    static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
-
-    void reset();
-};
-
-struct Competition_problem : public UpperDataStruct<Competition_problemBase>
-{
-};
-
-struct QuestionBase : public BaseDataStruct<5>
+struct QuestionBase : public BaseDataStruct<6>
 {
     int id = 0;
     std::string name;
     std::string nickname;
-    int type = 0;
+    int type   = 0;
+    int weight = 0;
     std::string jury_answer;
 
     static std::string tableName;
@@ -410,30 +412,10 @@ struct Question : public UpperDataStruct<QuestionBase>
 {
 };
 
-struct User_answerBase : public BaseDataStruct<7>
+struct Competition_questionBase : public BaseDataStruct<4>
 {
-    int id          = 0;
-    int user_id     = 0;
-    int question_id = 0;
-    std::string user_answer;
-    std::string time;
-    std::string true_time;
-    std::string is_correct;
-
-    static std::string tableName;
-    static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
-
-    void reset();
-};
-
-struct User_answer : public UpperDataStruct<User_answerBase>
-{
-};
-
-struct Competition_questionBase : public BaseDataStruct<3>
-{
-    int id             = 0;
+    int id = 0;
+    std::string name;
     int competition_id = 0;
     int question_id    = 0;
 
@@ -448,10 +430,15 @@ struct Competition_question : public UpperDataStruct<Competition_questionBase>
 {
 };
 
-struct Question_typeBase : public BaseDataStruct<2>
+struct AnswerBase : public BaseDataStruct<7>
 {
-    int id = 0;
-    std::string name;
+    int id          = 0;
+    int user_id     = 0;
+    int question_id = 0;
+    std::string time;
+    std::string is_correct;
+    int weight = 0;
+    std::string value;
 
     static std::string tableName;
     static std::vector<data::Type> types;
@@ -460,7 +447,7 @@ struct Question_typeBase : public BaseDataStruct<2>
     void reset();
 };
 
-struct Question_type : public UpperDataStruct<Question_typeBase>
+struct Answer : public UpperDataStruct<AnswerBase>
 {
 };
 

@@ -1,5 +1,8 @@
 #include "get_router.hpp"
 
+#include "question_handler.hpp"
+#include "user_handler.hpp"
+
 std::unordered_map<std::string, decltype(&get::GetHandler::process<data::User>)>
     get::GetRouter::mBasicRouterMap = {
         {"school",               &get::GetHandler::process<data::School>          },
@@ -21,14 +24,13 @@ std::unordered_map<std::string, decltype(&get::GetHandler::process<data::User>)>
         {"competition",          &get::GetHandler::process<data::Competition>     },
         {"user_competition",     &get::GetHandler::process<data::User_competition>},
         {"problem",              &get::GetHandler::process<data::Problem>         },
-        {"submission",           &get::GetHandler::process<data::Submission>      },
         {"competition_problem",
          &get::GetHandler::process<data::Competition_problem>                     },
-        {"question",             &get::GetHandler::process<data::Question>        },
-        {"user_answer",          &get::GetHandler::process<data::User_answer>     },
+        {"submission",           &get::GetHandler::process<data::Submission>      },
+        {"question",             &get::QuestionHandler::process                   },
         {"competition_question",
          &get::GetHandler::process<data::Competition_question>                    },
-        {"question_type",        &get::GetHandler::process<data::Question_type>   },
+        {"answer",               &get::GetHandler::process<data::Answer>          },
         {"file_exchange",        &get::GetHandler::process<data::File_exchange>   }
 };
 
@@ -53,13 +55,12 @@ std::unordered_map<std::string, decltype(&get::GetHandler::dump<data::User>)>
         {"competition",          &get::GetHandler::dump<data::Competition>     },
         {"user_competition",     &get::GetHandler::dump<data::User_competition>},
         {"problem",              &get::GetHandler::dump<data::Problem>         },
-        {"submission",           &get::GetHandler::dump<data::Submission>      },
         {"competition_problem",
          &get::GetHandler::dump<data::Competition_problem>                     },
+        {"submission",           &get::GetHandler::dump<data::Submission>      },
         {"question",             &get::GetHandler::dump<data::Question>        },
-        {"user_answer",          &get::GetHandler::dump<data::User_answer>     },
         {"competition_question",
          &get::GetHandler::dump<data::Competition_question>                    },
-        {"question_type",        &get::GetHandler::dump<data::Question_type>   },
+        {"answer",               &get::GetHandler::dump<data::Answer>          },
         {"file_exchange",        &get::GetHandler::dump<data::File_exchange>   }
 };

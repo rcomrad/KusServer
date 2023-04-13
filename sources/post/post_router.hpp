@@ -3,12 +3,7 @@
 
 #include <unordered_map>
 
-#include "journal_handler.hpp"
-#include "mark_handler.hpp"
-#include "plan_handler.hpp"
 #include "post_handler.hpp"
-#include "user_answer_handler.hpp"
-#include "user_handler.hpp"
 
 namespace post
 {
