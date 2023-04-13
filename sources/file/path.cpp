@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "domain/error_message.hpp"
+
 #include "core/program_state.hpp"
 
 #include "file.hpp"
