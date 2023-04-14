@@ -627,8 +627,9 @@ generateGetRouterFile()
     generator.generateMapTable(
         "mBasicRouterMap", {
                                {"default",  "get::GetHandler::process<data::"},
-                               {"user",     "get::UserHandler::process"      },
-                               {"question", "get::QuestionHandler::process"  }
+                               {"user",     "get::UserHandler::process"      }
+                            //    ,
+                            //    {"question", "get::QuestionHandler::process"  }
     });
 
     //--------------------------------------------------------------------------------

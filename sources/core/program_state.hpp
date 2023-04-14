@@ -27,7 +27,8 @@ enum class Flag
     SUB_CHECK,
     ANS_CHECK,
     TIME_SET,
-    Authorisation
+    Authorisation,
+    NEW_BD
 };
 
 enum class Value

@@ -12,7 +12,7 @@ core::ProgramState::ProgramState()
     : mStartState(RestartType::NUN), mRestartState(RestartType::NUN)
 {
 
-    mFlags  = {0, 0, 1, 1};
+    mFlags  = {0, 0, 1, 1, 0};
     mValues = {1, 2};
     mWords  = {""};
 
@@ -26,7 +26,8 @@ core::ProgramState::ProgramState()
         {"submission_auto_check", mFlags[int(Flag::SUB_CHECK)]    },
         {"answers_auto_check",    mFlags[int(Flag::ANS_CHECK)]    },
         {"set_time_for_answer",   mFlags[int(Flag::TIME_SET)]     },
-        {"authorisation",         mFlags[int(Flag::Authorisation)]}
+        {"authorisation",         mFlags[int(Flag::Authorisation)]},
+        {"new_db_sitch",          mFlags[int(Flag::NEW_BD)]       }
     };
 
     mValueNames = {

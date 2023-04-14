@@ -4,14 +4,19 @@
 #include "file/path.hpp"
 
 crow::json::wvalue
-get::QuestionHandler::process(const std::vector<int>& aColumn,
-                              data::SmartConnection& aConnection) noexcept
+get::QuestionHandler::process(int aQuestionID, int aUserId) noexcept
 {
     crow::json::wvalue result;
 
-    auto table = aConnection.val.select2<data::Question>(aColumn);
+    data::Table<data::Question> table;
+    {
+        auto connection = data::ConnectionManager::getUserConnection();
+        table           = connection.val.getData<data::Question>("id=" +
+                                                       data::wrap(aQuestionID));
+    }
+
     table.turnOffColumn("jury_answer");
-    
+
     auto path = file::Path::getInstance().getPath("question");
     if (path)
     {
@@ -19,9 +24,21 @@ get::QuestionHandler::process(const std::vector<int>& aColumn,
                                              "/legend.txt");
 
         table.turnOffColumn("nickname");
-        auto tableList = getTableAsList(table)[0];
-
+        auto tableList      = getTableAsList(table)[0];
         tableList["legend"] = std::move(legend);
+
+        data::Table<data::Answer> answer;
+        {
+            auto connection = data::ConnectionManager::getUserConnection();
+            answer          = connection.val.getData<data::Answer>(
+                "user_id=" + data::wrap(aUserId) + " AND " +
+                "question_id=" + data::wrap(aQuestionID));
+        }
+        if (answer.size())
+        {
+            tableList["answer"]  = std::move(answer.back().value);
+            tableList["verdict"] = std::move(answer.back().is_correct);
+        }
 
         result["question"] = std::move(tableList);
     }

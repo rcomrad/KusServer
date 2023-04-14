@@ -27,7 +27,7 @@ std::unordered_map<std::string, decltype(&get::GetHandler::process<data::User>)>
         {"competition_problem",
          &get::GetHandler::process<data::Competition_problem>                     },
         {"submission",           &get::GetHandler::process<data::Submission>      },
-        {"question",             &get::QuestionHandler::process                   },
+        {"question",             &get::GetHandler::process<data::Question>        },
         {"competition_question",
          &get::GetHandler::process<data::Competition_question>                    },
         {"answer",               &get::GetHandler::process<data::Answer>          },

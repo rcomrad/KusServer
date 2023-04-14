@@ -123,7 +123,7 @@ TABLE answer
 	user_id integer NOT NULL
 	question_id integer NOT NULL
 	time character varying(20) NOT NULL
-	is_correct character varying(1) NOT NULL
+	verdict character varying(1) NOT NULL
 	weight integer NOT NULL
 	value character varying(12) NOT NULL
 

@@ -6,6 +6,7 @@
 #include "get/competition_handler.hpp"
 #include "get/get_handler.hpp"
 #include "get/get_router.hpp"
+#include "get/question_handler.hpp"
 #include "post/post_router.hpp"
 #include "post/submit_handler.hpp"
 #include "post/user_handler.hpp"
@@ -122,6 +123,10 @@ core::Server::Server()
     CROW_ROUTE(app, "/api/get_all_competition/<int>/<int>")
     ([&](int aUserID, int aCompetitionID)
      { return get::CompetitionHandler::process(aUserID, aCompetitionID); });
+
+    CROW_ROUTE(app, "/api/get_question/<int>/<int>")
+    ([&](int aQuestionID, int aUserID)
+     { return get::QuestionHandler::process(aQuestionID, aUserID); });
 
     //---------------------------------------------------------------------
 

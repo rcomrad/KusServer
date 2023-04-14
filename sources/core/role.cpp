@@ -2,9 +2,12 @@
 
 #include "database/connection_manager.hpp"
 
+#include "program_state.hpp"
+
 core::Role::Role() noexcept
 {
-    reset();
+    auto& state = ProgramState::getInstance();
+    if (!state.checkFlag(Flag::NEW_BD)) reset();
 }
 
 core::Role&
