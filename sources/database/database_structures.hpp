@@ -436,7 +436,7 @@ struct AnswerBase : public BaseDataStruct<7>
     int user_id     = 0;
     int question_id = 0;
     std::string time;
-    std::string is_correct;
+    std::string verdict;
     int weight = 0;
     std::string value;
 

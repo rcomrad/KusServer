@@ -477,7 +477,7 @@ std::unordered_map<std::string, uint8_t> data::AnswerBase::columnNames = {
     {"user_id",     1},
     {"question_id", 2},
     {"time",        3},
-    {"is_correct",  4},
+    {"verdict",     4},
     {"weight",      5},
     {"value",       6}
 };
@@ -489,7 +489,7 @@ data::AnswerBase::reset()
     ptrs[1] = (void*)(&user_id);
     ptrs[2] = (void*)(&question_id);
     ptrs[3] = (void*)(&time);
-    ptrs[4] = (void*)(&is_correct);
+    ptrs[4] = (void*)(&verdict);
     ptrs[5] = (void*)(&weight);
     ptrs[6] = (void*)(&value);
 }
@@ -694,7 +694,7 @@ std::unordered_map<std::string_view, std::vector<std::string>>
              "user_id",
              "question_id",
              "time",
-             "is_correct",
+             "verdict",
              "weight",
              "value",
          }                             },

@@ -37,7 +37,7 @@ get::QuestionHandler::process(int aQuestionID, int aUserId) noexcept
         if (answer.size())
         {
             tableList["answer"]  = std::move(answer.back().value);
-            tableList["verdict"] = std::move(answer.back().is_correct);
+            tableList["verdict"] = std::move(answer.back().value);
         }
 
         result["question"] = std::move(tableList);
