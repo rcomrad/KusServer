@@ -108,7 +108,7 @@ private:
                 if (*((char*)aPtr) != -1) result = wrap(bool(*((char*)aPtr)));
                 break;
             case data::Type::STRING:
-                if (!*((std::string*)aPtr).empty())
+                if (!((std::string*)aPtr)->empty())
                     result = wrap(*((std::string*)aPtr));
                 break;
         }

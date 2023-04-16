@@ -16,6 +16,7 @@
 
 namespace data
 {
+
 enum class ConnectionType
 {
     ADMIN,
@@ -35,6 +36,8 @@ public:
     DatabaseConnection(DatabaseConnection&& other) noexcept = default;
     DatabaseConnection& operator=(DatabaseConnection&& other) noexcept =
         default;
+
+    //--------------------------------------------------------------------------------
 
     template <typename T>
     Table<T> getData(const std::string& aCondition = "") noexcept
@@ -65,9 +68,28 @@ public:
     }
 
     template <typename T>
-    int update(Table<T>& aData) noexcept
+    int write(Table<T>& aData) noexcept
     {
-        return mDatabase.update(aData);
+        int res = 0;
+
+        int& id = *((int*));
+        if (id == 0)
+            id = insertWithID(aData.getTableName(), id,
+                              aData.makeStrings(i, true, true));
+        else
+            update(aData.getTableName(), aData.makeStrings(i, false, true),
+                   "id = " + wrap(id));
+        res = id;
+
+        return res;
+    }
+
+    //--------------------------------------------------------------------------------
+
+    template <typename T>
+    int insert(const Table<T>& aData) noexcept
+    {
+        return mDatabase.insert(aData.getTableName(), aData);
     }
 
     template <typename T>
@@ -85,22 +107,25 @@ public:
         mDatabase.dropByID(T::tableName, aIDs);
     }
 
-    // TODO: delete
-    int insert(const std::string& aTableName,
-               const std::vector<std::string>& aData) noexcept;
-
     void createTable(const std::string& aTableName,
                      const std::vector<ColumnSetting>& aColumns) noexcept;
     void createEnvironment(const ConnectionType& aType) noexcept;
     void dropDatabase(const ConnectionType& aType) noexcept;
 
-    std::vector<data::Type> getColumnTypes(
-        const std::string& aTableName) noexcept;
-    std::unordered_map<std::string, uint8_t> getColumnNames(
-        const std::string& aTableName) noexcept;
+    //--------------------------------------------------------------------------------
+
+    // std::vector<data::Type> getColumnTypes(
+    //     const std::string& aTableName) noexcept;
+    // std::unordered_map<std::string, uint8_t> getColumnNames(
+    //     const std::string& aTableName) noexcept;
 
 private:
     Postgresql mDatabase;
+
+    // TODO: to database_query?
+    std::string mShame;
+    std::string mUser;
+    std::string mDatabase;
 
     static std::unordered_map<ConnectionType, data::DBSettings>
         mConnectionTypeSettings;
@@ -108,6 +133,7 @@ private:
     static std::unordered_map<ConnectionType, data::DBSettings>
     getConnectionTypeSettings() noexcept;
 };
+
 } // namespace data
 
 //--------------------------------------------------------------------------------

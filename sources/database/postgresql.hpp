@@ -18,6 +18,7 @@
 #include "pqxx/pqxx"
 
 #include "data_request.hpp"
+#include "table.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -44,7 +45,13 @@ public:
     Postgresql(Postgresql&& other) noexcept            = default;
     Postgresql& operator=(Postgresql&& other) noexcept = default;
 
-    std::unordered_map<std::string, uint8_t> getColumnNames() noexcept;
+    // std::unordered_map<std::string, uint8_t> getColumnNames() noexcept;
+    // std::vector<data::Type> getColumnTypes(
+    //     const std::string& aTableName) noexcept;
+    // std::unordered_map<std::string, uint8_t> getColumnNames(
+    //     const std::string& aTableName) noexcept;
+
+    //--------------------------------------------------------------------------------
 
     // TODO: aColums
     template <typename T>
@@ -141,88 +148,6 @@ public:
         return result;
     }
 
-    // TODO: to database_query
-    template <typename T>
-    int update(Table<T>& aData) noexcept
-    {
-        int res = 0;
-
-        for (int i = 0; i < aData.size(); ++i)
-        {
-            int& id = *((int*)aData[i][0]);
-            if (id == 0)
-                id = insertWithID(aData.getTableName(), id,
-                                  aData.makeStrings(i, true, true));
-            else
-                update(aData.getTableName(), aData.makeStrings(i, false, true),
-                       "id = " + wrap(id));
-            res = id;
-        }
-
-        return res;
-    }
-
-    // TODO: to database_query
-    // template <typename... Args>
-    // void select(const data::TableInfoAray& request, Args&&... args) noexcept
-    // {
-    //     auto tabl = request.getTables();
-    //     auto col  = request.getColumns();
-    //     auto con  = request.getCondition();
-    //     // if (columns.empty()) columns = "*";
-
-    //     // std::vector<std::vector<int>> colNum;
-    //     // for (auto& i : aDataRequest.request[aNum])
-    //     // {
-    //     //     ([&] { colNum.emplace_back(args.getColumnNums(i.rowNames));
-    //     }(),
-    //     //      ...);
-    //     // }
-
-    //     std::string statement = "SELECT "s + col + " FROM " + tabl +
-    //                             (con == "" ? "" : " WHERE ") + con;
-
-    //     prepare({std::move(statement)});
-
-    //     while (true)
-    //     {
-    //         step();
-    //         size_t cnt = 0;
-    //         if (!hasData()) break;
-
-    //         (
-    //             [&]
-    //             {
-    //                 args.data.emplace_back();
-    //                 for (auto i : request[cnt].rowNumbers)
-    //                 {
-    //                     auto ptr = args.back()[i];
-    //                     if (!hasData(i)) break;
-    //                     switch (args.types[i])
-    //                     {
-    //                         case data::Type::INT:
-    //                             *((int*)ptr) = getColumnIntUnsafe(i);
-    //                             break;
-    //                         case data::Type::BOOL:
-    //                             *((bool*)ptr) = getColumnBoolUnsafe(i);
-    //                             break;
-    //                         case data::Type::CHARS:
-    //                             strcpy((char*)ptr,
-    //                             getColumnAsCharsUnsafe(i)); break;
-    //                         case data::Type::STRING:
-    //                             *((std::string*)ptr) =
-    //                                 getColumnAsStringUnsafe(i);
-    //                             break;
-    //                     }
-    //                 }
-    //                 cnt++;
-    //             }(),
-    //             ...);
-    //     }
-
-    //     closeStatment();
-    // }
-
     void handSelect(data::TableInfoAray& request) noexcept
     {
         auto tabl = request.getTables();
@@ -244,36 +169,28 @@ public:
         mMakeDBRequest = true;
     }
 
-    std::vector<data::Type> getColumnTypes(
-        const std::string& aTableName) noexcept;
-    std::unordered_map<std::string, uint8_t> getColumnNames(
-        const std::string& aTableName) noexcept;
-
     void select(const std::string& aTableName,
                 const std::vector<std::string>& aColum = {},
                 const std::string& aConditon           = "") noexcept;
+
+    //--------------------------------------------------------------------------------
+
     int insert(const std::string& aTableName,
-               const std::vector<std::string>& aData) noexcept;
-    int insertWithID(const std::string& aTableName,
-                     int id,
-                     const std::vector<std::string>& aData) noexcept;
+               const std::string& aData) noexcept;
     void update(const std::string& aTableName,
-                const std::vector<std::string>& aValue,
+                const std::string& aData,
                 const std::string& aConditon) noexcept;
     void drop(const std::string& aTableName,
               const std::string& aConditon) noexcept;
-    void dropByID(const std::string& aTableName,
-                  const std::vector<int>& aIDs) noexcept;
+    //--------------------------------------------------------------------------------
 
     void createEnvironment(const DBSettings& aDBS) noexcept;
     void createTable(const std::string& aTableName,
                      const std::vector<ColumnSetting>& aColums) noexcept;
     void deleteDatabase(const std::string& aTableName,
                         const std::string& aUserName) noexcept;
-
-    void step() noexcept;
-    bool hasData(int num = 0) const noexcept;
-    void closeStatment() noexcept;
+                        
+    //--------------------------------------------------------------------------------
 
     std::optional<int> getColumnInt(int aColumNumber) noexcept;
     std::optional<bool> getColumnBool(int aColumNumber) noexcept;
@@ -285,25 +202,27 @@ public:
     const char* getColumnAsCharsUnsafe(int aColumNumber) noexcept;
     std::string getColumnAsStringUnsafe(int aColumNumber) noexcept;
 
+    //--------------------------------------------------------------------------------
+
 private:
     std::unique_ptr<pqxx::connection> mConnection;
     std::unique_ptr<pqxx::work> mStatement;
     pqxx::result mResult;
     pqxx::result::const_iterator mResultIterator;
 
-    // TODO: to database_query?
-    std::string mShame;
-    std::string mUser;
-    std::string mDatabase;
+    //--------------------------------------------------------------------------------
+
+    void step() noexcept;
+    bool hasData(int num = 0) const noexcept;
+    void closeStatment() noexcept;
 
     void prepare(const std::string& aStatment) noexcept;
-    void exec(const std::vector<std::string>& aStatement) noexcept;
+    void exec(const std::string& aStatement) noexcept;
     void nontransaction(const std::string& aStatment) noexcept;
 
-    void createSequence(const std::string& aTableName) noexcept;
+    //--------------------------------------------------------------------------------
 
-    std::string merge(const std::vector<std::string>& aStrings);
-    void merge(std::string& aResult, const std::vector<std::string>& aStrings);
+    void createSequence(const std::string& aTableName) noexcept;
 
     bool mMakeDBRequest = true;
 };

@@ -1,5 +1,5 @@
 cd ..
-mkdir build
+mkdir -p build
 cd build/
 cmake .. -DVCPKG_ROOT=/home/rcomrad/vcpkg
 make

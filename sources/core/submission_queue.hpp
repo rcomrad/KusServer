@@ -7,8 +7,9 @@
 #include <queue>
 
 #include "database/database_structures.hpp"
+#include "database/table.hpp"
 
-//--------------------------------------------------------------------------------
+//-----------------d---------------------------------------------------------------
 
 namespace core
 {

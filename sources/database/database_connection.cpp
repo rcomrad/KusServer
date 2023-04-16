@@ -13,7 +13,8 @@
 //--------------------------------------------------------------------------------
 
 std::unordered_map<data::ConnectionType, data::DBSettings>
-    data::DatabaseConnection::mConnectionTypeSettings = getConnectionTypeSettings();
+    data::DatabaseConnection::mConnectionTypeSettings =
+        getConnectionTypeSettings();
 
 std::unordered_map<data::ConnectionType, data::DBSettings>
 data::DatabaseConnection::getConnectionTypeSettings() noexcept
@@ -44,7 +45,8 @@ data::DatabaseConnection::DatabaseConnection(const DBSettings& aDBS) noexcept
     WRITE_LOG("Creating_database_quare");
 }
 
-data::DatabaseConnection::DatabaseConnection(const ConnectionType& aType) noexcept
+data::DatabaseConnection::DatabaseConnection(
+    const ConnectionType& aType) noexcept
     : mDatabase(mConnectionTypeSettings[aType])
 {
     WRITE_LOG("Creating_database_quare");
@@ -61,7 +63,8 @@ data::DatabaseConnection::createTable(
 }
 
 void
-data::DatabaseConnection::createEnvironment(const ConnectionType& aType) noexcept
+data::DatabaseConnection::createEnvironment(
+    const ConnectionType& aType) noexcept
 {
     mDatabase.createEnvironment(mConnectionTypeSettings[aType]);
 }
@@ -75,17 +78,19 @@ data::DatabaseConnection::dropDatabase(const ConnectionType& aType) noexcept
 
 //--------------------------------------------------------------------------------
 
-std::vector<data::Type>
-data::DatabaseConnection::getColumnTypes(const std::string& aTableName) noexcept
-{
-    return mDatabase.getColumnTypes(aTableName);
-}
+// std::vector<data::Type>
+// data::DatabaseConnection::getColumnTypes(const std::string& aTableName)
+// noexcept
+// {
+//     return mDatabase.getColumnTypes(aTableName);
+// }
 
-std::unordered_map<std::string, uint8_t>
-data::DatabaseConnection::getColumnNames(const std::string& aTableName) noexcept
-{
-    return mDatabase.getColumnNames(aTableName);
-}
+// std::unordered_map<std::string, uint8_t>
+// data::DatabaseConnection::getColumnNames(const std::string& aTableName)
+// noexcept
+// {
+//     return mDatabase.getColumnNames(aTableName);
+// }
 
 //--------------------------------------------------------------------------------
 
@@ -93,5 +98,5 @@ int
 data::DatabaseConnection::insert(const std::string& aTableName,
                                  const std::vector<std::string>& aData) noexcept
 {
-    return mDatabase.insert(aTableName, aData);
+
 }
