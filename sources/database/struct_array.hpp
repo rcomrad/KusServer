@@ -12,17 +12,18 @@ template <typename T>
 class StructArray
 {
 public:
-    StructArray(size_t aSize = 0)
+    StructArray()
     {
-        reset(aSize);
     }
 
-    void reset(size_t aSize = 0)
+    StructArray(T&& aData)
     {
-        mTypes = T::types;
-        mNames = T::columnNames;
+        emplace_back(std::move(aData));
+    }
+
+    void reset()
+    {
         mData.clear();
-        reserve(aSize);
     }
 
     std::string getTableName() const
@@ -57,9 +58,9 @@ public:
 
     int getIndex(const std::string& aName)
     {
-        auto it = mNames.find(aName);
+        auto it = T::columnNames.find(aName);
         int res = -1;
-        if (it != mNames.end()) return it->second;
+        if (it != T::columnNames.end()) return it->second;
         return res;
     }
 
@@ -70,14 +71,14 @@ public:
     //     return res;
     // }
 
-    const std::vector<data::Type>& getTypes() const
-    {
-        return mTypes;
-    }
+    // const std::vector<data::Type>& getTypes() const
+    // {
+    //     return mTypes;
+    // }
 
     size_t columnCount()
     {
-        return mTypes.size();
+        return T::columnNames.size();
     }
 
     size_t size() const
@@ -99,7 +100,7 @@ public:
 
     Row<T> getRow(size_t num)
     {
-        return Row<T>(mTypes, mData[num]);
+        return Row<T>(T::types, mData[num]);
     }
 
     //--------------------------------------------------------------------------------
@@ -110,7 +111,7 @@ public:
     }
     auto frontRow()
     {
-        return Row<T>(mTypes, mData.front());
+        return Row<T>(T::types, mData.front());
     }
 
     // const T& front() const
@@ -125,7 +126,7 @@ public:
 
     auto backRow()
     {
-        return Row<T>(mTypes, mData.back());
+        return Row<T>(T::types, mData.back());
     }
 
     // const T& back() const
@@ -162,14 +163,14 @@ public:
     void turnOffColumn(const std::string& aColumnName)
     {
         // names[aColumnName] *= -1;
-        mNames.erase(aColumnName);
+        // mNames.erase(aColumnName);
     }
 
     //--------------------------------------------------------------------------------
 
 private:
-    std::unordered_map<std::string, uint8_t> mNames;
-    std::vector<data::Type> mTypes;
+    // std::unordered_map<std::string, uint8_t> mNames;
+    // std::vector<data::Type> mTypes;
     std::vector<T> mData;
 };
 

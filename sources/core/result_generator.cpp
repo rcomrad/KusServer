@@ -13,9 +13,9 @@ core::ResultGenerator::generate(int aCompetitionID) noexcept
     // auto competition =
     //     connection.val.getData<data::Competition>("id=" + aCompetitionName);
 
-    auto problems = connection.val.getData<data::Competition_problem>(
+    auto problems = connection.val.getTable<data::Competition_problem>(
         "competition_id=" + data::wrap(aCompetitionID));
-    auto users = connection.val.getData<data::User_competition>(
+    auto users = connection.val.getTable<data::User_competition>(
         "competition_id=" + data::wrap(aCompetitionID));
 
     std::unordered_map<std::string, std::map<int, int>> resultTable;
@@ -24,7 +24,7 @@ core::ResultGenerator::generate(int aCompetitionID) noexcept
     {
         auto user =
             connection.val.getData<data::User>("id=" + data::wrap(i.user_id));
-        if (!user.size()) continue;
+        if (user.id == 0) continue;
 
         if (user[0].login == "rostizm2008@gmail.com")
         {
@@ -33,7 +33,7 @@ core::ResultGenerator::generate(int aCompetitionID) noexcept
         }
         for (auto& j : problems)
         {
-            auto submissions = connection.val.getData<data::Submission>(
+            auto submissions = connection.val.getTable<data::Submission>(
                 "user_id=" + data::wrap(i.user_id) +
                 " AND "
                 "problem_id=" +

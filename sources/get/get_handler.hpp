@@ -34,7 +34,7 @@ public:
         const std::vector<int>& aColumn,
         data::SmartConnection& aConnection) noexcept
     {
-        auto table     = aConnection.val.select2<T>(aColumn);
+        auto table     = aConnection.val.getTable<T>(aColumn);
         auto tableList = getTableAsList(table);
         crow::json::wvalue result;
         result[T::tableName] = std::move(tableList);

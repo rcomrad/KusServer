@@ -45,133 +45,63 @@ public:
     Postgresql(Postgresql&& other) noexcept            = default;
     Postgresql& operator=(Postgresql&& other) noexcept = default;
 
-    // std::unordered_map<std::string, uint8_t> getColumnNames() noexcept;
-    // std::vector<data::Type> getColumnTypes(
-    //     const std::string& aTableName) noexcept;
-    // std::unordered_map<std::string, uint8_t> getColumnNames(
-    //     const std::string& aTableName) noexcept;
-
     //--------------------------------------------------------------------------------
 
+    void select(const std::string& aTableName,
+                const std::string& aColum    = "",
+                const std::string& aConditon = "") noexcept;
+
+    void closeStatment() noexcept;
+
     // TODO: aColums
     template <typename T>
-    Table<T> select(const std::vector<std::string>& aColums = {},
-                    const std::string& aConditon            = "") noexcept
+    void getTable(Table<T>& result,
+                  int& aOffset,
+                  const std::unordered_set<int>& aColums = {}) noexcept
     {
-        Table<T> result;
-
-        select(T::tableName, aColums, aConditon);
-
-        while (true)
-        {
-            step();
-            if (!hasData()) break;
-            result.data.emplace_back();
-            for (size_t i = 0; i < result.types.size(); ++i)
-            {
-                auto ptr = result.back()[i];
-                if (!hasData(i)) break;
-                switch (result.types[i])
-                {
-                    case data::Type::INT:
-                        *((int*)ptr) = getColumnIntUnsafe(i);
-                        break;
-                    case data::Type::BOOL:
-                        *((bool*)ptr) = getColumnBoolUnsafe(i);
-                        break;
-                    case data::Type::CHARS:
-                        strcpy((char*)ptr, getColumnAsCharsUnsafe(i));
-                        break;
-                    case data::Type::STRING:
-                        *((std::string*)ptr) = getColumnAsStringUnsafe(i);
-                        break;
-                }
-            }
-        }
-
-        closeStatment();
-
-        return result;
-    }
-
-    int cnt = 0;
-    // TODO: aColums
-    template <typename T>
-    Table<T> select2(const std::vector<int>& aColums = {},
-                     const std::string& aConditon    = "") noexcept
-    {
-        Table<T> result;
-
-        const std::vector<int>* colums = &aColums;
-        std::vector<int> stock;
-        // TODO: vector from table
-        if (aColums.empty())
-        {
-            for (size_t i = 0; i < result.types.size(); ++i)
-            {
-                stock.emplace_back(i);
-            }
-            colums = &stock;
-        }
-
         mResultIterator = --mResult.begin();
         while (true)
         {
-            step();
-            if (!hasData()) break;
-            result.data.emplace_back();
-            for (int i = 0; i < colums->size(); ++i)
-            {
-                auto num = cnt + i;
-                if (!hasData(num)) break;
-                auto ptr = result.back()[(*colums)[i]];
+            T temp;
+            auto flag = getData();
+            // TODO: check move
+            if (flag) result.emplace_back(std::move(temp));
+            else break;
+        }
+    }
 
-                switch (result.types[(*colums)[i]])
+    template <typename T>
+    bool getData(T& result,
+                 int& aOffset,
+                 const std::unordered_set<int>& aColums = {}) noexcept
+    {
+        bool result = false;
+        step();
+        if (hasData())
+        {
+            result = true;
+            for (auto& i : result.backRow())
+            {
+                if (!hasData(aOffset)) break;
+                if (aColums.size() && !aColums.count(i.num)) continue;
+                switch (i.type)
                 {
                     case data::Type::INT:
-                        *((int*)ptr) = getColumnIntUnsafe(num);
+                        *((int*)i.ptr) = getColumnIntUnsafe(aOffset);
                         break;
                     case data::Type::BOOL:
-                        *((bool*)ptr) = getColumnBoolUnsafe(num);
-                        break;
-                    case data::Type::CHARS:
-                        strcpy((char*)ptr, getColumnAsCharsUnsafe(num));
+                        *((bool*)i.ptr) = getColumnBoolUnsafe(aOffset);
                         break;
                     case data::Type::STRING:
-                        *((std::string*)ptr) = getColumnAsStringUnsafe(num);
+                        *((std::string*)i.ptr) =
+                            getColumnAsStringUnsafe(aOffset);
                         break;
                 }
+                aOffset++;
             }
         }
-        if (!mMakeDBRequest) cnt += aColums.size();
-
         return result;
     }
-
-    void handSelect(data::TableInfoAray& request) noexcept
-    {
-        auto tabl = request.getTables();
-        auto col  = request.getColumns();
-        auto con  = request.getCondition();
-
-        std::string statement = "SELECT "s + col + " FROM " + tabl +
-                                (con == "" ? "" : " WHERE ") + con;
-
-        prepare({std::move(statement)});
-
-        mMakeDBRequest = false;
-    }
-
-    void handClose() noexcept
-    {
-        closeStatment();
-        cnt            = 0;
-        mMakeDBRequest = true;
-    }
-
-    void select(const std::string& aTableName,
-                const std::vector<std::string>& aColum = {},
-                const std::string& aConditon           = "") noexcept;
 
     //--------------------------------------------------------------------------------
 
@@ -186,10 +116,10 @@ public:
 
     void createEnvironment(const DBSettings& aDBS) noexcept;
     void createTable(const std::string& aTableName,
-                     const std::vector<ColumnSetting>& aColums) noexcept;
-    void deleteDatabase(const std::string& aTableName,
-                        const std::string& aUserName) noexcept;
-                        
+                     const std::vector<ColumnSetting>& aColums,
+                     const std::string& aUserName) noexcept;
+    void deleteDatabase(const std::string& aDBName) noexcept;
+
     //--------------------------------------------------------------------------------
 
     std::optional<int> getColumnInt(int aColumNumber) noexcept;
@@ -214,7 +144,6 @@ private:
 
     void step() noexcept;
     bool hasData(int num = 0) const noexcept;
-    void closeStatment() noexcept;
 
     void prepare(const std::string& aStatment) noexcept;
     void exec(const std::string& aStatement) noexcept;
@@ -222,9 +151,8 @@ private:
 
     //--------------------------------------------------------------------------------
 
-    void createSequence(const std::string& aTableName) noexcept;
-
-    bool mMakeDBRequest = true;
+    void createSequence(const std::string& aTableName,
+                        const std::string& aUserName) noexcept;
 };
 } // namespace data
 

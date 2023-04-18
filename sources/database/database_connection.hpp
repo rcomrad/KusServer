@@ -40,72 +40,186 @@ public:
     //--------------------------------------------------------------------------------
 
     template <typename T>
-    Table<T> getData(const std::string& aCondition = "") noexcept
+    Table<T> complexSelect(data::TableInfoAray& request) noexcept
     {
-        return mDatabase.select<T>({}, aCondition);
-    }
-
-    template <typename T, typename... Args>
-    Table<T> select(Args&&... args) noexcept
-    {
-        return mDatabase.select<T>(args...);
-    }
-
-    template <typename T, typename... Args>
-    Table<T> select2(Args&&... args) noexcept
-    {
-        return mDatabase.select2<T>(args...);
-    }
-
-    void handSelect(data::TableInfoAray& request) noexcept
-    {
-        mDatabase.handSelect(request);
-    }
-
-    void handClose() noexcept
-    {
-        mDatabase.handClose();
+        mColumnNumber = 0;
+        auto tabl     = request.getTables();
+        auto col      = request.getColumns();
+        auto con      = request.getCondition();
+        mDatabase.select(tabl, col, con);
     }
 
     template <typename T>
-    int write(Table<T>& aData) noexcept
+    Table<T> getNextTable(
+        const std::unordered_set<std::string>& aColumnNames = {}) noexcept
+    {
+        Table<T> result;
+        std::unordered_set<std::string> columnNums;
+        for (auto& i : aColumnNames)
+        {
+            columnNums.insert(T::columnNames[i]);
+        }
+        mDatabase.getTable<T>(result, mColumnNumber, columnNums);
+        return result;
+    }
+
+    template <typename T>
+    Table<T> getTable(
+        const std::string& aCondition                       = "",
+        const std::unordered_set<std::string>& aColumnNames = {}) noexcept
+    {
+        Table<T> result;
+        auto columnNums = launchSelect(aCondition, aColumnNames);
+        mDatabase.getTable(result, mColumnNumber, columnNums);
+        return result;
+    }
+
+    // template <typename T>
+    // void updateTable(
+    //     Table<T>& result,
+    //     const std::string& aCondition                       = "",
+    //     const std::unordered_set<std::string>& aColumnNames = {}) noexcept
+    // {
+    //     auto columnNums = launchSelect(aCondition, aColumnNames);
+    //     mDatabase.getTable(result, mColumnNumber, columnNums);
+    // }
+
+    template <typename T>
+    T getData(const std::string& aCondition                       = "",
+              const std::unordered_set<std::string>& aColumnNames = {}) noexcept
+    {
+
+        T result;
+        auto columnNums = launchSelect(aCondition, aColumnNames);
+        mDatabase.getData(result, mColumnNumber, columnNums);
+        return result;
+    }
+
+    //--------------------------------------------------------------------------------
+
+    template <typename T>
+    int writeData(T& aData) noexcept
     {
         int res = 0;
-
-        int& id = *((int*));
-        if (id == 0)
-            id = insertWithID(aData.getTableName(), id,
-                              aData.makeStrings(i, true, true));
+        if (aData.id == 0)
+        {
+            res = insertData(aData);
+        }
         else
-            update(aData.getTableName(), aData.makeStrings(i, false, true),
-                   "id = " + wrap(id));
-        res = id;
+        {
+            res = updateData(aData);
+        }
+        return res;
+    }
 
+    template <typename T>
+    int insertData(T& aData) noexcept
+    {
+        // aData.id = mDatabase.insert(getTableName<T>(),
+        // aData.getAllAsInsert()); return aData.id;
+        return aData.id = insertTable({aData});
+    }
+
+    template <typename T>
+    int updateData(const T& aData, const std::string& aConditon = "") noexcept
+    {
+        // int res = 0;
+        // if (aData.id != 0)
+        // {
+        //     mDatabase.update(getTableName<T>(), aData.getFirstAsUpdate(),
+        //                      aConditon.size() ? aConditon
+        //                                       : data::wrap(aData.id));
+        //     res = aData.id;
+        // }
+        // return res;
+        return updateTable({aData});
+    }
+
+    template <typename T>
+    int dropData(T& aData) noexcept
+    {
+        // int res = 0;
+        // if (aData.id != 0)
+        // {
+        //     mDatabase.drop(getTableName<T>(), aData.getFirstAsCondition());
+        //     res = 1;
+        // }
+        // return res;
+        return dropTable({aData});
+    }
+
+    template <typename T>
+    int dropByID(const std::vector<int>& aIDs) noexcept
+    {
+        int res = 0;
+        if (aIDs.size())
+        {
+            auto name = getTableName<T>();
+            for (auto i : aIDs)
+            {
+                mDatabase.drop(name, "id=" + data::wrap(i));
+            }
+            res = 1;
+        }
         return res;
     }
 
     //--------------------------------------------------------------------------------
 
     template <typename T>
-    int insert(const Table<T>& aData) noexcept
+    int writeTable(Table<T>& aData) noexcept
     {
-        return mDatabase.insert(aData.getTableName(), aData);
-    }
-
-    template <typename T>
-    void drop(const Table<T>& aData) noexcept
-    {
-        for (int i = 0; i < aData.size(); ++i)
+        int res = 0;
+        if (aData.size() > 0)
         {
-            mDatabase.drop(T::tableName, aData.getCondition(i));
+            res = insert(aData);
         }
+        else
+        {
+            res = update(aData);
+        }
+        return res;
     }
 
     template <typename T>
-    void dropByID(const std::vector<int>& aIDs) noexcept
+    int insertTable(Table<T>& aData) noexcept
     {
-        mDatabase.dropByID(T::tableName, aIDs);
+        int res = 0;
+        if (aData.size())
+        {
+            res = mDatabase.insert(getTableName<T>(), aData.getAllAsInsert());
+            aData[0].id = res;
+        }
+        return res;
     }
+
+    template <typename T>
+    int updateTable(const Table<T>& aData,
+                    const std::string& aConditon = "") noexcept
+    {
+        int res = 0;
+        if (aData.size())
+        {
+            res = mDatabase.update(getTableName<T>(), aData.getFirstAsUpdate(),
+                                   aConditon.size() ? aConditon
+                                                    : data::wrap(aData[0].id));
+        }
+        return res;
+    }
+
+    template <typename T>
+    int dropTable(const Table<T>& aData) noexcept
+    {
+        int res = 0;
+        if (aData.size())
+        {
+            mDatabase.drop(getTableName<T>(), aData.getFirstAsCondition());
+            res = 1;
+        }
+        return res;
+    }
+
+    //--------------------------------------------------------------------------------
 
     void createTable(const std::string& aTableName,
                      const std::vector<ColumnSetting>& aColumns) noexcept;
@@ -114,24 +228,40 @@ public:
 
     //--------------------------------------------------------------------------------
 
-    // std::vector<data::Type> getColumnTypes(
-    //     const std::string& aTableName) noexcept;
-    // std::unordered_map<std::string, uint8_t> getColumnNames(
-    //     const std::string& aTableName) noexcept;
-
 private:
+    DBSettings mDBSettings;
     Postgresql mDatabase;
 
-    // TODO: to database_query?
-    std::string mShame;
-    std::string mUser;
-    std::string mDatabase;
+    int mColumnNumber;
 
     static std::unordered_map<ConnectionType, data::DBSettings>
         mConnectionTypeSettings;
 
     static std::unordered_map<ConnectionType, data::DBSettings>
     getConnectionTypeSettings() noexcept;
+
+    template <typename T>
+    std::string getTableName() const noexcept
+    {
+        return mDBSettings.shame + "." + T::tableName;
+    }
+
+    template <typename T>
+    std::unordered_set<std::string> launchSelect(
+        const std::string& aCondition,
+        const std::unordered_set<std::string>& aColumnNames) noexcept
+    {
+        mColumnNumber = 0;
+        std::string columns;
+        std::unordered_set<std::string> result;
+        for (auto& i : aColumnNames)
+        {
+            columns += i;
+            result.insert(T::columnNames[i]);
+        }
+        mDatabase.select(getTableName<T>(), columns, aCondition);
+        return result;
+    }
 };
 
 } // namespace data

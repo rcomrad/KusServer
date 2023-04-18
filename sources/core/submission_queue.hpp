@@ -19,8 +19,8 @@ public:
     static SubmissionQueue& getInstance();
 
     bool isEmpty() noexcept;
-    void push(data::Table<data::Submission>&& aSubmition) noexcept;
-    data::Table<data::Submission> get() noexcept;
+    void push(data::Submission&& aSubmition) noexcept;
+    data::Submission get() noexcept;
 
     // void checkSubmissionQueue() noexcept;
     void reload() noexcept;
@@ -30,7 +30,7 @@ private:
 
     bool mIsActive;
 
-    std::queue<data::Table<data::Submission>> mQueue;
+    data::Table<data::Submission> mQueue;
     mutable std::mutex mSubmissionMutex;
 };
 } // namespace core

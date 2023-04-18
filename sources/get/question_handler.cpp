@@ -11,8 +11,8 @@ get::QuestionHandler::process(int aQuestionID, int aUserId) noexcept
     data::Table<data::Question> table;
     {
         auto connection = data::ConnectionManager::getUserConnection();
-        table           = connection.val.getData<data::Question>("id=" +
-                                                       data::wrap(aQuestionID));
+        table           = connection.val.getTable<data::Question>(
+            "id=" + data::wrap(aQuestionID));
     }
 
     table.turnOffColumn("jury_answer");
@@ -30,7 +30,7 @@ get::QuestionHandler::process(int aQuestionID, int aUserId) noexcept
         data::Table<data::Answer> answer;
         {
             auto connection = data::ConnectionManager::getUserConnection();
-            answer          = connection.val.getData<data::Answer>(
+            answer          = connection.val.getTable<data::Answer>(
                 "user_id=" + data::wrap(aUserId) + " AND " +
                 "question_id=" + data::wrap(aQuestionID));
         }

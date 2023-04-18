@@ -40,7 +40,7 @@ data::DatabaseConnection::getConnectionTypeSettings() noexcept
 //--------------------------------------------------------------------------------
 
 data::DatabaseConnection::DatabaseConnection(const DBSettings& aDBS) noexcept
-    : mDatabase(aDBS)
+    : mDBSettings(aDBS), mDatabase(aDBS)
 {
     WRITE_LOG("Creating_database_quare");
 }
@@ -59,7 +59,7 @@ data::DatabaseConnection::createTable(
     const std::string& aTableName,
     const std::vector<ColumnSetting>& aColums) noexcept
 {
-    mDatabase.createTable(aTableName, aColums);
+    mDatabase.createTable(aTableName, aColums, mDBSettings.user);
 }
 
 void
@@ -72,31 +72,7 @@ data::DatabaseConnection::createEnvironment(
 void
 data::DatabaseConnection::dropDatabase(const ConnectionType& aType) noexcept
 {
-    mDatabase.deleteDatabase(mConnectionTypeSettings[aType].name,
-                             mConnectionTypeSettings[aType].user);
+    mDatabase.deleteDatabase(mConnectionTypeSettings[aType].name);
 }
 
 //--------------------------------------------------------------------------------
-
-// std::vector<data::Type>
-// data::DatabaseConnection::getColumnTypes(const std::string& aTableName)
-// noexcept
-// {
-//     return mDatabase.getColumnTypes(aTableName);
-// }
-
-// std::unordered_map<std::string, uint8_t>
-// data::DatabaseConnection::getColumnNames(const std::string& aTableName)
-// noexcept
-// {
-//     return mDatabase.getColumnNames(aTableName);
-// }
-
-//--------------------------------------------------------------------------------
-
-int
-data::DatabaseConnection::insert(const std::string& aTableName,
-                                 const std::vector<std::string>& aData) noexcept
-{
-
-}
