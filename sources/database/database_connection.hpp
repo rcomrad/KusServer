@@ -40,7 +40,7 @@ public:
     //--------------------------------------------------------------------------------
 
     template <typename T>
-    Table<T> complexSelect(data::TableInfoAray& request) noexcept
+    DataArray<T> complexSelect(data::TableInfoAray& request) noexcept
     {
         mColumnNumber = 0;
         auto tabl     = request.getTables();
@@ -50,27 +50,27 @@ public:
     }
 
     template <typename T>
-    Table<T> getNextTable(
+    DataArray<T> getNextDataArray(
         const std::unordered_set<std::string>& aColumnNames = {}) noexcept
     {
-        Table<T> result;
+        DataArray<T> result;
         std::unordered_set<std::string> columnNums;
         for (auto& i : aColumnNames)
         {
             columnNums.insert(T::columnNames[i]);
         }
-        mDatabase.getTable<T>(result, mColumnNumber, columnNums);
+        mDatabase.getDataArray<T>(result, mColumnNumber, columnNums);
         return result;
     }
 
     template <typename T>
-    Table<T> getTable(
+    DataArray<T> getDataArray(
         const std::string& aCondition                       = "",
         const std::unordered_set<std::string>& aColumnNames = {}) noexcept
     {
-        Table<T> result;
+        DataArray<T> result;
         auto columnNums = launchSelect(aCondition, aColumnNames);
-        mDatabase.getTable(result, mColumnNumber, columnNums);
+        mDatabase.getDataArray(result, mColumnNumber, columnNums);
         return result;
     }
 
@@ -115,37 +115,34 @@ public:
     template <typename T>
     int insertData(T& aData) noexcept
     {
-        // aData.id = mDatabase.insert(getTableName<T>(),
-        // aData.getAllAsInsert()); return aData.id;
-        return aData.id = insertTable({aData});
+        aData.id = mDatabase.insert(getTableName<T>(), aData.getAsInsert());
+        return aData.id;
     }
 
     template <typename T>
     int updateData(const T& aData, const std::string& aConditon = "") noexcept
     {
-        // int res = 0;
-        // if (aData.id != 0)
-        // {
-        //     mDatabase.update(getTableName<T>(), aData.getFirstAsUpdate(),
-        //                      aConditon.size() ? aConditon
-        //                                       : data::wrap(aData.id));
-        //     res = aData.id;
-        // }
-        // return res;
-        return updateTable({aData});
+        int res = 0;
+        if (aData.id != 0)
+        {
+            mDatabase.update(getTableName<T>(), aData.getAsUpdate(),
+                             aConditon.size() ? aConditon
+                                              : data::wrap(aData.id));
+            res = aData.id;
+        }
+        return res;
     }
 
     template <typename T>
     int dropData(T& aData) noexcept
     {
-        // int res = 0;
-        // if (aData.id != 0)
-        // {
-        //     mDatabase.drop(getTableName<T>(), aData.getFirstAsCondition());
-        //     res = 1;
-        // }
-        // return res;
-        return dropTable({aData});
+        int res = 0;
+        if (aData.id != 0)
+        {
+            mDatabase.drop(getTableName<T>(), aData.getAsCondition());
+            res = 1;
+        }
+        return res;
     }
 
     template <typename T>
@@ -166,58 +163,60 @@ public:
 
     //--------------------------------------------------------------------------------
 
-    template <typename T>
-    int writeTable(Table<T>& aData) noexcept
-    {
-        int res = 0;
-        if (aData.size() > 0)
-        {
-            res = insert(aData);
-        }
-        else
-        {
-            res = update(aData);
-        }
-        return res;
-    }
+    // template <typename T>
+    // int writeTable(Table<T>& aData) noexcept
+    // {
+    //     int res = 0;
+    //     if (aData.size() > 0)
+    //     {
+    //         res = insert(aData);
+    //     }
+    //     else
+    //     {
+    //         res = update(aData);
+    //     }
+    //     return res;
+    // }
 
-    template <typename T>
-    int insertTable(Table<T>& aData) noexcept
-    {
-        int res = 0;
-        if (aData.size())
-        {
-            res = mDatabase.insert(getTableName<T>(), aData.getAllAsInsert());
-            aData[0].id = res;
-        }
-        return res;
-    }
+    // template <typename T>
+    // int insertTable(Table<T>& aData) noexcept
+    // {
+    //     int res = 0;
+    //     if (aData.size())
+    //     {
+    //         res = mDatabase.insert(getTableName<T>(),
+    //         aData.getAllAsInsert()); aData[0].id = res;
+    //     }
+    //     return res;
+    // }
 
-    template <typename T>
-    int updateTable(const Table<T>& aData,
-                    const std::string& aConditon = "") noexcept
-    {
-        int res = 0;
-        if (aData.size())
-        {
-            res = mDatabase.update(getTableName<T>(), aData.getFirstAsUpdate(),
-                                   aConditon.size() ? aConditon
-                                                    : data::wrap(aData[0].id));
-        }
-        return res;
-    }
+    // template <typename T>
+    // int updateTable(const Table<T>& aData,
+    //                 const std::string& aConditon = "") noexcept
+    // {
+    //     int res = 0;
+    //     if (aData.size())
+    //     {
+    //         res = mDatabase.update(getTableName<T>(),
+    //         aData.getFirstAsUpdate(),
+    //                                aConditon.size() ? aConditon
+    //                                                 :
+    //                                                 data::wrap(aData[0].id));
+    //     }
+    //     return res;
+    // }
 
-    template <typename T>
-    int dropTable(const Table<T>& aData) noexcept
-    {
-        int res = 0;
-        if (aData.size())
-        {
-            mDatabase.drop(getTableName<T>(), aData.getFirstAsCondition());
-            res = 1;
-        }
-        return res;
-    }
+    // template <typename T>
+    // int dropTable(const Table<T>& aData) noexcept
+    // {
+    //     int res = 0;
+    //     if (aData.size())
+    //     {
+    //         mDatabase.drop(getTableName<T>(), aData.getFirstAsCondition());
+    //         res = 1;
+    //     }
+    //     return res;
+    // }
 
     //--------------------------------------------------------------------------------
 

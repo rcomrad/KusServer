@@ -310,7 +310,7 @@ core::GenerateCode::getDatabaseTables()
 void
 generateDatabaseStructuresHPPFile()
 {
-    std::ofstream file("../sources/database/database_structures.hpp");
+    std::ofstream file("database_structures.hpp");
 
     file << "#ifndef DATABASE_STRUCTURES_HPP\n";
     file << "#define DATABASE_STRUCTURES_HPP\n";
@@ -340,8 +340,9 @@ generateDatabaseStructuresHPPFile()
                 file << temp << "\n";
                 file << "\tstatic std::string tableName;\n";
                 file << "\tstatic std::vector<data::Type> types;\n";
+                file << "\tstatic std::vector<std::string> names;\n";
                 file << "\tstatic std::unordered_map<std::string, uint8_t> "
-                        "columnNames;\n";
+                        "nameToNum;\n";
                 file << "\n\tvoid reset();\n";
                 file << "};\n";
                 temp        = "";
@@ -410,30 +411,30 @@ generateDatabaseStructuresHPPFile()
     drawLine(file);
     file << "#endif // !DATABASE_STRUCTURES_HPP\n";
 
-    file << "#ifndef ASTERISK_HENDLER_HPP\n";
-    file << "#define ASTERISK_HENDLER_HPP\n";
-    file << "\n";
-    file << "#include <string>\n";
-    file << "#include <vector>\n";
-    file << "#include <unordered_map>\n";
-    file << "\n";
-    file << "struct AsteriskHendler\n";
-    file << "{ \n";
+    // file << "#ifndef ASTERISK_HENDLER_HPP\n";
+    // file << "#define ASTERISK_HENDLER_HPP\n";
+    // file << "\n";
+    // file << "#include <string>\n";
+    // file << "#include <vector>\n";
+    // file << "#include <unordered_map>\n";
+    // file << "\n";
+    // file << "struct AsteriskHendler\n";
+    // file << "{ \n";
 
-    file << "    static std::unordered_map<std::string_view, "
-            "std::vector<std::string>> "
-            "table;\n";
+    // file << "    static std::unordered_map<std::string_view, "
+    //         "std::vector<std::string>> "
+    //         "table;\n";
 
-    file << "};\n\n";
-    file << "#endif // !ASTERISK_HENDLER_HPP\n";
+    // file << "};\n\n";
+    // file << "#endif // !ASTERISK_HENDLER_HPP\n";
 
-    file.close();
+    // file.close();
 }
 
 void
 generateDatabaseStructuresCPPFile()
 {
-    std::ofstream fileCPP("../sources/database/database_structures.cpp");
+    std::ofstream fileCPP("database_structures.cpp");
     // std::ofstream fileCPP("database_structures.cpp");
     fileCPP << "#include \"database_structures.hpp\"\n\n";
     fileCPP << "#include <cstring>\n\n";
@@ -444,8 +445,9 @@ generateDatabaseStructuresCPPFile()
     std::string smallName  = "";
     int columnCount        = 0;
     std::string tempCPP;
-    std::string columnNames = "{ {\"id\", 0},";
-    std::string columnTypes = "{ data::Type::INT, ";
+    std::string columnNames     = "{ {\"id\", 0},";
+    std::string columnTypes     = "{ data::Type::INT, ";
+    std::string columnNamesTrue = "{ \"id\", ";
     std::string temp;
     while (true)
     {
@@ -459,16 +461,19 @@ generateDatabaseStructuresCPPFile()
             {
                 columnNames.resize(columnNames.size() - 2);
                 columnTypes.resize(columnTypes.size() - 2);
+                columnNamesTrue.resize(columnNamesTrue.size() - 2);
                 columnCount = 0;
 
                 fileCPP << "std::string data::" << baseName
                         << "::tableName         = \"" << smallName << "\";\n";
                 fileCPP << "std::vector<data::Type> data::" << baseName
                         << "::types = " << columnTypes << "};\n";
+                fileCPP << "std::vector<std::string> data::" << baseName
+                        << "::names = " << columnNamesTrue << "};\n";
 
                 fileCPP << "std::unordered_map<std::string, uint8_t> "
                            "data::"
-                        << baseName << "::columnNames = " << columnNames
+                        << baseName << "::nameToNum = " << columnNames
                         << "};\n";
 
                 fileCPP << "\nvoid\n";
@@ -477,9 +482,10 @@ generateDatabaseStructuresCPPFile()
                 fileCPP << "\tptrs[0] = (void*)(&id);\n";
                 fileCPP << tempCPP;
                 fileCPP << "}\n\n";
-                tempCPP     = "";
-                columnNames = "{ {\"id\", 0},";
-                columnTypes = "{ data::Type::INT, ";
+                tempCPP         = "";
+                columnNames     = "{ {\"id\", 0},";
+                columnTypes     = "{ data::Type::INT, ";
+                columnNamesTrue = "{ \"id\", ";
             }
 
             if (s2 == "NUN") break;
@@ -529,25 +535,28 @@ generateDatabaseStructuresCPPFile()
             columnNames += "{\"" + s1 + "\", ";
             columnNames += std::to_string(columnCount);
             columnNames += "}, ";
+
+            columnNamesTrue += "\"" + s1 + "\", ";
         }
 
         columnCount++;
         std::getline(database, s2);
     }
 
-    fileCPP << "std::unordered_map<std::string_view, std::vector<std::string>> "
-               "AsteriskHendler::table = \n{\n";
+    // fileCPP << "std::unordered_map<std::string_view,
+    // std::vector<std::string>> "
+    //            "AsteriskHendler::table = \n{\n";
 
-    temp[0] = ' ';
-    temp[1] = ' ';
-    temp[2] = ' ';
+    // temp[0] = ' ';
+    // temp[1] = ' ';
+    // temp[2] = ' ';
 
-    temp[temp.size() - 2] = ' ';
-    temp += "}}};";
+    // temp[temp.size() - 2] = ' ';
+    // temp += "}}};";
 
-    fileCPP << temp;
+    // fileCPP << temp;
 
-    fileCPP << "\n";
+    // fileCPP << "\n";
 
     fileCPP.close();
 }
@@ -625,11 +634,12 @@ generateGetRouterFile()
                                "Args&&... args) noexcept");
     generator.pushToFunctionBody(wrap("mBasicRouterMap"));
     generator.generateMapTable(
-        "mBasicRouterMap", {
-                               {"default",  "get::GetHandler::process<data::"},
-                               {"user",     "get::UserHandler::process"      }
-                            //    ,
-                            //    {"question", "get::QuestionHandler::process"  }
+        "mBasicRouterMap",
+        {
+            {"default", "get::GetHandler::process<data::"},
+            {"user",    "get::UserHandler::process"      }
+  //    ,
+  //    {"question", "get::QuestionHandler::process"  }
     });
 
     //--------------------------------------------------------------------------------
@@ -840,8 +850,8 @@ generateAsteriskHendler()
 void
 core::generateDatabaseStructuresFiles()
 {
-    // generateDatabaseStructuresHPPFile();
-    // generateDatabaseStructuresCPPFile();
+    generateDatabaseStructuresHPPFile();
+    generateDatabaseStructuresCPPFile();
 
     // generatePostHandlerFile();
     // generateGetRouterFile();

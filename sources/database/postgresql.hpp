@@ -17,13 +17,25 @@
 #include "boost/unordered_map.hpp"
 #include "pqxx/pqxx"
 
+#include "data_array.hpp"
 #include "data_request.hpp"
-#include "table.hpp"
 
 //--------------------------------------------------------------------------------
 
 namespace data
 {
+
+struct ColumnSetting
+{
+    std::string name;
+    std::string type;
+    std::string info;
+
+    // For stupid GNU!
+    ColumnSetting(std::string aName,
+                  std::string aType,
+                  std::string aInfo = "") noexcept;
+};
 
 struct DBSettings
 {
@@ -55,9 +67,9 @@ public:
 
     // TODO: aColums
     template <typename T>
-    void getTable(Table<T>& result,
-                  int& aOffset,
-                  const std::unordered_set<int>& aColums = {}) noexcept
+    void getDataArray(DataArray<T>& result,
+                      int& aOffset,
+                      const std::unordered_set<int>& aColums = {}) noexcept
     {
         mResultIterator = --mResult.begin();
         while (true)

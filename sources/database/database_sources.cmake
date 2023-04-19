@@ -1,6 +1,8 @@
 set(
     DATABASE_SOURCES 
 
+    data_array.hpp
+
     connection_manager.cpp
     connection_manager.hpp
 
@@ -16,7 +18,6 @@ set(
     database_structures.cpp
     database_structures.hpp
 
-    database_wrappers.cpp
     database_wrappers.hpp
 
     postgresql.cpp

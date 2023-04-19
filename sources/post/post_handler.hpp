@@ -22,18 +22,9 @@ private:
     template <typename T>
     struct PostRequest
     {
-        data::Table<T> table;
+        T data;
         std::unordered_map<std::string, std::vector<int>> manyToMany;
         std::unordered_map<std::string, crow::json::rvalue> other;
-
-        PostRequest() : table(1)
-        {
-        }
-
-        int id() const
-        {
-            return table[0].id;
-        }
     };
 
 public:
@@ -46,7 +37,7 @@ public:
         int res;
         {
             auto connection = data::ConnectionManager::getUserConnection();
-            res             = connection.val.update<T>(request.table);
+            res             = connection.val.updateData<T>(request.data);
         }
 
         manyToManyTransmiter(request);
@@ -60,7 +51,7 @@ public:
         for (auto& i : aReq.manyToMany)
         {
             transmitToMTMHandler(i.first, aReq.id(), aReq.other.count("add"),
-                                 i.second, aReq.table.getTableName());
+                                 i.second, aReq.data.getTableName());
         }
     }
 
@@ -71,7 +62,7 @@ public:
                                          const std::string& aTableName)
     {
         auto connection = data::ConnectionManager::getUserConnection();
-        data::Table<T> table;
+        data::DataArray<T> table;
         table.reserve(16);
 
         auto ss  = aTableName + "_id";
@@ -125,8 +116,8 @@ public:
         auto req        = crow::json::load(aReq.body);
         if (req.begin()->t() != crow::json::type::List)
         {
-            auto table = parseRequest<T>(req).table;
-            connection.val.drop<T>(table);
+            auto data = parseRequest<T>(req).data;
+            connection.val.drop<T>(data);
         }
         else
         {
@@ -152,7 +143,7 @@ public:
     template <typename T>
     struct DataFile
     {
-        data::Table<T> table;
+        data::DataArray<T> table;
         std::vector<std::vector<std::string>> additionalLines;
     };
 
@@ -217,13 +208,11 @@ protected:
     static auto parseRequest(const crow::json::rvalue& aReq) noexcept
     {
         PostRequest<T> result;
-        auto& temp  = result.table.back();
-        auto& table = result.table;
+        result.data.setFromJson(aReq);
 
         for (auto& i : aReq)
         {
-            auto ind = table.getIndex(i.key());
-            if (ind == -1)
+            if (!T::nameToNum.count(i.key()))
             {
                 if (i.t() == crow::json::type::List &&
                     i[0].t() == crow::json::type::Number)
@@ -236,22 +225,6 @@ protected:
                     result.other[i.key()] = i;
                 }
                 continue;
-            }
-
-            switch (table.types[ind])
-            {
-                case data::Type::INT:
-                    *(int*)temp[ind] = i.i();
-                    break;
-                case data::Type::BOOL:
-                    *(bool*)temp[ind] = i.b();
-                    break;
-                case data::Type::CHARS:
-                    strcpy((char*)temp[ind], i.s().s_);
-                    break;
-                case data::Type::STRING:
-                    *(std::string*)temp[ind] = i.s();
-                    break;
             }
         }
 

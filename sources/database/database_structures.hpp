@@ -19,14 +19,13 @@ struct SchoolBase : public BaseDataStruct<4>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct School : public UpperDataStruct<SchoolBase>
-{
-};
+using School = UpperDataStruct<SchoolBase>;
 
 struct UserBase : public BaseDataStruct<7>
 {
@@ -40,14 +39,13 @@ struct UserBase : public BaseDataStruct<7>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct User : public UpperDataStruct<UserBase>
-{
-};
+using User = UpperDataStruct<UserBase>;
 
 struct RoleBase : public BaseDataStruct<2>
 {
@@ -56,14 +54,13 @@ struct RoleBase : public BaseDataStruct<2>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct Role : public UpperDataStruct<RoleBase>
-{
-};
+using Role = UpperDataStruct<RoleBase>;
 
 struct GradeBase : public BaseDataStruct<3>
 {
@@ -73,14 +70,13 @@ struct GradeBase : public BaseDataStruct<3>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct Grade : public UpperDataStruct<GradeBase>
-{
-};
+using Grade = UpperDataStruct<GradeBase>;
 
 struct Grade_studentBase : public BaseDataStruct<3>
 {
@@ -90,14 +86,13 @@ struct Grade_studentBase : public BaseDataStruct<3>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct Grade_student : public UpperDataStruct<Grade_studentBase>
-{
-};
+using Grade_student = UpperDataStruct<Grade_studentBase>;
 
 struct GroupBase : public BaseDataStruct<3>
 {
@@ -107,14 +102,13 @@ struct GroupBase : public BaseDataStruct<3>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct Group : public UpperDataStruct<GroupBase>
-{
-};
+using Group = UpperDataStruct<GroupBase>;
 
 struct Group_studentBase : public BaseDataStruct<3>
 {
@@ -124,14 +118,13 @@ struct Group_studentBase : public BaseDataStruct<3>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct Group_student : public UpperDataStruct<Group_studentBase>
-{
-};
+using Group_student = UpperDataStruct<Group_studentBase>;
 
 struct LessonBase : public BaseDataStruct<6>
 {
@@ -144,14 +137,13 @@ struct LessonBase : public BaseDataStruct<6>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct Lesson : public UpperDataStruct<LessonBase>
-{
-};
+using Lesson = UpperDataStruct<LessonBase>;
 
 struct Journal_tableBase : public BaseDataStruct<9>
 {
@@ -167,14 +159,13 @@ struct Journal_tableBase : public BaseDataStruct<9>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct Journal_table : public UpperDataStruct<Journal_tableBase>
-{
-};
+using Journal_table = UpperDataStruct<Journal_tableBase>;
 
 struct SubjectBase : public BaseDataStruct<2>
 {
@@ -183,14 +174,13 @@ struct SubjectBase : public BaseDataStruct<2>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct Subject : public UpperDataStruct<SubjectBase>
-{
-};
+using Subject = UpperDataStruct<SubjectBase>;
 
 struct MarkBase : public BaseDataStruct<5>
 {
@@ -202,14 +192,13 @@ struct MarkBase : public BaseDataStruct<5>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct Mark : public UpperDataStruct<MarkBase>
-{
-};
+using Mark = UpperDataStruct<MarkBase>;
 
 struct PlanBase : public BaseDataStruct<4>
 {
@@ -220,14 +209,13 @@ struct PlanBase : public BaseDataStruct<4>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct Plan : public UpperDataStruct<PlanBase>
-{
-};
+using Plan = UpperDataStruct<PlanBase>;
 
 struct ThemeBase : public BaseDataStruct<4>
 {
@@ -238,14 +226,13 @@ struct ThemeBase : public BaseDataStruct<4>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct Theme : public UpperDataStruct<ThemeBase>
-{
-};
+using Theme = UpperDataStruct<ThemeBase>;
 
 struct FileBase : public BaseDataStruct<2>
 {
@@ -254,14 +241,13 @@ struct FileBase : public BaseDataStruct<2>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct File : public UpperDataStruct<FileBase>
-{
-};
+using File = UpperDataStruct<FileBase>;
 
 struct Safe_fileBase : public BaseDataStruct<2>
 {
@@ -270,14 +256,13 @@ struct Safe_fileBase : public BaseDataStruct<2>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct Safe_file : public UpperDataStruct<Safe_fileBase>
-{
-};
+using Safe_file = UpperDataStruct<Safe_fileBase>;
 
 struct HolidayBase : public BaseDataStruct<3>
 {
@@ -287,14 +272,13 @@ struct HolidayBase : public BaseDataStruct<3>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct Holiday : public UpperDataStruct<HolidayBase>
-{
-};
+using Holiday = UpperDataStruct<HolidayBase>;
 
 struct CompetitionBase : public BaseDataStruct<4>
 {
@@ -305,14 +289,13 @@ struct CompetitionBase : public BaseDataStruct<4>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct Competition : public UpperDataStruct<CompetitionBase>
-{
-};
+using Competition = UpperDataStruct<CompetitionBase>;
 
 struct User_competitionBase : public BaseDataStruct<3>
 {
@@ -322,14 +305,13 @@ struct User_competitionBase : public BaseDataStruct<3>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct User_competition : public UpperDataStruct<User_competitionBase>
-{
-};
+using User_competition = UpperDataStruct<User_competitionBase>;
 
 struct ProblemBase : public BaseDataStruct<8>
 {
@@ -344,14 +326,13 @@ struct ProblemBase : public BaseDataStruct<8>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct Problem : public UpperDataStruct<ProblemBase>
-{
-};
+using Problem = UpperDataStruct<ProblemBase>;
 
 struct Competition_problemBase : public BaseDataStruct<4>
 {
@@ -362,14 +343,13 @@ struct Competition_problemBase : public BaseDataStruct<4>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct Competition_problem : public UpperDataStruct<Competition_problemBase>
-{
-};
+using Competition_problem = UpperDataStruct<Competition_problemBase>;
 
 struct SubmissionBase : public BaseDataStruct<7>
 {
@@ -383,14 +363,13 @@ struct SubmissionBase : public BaseDataStruct<7>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct Submission : public UpperDataStruct<SubmissionBase>
-{
-};
+using Submission = UpperDataStruct<SubmissionBase>;
 
 struct QuestionBase : public BaseDataStruct<6>
 {
@@ -403,14 +382,13 @@ struct QuestionBase : public BaseDataStruct<6>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct Question : public UpperDataStruct<QuestionBase>
-{
-};
+using Question = UpperDataStruct<QuestionBase>;
 
 struct Competition_questionBase : public BaseDataStruct<4>
 {
@@ -421,14 +399,13 @@ struct Competition_questionBase : public BaseDataStruct<4>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct Competition_question : public UpperDataStruct<Competition_questionBase>
-{
-};
+using Competition_question = UpperDataStruct<Competition_questionBase>;
 
 struct AnswerBase : public BaseDataStruct<7>
 {
@@ -442,14 +419,13 @@ struct AnswerBase : public BaseDataStruct<7>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct Answer : public UpperDataStruct<AnswerBase>
-{
-};
+using Answer = UpperDataStruct<AnswerBase>;
 
 struct File_exchangeBase : public BaseDataStruct<6>
 {
@@ -462,30 +438,16 @@ struct File_exchangeBase : public BaseDataStruct<6>
 
     static std::string tableName;
     static std::vector<data::Type> types;
-    static std::unordered_map<std::string, uint8_t> columnNames;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
 
     void reset();
 };
 
-struct File_exchange : public UpperDataStruct<File_exchangeBase>
-{
-};
+using File_exchange = UpperDataStruct<File_exchangeBase>;
 
 } // namespace data
 
 //--------------------------------------------------------------------------------
 
 #endif // !DATABASE_STRUCTURES_HPP
-#ifndef ASTERISK_HENDLER_HPP
-#define ASTERISK_HENDLER_HPP
-
-#include <string>
-#include <unordered_map>
-#include <vector>
-
-struct AsteriskHendler
-{
-    static std::unordered_map<std::string_view, std::vector<std::string>> table;
-};
-
-#endif // !ASTERISK_HENDLER_HPP

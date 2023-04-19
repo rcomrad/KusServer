@@ -1,5 +1,5 @@
-#ifndef STRUCT_ARRAY_HPP
-#define STRUCT_ARRAY_HPP
+#ifndef DATA_ARRAY_HPP
+#define DATA_ARRAY_HPP
 
 #include "database_wrappers.hpp"
 
@@ -9,14 +9,14 @@ namespace data
 {
 
 template <typename T>
-class StructArray
+class DataArray
 {
 public:
-    StructArray()
+    DataArray()
     {
     }
 
-    StructArray(T&& aData)
+    DataArray(T&& aData)
     {
         emplace_back(std::move(aData));
     }
@@ -178,4 +178,4 @@ private:
 
 //--------------------------------------------------------------------------------
 
-#endif // !STRUCT_ARRAY_HPP
+#endif // !DATA_ARRAY_HPP

@@ -17,6 +17,13 @@
 
 //--------------------------------------------------------------------------------
 
+data::ColumnSetting::ColumnSetting(std::string aName,
+                                   std::string aType,
+                                   std::string aInfo) noexcept
+    : name(aName), type(aType), info(aInfo)
+{
+}
+
 data::Postgresql::Postgresql(const DBSettings& aDBS)
 {
     WRITE_LOG("Creating_postgresql_database_connection");
