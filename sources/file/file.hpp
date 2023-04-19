@@ -25,6 +25,8 @@ public:
     static std::vector<std::vector<std::string>> getWords(
         const std::string& aFileName) noexcept;
 
+    static std::string getAllWithBr(const std::string& aFileName) noexcept;
+
     static std::string writeData(const std::string& aFolderName,
                                  const std::string& aFileName,
                                  const std::string& aData) noexcept;
