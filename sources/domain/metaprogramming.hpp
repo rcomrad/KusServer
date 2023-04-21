@@ -10,6 +10,7 @@
 
 namespace dom
 {
+    
 template <typename T1, typename T2>
 using isSameWeak = typename std::is_same<std::decay_t<T1>, std::decay_t<T2>>;
 
@@ -27,6 +28,7 @@ using isSTDString = isOneOf<T, std::string>;
 
 template <class T>
 using isString = isOneOf<T, std::string, char*, const char*>;
+
 } // namespace dom
 
 //-------------------------------------------------------------------------------

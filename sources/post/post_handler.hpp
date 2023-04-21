@@ -83,7 +83,7 @@ public:
             {
                 table.emplace_back();
                 *(int*)table.back()[l] = aID;
-                connection.val.drop<T>(table);
+                connection.val.dropTable<T>(table);
                 table.pop_back();
             }
 
@@ -94,7 +94,7 @@ public:
                 *(int*)table.back()[r] = i;
             }
 
-            res = connection.val.update<T>(table);
+            res = connection.val.insertTable<T>(table);
         }
 
         return {res};
@@ -117,7 +117,7 @@ public:
         if (req.begin()->t() != crow::json::type::List)
         {
             auto data = parseRequest<T>(req).data;
-            connection.val.drop<T>(data);
+            connection.val.dropData<T>(data);
         }
         else
         {
@@ -133,10 +133,10 @@ public:
     static crow::json::wvalue rawDataInsert(
         const std::vector<std::vector<std::string>>& aData)
     {
-        data::Table<T> table;
+        data::DataArray<T> table;
         auto res        = table.loadFromRawData(aData);
         auto connection = data::ConnectionManager::getUserConnection();
-        connection.val.update(table);
+        connection.val.insertTable(table);
         return {res};
     }
 

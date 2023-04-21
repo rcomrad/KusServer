@@ -1,13 +1,13 @@
 set(
     DATABASE_SOURCES 
 
-    data_array.hpp
-
     connection_manager.cpp
     connection_manager.hpp
 
     connection_pool.cpp
     connection_pool.hpp
+
+    data_array.hpp
 
     data_request.cpp
     data_request.hpp
@@ -22,6 +22,8 @@ set(
 
     postgresql.cpp
     postgresql.hpp
+
+    row.hpp
 
     sql_wrapper.cpp
     sql_wrapper.hpp

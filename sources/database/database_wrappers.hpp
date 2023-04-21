@@ -9,9 +9,8 @@
 #include <unordered_map>
 #include <vector>
 
-#include "database/sql_wrapper.hpp"
-
 #include "crow.h"
+#include "sql_wrapper.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -52,6 +51,13 @@ struct UpperDataStruct : public T
     {
         T::reset();
     }
+
+    UpperDataStruct(const std::string& aRaw) noexcept : T()
+    {
+        T::reset();
+        setFromRaw(aRaw);
+    }
+
     ~UpperDataStruct() = default;
 
     UpperDataStruct(const UpperDataStruct& other)            = delete;
@@ -111,6 +117,17 @@ struct UpperDataStruct : public T
         return result;
     }
 
+    std::string getAsDMP()
+    {
+        std::string result;
+        for (size_t i = 0; i < T::types.size(); ++i)
+        {
+            result += toString(T::types[i], T::ptrs[i]);
+            result.push_back(';');
+        }
+        return result;
+    }
+
     void setFromJson(const crow::json::rvalue& aReq) noexcept
     {
         for (auto& i : aReq)
@@ -131,6 +148,16 @@ struct UpperDataStruct : public T
                         break;
                 }
             }
+        }
+    }
+
+    void setFromRaw(const std::string& aRaw) noexcept
+    {
+        size_t offset = T::types.size() - aRaw.size();
+        for (auto& i : aRaw)
+        {
+            fromString(T::types[offset], T::ptrs[offset], i);
+            ++offset;
         }
     }
 

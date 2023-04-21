@@ -6,8 +6,8 @@
 #include <mutex>
 #include <queue>
 
+#include "database/data_array.hpp"
 #include "database/database_structures.hpp"
-#include "database/table.hpp"
 
 //-----------------d---------------------------------------------------------------
 
@@ -30,7 +30,7 @@ private:
 
     bool mIsActive;
 
-    data::Table<data::Submission> mQueue;
+    data::DataArray<data::Submission> mQueue;
     mutable std::mutex mSubmissionMutex;
 };
 } // namespace core

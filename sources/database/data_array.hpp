@@ -21,11 +21,6 @@ public:
         emplace_back(std::move(aData));
     }
 
-    void reset()
-    {
-        mData.clear();
-    }
-
     std::string getTableName() const
     {
         return T::tableName;
@@ -56,42 +51,25 @@ public:
 
     //--------------------------------------------------------------------------------
 
-    int getIndex(const std::string& aName)
-    {
-        auto it = T::columnNames.find(aName);
-        int res = -1;
-        if (it != T::columnNames.end()) return it->second;
-        return res;
-    }
-
-    // data::Type getType(size_t aNum)
+    // int getIndex(const std::string& aName)
     // {
-    //     data::Type res = data::Type::NUN;
-    //     if (it != names.end()) return it->second;
+    //     auto it = T::columnNames.find(aName);
+    //     int res = -1;
+    //     if (it != T::columnNames.end()) return it->second;
     //     return res;
     // }
 
-    // const std::vector<data::Type>& getTypes() const
+    // size_t columnCount()
     // {
-    //     return mTypes;
+    //     return T::columnNames.size();
     // }
 
-    size_t columnCount()
-    {
-        return T::columnNames.size();
-    }
-
-    size_t size() const
-    {
-        return mData.size();
-    }
+    // size_t size() const
+    // {
+    //     return mData.size();
+    // }
 
     //--------------------------------------------------------------------------------
-
-    // Cell operator[](size_t num)
-    // {
-    //     return Cell(mTypes[num], mData[num]);
-    // }
 
     T& operator[](size_t num)
     {
@@ -114,11 +92,6 @@ public:
         return Row<T>(T::types, mData.front());
     }
 
-    // const T& front() const
-    // {
-    //     return data.front();
-    // }
-
     T& back()
     {
         return mData.back();
@@ -129,30 +102,25 @@ public:
         return Row<T>(T::types, mData.back());
     }
 
-    // const T& back() const
-    // {
-    //     return Row(mTypes, data.back());
-    // }
-
     auto begin()
     {
         return mData.begin();
     }
 
-    auto begin() const
-    {
-        return mData.cbegin();
-    }
+    // auto begin() const
+    // {
+    //     return mData.cbegin();
+    // }
 
     auto end()
     {
         return mData.end();
     }
 
-    auto end() const
-    {
-        return mData.cend();
-    }
+    // auto end() const
+    // {
+    //     return mData.cend();
+    // }
 
     //--------------------------------------------------------------------------------
 
@@ -167,6 +135,57 @@ public:
     }
 
     //--------------------------------------------------------------------------------
+
+    //     bool loadFromRawData(const std::vector<std::vector<std::string>>&
+    //     aData)
+    //     {
+    //         bool result = false;
+
+    //         if (aData.size() != 0 && (aData[0].size() == this->columnCount()
+    //         ||
+    //                                   aData[0].size() == this->columnCount()
+    //                                   - 1))
+    //         {
+    //             bool hasOffset = this->columnCount() - aData[0].size();
+    //             result         = true;
+
+    //             for (auto& i : aData)
+    //             {
+    //                 bool flag = hasOffset;
+    //                 this->emplace_back();
+    //                 for (auto& i : this->backRow())
+    //                 {
+    //                     if (flag)
+    //                     {
+    //                         flag = false;
+    //                     }
+    //                     else
+    //                     {
+    //                         fromString(i.type, i.ptr, i);
+    //                     }
+    //                 }
+    //             }
+    //         }
+
+    //         return result;
+    //     }
+
+    bool loadFromRawData(const std::vector<std::vector<std::string>>& aRaw)
+    {
+        bool result = false;
+
+        if (aRaw.size() != 0 && (aRaw[0].size() == T::types.size() ||
+                                 aRaw[0].size() == T::types.size() - 1))
+        {
+            result = true;
+            for (auto& i : aRaw)
+            {
+                emplace_back(T(i));
+            }
+        }
+
+        return result;
+    }
 
 private:
     // std::unordered_map<std::string, uint8_t> mNames;

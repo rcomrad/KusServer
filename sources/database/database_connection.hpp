@@ -69,8 +69,8 @@ public:
         const std::unordered_set<std::string>& aColumnNames = {}) noexcept
     {
         DataArray<T> result;
-        auto columnNums = launchSelect(aCondition, aColumnNames);
-        mDatabase.getDataArray(result, mColumnNumber, columnNums);
+        auto columnNums = launchSelect<T>(aCondition, aColumnNames);
+        mDatabase.getDataArray<T>(result, mColumnNumber, columnNums);
         return result;
     }
 
@@ -90,7 +90,7 @@ public:
     {
 
         T result;
-        auto columnNums = launchSelect(aCondition, aColumnNames);
+        auto columnNums = launchSelect<T>(aCondition, aColumnNames);
         mDatabase.getData(result, mColumnNumber, columnNums);
         return result;
     }
@@ -178,17 +178,17 @@ public:
     //     return res;
     // }
 
-    // template <typename T>
-    // int insertTable(Table<T>& aData) noexcept
-    // {
-    //     int res = 0;
-    //     if (aData.size())
-    //     {
-    //         res = mDatabase.insert(getTableName<T>(),
-    //         aData.getAllAsInsert()); aData[0].id = res;
-    //     }
-    //     return res;
-    // }
+    template <typename T>
+    int insertTable(DataArray<T>& aData) noexcept
+    {
+        int res = 0;
+        if (aData.size())
+        {
+            res = mDatabase.insert(getTableName<T>(), aData.getAllAsInsert());
+            aData[0].id = res;
+        }
+        return res;
+    }
 
     // template <typename T>
     // int updateTable(const Table<T>& aData,
@@ -206,17 +206,17 @@ public:
     //     return res;
     // }
 
-    // template <typename T>
-    // int dropTable(const Table<T>& aData) noexcept
-    // {
-    //     int res = 0;
-    //     if (aData.size())
-    //     {
-    //         mDatabase.drop(getTableName<T>(), aData.getFirstAsCondition());
-    //         res = 1;
-    //     }
-    //     return res;
-    // }
+    template <typename T>
+    int dropTable(const DataArray<T>& aData) noexcept
+    {
+        int res = 0;
+        if (aData.size())
+        {
+            mDatabase.drop(getTableName<T>(), aData.getFirstAsCondition());
+            res = 1;
+        }
+        return res;
+    }
 
     //--------------------------------------------------------------------------------
 
