@@ -109,10 +109,10 @@ data::DataRequest::DataRequest(const std::string& aRequest,
                 j.rowNames.size() == 0)
             {
                 j.rowNames.clear();
-                for (auto& k : AsteriskHendler::table[j.trueName])
-                {
-                    j.rowNames.insert(k);
-                }
+                // for (auto& k : AsteriskHendler::table[j.trueName])
+                // {
+                //     j.rowNames.insert(k);
+                // }
             }
 
             // for (size_t k = 0; k < AsteriskHendler::table[j.trueName].size();
@@ -126,15 +126,15 @@ data::DataRequest::DataRequest(const std::string& aRequest,
 
             for (auto& i : j.rowNames)
             {
-                for (size_t k = 0;
-                     k < AsteriskHendler::table[j.trueName].size(); ++k)
-                {
-                    if (AsteriskHendler::table[j.trueName][k] == i)
-                    {
-                        j.rowNumbers.emplace_back(k);
-                        break;
-                    }
-                }
+                // for (size_t k = 0;
+                //      k < AsteriskHendler::table[j.trueName].size(); ++k)
+                // {
+                //     if (AsteriskHendler::table[j.trueName][k] == i)
+                //     {
+                //         j.rowNumbers.emplace_back(k);
+                //         break;
+                //     }
+                // }
             }
 
             // arr[0].fullName = aShame + "." + arr[0].trueName;

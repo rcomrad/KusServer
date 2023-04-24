@@ -64,6 +64,6 @@ core::SubmissionQueue::reload() noexcept
     decltype(mQueue) empty;
     std::swap(mQueue, empty);
     auto connection = data::ConnectionManager::getUserConnection();
-    auto mQueue = connection.val.getTable<data::Submission>("verdict=\'NUN\'");
+    auto mQueue = connection.val.getDataArray<data::Submission>("verdict=\'NUN\'");
     mSubmissionMutex.unlock();
 }

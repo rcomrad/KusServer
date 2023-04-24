@@ -139,9 +139,9 @@ file::File::writeData(const std::string& aFolderName,
         {
             auto connection = data::ConnectionManager::getUserConnection();
             auto table      = connection.val.getData<data::File>();
-            resultFileName  = std::to_string(table[0].num++) + "-" + aFileName;
+            resultFileName  = std::to_string(table.num++) + "-" + aFileName;
             filePath        = pathPrefix + resultFileName;
-            connection.val.update<data::File>(table);
+            connection.val.updateData<data::File>(table);
         }
         std::ofstream out(filePath);
         out << aData;

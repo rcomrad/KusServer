@@ -65,6 +65,13 @@ public:
 
     template <typename T>
     DataArray<T> getDataArray(
+        const std::unordered_set<std::string>& aColumnNames) noexcept
+    {
+        return getDataArray<T>("", aColumnNames);
+    }
+
+    template <typename T>
+    DataArray<T> getDataArray(
         const std::string& aCondition                       = "",
         const std::unordered_set<std::string>& aColumnNames = {}) noexcept
     {
@@ -83,6 +90,12 @@ public:
     //     auto columnNums = launchSelect(aCondition, aColumnNames);
     //     mDatabase.getTable(result, mColumnNumber, columnNums);
     // }
+
+    template <typename T>
+    T getData(const std::unordered_set<std::string>& aColumnNames) noexcept
+    {
+        return getData<T>("", aColumnNames);
+    }
 
     template <typename T>
     T getData(const std::string& aCondition                       = "",
@@ -246,17 +259,17 @@ private:
     }
 
     template <typename T>
-    std::unordered_set<std::string> launchSelect(
+    std::unordered_set<int> launchSelect(
         const std::string& aCondition,
         const std::unordered_set<std::string>& aColumnNames) noexcept
     {
         mColumnNumber = 0;
         std::string columns;
-        std::unordered_set<std::string> result;
+        std::unordered_set<int> result;
         for (auto& i : aColumnNames)
         {
             columns += i;
-            result.insert(T::columnNames[i]);
+            result.insert(T::nameToNum[i]);
         }
         mDatabase.select(getTableName<T>(), columns, aCondition);
         return result;

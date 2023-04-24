@@ -75,7 +75,7 @@ public:
         while (true)
         {
             T temp;
-            auto flag = getData();
+            auto flag = getData(temp, aOffset, aColums);
             // TODO: check move
             if (flag) result.emplace_back(std::move(temp));
             else break;
@@ -87,32 +87,36 @@ public:
                  int& aOffset,
                  const std::unordered_set<int>& aColums = {}) noexcept
     {
-        bool result = false;
+        bool res = false;
         step();
         if (hasData())
         {
-            result = true;
-            for (auto& i : result.backRow())
+            res = true;
+
+            for (int i = 0; i < T::types.size(); ++i)
             {
-                if (!hasData(aOffset)) break;
-                if (aColums.size() && !aColums.count(i.num)) continue;
-                switch (i.type)
+                int num = aOffset + i;
+                if (!hasData(num)) break;
+                if (!aColums.count(i)) continue;
+
+                switch (T::types[i])
                 {
                     case data::Type::INT:
-                        *((int*)i.ptr) = getColumnIntUnsafe(aOffset);
+                        *((int*)result.ptrs[i]) = getColumnIntUnsafe(num);
                         break;
                     case data::Type::BOOL:
-                        *((bool*)i.ptr) = getColumnBoolUnsafe(aOffset);
+                        *((bool*)result.ptrs[i]) = getColumnBoolUnsafe(num);
                         break;
                     case data::Type::STRING:
-                        *((std::string*)i.ptr) =
-                            getColumnAsStringUnsafe(aOffset);
+                        *((std::string*)result.ptrs[i]) =
+                            getColumnAsStringUnsafe(num);
                         break;
                 }
-                aOffset++;
             }
+
+            aOffset += aColums.size();
         }
-        return result;
+        return res;
     }
 
     //--------------------------------------------------------------------------------

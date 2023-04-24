@@ -69,6 +69,11 @@ public:
     //     return mData.size();
     // }
 
+    size_t empty() const
+    {
+        return mData.size() == 0;
+    }
+
     //--------------------------------------------------------------------------------
 
     T& operator[](size_t num)
