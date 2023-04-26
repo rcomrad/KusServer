@@ -7,6 +7,7 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 #include "crow.h"
@@ -26,19 +27,23 @@ enum class Type
     STRING
 };
 
+struct BaseDataDummy
+{
+};
+
 template <size_t size>
-struct BaseDataStruct
+struct BaseDataStruct : private BaseDataDummy
 {
     void* ptrs[size];
 
-    void* operator[](size_t num)
+    void* operator[](size_t num) noexcept
     {
         return ptrs[num];
     }
 
     // TODO: is it safe?
     // const void const* operator[](size_t num) const
-    const void* operator[](size_t num) const
+    const void* operator[](size_t num) const noexcept
     {
         return ptrs[num];
     }
@@ -52,7 +57,7 @@ struct UpperDataStruct : public T
         T::reset();
     }
 
-    UpperDataStruct(const std::string& aRaw) noexcept : T()
+    UpperDataStruct(const std::vector<std::string>& aRaw) noexcept : T()
     {
         T::reset();
         setFromRaw(aRaw);
@@ -73,7 +78,7 @@ struct UpperDataStruct : public T
         return *this;
     }
 
-    std::string getAsCondition()
+    std::string getAsCondition() const noexcept
     {
         std::string result;
         for (size_t i = 0; i < T::types.size(); ++i)
@@ -88,7 +93,7 @@ struct UpperDataStruct : public T
         return result;
     }
 
-    std::string getAsInsert()
+    std::string getAsInsert() const noexcept
     {
         std::string result = "(";
         for (size_t i = 0; i < T::types.size(); ++i)
@@ -102,7 +107,7 @@ struct UpperDataStruct : public T
         return result;
     }
 
-    std::string getAsUpdate()
+    std::string getAsUpdate() const noexcept
     {
         std::string result;
         for (size_t i = 1; i < T::types.size(); ++i)
@@ -117,13 +122,39 @@ struct UpperDataStruct : public T
         return result;
     }
 
-    std::string getAsDMP()
+    std::string getAsDMP() const noexcept
     {
         std::string result;
         for (size_t i = 0; i < T::types.size(); ++i)
         {
             result += toString(T::types[i], T::ptrs[i]);
             result.push_back(';');
+        }
+        return result;
+    }
+
+    crow::json::wvalue getAsJson(
+        const std::unordered_set<std::string>& aTurnOff = {}) const noexcept
+    {
+        crow::json::wvalue result;
+        for (size_t i = 0; i < T::types.size(); ++i)
+        {
+            if (aTurnOff.count(T::names[i])) continue;
+            switch (T::types[i])
+            {
+                case data::Type::INT:
+                    if (*(int*)T::ptrs[i] != 0)
+                        result[T::names[i]] = *(int*)T::ptrs[i];
+                    break;
+                case data::Type::BOOL:
+                    // TODO:
+                    result[T::names[i]] = *(bool*)T::ptrs[i];
+                    break;
+                case data::Type::STRING:
+                    if ((*(std::string*)T::ptrs[i])[0] != 0)
+                        result[T::names[i]] = *(std::string*)T::ptrs[i];
+                    break;
+            }
         }
         return result;
     }
@@ -151,7 +182,7 @@ struct UpperDataStruct : public T
         }
     }
 
-    void setFromRaw(const std::string& aRaw) noexcept
+    void setFromRaw(const std::vector<std::string>& aRaw) noexcept
     {
         size_t offset = T::types.size() - aRaw.size();
         for (auto& i : aRaw)
@@ -162,7 +193,7 @@ struct UpperDataStruct : public T
     }
 
 protected:
-    static std::string toString(data::Type aType, void* aPtr)
+    static std::string toString(data::Type aType, void* aPtr) noexcept
     {
         std::string result;
         switch (aType)
@@ -183,7 +214,7 @@ protected:
 
     static void fromString(data::Type aType,
                            void* aPtr,
-                           const std::string& aData)
+                           const std::string& aData) noexcept
     {
         switch (aType)
         {

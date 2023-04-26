@@ -16,7 +16,7 @@ class UserHandler : public GetHandler
 {
 public:
     static crow::json::wvalue process(
-        const std::vector<int>& aColumn,
+        const std::unordered_set<std::string>& aColumn,
         data::SmartConnection& aConnection) noexcept;
 };
 } // namespace get

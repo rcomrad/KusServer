@@ -98,6 +98,26 @@ post::UserHandler::dataFileUpload(const std::string& aFilePath)
     return {200};
 }
 
+bool
+check(const std::string aStr)
+{
+    bool result = false;
+
+    int minusCnt = 0;
+    for (int i = 0; i < user[0].login.size(); ++i)
+    {
+        if (aStr == '-') minusCnt++;
+        else minusCnt = 0;
+        if (aStr == ';') result = true;
+        if (aStr == '+') result = true;
+        if (aStr == '\\') result = true;
+
+        if (minusCnt > 1) flag = true;
+    }
+
+    return result;
+}
+
 crow::response
 post::UserHandler::autorisation(const crow::request& aReq)
 {
@@ -106,24 +126,34 @@ post::UserHandler::autorisation(const crow::request& aReq)
     if (x)
     {
         // data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
-        auto user        = parseRequest<data::User>(x).table;
-        std::string cond = "login = \'" + user[0].login + "\' AND " +
-                           "password = \'" + user[0].password + "\'";
-        // TODO:
-        auto userJson = get::GetHandler::singlGet("user", cond);
-        if (userJson.t() != crow::json::type::Null)
+        auto user = parseRequest<data::User>(x).table;
+
+        if (check(user[0].login) || check(user[0].password))
         {
-            data::Table<data::User> us;
+            // TODO: ban
+            resp = crow::response(401);
+        }
+        else
+        {
+            std::string cond = "login = \'" + user[0].login + "\' AND " +
+                               "password = \'" + user[0].password + "\'";
+            // TODO:
+            auto userJson = get::GetHandler::singlGet("user", cond);
+            if (userJson.t() != crow::json::type::Null)
             {
-                auto connection = data::ConnectionManager::getUserConnection();
-                us              = connection.val.getData<data::User>(cond);
+                data::Table<data::User> us;
+                {
+                    auto connection =
+                        data::ConnectionManager::getUserConnection();
+                    us = connection.val.getData<data::User>(cond);
+                }
+
+                auto& tokenHandler = core::TokenHandler::getInstance();
+                if (tokenHandler.isActive())
+                    userJson["user"]["token"] = tokenHandler.generate(us[0]);
+
+                resp = userJson;
             }
-
-            auto& tokenHandler = core::TokenHandler::getInstance();
-            if (tokenHandler.isActive())
-                userJson["user"]["token"] = tokenHandler.generate(us[0]);
-
-            resp = userJson;
         }
         else
         {

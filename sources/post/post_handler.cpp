@@ -23,7 +23,7 @@ post::PostHandler::uploadFile(crow::multipart::message& aMsg,
         auto connection = data::ConnectionManager::getUserConnection();
         auto table      = connection.val.getData<data::File>();
         filePath =
-            aPathPrefix + std::to_string(table[0].num++) + "-" + fileName;
+            aPathPrefix + std::to_string(table.num++) + "-" + fileName;
         connection.val.update<data::File>(table);
     }
 

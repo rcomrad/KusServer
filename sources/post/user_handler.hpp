@@ -15,6 +15,7 @@ public:
     static crow::json::wvalue dataFileUpload(const std::string& aFilePath);
 
     static crow::response autorisation(const crow::request& aReq);
+    
 };
 } // namespace post
 

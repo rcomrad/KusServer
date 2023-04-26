@@ -21,23 +21,22 @@ class GetHandler
 {
 public:
     static crow::json::wvalue singlGet(const std::string& aRequest,
-                                       const std::string& aCondition) noexcept;
+                                       std::string&& aCondition) noexcept;
 
-    static crow::json::wvalue multiplelGet(
-        const std::string& aRequest, const std::string& aCondition) noexcept;
+    static crow::json::wvalue multiplelGet(const std::string& aRequest,
+                                           std::string&& aCondition) noexcept;
 
     static crow::json::wvalue mainGet(const std::string& aRequest,
-                                      const std::string& aCondition) noexcept;
+                                      std::string&& aCondition) noexcept;
 
     template <typename T>
     static crow::json::wvalue process(
-        const std::vector<int>& aColumn,
+        const std::unordered_set<std::string>& aColumn,
         data::SmartConnection& aConnection) noexcept
     {
         auto table     = aConnection.val.getDataArray<T>(aColumn);
-        auto tableList = getTableAsList(table);
         crow::json::wvalue result;
-        result[T::tableName] = std::move(tableList);
+        result[T::tableName] = std::move(table. getAsJList());
         return result;
     }
 
@@ -55,7 +54,7 @@ public:
                 file::Path::getInstance().getPath("dump").value();
             filePath = pathPrefix + std::to_string(table.num++) + "-" +
                        T::tableName + ".dmp";
-            connection.val.updateData(table);
+            connection.val.update(table);
         }
 
         std::ofstream out(filePath);
@@ -79,44 +78,6 @@ public:
             result.push_back('\n');
         }
         result += "END\n";
-
-        return result;
-    }
-
-protected:
-    template <typename T>
-    static crow::json::wvalue::list getTableAsList(
-        const data::DataArray<T>& aTable) noexcept
-    {
-        crow::json::wvalue::list result;
-
-        for (auto& i : aTable)
-        {
-            crow::json::wvalue temp;
-            for (auto& col : aTable.names)
-            {
-                auto& name = col.first;
-                auto indx  = col.second;
-                switch (aTable.types[indx])
-                {
-                    case data::Type::INT:
-                        if (*(int*)i[indx] != 0) temp[name] = *(int*)i[indx];
-                        break;
-                    case data::Type::BOOL:
-                        // TODO:
-                        temp[name] = *(bool*)i[indx];
-                        break;
-                    case data::Type::CHARS:
-                        temp[name] = std::string((char*)i[indx]);
-                        break;
-                    case data::Type::STRING:
-                        if ((*(std::string*)i[indx])[0] != 0)
-                            temp[name] = *(std::string*)i[indx];
-                        break;
-                }
-            }
-            result.emplace_back(std::move(temp));
-        }
 
         return result;
     }

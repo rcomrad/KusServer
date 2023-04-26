@@ -21,6 +21,11 @@ public:
         emplace_back(std::move(aData));
     }
 
+    DataArray(const std::vector<std::vector<std::string>>& aRaw)
+    {
+        loadFromRawData(aRaw);
+    }
+
     std::string getTableName() const
     {
         return T::tableName;
@@ -189,6 +194,17 @@ public:
             }
         }
 
+        return result;
+    }
+
+    crow::json::wvalue::list getAsJList(
+        const std::unordered_set<std::string>& aTurnOff = {}) noexcept
+    {
+        crow::json::wvalue::list result;
+        for (const auto& i : mData)
+        {
+            result.emplace_back(std::move(i.getAsJson(aTurnOff)));
+        }
         return result;
     }
 

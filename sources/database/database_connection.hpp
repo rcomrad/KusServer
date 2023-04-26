@@ -10,6 +10,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include "domain/metaprogramming.hpp"
+
 #include "postgresql.hpp"
 
 //--------------------------------------------------------------------------------
@@ -39,15 +41,7 @@ public:
 
     //--------------------------------------------------------------------------------
 
-    template <typename T>
-    DataArray<T> complexSelect(data::TableInfoAray& request) noexcept
-    {
-        mColumnNumber = 0;
-        auto tabl     = request.getTables();
-        auto col      = request.getColumns();
-        auto con      = request.getCondition();
-        mDatabase.select(tabl, col, con);
-    }
+    void complexSelect(const data::DataRequest& request) noexcept;
 
     template <typename T>
     DataArray<T> getNextDataArray(
@@ -60,6 +54,7 @@ public:
             columnNums.insert(T::columnNames[i]);
         }
         mDatabase.getDataArray<T>(result, mColumnNumber, columnNums);
+        // TODO close
         return result;
     }
 
@@ -110,8 +105,9 @@ public:
 
     //--------------------------------------------------------------------------------
 
-    template <typename T>
-    int writeData(T& aData) noexcept
+    template <typename T,
+              typename = dom::enableIfDerivedOf<data::BaseDataDummy, T>>
+    int writ(T& aData) noexcept
     {
         int res = 0;
         if (aData.id == 0)
@@ -125,15 +121,17 @@ public:
         return res;
     }
 
-    template <typename T>
-    int insertData(T& aData) noexcept
+    template <typename T,
+              typename = dom::enableIfDerivedOf<data::BaseDataDummy, T>>
+    int insert(T& aData) noexcept
     {
         aData.id = mDatabase.insert(getTableName<T>(), aData.getAsInsert());
         return aData.id;
     }
 
-    template <typename T>
-    int updateData(const T& aData, const std::string& aConditon = "") noexcept
+    template <typename T,
+              typename = dom::enableIfDerivedOf<data::BaseDataDummy, T>>
+    int update(const T& aData, const std::string& aConditon = "") noexcept
     {
         int res = 0;
         if (aData.id != 0)
@@ -146,8 +144,9 @@ public:
         return res;
     }
 
-    template <typename T>
-    int dropData(T& aData) noexcept
+    template <typename T,
+              typename = dom::enableIfDerivedOf<data::BaseDataDummy, T>>
+    int drop(T& aData) noexcept
     {
         int res = 0;
         if (aData.id != 0)
@@ -192,7 +191,7 @@ public:
     // }
 
     template <typename T>
-    int insertTable(DataArray<T>& aData) noexcept
+    int insert(DataArray<T>& aData) noexcept
     {
         int res = 0;
         if (aData.size())
@@ -220,7 +219,7 @@ public:
     // }
 
     template <typename T>
-    int dropTable(const DataArray<T>& aData) noexcept
+    int drop(const DataArray<T>& aData) noexcept
     {
         int res = 0;
         if (aData.size())

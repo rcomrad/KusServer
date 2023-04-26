@@ -7,44 +7,45 @@
 
 #include "path.hpp"
 
-file::FileData
+file::FileDataArray
 file::File::dmpParser(const std::string& aFileName) noexcept
 {
-    std::ifstream ios(aFileName);
-    if (!ios.is_open())
+    auto words = File::getWords(aFileName);
+    file::FileDataArray res;
+    for (size_t i = 0; i < words.size(); ++i)
     {
-        std::cout << "NO_SUCH_FILE: " + aFileName + "\n";
-    }
-    else
-    {
-        std::cout << "Extracting_file: " + aFileName + "\n";
-    }
+        if (words[i].empty()) continue;
+        auto& curArray = res[words[i][0]];
 
-    file::FileData res;
-
-    std::string name;
-    while (std::getline(ios, name))
-    {
-        if (name.empty()) continue;
-        auto& curArray = res.data[name];
-
-        std::string row;
-        while (std::getline(ios, row) && row != "END")
+        for (++i; i < words.size() && words[i].size() && words[i][0] != "END";
+             ++i)
         {
-            curArray.value.emplace_back();
-            int indx = 0;
-            while (indx < row.size())
+            curArray.value.emplace_back(std::move(words[i]));
+        }
+    }
+    return res;
+}
+
+file::FileDataArray
+file::File::dataParser(const std::string& aFileName) noexcept
+{
+    auto words = File::getWords(aFileName);
+    file::FileDataArray res;
+    for (size_t i = 0; i < words.size(); ++i)
+    {
+        if (words[i].empty()) continue;
+        auto& curArray      = res[words[i][0]];
+        int additionalLines = std::stoi(words[i][1]);
+
+        for (++i; i < words.size() && words[i].size() && words[i][0] != "END"; ++i)
+        {
+            curArray.value.emplace_back(std::move(words[i]));
+            for (int j = 0; j < additionalLines; ++j)
             {
-                while (row[indx] == '\t') indx++;
-                int from = indx;
-                while (row[indx] != ';' && row[indx] != '\0') indx++;
-                curArray.value.back().emplace_back(
-                    row.substr(from, indx - from));
-                indx += 1;
+                curArray.additionalInfo.emplace_back(std::move(words[++i]));
             }
         }
     }
-
     return res;
 }
 
@@ -141,7 +142,7 @@ file::File::writeData(const std::string& aFolderName,
             auto table      = connection.val.getData<data::File>();
             resultFileName  = std::to_string(table.num++) + "-" + aFileName;
             filePath        = pathPrefix + resultFileName;
-            connection.val.updateData<data::File>(table);
+            connection.val.update<data::File>(table);
         }
         std::ofstream out(filePath);
         out << aData;

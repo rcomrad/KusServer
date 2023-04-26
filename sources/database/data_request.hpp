@@ -14,127 +14,42 @@
 
 namespace data
 {
-struct TableInfo
-{
-    std::string tableName;
-    std::string trueName;
-    std::string fullName;
-    // std::unordered_set<std::string> rowNames;
-    std::unordered_set<std::string> rowNames;
-    std::vector<int> rowNumbers;
-    int parentNum;
-    std::string jsonName;
-
-    TableInfo(std::string&& aTableName, int aParentNum) noexcept;
-};
-
-class TableInfoAray
-{
-public:
-    std::string getTables() const noexcept;
-    std::string getColumns() noexcept;
-    const std::string& getCondition() const noexcept;
-
-    TableInfo& operator[](size_t num) noexcept;
-
-    std::optional<const std::string*> popTableName() noexcept;
-
-    auto begin() noexcept
-    {
-        return arr.begin();
-    }
-    auto end() noexcept
-    {
-        return arr.end();
-    }
-
-    auto begin() const noexcept
-    {
-        return arr.cbegin();
-    }
-    auto end() const noexcept
-    {
-        return arr.cend();
-    }
-
-private:
-    std::vector<TableInfo> arr;
-    std::string mCondition;
-    size_t mCnt = 0;
-
-    friend class DataRequest;
-
-    template <typename... Args>
-    void emplace_back(Args&&... args)
-    {
-        arr.emplace_back(std::forward<Args>(args)...);
-    }
-
-    size_t size()
-    {
-        return arr.size();
-    }
-};
 
 class DataRequest
 {
 public:
-    DataRequest(const std::string& aRequest,
-                const std::string& aCondition) noexcept;
+    DataRequest(const std::string& aRequest, std::string&& aCondition) noexcept;
+
+    std::string getTables() const noexcept;
+    std::string getColumns() const noexcept;
+    const std::string& getCondition() const noexcept;
+
+    const std::string& getTableName(size_t aNum) const noexcept;
+    std::string getNickname(size_t aNum) const noexcept;
+    const std::unordered_set<std::string>& getTableColumns(
+        size_t aNum) const noexcept;
+    int getPreviousNum(size_t aNum) const noexcept;
 
     size_t size() const noexcept;
 
-    auto begin() noexcept
-    {
-        return request.begin();
-    }
-    auto end() noexcept
-    {
-        return request.end();
-    }
-
-    auto begin() const noexcept
-    {
-        return request.cbegin();
-    }
-    auto end() const noexcept
-    {
-        return request.cend();
-    }
-
-    auto& operator[](size_t num)
-    {
-        return request[num];
-    }
-
 private:
-    std::vector<TableInfoAray> request;
-    size_t curNum;
-    size_t last;
-    size_t iter;
-    size_t requestCellNum;
-    int brackets;
+    std::vector<int> mPrev;
+    std::vector<std::string> mTables;
+    std::vector<std::string> mNicknames;
+    std::vector<std::unordered_set<std::string>> mColumns;
+    std::string mCondition;
 
     static std::unordered_map<std::string, std::string> aTableNames;
 
-    void pushName(const std::string& aRequest) noexcept;
-    void newTable(const std::string& aRequest) noexcept;
+    void pushTable(int iter,
+                   int& last,
+                   const std::string& aRequest,
+                   int aOffset) noexcept;
 
-    template <typename T>
-    std::string getTableName(T&& aName) const noexcept
-    {
-        std::string result;
-        auto it = aTableNames.find(aName);
-        if (it != aTableNames.end())
-        {
-            result = it->second;
-        }
-        else
-        {
-            result = std::forward<T>(aName);
-        }
-        return result;
-    }
+    void pushName(int iter,
+                  int& last,
+                  const std::string& aRequest,
+                  int curPrev) noexcept;
 };
 
 } // namespace data

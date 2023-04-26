@@ -55,6 +55,19 @@ data::DatabaseConnection::DatabaseConnection(
 //--------------------------------------------------------------------------------
 
 void
+data::DatabaseConnection::complexSelect(
+    const data::DataRequest& request) noexcept
+{
+    mColumnNumber = 0;
+    auto tabl     = request.getTables();
+    auto col      = request.getColumns();
+    auto con      = request.getCondition();
+    mDatabase.select(tabl, col, con);
+}
+
+//--------------------------------------------------------------------------------
+
+void
 data::DatabaseConnection::createTable(
     const std::string& aTableName,
     const std::vector<ColumnSetting>& aColums) noexcept

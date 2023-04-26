@@ -10,6 +10,8 @@
 
 #include "database/connection_manager.hpp"
 
+#include "file/file.hpp"
+
 #include "crow.h"
 
 //--------------------------------------------------------------------------------
@@ -37,7 +39,7 @@ public:
         int res;
         {
             auto connection = data::ConnectionManager::getUserConnection();
-            res             = connection.val.updateData<T>(request.data);
+            res             = connection.val.update<T>(request.data);
         }
 
         manyToManyTransmiter(request);
@@ -65,12 +67,9 @@ public:
         data::DataArray<T> table;
         table.reserve(16);
 
-        auto ss  = aTableName + "_id";
-        auto sss = table.names;
-
-        auto it = table.names.find(aTableName + "_id");
+        auto it = T::nameToNum.find(aTableName + "_id");
         crow::json::wvalue res;
-        if (it == table.names.end())
+        if (it == T::nameToNum.end())
         {
             res = {"404"};
         }
@@ -83,7 +82,7 @@ public:
             {
                 table.emplace_back();
                 *(int*)table.back()[l] = aID;
-                connection.val.dropTable<T>(table);
+                connection.val.drop<T>(table);
                 table.pop_back();
             }
 
@@ -94,7 +93,7 @@ public:
                 *(int*)table.back()[r] = i;
             }
 
-            res = connection.val.insertTable<T>(table);
+            res = connection.val.insert<T>(table);
         }
 
         return {res};
@@ -103,8 +102,16 @@ public:
     template <typename T>
     static crow::json::wvalue uploadFromFile(const crow::request& aReq)
     {
-        // crow::multipart::message msg(aReq);
-        // std::string filePath = uploadFile(msg, aDBQ);
+        crow::json::wvalue res;
+
+        crow::multipart::message msg(aReq);
+        std::string filePath = uploadFile(msg);
+        auto data = file::FileRouter::process(filePath);
+
+        for(const auto& i : data)
+        {
+            data::DataArray
+        }
 
         return {400};
     }
@@ -117,7 +124,7 @@ public:
         if (req.begin()->t() != crow::json::type::List)
         {
             auto data = parseRequest<T>(req).data;
-            connection.val.dropData<T>(data);
+            connection.val.drop(data);
         }
         else
         {
@@ -136,71 +143,8 @@ public:
         data::DataArray<T> table;
         auto res        = table.loadFromRawData(aData);
         auto connection = data::ConnectionManager::getUserConnection();
-        connection.val.insertTable(table);
+        connection.val.insert(table);
         return {res};
-    }
-
-    template <typename T>
-    struct DataFile
-    {
-        data::DataArray<T> table;
-        std::vector<std::vector<std::string>> additionalLines;
-    };
-
-    template <typename T>
-    static auto dataFileParser(const std::string& aFilePath,
-                               int aAdditionalLineCount     = 0,
-                               std::set<int> aErasedIndexes = {0})
-    {
-        DataFile<T> result;
-        std::ifstream inp(aFilePath);
-
-        std::string firstString;
-        std::getline(inp, firstString);
-
-        std::string s;
-        while (std::getline(inp, s))
-        {
-            result.table.emplace_back();
-            auto& temp = result.table.back();
-
-            std::stringstream ss;
-            ss << s;
-            for (int ind = 0; ind < result.table.types.size(); ++ind)
-            {
-                if (aErasedIndexes.count(ind)) continue;
-
-                switch (result.table.types[ind])
-                {
-                    case data::Type::INT:
-                        ss >> *(int*)temp[ind];
-                        break;
-                    case data::Type::BOOL:
-                        ss >> *(bool*)temp[ind];
-                        break;
-                    // case data::Type::CHARS:
-                    //     strcpy((char*)temp[ind], i.s().s_);
-                    //     break;
-                    case data::Type::STRING:
-                        ss >> *(std::string*)temp[ind];
-                        break;
-                }
-            }
-
-            if (aAdditionalLineCount)
-            {
-                std::string additionalLine;
-
-                result.additionalLines.emplace_back();
-                for (int i = 0; i < aAdditionalLineCount; ++i)
-                {
-                    std::getline(inp, additionalLine);
-                    result.additionalLines.back().emplace_back(additionalLine);
-                }
-            }
-        }
-
-        return result;
     }
 
 protected:

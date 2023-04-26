@@ -7,17 +7,23 @@
 #include <unordered_map>
 #include <vector>
 
-#include "file_data.hpp"
-
 //--------------------------------------------------------------------------------
 
 namespace file
 {
 
+struct FileData
+{
+    std::vector<std::vector<std::string>> value;
+    std::vector<std::vector<std::string>> additionalInfo;
+};
+using FileDataArray = std::unordered_map<std::string, FileData>;
+
 class File
 {
 public:
-    static FileData dmpParser(const std::string& aFileName) noexcept;
+    static FileDataArray dmpParser(const std::string& aFileName) noexcept;
+    static FileDataArray dataParser(const std::string& aFileName) noexcept;
 
     static std::string getAllData(const std::string& aFileName) noexcept;
     static std::vector<std::string> getLines(

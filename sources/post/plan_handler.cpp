@@ -27,33 +27,33 @@ post::PlanHandler::uploadFromFile(const crow::request& aReq)
 crow::json::wvalue
 post::PlanHandler::csvFileUpload(const PlanData& aPlanData)
 {
-    data::Table<data::Plan> plan(1);
-    plan.back().name       = aPlanData.name;
-    plan.back().subject_id = aPlanData.subjectID;
-    plan.back().url        = aPlanData.url;
+    // data::Table<data::Plan> plan(1);
+    // plan.back().name       = aPlanData.name;
+    // plan.back().subject_id = aPlanData.subjectID;
+    // plan.back().url        = aPlanData.url;
 
-    {
-        auto connection = data::ConnectionManager::getUserConnection();
-        plan.back().id  = connection.val.update<data::Plan>(plan);
-    }
+    // {
+    //     auto connection = data::ConnectionManager::getUserConnection();
+    //     plan.back().id  = connection.val.update<data::Plan>(plan);
+    // }
 
-    std::ifstream file(plan[0].url);
-    std::string name;
-    int count;
-    data::Table<data::Theme> themes;
-    while (std::getline(file, name, ';') && file >> count)
-    {
-        themes.emplace_back();
-        themes.back().name       = name;
-        themes.back().hour_count = count;
-        themes.back().plan_id    = plan[0].id;
-        std::getline(file, name, '\n');
-    }
+    // std::ifstream file(plan[0].url);
+    // std::string name;
+    // int count;
+    // data::Table<data::Theme> themes;
+    // while (std::getline(file, name, ';') && file >> count)
+    // {
+    //     themes.emplace_back();
+    //     themes.back().name       = name;
+    //     themes.back().hour_count = count;
+    //     themes.back().plan_id    = plan[0].id;
+    //     std::getline(file, name, '\n');
+    // }
 
-    {
-        auto connection = data::ConnectionManager::getUserConnection();
-        connection.val.update<data::Theme>(themes);
-    }
+    // {
+    //     auto connection = data::ConnectionManager::getUserConnection();
+    //     connection.val.update<data::Theme>(themes);
+    // }
 
     return {200};
 }

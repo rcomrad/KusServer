@@ -8,17 +8,19 @@
 
 #include "database/connection_manager.hpp"
 
+#include "file/file.hpp"
+
 crow::json::wvalue
 post::JournalHandler::process(const crow::request& aReq)
 {
     auto req     = crow::json::load(aReq.body);
-    auto journal = parseRequest<data::Journal_table>(req).table;
+    auto journal = parseRequest<data::Journal_table>(req).data;
     {
         auto connection = data::ConnectionManager::getUserConnection();
         connection.val.update(journal);
     }
-    makeSchedule(journal[0]);
-    return {journal[0].id};
+    makeSchedule(journal);
+    return {journal.id};
 }
 
 crow::json::wvalue
@@ -41,18 +43,23 @@ post::JournalHandler::uploadFromFile(const crow::request& aReq)
 crow::json::wvalue
 post::JournalHandler::dataFileUpload(const std::string& aFilePath)
 {
-    auto data = dataFileParser<data::Journal_table>(aFilePath, 1);
+    auto data = file::File::dataParser(aFilePath);
+    data::DataArray<data::Journal_table> journals(data.value);
+
     for (int i = 0; i < data.table.size(); ++i)
     {
-        data.table[i].schedule = std::move(data.additionalLines[i][0]);
+        for (auto& j : data.additionalInfo[i])
+        {
+            data.table[i].schedule += j;
+        }
     }
 
     {
         auto connection = data::ConnectionManager::getUserConnection();
-        connection.val.update(data.table);
+        connection.val.update(journals);
     }
 
-    for (auto& i : data.table)
+    for (auto& i : journals)
     {
         makeSchedule(i);
     }
@@ -68,22 +75,23 @@ post::JournalHandler::makeSchedule(data::Journal_table& aJournal)
     for (auto i : aJournal.schedule)
         if (i >= '1' && i <= '7') schedule.emplace_back(i - '0');
 
-    data::Table<data::User> methodist = connection.val.getData<data::User>(
+    data::User methodist = connection.val.getData<data::User>(
         "id = " + data::wrap(aJournal.methodist_id));
 
-    data::Table<data::Theme> themes = connection.val.getData<data::Theme>(
-        "plan_id = " + data::wrap(aJournal.plan_id));
+    data::DataArray<data::Theme> themes =
+        connection.val.getDataArray<data::Theme>("plan_id = " +
+                                                 data::wrap(aJournal.plan_id));
 
-    int methodistID = 0;
-    if (methodist.size()) methodistID = methodist[0].school_id;
-    data::Table<data::School> school =
-        connection.val.getData<data::School>("id = " + data::wrap(methodistID));
+    int methodistSchool = -1;
+    if (methodist.id) methodistSchool = methodist.school_id;
+    data::School school = connection.val.getData<data::School>(
+        "id = " + data::wrap(methodistSchool));
 
-    int schoolID  = 0;
+    int schoolID  = -1;
     uint16_t year = 1991;
     uint8_t month = 12;
     uint8_t day   = 26;
-    if (school.size())
+    if (school.id)
     {
         schoolID = school[0].id;
 
@@ -92,8 +100,9 @@ post::JournalHandler::makeSchedule(data::Journal_table& aJournal)
         day   = uint8_t(std::stoi(school[0].start_date.substr(8, 2)));
     };
 
-    data::Table<data::Holiday> holidays = connection.val.getData<data::Holiday>(
-        "school_id = " + data::wrap(schoolID));
+    data::DataArray<data::Holiday> holidays =
+        connection.val.getData<data::Holiday>("school_id = " +
+                                              data::wrap(schoolID));
 
     boost::gregorian::date startDate{year, month, day};
     boost::gregorian::date date = startDate;
@@ -118,7 +127,7 @@ post::JournalHandler::makeSchedule(data::Journal_table& aJournal)
             uint8_t(std::stoi(i.date_val.substr(8, 2)))});
     }
 
-    data::Table<data::Lesson> lessons;
+    data::DayaArray<data::Lesson> lessons;
     for (int i = 0; i < themes.size();)
     {
         if (j == schedule.size())
@@ -135,12 +144,12 @@ post::JournalHandler::makeSchedule(data::Journal_table& aJournal)
                               std::to_string(newData.day());
 
         lessons.emplace_back();
-        lessons.back().theme_id         = themes.data[i].id;
+        lessons.back().theme_id         = themes[i].id;
         lessons.back().date_val         = dateStr;
         lessons.back().journal_table_id = aJournal.id;
 
         ++i;
     }
 
-    connection.val.update<data::Lesson>(lessons);
+    connection.val.update(lessons);
 }
