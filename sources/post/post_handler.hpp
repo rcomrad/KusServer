@@ -11,6 +11,7 @@
 #include "database/connection_manager.hpp"
 
 #include "file/file.hpp"
+#include "file/file_router.hpp"
 
 #include "crow.h"
 
@@ -31,7 +32,7 @@ private:
 
 public:
     template <typename T>
-    static crow::json::wvalue process(const crow::request& aReq)
+    static crow::json::wvalue process(const crow::request& aReq) noexcept
     {
         auto body    = crow::json::load(aReq.body);
         auto request = parseRequest<T>(body);
@@ -48,12 +49,12 @@ public:
     }
 
     template <typename T>
-    static void manyToManyTransmiter(const PostRequest<T>& aReq)
+    static void manyToManyTransmiter(const PostRequest<T>& aReq) noexcept
     {
         for (auto& i : aReq.manyToMany)
         {
-            transmitToMTMHandler(i.first, aReq.id(), aReq.other.count("add"),
-                                 i.second, aReq.data.getTableName());
+            transmitToMTMHandler(i.first, aReq.data.id, aReq.other.count("add"),
+                                 i.second, T::tableName);
         }
     }
 
@@ -61,7 +62,7 @@ public:
     static crow::json::wvalue manyToMany(int aID,
                                          bool aIsAdding,
                                          std::vector<int> aIDForInsert,
-                                         const std::string& aTableName)
+                                         const std::string& aTableName) noexcept
     {
         auto connection = data::ConnectionManager::getUserConnection();
         data::DataArray<T> table;
@@ -100,24 +101,7 @@ public:
     }
 
     template <typename T>
-    static crow::json::wvalue uploadFromFile(const crow::request& aReq)
-    {
-        crow::json::wvalue res;
-
-        crow::multipart::message msg(aReq);
-        std::string filePath = uploadFile(msg);
-        auto data = file::FileRouter::process(filePath);
-
-        for(const auto& i : data)
-        {
-            data::DataArray
-        }
-
-        return {400};
-    }
-
-    template <typename T>
-    static crow::json::wvalue drop(const crow::request& aReq)
+    static crow::json::wvalue drop(const crow::request& aReq) noexcept
     {
         auto connection = data::ConnectionManager::getUserConnection();
         auto req        = crow::json::load(aReq.body);
@@ -136,9 +120,25 @@ public:
         return {};
     }
 
+    //--------------------------------------------------------------------------------
+
+    static crow::json::wvalue uploadFromFile(
+        const std::string aFileName) noexcept;
+    static crow::json::wvalue uploadFromFileRequest(
+        const crow::request& aReq) noexcept;
+
+    template <typename T>
+    static crow::json::wvalue rawDataHandler(
+        std::vector<std::vector<std::string>>& aData,
+        const std::vector<std::vector<std::string>>& aAdditionalInfo =
+            {}) noexcept
+    {
+        return rawDataInsert<T>(aData);
+    }
+
     template <typename T>
     static crow::json::wvalue rawDataInsert(
-        const std::vector<std::vector<std::string>>& aData)
+        const std::vector<std::vector<std::string>>& aData) noexcept
     {
         data::DataArray<T> table;
         auto res        = table.loadFromRawData(aData);
@@ -146,6 +146,8 @@ public:
         connection.val.insert(table);
         return {res};
     }
+
+    //--------------------------------------------------------------------------------
 
 protected:
     template <typename T>
@@ -176,14 +178,14 @@ protected:
     }
 
     static std::string uploadFile(crow::multipart::message& aMsg,
-                                  std::string aPathPrefix = "");
+                                  std::string aPathPrefix = "") noexcept;
 
 private:
     static void transmitToMTMHandler(const std::string aTableName,
                                      int aID,
                                      bool aIsAdding,
                                      std::vector<int> aIDForInsert,
-                                     const std::string aTrueNam);
+                                     const std::string aTrueNam) noexcept;
 };
 } // namespace post
 

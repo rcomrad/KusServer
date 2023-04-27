@@ -15,12 +15,15 @@ namespace post
 class JournalHandler : protected PostHandler
 {
 public:
-    static crow::json::wvalue process(const crow::request& aReq);
-    static crow::json::wvalue uploadFromFile(const crow::request& aReq);
-    static crow::json::wvalue dataFileUpload(const std::string& aFilePath);
+    static crow::json::wvalue process(const crow::request& aReq) noexcept;
+
+    static crow::json::wvalue rawDataHandler(
+        std::vector<std::vector<std::string>>& aData,
+        const std::vector<std::vector<std::string>>& aAdditionalInfo =
+            {}) noexcept;
 
 private:
-    static void makeSchedule(data::Journal_table& aJournal);
+    static void makeSchedule(data::Journal_table& aJournal) noexcept;
 };
 } // namespace post
 

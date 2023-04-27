@@ -185,6 +185,8 @@ struct UpperDataStruct : public T
     void setFromRaw(const std::vector<std::string>& aRaw) noexcept
     {
         size_t offset = T::types.size() - aRaw.size();
+        // TODO: check?
+        if (offset != 0 && offset != 1) return;
         for (auto& i : aRaw)
         {
             fromString(T::types[offset], T::ptrs[offset], i);

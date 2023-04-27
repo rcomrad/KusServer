@@ -56,23 +56,10 @@ public:
 
     //--------------------------------------------------------------------------------
 
-    // int getIndex(const std::string& aName)
-    // {
-    //     auto it = T::columnNames.find(aName);
-    //     int res = -1;
-    //     if (it != T::columnNames.end()) return it->second;
-    //     return res;
-    // }
-
-    // size_t columnCount()
-    // {
-    //     return T::columnNames.size();
-    // }
-
-    // size_t size() const
-    // {
-    //     return mData.size();
-    // }
+    size_t size() const
+    {
+        return mData.size();
+    }
 
     size_t empty() const
     {
@@ -117,68 +104,22 @@ public:
         return mData.begin();
     }
 
-    // auto begin() const
-    // {
-    //     return mData.cbegin();
-    // }
+    auto begin() const
+    {
+        return mData.cbegin();
+    }
 
     auto end()
     {
         return mData.end();
     }
 
-    // auto end() const
-    // {
-    //     return mData.cend();
-    // }
-
-    //--------------------------------------------------------------------------------
-
-    void turnOffEmptyColumns()
+    auto end() const
     {
-    }
-
-    void turnOffColumn(const std::string& aColumnName)
-    {
-        // names[aColumnName] *= -1;
-        // mNames.erase(aColumnName);
+        return mData.cend();
     }
 
     //--------------------------------------------------------------------------------
-
-    //     bool loadFromRawData(const std::vector<std::vector<std::string>>&
-    //     aData)
-    //     {
-    //         bool result = false;
-
-    //         if (aData.size() != 0 && (aData[0].size() == this->columnCount()
-    //         ||
-    //                                   aData[0].size() == this->columnCount()
-    //                                   - 1))
-    //         {
-    //             bool hasOffset = this->columnCount() - aData[0].size();
-    //             result         = true;
-
-    //             for (auto& i : aData)
-    //             {
-    //                 bool flag = hasOffset;
-    //                 this->emplace_back();
-    //                 for (auto& i : this->backRow())
-    //                 {
-    //                     if (flag)
-    //                     {
-    //                         flag = false;
-    //                     }
-    //                     else
-    //                     {
-    //                         fromString(i.type, i.ptr, i);
-    //                     }
-    //                 }
-    //             }
-    //         }
-
-    //         return result;
-    //     }
 
     bool loadFromRawData(const std::vector<std::vector<std::string>>& aRaw)
     {
@@ -203,14 +144,36 @@ public:
         crow::json::wvalue::list result;
         for (const auto& i : mData)
         {
-            result.emplace_back(std::move(i.getAsJson(aTurnOff)));
+            result.emplace_back(i.getAsJson(aTurnOff));
         }
         return result;
     }
 
+    std::string getAsInsert(
+        const std::unordered_set<std::string>& aTurnOff = {}) noexcept
+    {
+        std::string result;
+        for (const auto& i : mData)
+        {
+            result += i.getAsInsert();
+            result.push_back(',');
+        }
+        return result;
+    }
+
+    // std::string getAsUpdate(
+    //     const std::unordered_set<std::string>& aTurnOff = {}) noexcept
+    // {
+    //     std::string result;
+    //     for (const auto& i : mData)
+    //     {
+    //         result += i.getAsUpdate();
+    //         result.push_back(',');
+    //     }
+    //     return result;
+    // }
+
 private:
-    // std::unordered_map<std::string, uint8_t> mNames;
-    // std::vector<data::Type> mTypes;
     std::vector<T> mData;
 };
 

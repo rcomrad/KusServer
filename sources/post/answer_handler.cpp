@@ -9,7 +9,7 @@ core::ProgramState& post::AnswerHandler::mProgramState =
     core::ProgramState::getInstance();
 
 crow::json::wvalue
-post::AnswerHandler::process(const crow::request& aReq)
+post::AnswerHandler::process(const crow::request& aReq) noexcept
 {
     auto body   = crow::json::load(aReq.body);
     auto answer = parseRequest<data::Answer>(body).data;

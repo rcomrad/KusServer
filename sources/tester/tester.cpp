@@ -31,14 +31,12 @@ test::Tester::run(data::Submission&& aSubmission) noexcept
 {
     mIsmIsCorapted = false;
 
-    data::Table<data::Problem> problemTable;
+    data::Problem problem;
     {
         auto connection = data::ConnectionManager::getUserConnection();
-        problemTable    = connection.val.getData<data::Problem>(
-            "id=" + data::wrap(submission.problem_id));
+        problem         = connection.val.getData<data::Problem>(
+            "id=" + data::wrap(aSubmission.problem_id));
     }
-
-    auto& problem = problemTable[0];
 
     std::string curPath = file::Path::getInstance().getPath("problem").value();
     curPath += problem.nickname + "/";
@@ -90,7 +88,7 @@ test::Tester::run(data::Submission&& aSubmission) noexcept
     }
 
     if (mFinalVerdict != Test::TestVerdict::OK) aSubmission.test = ttt;
-    submission.verdict = verdictTostring(mFinalVerdict);
+    aSubmission.verdict = verdictTostring(mFinalVerdict);
     {
         auto connection = data::ConnectionManager::getUserConnection();
         connection.val.update(aSubmission);

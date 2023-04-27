@@ -3,8 +3,6 @@ set(
 
     answer_handler.cpp
     answer_handler.hpp
-    
-    grade_handler.hpp
 
     journal_handler.cpp
     journal_handler.hpp

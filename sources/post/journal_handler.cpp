@@ -11,7 +11,7 @@
 #include "file/file.hpp"
 
 crow::json::wvalue
-post::JournalHandler::process(const crow::request& aReq)
+post::JournalHandler::process(const crow::request& aReq) noexcept
 {
     auto req     = crow::json::load(aReq.body);
     auto journal = parseRequest<data::Journal_table>(req).data;
@@ -24,50 +24,34 @@ post::JournalHandler::process(const crow::request& aReq)
 }
 
 crow::json::wvalue
-post::JournalHandler::uploadFromFile(const crow::request& aReq)
+post::JournalHandler::rawDataHandler(
+    std::vector<std::vector<std::string>>& aData,
+    const std::vector<std::vector<std::string>>& aAdditionalInfo) noexcept
 {
-    crow::json::wvalue res;
-
-    crow::multipart::message msg(aReq);
-    std::string filePath = uploadFile(msg);
-
-    std::string type = msg.get_part_by_name("index").body;
-    if (type == "data")
+    for (size_t i = 0; i < aData.size(); ++i)
     {
-        res = dataFileUpload(filePath);
-    }
-
-    return res;
-}
-
-crow::json::wvalue
-post::JournalHandler::dataFileUpload(const std::string& aFilePath)
-{
-    auto data = file::File::dataParser(aFilePath);
-    data::DataArray<data::Journal_table> journals(data.value);
-
-    for (int i = 0; i < data.table.size(); ++i)
-    {
-        for (auto& j : data.additionalInfo[i])
+        if (aAdditionalInfo[i].size())
         {
-            data.table[i].schedule += j;
+            aData[i].emplace_back();
+            for (auto& j : aAdditionalInfo[i])
+            {
+                aData[i].back() += j;
+                aData[i].back().push_back(' ');
+            }
         }
     }
 
-    {
-        auto connection = data::ConnectionManager::getUserConnection();
-        connection.val.update(journals);
-    }
-
+    auto res = rawDataInsert<data::Journal_table>(aData);
+    data::DataArray<data::Journal_table> journals(aData);
     for (auto& i : journals)
     {
         makeSchedule(i);
     }
-    return {200};
+    return res;
 }
 
 void
-post::JournalHandler::makeSchedule(data::Journal_table& aJournal)
+post::JournalHandler::makeSchedule(data::Journal_table& aJournal) noexcept
 {
     auto connection = data::ConnectionManager::getUserConnection();
 
@@ -77,10 +61,6 @@ post::JournalHandler::makeSchedule(data::Journal_table& aJournal)
 
     data::User methodist = connection.val.getData<data::User>(
         "id = " + data::wrap(aJournal.methodist_id));
-
-    data::DataArray<data::Theme> themes =
-        connection.val.getDataArray<data::Theme>("plan_id = " +
-                                                 data::wrap(aJournal.plan_id));
 
     int methodistSchool = -1;
     if (methodist.id) methodistSchool = methodist.school_id;
@@ -93,11 +73,11 @@ post::JournalHandler::makeSchedule(data::Journal_table& aJournal)
     uint8_t day   = 26;
     if (school.id)
     {
-        schoolID = school[0].id;
+        schoolID = school.id;
 
-        year  = uint16_t(std::stoi(school[0].start_date.substr(0, 4)));
-        month = uint8_t(std::stoi(school[0].start_date.substr(5, 2)));
-        day   = uint8_t(std::stoi(school[0].start_date.substr(8, 2)));
+        year  = uint16_t(std::stoi(school.start_date.substr(0, 4)));
+        month = uint8_t(std::stoi(school.start_date.substr(5, 2)));
+        day   = uint8_t(std::stoi(school.start_date.substr(8, 2)));
     };
 
     data::DataArray<data::Holiday> holidays =
@@ -127,7 +107,10 @@ post::JournalHandler::makeSchedule(data::Journal_table& aJournal)
             uint8_t(std::stoi(i.date_val.substr(8, 2)))});
     }
 
-    data::DayaArray<data::Lesson> lessons;
+    data::DataArray<data::Theme> themes =
+        connection.val.getDataArray<data::Theme>("plan_id = " +
+                                                 data::wrap(aJournal.plan_id));
+    data::DataArray<data::Lesson> lessons;
     for (int i = 0; i < themes.size();)
     {
         if (j == schedule.size())

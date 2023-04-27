@@ -3,7 +3,12 @@
 
 #include <unordered_map>
 
+#include "answer_handler.hpp"
+#include "journal_handler.hpp"
+#include "mark_handler.hpp"
+#include "plan_handler.hpp"
 #include "post_handler.hpp"
+#include "user_handler.hpp"
 
 namespace post
 {
@@ -31,16 +36,6 @@ public:
     }
 
     template <typename... Args>
-    static crow::json::wvalue uploadRouter(const std::string& aTableName,
-                                           Args&&... args) noexcept
-    {
-        crow::json::wvalue result;
-        auto it = mUploadRouterMap.find(aTableName);
-        if (it != mUploadRouterMap.end()) result = it->second(args...);
-        return result;
-    }
-
-    template <typename... Args>
     static crow::json::wvalue dropRouter(const std::string& aTableName,
                                          Args&&... args) noexcept
     {
@@ -61,23 +56,20 @@ public:
     }
 
 private:
-    static std::unordered_map<std::string,
-                              decltype(&post::PostHandler::process<data::User>)>
+    static std::unordered_map<
+        std::string,
+        decltype(&post::PostHandler::process<data::Dummy>)>
         mPostRouterMap;
     static std::unordered_map<
         std::string,
-        decltype(&post::PostHandler::manyToMany<data::User>)>
+        decltype(&post::PostHandler::manyToMany<data::Dummy>)>
         mManyToManyRouterMap;
-    static std::unordered_map<
-        std::string,
-        decltype(&post::PostHandler::uploadFromFile<data::User>)>
-        mUploadRouterMap;
     static std::unordered_map<std::string,
-                              decltype(&post::PostHandler::drop<data::User>)>
+                              decltype(&post::PostHandler::drop<data::Dummy>)>
         mDropRouterMap;
     static std::unordered_map<
         std::string,
-        decltype(&post::PostHandler::rawDataInsert<data::User>)>
+        decltype(&post::PostHandler::rawDataHandler<data::Dummy>)>
         mRawDataRouter;
 };
 

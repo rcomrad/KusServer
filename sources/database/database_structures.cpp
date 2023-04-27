@@ -2,6 +2,19 @@
 
 #include <cstring>
 
+std::string data::DummyBase::tableName          = "dummy";
+std::vector<data::Type> data::DummyBase::types  = {data::Type::INT};
+std::vector<std::string> data::DummyBase::names = {"id"};
+std::unordered_map<std::string, uint8_t> data::DummyBase::nameToNum = {
+    {"id", 0}
+};
+
+void
+data::DummyBase::reset()
+{
+    ptrs[0] = (void*)(&id);
+}
+
 std::string data::SchoolBase::tableName         = "school";
 std::vector<data::Type> data::SchoolBase::types = {
     data::Type::INT, data::Type::STRING, data::Type::STRING,
@@ -30,15 +43,15 @@ std::vector<data::Type> data::UserBase::types = {
     data::Type::STRING, data::Type::STRING, data::Type::INT,
     data::Type::INT};
 std::vector<std::string> data::UserBase::names = {
-    "id", "login", "password", "name", "surname", "role_id", "school_id"};
+    "id", "login", "password", "name", "surname", "school_id", "role_id"};
 std::unordered_map<std::string, uint8_t> data::UserBase::nameToNum = {
     {"id",        0},
     {"login",     1},
     {"password",  2},
     {"name",      3},
     {"surname",   4},
-    {"role_id",   5},
-    {"school_id", 6}
+    {"school_id", 5},
+    {"role_id",   6}
 };
 
 void
@@ -49,8 +62,8 @@ data::UserBase::reset()
     ptrs[2] = (void*)(&password);
     ptrs[3] = (void*)(&name);
     ptrs[4] = (void*)(&surname);
-    ptrs[5] = (void*)(&role_id);
-    ptrs[6] = (void*)(&school_id);
+    ptrs[5] = (void*)(&school_id);
+    ptrs[6] = (void*)(&role_id);
 }
 
 std::string data::RoleBase::tableName          = "role";

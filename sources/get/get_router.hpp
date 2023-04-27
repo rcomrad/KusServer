@@ -4,6 +4,8 @@
 #include <unordered_map>
 
 #include "get_handler.hpp"
+#include "question_handler.hpp"
+#include "user_handler.hpp"
 
 namespace get
 {
@@ -32,10 +34,10 @@ public:
 
 private:
     static std::unordered_map<std::string,
-                              decltype(&get::GetHandler::process<data::User>)>
+                              decltype(&get::GetHandler::process<data::Dummy>)>
         mBasicRouterMap;
     static std::unordered_map<std::string,
-                              decltype(&get::GetHandler::dump<data::User>)>
+                              decltype(&get::GetHandler::dump<data::Dummy>)>
         mDumpRouterMap;
 };
 

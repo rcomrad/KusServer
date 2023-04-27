@@ -48,10 +48,10 @@ public:
         const std::unordered_set<std::string>& aColumnNames = {}) noexcept
     {
         DataArray<T> result;
-        std::unordered_set<std::string> columnNums;
+        std::unordered_set<int> columnNums;
         for (auto& i : aColumnNames)
         {
-            columnNums.insert(T::columnNames[i]);
+            columnNums.insert(T::nameToNum[i]);
         }
         mDatabase.getDataArray<T>(result, mColumnNumber, columnNums);
         // TODO close
@@ -109,7 +109,7 @@ public:
               typename = dom::enableIfDerivedOf<data::BaseDataDummy, T>>
     int writ(T& aData) noexcept
     {
-        int res = 0;
+        int res = -1;
         if (aData.id == 0)
         {
             res = insertData(aData);
@@ -133,7 +133,7 @@ public:
               typename = dom::enableIfDerivedOf<data::BaseDataDummy, T>>
     int update(const T& aData, const std::string& aConditon = "") noexcept
     {
-        int res = 0;
+        int res = -1;
         if (aData.id != 0)
         {
             mDatabase.update(getTableName<T>(), aData.getAsUpdate(),
@@ -148,7 +148,7 @@ public:
               typename = dom::enableIfDerivedOf<data::BaseDataDummy, T>>
     int drop(T& aData) noexcept
     {
-        int res = 0;
+        int res = -1;
         if (aData.id != 0)
         {
             mDatabase.drop(getTableName<T>(), aData.getAsCondition());
@@ -160,7 +160,7 @@ public:
     template <typename T>
     int dropByID(const std::vector<int>& aIDs) noexcept
     {
-        int res = 0;
+        int res = -1;
         if (aIDs.size())
         {
             auto name = getTableName<T>();
@@ -193,39 +193,34 @@ public:
     template <typename T>
     int insert(DataArray<T>& aData) noexcept
     {
-        int res = 0;
-        if (aData.size())
+        int res = aData.size();
+        for (auto& i : aData)
         {
-            res = mDatabase.insert(getTableName<T>(), aData.getAllAsInsert());
-            aData[0].id = res;
+            // TODO: id's?
+            mDatabase.insert(getTableName<T>(), aData.getAsInsert());
         }
         return res;
     }
 
-    // template <typename T>
-    // int updateTable(const Table<T>& aData,
-    //                 const std::string& aConditon = "") noexcept
-    // {
-    //     int res = 0;
-    //     if (aData.size())
-    //     {
-    //         res = mDatabase.update(getTableName<T>(),
-    //         aData.getFirstAsUpdate(),
-    //                                aConditon.size() ? aConditon
-    //                                                 :
-    //                                                 data::wrap(aData[0].id));
-    //     }
-    //     return res;
-    // }
+    template <typename T>
+    int update(const DataArray<T>& aData,
+               const std::string& aConditon = "") noexcept
+    {
+        int res = aData.size();
+        for (auto& i : aData)
+        {
+            update(i, aConditon);
+        }
+        return res;
+    }
 
     template <typename T>
     int drop(const DataArray<T>& aData) noexcept
     {
-        int res = 0;
-        if (aData.size())
+        int res = aData.size();
+        for (auto& i : aData)
         {
-            mDatabase.drop(getTableName<T>(), aData.getFirstAsCondition());
-            res = 1;
+            drop(i);
         }
         return res;
     }
@@ -236,6 +231,10 @@ public:
                      const std::vector<ColumnSetting>& aColumns) noexcept;
     void createEnvironment(const ConnectionType& aType) noexcept;
     void dropDatabase(const ConnectionType& aType) noexcept;
+
+    //--------------------------------------------------------------------------------
+
+    static bool securityCheck(const std::string& aStr) noexcept;
 
     //--------------------------------------------------------------------------------
 

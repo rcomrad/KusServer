@@ -1,10 +1,9 @@
 #include "get_router.hpp"
 
-#include "question_handler.hpp"
-#include "user_handler.hpp"
-
-std::unordered_map<std::string, decltype(&get::GetHandler::process<data::User>)>
+std::unordered_map<std::string,
+                   decltype(&get::GetHandler::process<data::Dummy>)>
     get::GetRouter::mBasicRouterMap = {
+        {"dummy",                &get::GetHandler::process<data::Dummy>           },
         {"school",               &get::GetHandler::process<data::School>          },
         {"user",                 &get::UserHandler::process                       },
         {"role",                 &get::GetHandler::process<data::Role>            },
@@ -34,8 +33,9 @@ std::unordered_map<std::string, decltype(&get::GetHandler::process<data::User>)>
         {"file_exchange",        &get::GetHandler::process<data::File_exchange>   }
 };
 
-std::unordered_map<std::string, decltype(&get::GetHandler::dump<data::User>)>
+std::unordered_map<std::string, decltype(&get::GetHandler::dump<data::Dummy>)>
     get::GetRouter::mDumpRouterMap = {
+        {"dummy",                &get::GetHandler::dump<data::Dummy>           },
         {"school",               &get::GetHandler::dump<data::School>          },
         {"user",                 &get::GetHandler::dump<data::User>            },
         {"role",                 &get::GetHandler::dump<data::Role>            },

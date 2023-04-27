@@ -10,6 +10,22 @@
 namespace data
 {
 
+struct DummyBase : public BaseDataStruct<1>
+{
+    int id = 0;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::vector<std::string> names;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
+
+    void reset();
+};
+
+struct Dummy : public UpperDataStruct<DummyBase>
+{
+};
+
 struct SchoolBase : public BaseDataStruct<4>
 {
     int id = 0;
@@ -25,7 +41,9 @@ struct SchoolBase : public BaseDataStruct<4>
     void reset();
 };
 
-using School = UpperDataStruct<SchoolBase>;
+struct School : public UpperDataStruct<SchoolBase>
+{
+};
 
 struct UserBase : public BaseDataStruct<7>
 {
@@ -34,8 +52,8 @@ struct UserBase : public BaseDataStruct<7>
     std::string password;
     std::string name;
     std::string surname;
-    int role_id   = 0;
     int school_id = 0;
+    int role_id   = 0;
 
     static std::string tableName;
     static std::vector<data::Type> types;
@@ -45,7 +63,9 @@ struct UserBase : public BaseDataStruct<7>
     void reset();
 };
 
-using User = UpperDataStruct<UserBase>;
+struct User : public UpperDataStruct<UserBase>
+{
+};
 
 struct RoleBase : public BaseDataStruct<2>
 {
@@ -60,7 +80,9 @@ struct RoleBase : public BaseDataStruct<2>
     void reset();
 };
 
-using Role = UpperDataStruct<RoleBase>;
+struct Role : public UpperDataStruct<RoleBase>
+{
+};
 
 struct GradeBase : public BaseDataStruct<3>
 {
@@ -76,7 +98,9 @@ struct GradeBase : public BaseDataStruct<3>
     void reset();
 };
 
-using Grade = UpperDataStruct<GradeBase>;
+struct Grade : public UpperDataStruct<GradeBase>
+{
+};
 
 struct Grade_studentBase : public BaseDataStruct<3>
 {
@@ -92,7 +116,9 @@ struct Grade_studentBase : public BaseDataStruct<3>
     void reset();
 };
 
-using Grade_student = UpperDataStruct<Grade_studentBase>;
+struct Grade_student : public UpperDataStruct<Grade_studentBase>
+{
+};
 
 struct GroupBase : public BaseDataStruct<3>
 {
@@ -108,7 +134,9 @@ struct GroupBase : public BaseDataStruct<3>
     void reset();
 };
 
-using Group = UpperDataStruct<GroupBase>;
+struct Group : public UpperDataStruct<GroupBase>
+{
+};
 
 struct Group_studentBase : public BaseDataStruct<3>
 {
@@ -124,7 +152,9 @@ struct Group_studentBase : public BaseDataStruct<3>
     void reset();
 };
 
-using Group_student = UpperDataStruct<Group_studentBase>;
+struct Group_student : public UpperDataStruct<Group_studentBase>
+{
+};
 
 struct LessonBase : public BaseDataStruct<6>
 {
@@ -143,7 +173,9 @@ struct LessonBase : public BaseDataStruct<6>
     void reset();
 };
 
-using Lesson = UpperDataStruct<LessonBase>;
+struct Lesson : public UpperDataStruct<LessonBase>
+{
+};
 
 struct Journal_tableBase : public BaseDataStruct<9>
 {
@@ -165,7 +197,9 @@ struct Journal_tableBase : public BaseDataStruct<9>
     void reset();
 };
 
-using Journal_table = UpperDataStruct<Journal_tableBase>;
+struct Journal_table : public UpperDataStruct<Journal_tableBase>
+{
+};
 
 struct SubjectBase : public BaseDataStruct<2>
 {
@@ -180,7 +214,9 @@ struct SubjectBase : public BaseDataStruct<2>
     void reset();
 };
 
-using Subject = UpperDataStruct<SubjectBase>;
+struct Subject : public UpperDataStruct<SubjectBase>
+{
+};
 
 struct MarkBase : public BaseDataStruct<5>
 {
@@ -198,7 +234,9 @@ struct MarkBase : public BaseDataStruct<5>
     void reset();
 };
 
-using Mark = UpperDataStruct<MarkBase>;
+struct Mark : public UpperDataStruct<MarkBase>
+{
+};
 
 struct PlanBase : public BaseDataStruct<4>
 {
@@ -215,7 +253,9 @@ struct PlanBase : public BaseDataStruct<4>
     void reset();
 };
 
-using Plan = UpperDataStruct<PlanBase>;
+struct Plan : public UpperDataStruct<PlanBase>
+{
+};
 
 struct ThemeBase : public BaseDataStruct<4>
 {
@@ -232,7 +272,9 @@ struct ThemeBase : public BaseDataStruct<4>
     void reset();
 };
 
-using Theme = UpperDataStruct<ThemeBase>;
+struct Theme : public UpperDataStruct<ThemeBase>
+{
+};
 
 struct FileBase : public BaseDataStruct<2>
 {
@@ -247,7 +289,9 @@ struct FileBase : public BaseDataStruct<2>
     void reset();
 };
 
-using File = UpperDataStruct<FileBase>;
+struct File : public UpperDataStruct<FileBase>
+{
+};
 
 struct Safe_fileBase : public BaseDataStruct<2>
 {
@@ -262,7 +306,9 @@ struct Safe_fileBase : public BaseDataStruct<2>
     void reset();
 };
 
-using Safe_file = UpperDataStruct<Safe_fileBase>;
+struct Safe_file : public UpperDataStruct<Safe_fileBase>
+{
+};
 
 struct HolidayBase : public BaseDataStruct<3>
 {
@@ -278,7 +324,9 @@ struct HolidayBase : public BaseDataStruct<3>
     void reset();
 };
 
-using Holiday = UpperDataStruct<HolidayBase>;
+struct Holiday : public UpperDataStruct<HolidayBase>
+{
+};
 
 struct CompetitionBase : public BaseDataStruct<4>
 {
@@ -295,7 +343,9 @@ struct CompetitionBase : public BaseDataStruct<4>
     void reset();
 };
 
-using Competition = UpperDataStruct<CompetitionBase>;
+struct Competition : public UpperDataStruct<CompetitionBase>
+{
+};
 
 struct User_competitionBase : public BaseDataStruct<3>
 {
@@ -311,7 +361,9 @@ struct User_competitionBase : public BaseDataStruct<3>
     void reset();
 };
 
-using User_competition = UpperDataStruct<User_competitionBase>;
+struct User_competition : public UpperDataStruct<User_competitionBase>
+{
+};
 
 struct ProblemBase : public BaseDataStruct<8>
 {
@@ -332,7 +384,9 @@ struct ProblemBase : public BaseDataStruct<8>
     void reset();
 };
 
-using Problem = UpperDataStruct<ProblemBase>;
+struct Problem : public UpperDataStruct<ProblemBase>
+{
+};
 
 struct Competition_problemBase : public BaseDataStruct<4>
 {
@@ -349,7 +403,9 @@ struct Competition_problemBase : public BaseDataStruct<4>
     void reset();
 };
 
-using Competition_problem = UpperDataStruct<Competition_problemBase>;
+struct Competition_problem : public UpperDataStruct<Competition_problemBase>
+{
+};
 
 struct SubmissionBase : public BaseDataStruct<7>
 {
@@ -369,7 +425,9 @@ struct SubmissionBase : public BaseDataStruct<7>
     void reset();
 };
 
-using Submission = UpperDataStruct<SubmissionBase>;
+struct Submission : public UpperDataStruct<SubmissionBase>
+{
+};
 
 struct QuestionBase : public BaseDataStruct<6>
 {
@@ -388,7 +446,9 @@ struct QuestionBase : public BaseDataStruct<6>
     void reset();
 };
 
-using Question = UpperDataStruct<QuestionBase>;
+struct Question : public UpperDataStruct<QuestionBase>
+{
+};
 
 struct Competition_questionBase : public BaseDataStruct<4>
 {
@@ -405,7 +465,9 @@ struct Competition_questionBase : public BaseDataStruct<4>
     void reset();
 };
 
-using Competition_question = UpperDataStruct<Competition_questionBase>;
+struct Competition_question : public UpperDataStruct<Competition_questionBase>
+{
+};
 
 struct AnswerBase : public BaseDataStruct<7>
 {
@@ -425,7 +487,9 @@ struct AnswerBase : public BaseDataStruct<7>
     void reset();
 };
 
-using Answer = UpperDataStruct<AnswerBase>;
+struct Answer : public UpperDataStruct<AnswerBase>
+{
+};
 
 struct File_exchangeBase : public BaseDataStruct<6>
 {
@@ -444,7 +508,9 @@ struct File_exchangeBase : public BaseDataStruct<6>
     void reset();
 };
 
-using File_exchange = UpperDataStruct<File_exchangeBase>;
+struct File_exchange : public UpperDataStruct<File_exchangeBase>
+{
+};
 
 } // namespace data
 

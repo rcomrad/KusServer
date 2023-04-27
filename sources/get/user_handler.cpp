@@ -6,9 +6,8 @@ crow::json::wvalue
 get::UserHandler::process(const std::unordered_set<std::string>& aColumn,
                           data::SmartConnection& aConnection) noexcept
 {
-    auto table = aConnection.val.select2<data::User>(aColumn);
-    table.turnOffColumn("role_id");
-    auto tableList = getTableAsList(table);
+    auto table     = aConnection.val.getNextDataArray<data::User>(aColumn);
+    auto tableList = table.getAsJList({"role_id"});
 
     if (table.size() > 0 && table[0].role_id != 0)
     {

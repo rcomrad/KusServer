@@ -33,29 +33,20 @@ core::Core::remakeDatabase()
 {
     createEnvironment();
     createDatabaseFromFile("database.psql_db");
-    file::FileRouter::process("database.dmp");
+    post::PostHandler::uploadFromFile("database.dmp");
 }
 
 void
 core::Core::populate()
 {
-    // populateDatabaseFromFile("../tests/example.dmp");
-    file::FileRouter::process("../tests/example.dmp");
+    post::PostHandler::uploadFromFile("../tests/example.dmp");
 
-    post::UserHandler::dataFileUpload("../tests/user.data");
+    post::PostHandler::uploadFromFile("../tests/user.data");
 
-    post::PlanHandler::PlanData data;
-    data.subjectID = 1;
+    post::PostHandler::uploadFromFile("../tests/plan_test.csv");
+    post::PostHandler::uploadFromFile("../tests/plan_cpp.csv");
 
-    data.name = "Тест";
-    data.url  = "../tests/plan_test.csv";
-    post::PlanHandler::csvFileUpload(data);
-
-    data.name = "C++";
-    data.url  = "../tests/plan_cpp.csv";
-    post::PlanHandler::csvFileUpload(data);
-
-    post::JournalHandler::dataFileUpload("../tests/journal.data");
+    post::PostHandler::uploadFromFile("../tests/journal.data");
 }
 
 void

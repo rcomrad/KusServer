@@ -10,7 +10,7 @@
 file::FileDataArray
 file::File::dmpParser(const std::string& aFileName) noexcept
 {
-    auto words = File::getWords(aFileName);
+    auto words = File::getWords(aFileName, &file::File::isDMPSeparator);
     file::FileDataArray res;
     for (size_t i = 0; i < words.size(); ++i)
     {
@@ -37,7 +37,8 @@ file::File::dataParser(const std::string& aFileName) noexcept
         auto& curArray      = res[words[i][0]];
         int additionalLines = std::stoi(words[i][1]);
 
-        for (++i; i < words.size() && words[i].size() && words[i][0] != "END"; ++i)
+        for (++i; i < words.size() && words[i].size() && words[i][0] != "END";
+             ++i)
         {
             curArray.value.emplace_back(std::move(words[i]));
             for (int j = 0; j < additionalLines; ++j)
@@ -93,7 +94,8 @@ file::File::getLines(const std::string& aFileName) noexcept
 }
 
 std::vector<std::vector<std::string>>
-file::File::getWords(const std::string& aFileName) noexcept
+file::File::getWords(const std::string& aFileName,
+                     decltype(&file::File::isSeparator) funk) noexcept
 {
     auto lines = getLines(aFileName);
     std::vector<std::vector<std::string>> result;
@@ -103,9 +105,9 @@ file::File::getWords(const std::string& aFileName) noexcept
         int indx = 0;
         while (indx < line.size())
         {
-            while (isSeparator(line[indx])) indx++;
+            while (funk(line[indx])) indx++;
             int from = indx;
-            while (!isSeparator(line[indx])) indx++;
+            while (!funk(line[indx])) indx++;
             result.back().emplace_back(line.substr(from, indx - from));
             indx += 1;
         }
@@ -117,6 +119,12 @@ bool
 file::File::isSeparator(char c) noexcept
 {
     return c == '\t' || c == ' ' || c == ';' || c == '\0';
+}
+
+bool
+file::File::isDMPSeparator(char c) noexcept
+{
+    return c == '\t' || c == ';' || c == '\0';
 }
 
 std::string

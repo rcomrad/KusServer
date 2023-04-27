@@ -21,6 +21,10 @@ using FileDataArray = std::unordered_map<std::string, FileData>;
 
 class File
 {
+private:
+    static bool isSeparator(char c) noexcept;
+    static bool isDMPSeparator(char c) noexcept;
+
 public:
     static FileDataArray dmpParser(const std::string& aFileName) noexcept;
     static FileDataArray dataParser(const std::string& aFileName) noexcept;
@@ -29,14 +33,13 @@ public:
     static std::vector<std::string> getLines(
         const std::string& aFileName) noexcept;
     static std::vector<std::vector<std::string>> getWords(
-        const std::string& aFileName) noexcept;
+        const std::string& aFileName,
+        decltype(&file::File::isSeparator) funk =
+            &file::File::isSeparator) noexcept;
 
     static std::string writeData(const std::string& aFolderName,
                                  const std::string& aFileName,
                                  const std::string& aData) noexcept;
-
-private:
-    static bool isSeparator(char c) noexcept;
 };
 
 } // namespace file

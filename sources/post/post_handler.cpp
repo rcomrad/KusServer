@@ -6,10 +6,36 @@
 
 #include "post_router.hpp"
 
+//--------------------------------------------------------------------------------
+
+crow::json::wvalue
+post::PostHandler::uploadFromFile(const std::string aFileName) noexcept
+{
+    auto data = file::FileRouter::process(aFileName);
+
+    for (auto& i : data)
+    {
+        PostRouter::rawDataRouter(i.first, i.second.value,
+                                  i.second.additionalInfo);
+    }
+
+    return {200};
+}
+
+crow::json::wvalue
+post::PostHandler::uploadFromFileRequest(const crow::request& aReq) noexcept
+{
+    crow::multipart::message msg(aReq);
+    std::string filePath = uploadFile(msg);
+    return uploadFromFile(filePath);
+}
+
+//--------------------------------------------------------------------------------
+
 // TODO: use file.hpp
 std::string
 post::PostHandler::uploadFile(crow::multipart::message& aMsg,
-                              std::string aPathPrefix)
+                              std::string aPathPrefix) noexcept
 {
     if (aPathPrefix.empty())
         aPathPrefix = file::Path::getInstance().getPath("upload").value();
@@ -22,8 +48,7 @@ post::PostHandler::uploadFile(crow::multipart::message& aMsg,
     {
         auto connection = data::ConnectionManager::getUserConnection();
         auto table      = connection.val.getData<data::File>();
-        filePath =
-            aPathPrefix + std::to_string(table.num++) + "-" + fileName;
+        filePath = aPathPrefix + std::to_string(table.num++) + "-" + fileName;
         connection.val.update<data::File>(table);
     }
 
@@ -39,7 +64,7 @@ post::PostHandler::transmitToMTMHandler(const std::string aTableName,
                                         int aID,
                                         bool aIsAdding,
                                         std::vector<int> aIDForInsert,
-                                        const std::string aTrueNam)
+                                        const std::string aTrueNam) noexcept
 {
     PostRouter::manyToManyRouter(aTableName, aID, aIsAdding, aIDForInsert,
                                  aTrueNam);

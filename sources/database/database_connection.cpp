@@ -89,3 +89,33 @@ data::DatabaseConnection::dropDatabase(const ConnectionType& aType) noexcept
 }
 
 //--------------------------------------------------------------------------------
+
+bool
+data::DatabaseConnection::securityCheck(const std::string& aStr) noexcept
+{
+    bool result = true;
+
+    int minusCnt = 0;
+    for (auto c : aStr)
+    {
+        switch (c)
+        {
+            case '-':
+                minusCnt++;
+                break;
+            case ';':
+            case '\\':
+            case '/':
+            case '\'':
+            case '\"':
+                result = false;
+            default:
+                minusCnt = 0;
+                break;
+        }
+
+        if (minusCnt > 1) result = false;
+    }
+
+    return result;
+}

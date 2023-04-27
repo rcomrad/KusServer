@@ -177,7 +177,7 @@ core::GenerateCode::generateMapTable(
     mStaticVariables.back().name = aName;
     mStaticVariables.back().type =
         "std::unordered_map<std::string, decltype(&" +
-        aGotoTable.find("default")->second + "User>)>";
+        aGotoTable.find("default")->second + "Dummy>)>";
 
     std::string& temp = mStaticVariables.back().initialisation;
 
@@ -310,7 +310,7 @@ core::GenerateCode::getDatabaseTables()
 void
 generateDatabaseStructuresHPPFile()
 {
-    std::ofstream file("database_structures.hpp");
+    std::ofstream file("../sources/database/database_structures.hpp");
 
     file << "#ifndef DATABASE_STRUCTURES_HPP\n";
     file << "#define DATABASE_STRUCTURES_HPP\n";
@@ -434,7 +434,7 @@ generateDatabaseStructuresHPPFile()
 void
 generateDatabaseStructuresCPPFile()
 {
-    std::ofstream fileCPP("database_structures.cpp");
+    std::ofstream fileCPP("../sources/database/database_structures.cpp");
     // std::ofstream fileCPP("database_structures.cpp");
     fileCPP << "#include \"database_structures.hpp\"\n\n";
     fileCPP << "#include <cstring>\n\n";
@@ -445,7 +445,7 @@ generateDatabaseStructuresCPPFile()
     std::string smallName  = "";
     int columnCount        = 0;
     std::string tempCPP;
-    std::string columnNames     = "{ {\"id\", 0},";
+    std::string columnNames     = "{ {\"id\", 0}, ";
     std::string columnTypes     = "{ data::Type::INT, ";
     std::string columnNamesTrue = "{ \"id\", ";
     std::string temp;
@@ -682,7 +682,7 @@ generatePostHandlerFile()
 
     //--------------------------------------------------------------------------------
 
-    // postHandler
+    // basicHandler
     generator.pushBackFunction("basicRouter(const std::string& aTableName, "
                                "Args&&... args) noexcept");
     generator.pushToFunctionBody(wrap("mPostRouterMap"));
@@ -711,18 +711,18 @@ generatePostHandlerFile()
 
     //--------------------------------------------------------------------------------
 
-    // uploadPostHandler
-    generator.pushBackFunction("uploadRouter(const std::string& aTableName, "
-                               "Args&&... args) noexcept");
-    generator.pushToFunctionBody(wrap("mUploadRouterMap"));
-    generator.generateMapTable(
-        "mUploadRouterMap",
-        {
-            {"default",       "post::PostHandler::uploadFromFile<data::"},
-            {"journal_table", "post::JournalHandler::uploadFromFile"    },
-            {"user",          "post::UserHandler::uploadFromFile"       },
-            {"plan",          "post::PlanHandler::uploadFromFile"       }
-    });
+    // // uploadPostHandler
+    // generator.pushBackFunction("uploadRouter(const std::string& aTableName, "
+    //                            "Args&&... args) noexcept");
+    // generator.pushToFunctionBody(wrap("mUploadRouterMap"));
+    // generator.generateMapTable(
+    //     "mUploadRouterMap",
+    //     {
+    //         {"default",       "post::PostHandler::uploadFromFile<data::"},
+    //         {"journal_table", "post::JournalHandler::uploadFromFile"    },
+    //         {"user",          "post::UserHandler::uploadFromFile"       },
+    //         {"plan",          "post::PlanHandler::uploadFromFile"       }
+    // });
 
     //--------------------------------------------------------------------------------
 
@@ -737,14 +737,17 @@ generatePostHandlerFile()
 
     //--------------------------------------------------------------------------------
 
-    // fileHandler
+    // rawDataHandler
     generator.pushBackFunction("rawDataRouter(const std::string& aTableName, "
                                "Args&&... args) noexcept");
     generator.pushToFunctionBody(wrap("mRawDataRouter"));
     generator.generateMapTable(
         "mRawDataRouter",
         {
-            {"default", "post::PostHandler::rawDataInsert<data::"}
+            {"default",       "post::PostHandler::rawDataHandler<data::"},
+            {"journal_table", "post::JournalHandler::rawDataHandler"    },
+            {"user",          "post::UserHandler::rawDataHandler"       },
+            {"plan",          "post::PlanHandler::rawDataHandler"       }
     });
 
     //--------------------------------------------------------------------------------
@@ -850,8 +853,8 @@ generateAsteriskHendler()
 void
 core::generateDatabaseStructuresFiles()
 {
-    generateDatabaseStructuresHPPFile();
-    generateDatabaseStructuresCPPFile();
+    // generateDatabaseStructuresHPPFile();
+    // generateDatabaseStructuresCPPFile();
 
     // generatePostHandlerFile();
     // generateGetRouterFile();

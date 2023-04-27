@@ -3,21 +3,22 @@
 #include "database/connection_manager.hpp"
 
 crow::json::wvalue
-post::MarkHandler::process(const crow::request& aReq)
+post::MarkHandler::process(const crow::request& aReq) noexcept
 {
-    auto connection = data::ConnectionManager::getUserConnection();
     auto req        = crow::json::load(aReq.body);
-    auto mark       = parseRequest<data::Mark>(req).table;
-    if (mark[0].lesson_id == 0)
+    auto mark       = parseRequest<data::Mark>(req).data;
+    auto connection = data::ConnectionManager::getUserConnection();
+
+    if (mark.lesson_id == 0)
     {
-        mark[0].lesson_id =
-            connection.val
-                .getData<data::Mark>("id = " + data::wrap(mark[0].id))[0]
+        mark.lesson_id =
+            connection.val.getData<data::Mark>("id = " + data::wrap(mark.id))
                 .lesson_id;
     }
+
     auto lesson = connection.val.getData<data::Lesson>(
-        "id = " + data::wrap(mark[0].lesson_id));
-    mark[0].journal_table_id = lesson[0].journal_table_id;
+        "id = " + data::wrap(mark.lesson_id));
+    mark.journal_table_id = lesson.journal_table_id;
     connection.val.update(mark);
-    return {mark[0].id};
+    return {mark.id};
 }

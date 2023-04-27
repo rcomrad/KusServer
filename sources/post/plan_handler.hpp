@@ -13,16 +13,10 @@ namespace post
 class PlanHandler : protected PostHandler
 {
 public:
-    struct PlanData
-    {
-        std::string name;
-        int subjectID;
-        std::string url;
-    };
-
-    static crow::json::wvalue uploadFromFile(const crow::request& aReq);
-
-    static crow::json::wvalue csvFileUpload(const PlanData& aPlanData);
+    static crow::json::wvalue rawDataHandler(
+        std::vector<std::vector<std::string>>& aData,
+        const std::vector<std::vector<std::string>>& aAdditionalInfo =
+            {}) noexcept;
 };
 } // namespace post
 

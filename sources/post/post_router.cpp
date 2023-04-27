@@ -1,15 +1,9 @@
 #include "post_router.hpp"
 
-#include "answer_handler.hpp"
-#include "journal_handler.hpp"
-#include "mark_handler.hpp"
-#include "plan_handler.hpp"
-#include "post_handler.hpp"
-#include "user_handler.hpp"
-
 std::unordered_map<std::string,
-                   decltype(&post::PostHandler::process<data::User>)>
+                   decltype(&post::PostHandler::process<data::Dummy>)>
     post::PostRouter::mPostRouterMap = {
+        {"dummy",                &post::PostHandler::process<data::Dummy>        },
         {"school",               &post::PostHandler::process<data::School>       },
         {"user",                 &post::UserHandler::process                     },
         {"role",                 &post::PostHandler::process<data::Role>         },
@@ -41,8 +35,9 @@ std::unordered_map<std::string,
 };
 
 std::unordered_map<std::string,
-                   decltype(&post::PostHandler::manyToMany<data::User>)>
+                   decltype(&post::PostHandler::manyToMany<data::Dummy>)>
     post::PostRouter::mManyToManyRouterMap = {
+        {"dummy",                &post::PostHandler::manyToMany<data::Dummy>        },
         {"school",               &post::PostHandler::manyToMany<data::School>       },
         {"user",                 &post::PostHandler::manyToMany<data::User>         },
         {"role",                 &post::PostHandler::manyToMany<data::Role>         },
@@ -73,44 +68,9 @@ std::unordered_map<std::string,
         {"file_exchange",        &post::PostHandler::manyToMany<data::File_exchange>}
 };
 
-std::unordered_map<std::string,
-                   decltype(&post::PostHandler::uploadFromFile<data::User>)>
-    post::PostRouter::mUploadRouterMap = {
-        {"school",               &post::PostHandler::uploadFromFile<data::School>     },
-        {"user",                 &post::UserHandler::uploadFromFile                   },
-        {"role",                 &post::PostHandler::uploadFromFile<data::Role>       },
-        {"grade",                &post::PostHandler::uploadFromFile<data::Grade>      },
-        {"grade_student",
-         &post::PostHandler::uploadFromFile<data::Grade_student>                      },
-        {"group",                &post::PostHandler::uploadFromFile<data::Group>      },
-        {"group_student",
-         &post::PostHandler::uploadFromFile<data::Group_student>                      },
-        {"lesson",               &post::PostHandler::uploadFromFile<data::Lesson>     },
-        {"journal_table",        &post::JournalHandler::uploadFromFile                },
-        {"subject",              &post::PostHandler::uploadFromFile<data::Subject>    },
-        {"mark",                 &post::PostHandler::uploadFromFile<data::Mark>       },
-        {"plan",                 &post::PlanHandler::uploadFromFile                   },
-        {"theme",                &post::PostHandler::uploadFromFile<data::Theme>      },
-        {"file",                 &post::PostHandler::uploadFromFile<data::File>       },
-        {"safe_file",            &post::PostHandler::uploadFromFile<data::Safe_file>  },
-        {"holiday",              &post::PostHandler::uploadFromFile<data::Holiday>    },
-        {"competition",          &post::PostHandler::uploadFromFile<data::Competition>},
-        {"user_competition",
-         &post::PostHandler::uploadFromFile<data::User_competition>                   },
-        {"problem",              &post::PostHandler::uploadFromFile<data::Problem>    },
-        {"competition_problem",
-         &post::PostHandler::uploadFromFile<data::Competition_problem>                },
-        {"submission",           &post::PostHandler::uploadFromFile<data::Submission> },
-        {"question",             &post::PostHandler::uploadFromFile<data::Question>   },
-        {"competition_question",
-         &post::PostHandler::uploadFromFile<data::Competition_question>               },
-        {"answer",               &post::PostHandler::uploadFromFile<data::Answer>     },
-        {"file_exchange",
-         &post::PostHandler::uploadFromFile<data::File_exchange>                      }
-};
-
-std::unordered_map<std::string, decltype(&post::PostHandler::drop<data::User>)>
+std::unordered_map<std::string, decltype(&post::PostHandler::drop<data::Dummy>)>
     post::PostRouter::mDropRouterMap = {
+        {"dummy",                &post::PostHandler::drop<data::Dummy>           },
         {"school",               &post::PostHandler::drop<data::School>          },
         {"user",                 &post::PostHandler::drop<data::User>            },
         {"role",                 &post::PostHandler::drop<data::Role>            },
@@ -141,38 +101,38 @@ std::unordered_map<std::string, decltype(&post::PostHandler::drop<data::User>)>
 };
 
 std::unordered_map<std::string,
-                   decltype(&post::PostHandler::rawDataInsert<data::User>)>
+                   decltype(&post::PostHandler::rawDataHandler<data::Dummy>)>
     post::PostRouter::mRawDataRouter = {
-        {"school",               &post::PostHandler::rawDataInsert<data::School>     },
-        {"user",                 &post::PostHandler::rawDataInsert<data::User>       },
-        {"role",                 &post::PostHandler::rawDataInsert<data::Role>       },
-        {"grade",                &post::PostHandler::rawDataInsert<data::Grade>      },
+        {"dummy",                &post::PostHandler::rawDataHandler<data::Dummy>      },
+        {"school",               &post::PostHandler::rawDataHandler<data::School>     },
+        {"user",                 &post::UserHandler::rawDataHandler                   },
+        {"role",                 &post::PostHandler::rawDataHandler<data::Role>       },
+        {"grade",                &post::PostHandler::rawDataHandler<data::Grade>      },
         {"grade_student",
-         &post::PostHandler::rawDataInsert<data::Grade_student>                      },
-        {"group",                &post::PostHandler::rawDataInsert<data::Group>      },
+         &post::PostHandler::rawDataHandler<data::Grade_student>                      },
+        {"group",                &post::PostHandler::rawDataHandler<data::Group>      },
         {"group_student",
-         &post::PostHandler::rawDataInsert<data::Group_student>                      },
-        {"lesson",               &post::PostHandler::rawDataInsert<data::Lesson>     },
-        {"journal_table",
-         &post::PostHandler::rawDataInsert<data::Journal_table>                      },
-        {"subject",              &post::PostHandler::rawDataInsert<data::Subject>    },
-        {"mark",                 &post::PostHandler::rawDataInsert<data::Mark>       },
-        {"plan",                 &post::PostHandler::rawDataInsert<data::Plan>       },
-        {"theme",                &post::PostHandler::rawDataInsert<data::Theme>      },
-        {"file",                 &post::PostHandler::rawDataInsert<data::File>       },
-        {"safe_file",            &post::PostHandler::rawDataInsert<data::Safe_file>  },
-        {"holiday",              &post::PostHandler::rawDataInsert<data::Holiday>    },
-        {"competition",          &post::PostHandler::rawDataInsert<data::Competition>},
+         &post::PostHandler::rawDataHandler<data::Group_student>                      },
+        {"lesson",               &post::PostHandler::rawDataHandler<data::Lesson>     },
+        {"journal_table",        &post::JournalHandler::rawDataHandler                },
+        {"subject",              &post::PostHandler::rawDataHandler<data::Subject>    },
+        {"mark",                 &post::PostHandler::rawDataHandler<data::Mark>       },
+        {"plan",                 &post::PlanHandler::rawDataHandler                   },
+        {"theme",                &post::PostHandler::rawDataHandler<data::Theme>      },
+        {"file",                 &post::PostHandler::rawDataHandler<data::File>       },
+        {"safe_file",            &post::PostHandler::rawDataHandler<data::Safe_file>  },
+        {"holiday",              &post::PostHandler::rawDataHandler<data::Holiday>    },
+        {"competition",          &post::PostHandler::rawDataHandler<data::Competition>},
         {"user_competition",
-         &post::PostHandler::rawDataInsert<data::User_competition>                   },
-        {"problem",              &post::PostHandler::rawDataInsert<data::Problem>    },
+         &post::PostHandler::rawDataHandler<data::User_competition>                   },
+        {"problem",              &post::PostHandler::rawDataHandler<data::Problem>    },
         {"competition_problem",
-         &post::PostHandler::rawDataInsert<data::Competition_problem>                },
-        {"submission",           &post::PostHandler::rawDataInsert<data::Submission> },
-        {"question",             &post::PostHandler::rawDataInsert<data::Question>   },
+         &post::PostHandler::rawDataHandler<data::Competition_problem>                },
+        {"submission",           &post::PostHandler::rawDataHandler<data::Submission> },
+        {"question",             &post::PostHandler::rawDataHandler<data::Question>   },
         {"competition_question",
-         &post::PostHandler::rawDataInsert<data::Competition_question>               },
-        {"answer",               &post::PostHandler::rawDataInsert<data::Answer>     },
+         &post::PostHandler::rawDataHandler<data::Competition_question>               },
+        {"answer",               &post::PostHandler::rawDataHandler<data::Answer>     },
         {"file_exchange",
-         &post::PostHandler::rawDataInsert<data::File_exchange>                      }
+         &post::PostHandler::rawDataHandler<data::File_exchange>                      }
 };
