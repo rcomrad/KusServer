@@ -17,7 +17,7 @@ post::JournalHandler::process(const crow::request& aReq) noexcept
     auto journal = parseRequest<data::Journal_table>(req).data;
     {
         auto connection = data::ConnectionManager::getUserConnection();
-        connection.val.update(journal);
+        connection.val.write(journal);
     }
     makeSchedule(journal);
     return {journal.id};

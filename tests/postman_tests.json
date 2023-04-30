@@ -1,11 +1,46 @@
 {
 	"info": {
-		"_postman_id": "23b0ded4-606d-4af1-9c66-d2c2060ca495",
+		"_postman_id": "c9521960-0f3a-42f1-846f-4963abcb9b1e",
 		"name": "KusJournalTester",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "3947988"
+		"_exporter_id": "25083981"
 	},
 	"item": [
+		{
+			"name": "Clear system",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:18080/api/command/restart/empty",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"command",
+						"restart",
+						"empty"
+					]
+				}
+			},
+			"response": []
+		},
 		{
 			"name": "Check school emptiness",
 			"event": [
@@ -256,7 +291,6 @@
 							"    const expectedObject = \r",
 							"    {\r",
 							"        \"user\": {\r",
-							"            \"password\": \"abba\",\r",
 							"            \"id\": 1,\r",
 							"            \"login\": \"test1\",\r",
 							"            \"surname\": \"Агамовна\",\r",
@@ -356,7 +390,6 @@
 							"    const expectedObject = \r",
 							"    {\r",
 							"        \"user\": {\r",
-							"            \"password\": \"teacher123\",\r",
 							"            \"id\": 2,\r",
 							"            \"login\": \"teacher\",\r",
 							"            \"surname\": \"teacherS\",\r",
@@ -453,7 +486,6 @@
 							"    const expectedObject = \r",
 							"    {\r",
 							"        \"user\": {\r",
-							"            \"password\": \"methodist123\",\r",
 							"            \"id\": 3,\r",
 							"            \"login\": \"methodist\",\r",
 							"            \"surname\": \"methodistS\",\r",
@@ -550,7 +582,6 @@
 							"    const expectedObject = \r",
 							"    {\r",
 							"        \"user\": {\r",
-							"            \"password\": \"head123\",\r",
 							"            \"id\": 4,\r",
 							"            \"login\": \"head\",\r",
 							"            \"surname\": \"headS\",\r",

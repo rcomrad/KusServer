@@ -53,7 +53,7 @@ public:
         {
             columnNums.insert(T::nameToNum[i]);
         }
-        mDatabase.getDataArray<T>(result, mColumnNumber, columnNums);
+        mDatabase.getDataArray<T>(result, mColumnNumber, columnNums, false);
         // TODO close
         return result;
     }
@@ -112,11 +112,11 @@ public:
         int res = -1;
         if (aData.id == 0)
         {
-            res = insertData(aData);
+            res = insert(aData);
         }
         else
         {
-            res = updateData(aData);
+            res = update(aData);
         }
         return res;
     }
@@ -193,12 +193,9 @@ public:
     template <typename T>
     int insert(DataArray<T>& aData) noexcept
     {
+        // TODO: id's?
         int res = aData.size();
-        for (auto& i : aData)
-        {
-            // TODO: id's?
-            mDatabase.insert(getTableName<T>(), aData.getAsInsert());
-        }
+        mDatabase.insert(getTableName<T>(), aData.getAsInsert());
         return res;
     }
 

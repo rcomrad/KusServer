@@ -14,10 +14,10 @@ TABLE user
 	role_id integer NOT NULL
 
 TABLE role
-	name character varying(255) NOT NULL
+	name character varying(20) NOT NULL
 
 TABLE grade
-	name character varying(255) NOT NULL
+	name character varying(10) NOT NULL
 	head_id integer NOT NULL
 
 TABLE grade_student

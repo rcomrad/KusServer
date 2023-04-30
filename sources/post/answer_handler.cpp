@@ -59,6 +59,6 @@ post::AnswerHandler::process(const crow::request& aReq) noexcept
     // }
 
     auto connection = data::ConnectionManager::getUserConnection();
-    auto res        = connection.val.update(answer);
+    auto res        = connection.val.write(answer);
     return {res};
 }

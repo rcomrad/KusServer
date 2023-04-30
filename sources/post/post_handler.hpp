@@ -40,7 +40,7 @@ public:
         int res;
         {
             auto connection = data::ConnectionManager::getUserConnection();
-            res             = connection.val.update<T>(request.data);
+            res             = connection.val.write<T>(request.data);
         }
 
         manyToManyTransmiter(request);
@@ -123,9 +123,9 @@ public:
     //--------------------------------------------------------------------------------
 
     static crow::json::wvalue uploadFromFile(
-        const std::string aFileName) noexcept;
+        const std::string aType, const std::string aFileName) noexcept;
     static crow::json::wvalue uploadFromFileRequest(
-        const crow::request& aReq) noexcept;
+        const std::string aType, const crow::request& aReq) noexcept;
 
     template <typename T>
     static crow::json::wvalue rawDataHandler(

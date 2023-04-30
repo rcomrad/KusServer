@@ -9,25 +9,35 @@
 //--------------------------------------------------------------------------------
 
 crow::json::wvalue
-post::PostHandler::uploadFromFile(const std::string aFileName) noexcept
+post::PostHandler::uploadFromFile(const std::string aType,
+                                  const std::string aFileName) noexcept
 {
     auto data = file::FileRouter::process(aFileName);
 
-    for (auto& i : data)
+    if (aType.empty())
     {
-        PostRouter::rawDataRouter(i.first, i.second.value,
-                                  i.second.additionalInfo);
+        for (auto& i : data)
+        {
+            PostRouter::rawDataRouter(i.first, i.second.value,
+                                      i.second.additionalInfo);
+        }
+    }
+    else
+    {
+        PostRouter::rawDataRouter(aType, i.begin()->second.value,
+                                  i.begin()->second.additionalInfo);
     }
 
     return {200};
 }
 
 crow::json::wvalue
-post::PostHandler::uploadFromFileRequest(const crow::request& aReq) noexcept
+post::PostHandler::uploadFromFileRequest(const std::string aType,
+                                         const crow::request& aReq) noexcept
 {
     crow::multipart::message msg(aReq);
     std::string filePath = uploadFile(msg);
-    return uploadFromFile(filePath);
+    return uploadFromFile(aType, filePath);
 }
 
 //--------------------------------------------------------------------------------

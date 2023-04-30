@@ -39,7 +39,7 @@ post::UserHandler::process(const crow::request& aReq) noexcept
     int res;
     {
         auto connection = data::ConnectionManager::getUserConnection();
-        res             = connection.val.update(request.data);
+        res             = connection.val.write(request.data);
     }
 
     manyToManyTransmiter(request);
@@ -77,7 +77,7 @@ post::UserHandler::autorisation(const crow::request& aReq) noexcept
     if (x)
     {
         // data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
-        auto user = parseRequest<data::User>(x).data;
+        data::User user = parseRequest<data::User>(x).data;
 
         std::string cond = "login = \'" + user.login + "\' AND " +
                            "password = \'" + user.password + "\'";
@@ -88,7 +88,8 @@ post::UserHandler::autorisation(const crow::request& aReq) noexcept
 
         if (user.id)
         {
-            crow::json::wvalue uJson = user.getAsJson({"password", "role_id"});
+            crow::json::wvalue uJson;
+            uJson["user"] = user.getAsJson({"password", "role_id"});
 
             auto& tokenHandler = core::TokenHandler::getInstance();
             if (tokenHandler.isActive())

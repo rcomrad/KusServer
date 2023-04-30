@@ -47,6 +47,15 @@ struct BaseDataStruct : private BaseDataDummy
     {
         return ptrs[num];
     }
+
+    BaseDataStruct() noexcept = default;
+    ~BaseDataStruct()         = default;
+
+    BaseDataStruct(const BaseDataStruct& other)            = delete;
+    BaseDataStruct& operator=(const BaseDataStruct& other) = delete;
+
+    BaseDataStruct(BaseDataStruct&& other) noexcept            = default;
+    BaseDataStruct& operator=(BaseDataStruct&& other) noexcept = default;
 };
 
 template <typename T>
@@ -68,16 +77,16 @@ struct UpperDataStruct : public T
     UpperDataStruct(const UpperDataStruct& other)            = delete;
     UpperDataStruct& operator=(const UpperDataStruct& other) = delete;
 
-    UpperDataStruct(UpperDataStruct&& other) noexcept : T(other)
+    UpperDataStruct(UpperDataStruct&& other) noexcept : T(std::move(other))
     {
         T::reset();
     }
     UpperDataStruct& operator=(UpperDataStruct&& other) noexcept
     {
+        T::operator=(std::move(other));
         T::reset();
         return *this;
     }
-
     std::string getAsCondition() const noexcept
     {
         std::string result;
@@ -164,7 +173,7 @@ struct UpperDataStruct : public T
         for (auto& i : aReq)
         {
             auto it = T::nameToNum.find(i.key());
-            if (it == T::nameToNum.end())
+            if (it != T::nameToNum.end())
             {
                 switch (T::types[it->second])
                 {

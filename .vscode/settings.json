@@ -102,6 +102,11 @@
         "cfenv": "cpp",
         "unordered_set": "cpp",
         "queue": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "*.tcc": "cpp",
+        "memory_resource": "cpp",
+        "numbers": "cpp",
+        "semaphore": "cpp",
+        "cinttypes": "cpp"
     }
 }

@@ -261,6 +261,7 @@ data::Postgresql::prepare(const std::string& aStatment) noexcept
     std::cout << aStatment << "\n";
 #endif
 
+    closeStatment();
     try
     {
         mStatement      = std::make_unique<pqxx::work>(*mConnection);

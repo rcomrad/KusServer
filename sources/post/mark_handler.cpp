@@ -19,6 +19,6 @@ post::MarkHandler::process(const crow::request& aReq) noexcept
     auto lesson = connection.val.getData<data::Lesson>(
         "id = " + data::wrap(mark.lesson_id));
     mark.journal_table_id = lesson.journal_table_id;
-    connection.val.update(mark);
+    connection.val.write(mark);
     return {mark.id};
 }

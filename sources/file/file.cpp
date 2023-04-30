@@ -10,7 +10,7 @@
 file::FileDataArray
 file::File::dmpParser(const std::string& aFileName) noexcept
 {
-    auto words = File::getWords(aFileName, &file::File::isDMPSeparator);
+    auto words = File::getWords(aFileName, false, &file::File::isDMPSeparator);
     file::FileDataArray res;
     for (size_t i = 0; i < words.size(); ++i)
     {
@@ -51,12 +51,13 @@ file::File::dataParser(const std::string& aFileName) noexcept
 }
 
 std::string
-file::File::getAllData(const std::string& aFileName) noexcept
+file::File::getAllData(const std::string& aFileName, bool aIsCritical) noexcept
 {
     std::ifstream ios(aFileName);
     if (!ios.is_open())
     {
         std::cout << "NO_SUCH_FILE: " + aFileName + "\n";
+        if (aIsCritical) exit(0);
     }
     else
     {
@@ -74,9 +75,9 @@ file::File::getAllData(const std::string& aFileName) noexcept
 }
 
 std::vector<std::string>
-file::File::getLines(const std::string& aFileName) noexcept
+file::File::getLines(const std::string& aFileName, bool aIsCritical) noexcept
 {
-    std::string temp = getAllData(aFileName);
+    std::string temp = getAllData(aFileName, aIsCritical);
     std::vector<std::string> result;
     int last = 0;
     for (int i = 0; i < temp.size() + 1; ++i)
@@ -86,6 +87,8 @@ file::File::getLines(const std::string& aFileName) noexcept
             if (i - last > 1)
             {
                 result.emplace_back(temp.substr(last, i - last));
+                // TODO: check or update?
+                if (result.back().back() == '\r') result.back().pop_back();
             }
             last = i + 1;
         }
@@ -95,9 +98,10 @@ file::File::getLines(const std::string& aFileName) noexcept
 
 std::vector<std::vector<std::string>>
 file::File::getWords(const std::string& aFileName,
+                     bool aIsCritical,
                      decltype(&file::File::isSeparator) funk) noexcept
 {
-    auto lines = getLines(aFileName);
+    auto lines = getLines(aFileName, aIsCritical);
     std::vector<std::vector<std::string>> result;
     for (auto& line : lines)
     {
@@ -111,6 +115,27 @@ file::File::getWords(const std::string& aFileName,
             result.back().emplace_back(line.substr(from, indx - from));
             indx += 1;
         }
+    }
+    return result;
+}
+
+std::vector<std::array<std::string, 2>>
+file::File::getMap(const std::string& aFileName, bool aIsCritical) noexcept
+{
+    auto lines = getLines(aFileName, aIsCritical);
+    static std::vector<std::array<std::string, 2>> result;
+    for (auto& line : lines)
+    {
+        result.emplace_back();
+        int indx = 0;
+
+        while (isSeparator(line[indx])) indx++;
+        int from = indx;
+        while (!isSeparator(line[indx])) indx++;
+        result.back()[0] = line.substr(from, indx - from);
+
+        while (isSeparator(line[indx])) indx++;
+        result.back()[1] = line.substr(indx);
     }
     return result;
 }

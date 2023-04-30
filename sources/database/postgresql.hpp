@@ -69,23 +69,26 @@ public:
     template <typename T>
     void getDataArray(DataArray<T>& result,
                       int& aOffset,
-                      const std::unordered_set<int>& aColums = {}) noexcept
+                      const std::unordered_set<int>& aColums = {},
+                      bool aIsAutoClose                      = true) noexcept
     {
         mResultIterator = --mResult.begin();
         while (true)
         {
             T temp;
-            auto flag = getData(temp, aOffset, aColums);
+            auto flag = getData(temp, aOffset, aColums, false);
             // TODO: check move
             if (flag) result.emplace_back(std::move(temp));
             else break;
         }
+        if (aIsAutoClose) closeStatment();
     }
 
     template <typename T>
     bool getData(T& result,
                  int& aOffset,
-                 const std::unordered_set<int>& aColums = {}) noexcept
+                 const std::unordered_set<int>& aColums = {},
+                 bool aIsAutoClose                      = true) noexcept
     {
         bool res = false;
         step();
@@ -97,7 +100,7 @@ public:
             {
                 int num = aOffset + i;
                 if (!hasData(num)) break;
-                if (!aColums.count(i)) continue;
+                if (!aColums.empty() && !aColums.count(i)) continue;
 
                 switch (T::types[i])
                 {
@@ -116,6 +119,8 @@ public:
 
             aOffset += aColums.size();
         }
+
+        if (aIsAutoClose) closeStatment();
         return res;
     }
 

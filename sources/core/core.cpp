@@ -116,31 +116,19 @@ core::Core::createDatabaseFromFile(std::string aFileName) noexcept
     auto connection = data::ConnectionManager::getUserConnection();
 
     std::vector<data::ColumnSetting> colums;
-    std::ifstream ios(aFileName);
-    if (!ios.is_open())
-    {
-        std::cout << "NO_SUCH_FILE!\n";
-        return;
-    }
-    else
-    {
-        std::cout << "Extracting_file\n";
-    }
-    std::string s1, s2;
+    auto lines = file::File::getMap(aFileName, true);
     std::string name;
-    while (ios >> s1)
+    for (auto i : lines)
     {
-        std::getline(ios, s2, ' ');
-        std::getline(ios, s2);
-        if (s1 == "TABLE")
+        if (i[0] == "TABLE")
         {
-            if (name.size()) connection.val.createTable(name, colums);
+            if (!name.empty()) connection.val.createTable(name, colums);
             colums.clear();
-            name = s2;
+            name = i[1];
         }
         else
         {
-            colums.emplace_back(s1, s2);
+            colums.emplace_back(i[0], i[1]);
         }
     }
 }
