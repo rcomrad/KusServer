@@ -158,6 +158,7 @@ public:
             result += i.getAsInsert();
             result.push_back(',');
         }
+        result.pop_back();
         return result;
     }
 

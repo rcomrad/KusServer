@@ -8,33 +8,34 @@
 
 #include "domain/error_message.hpp"
 
+#include "file/file.hpp"
+
 #include "sql_wrapper.hpp"
 
 //--------------------------------------------------------------------------------
 
 std::unordered_map<data::ConnectionType, data::DBSettings>
-    data::DatabaseConnection::mConnectionTypeSettings =
-        getConnectionTypeSettings();
-
-std::unordered_map<data::ConnectionType, data::DBSettings>
-data::DatabaseConnection::getConnectionTypeSettings() noexcept
+data::DatabaseConnection::generateConnectionTypeSettings() noexcept
 {
     std::unordered_map<ConnectionType, data::DBSettings> result;
 
-    std::ifstream inp("database.pass");
-    data::DBSettings DBS;
-    int num;
-    while (inp >> num)
+    auto words = file::File::getWords("database.pass");
+    for (auto& i : words)
     {
-        inp >> DBS.name;
-        inp >> DBS.user;
-        inp >> DBS.password;
-        inp >> DBS.shame;
-
-        result[data::ConnectionType(num)] = DBS;
+        result[data::ConnectionType(std::stoi(i[0]))] =
+            data::DBSettings{i[1], i[2], i[3], i[4]};
     }
 
     return result;
+}
+
+data::DBSettings
+data::DatabaseConnection::getConnectionTypeSettings(
+    const ConnectionType& aType) noexcept
+{
+    static std::unordered_map<ConnectionType, data::DBSettings> result =
+        generateConnectionTypeSettings();
+    return result[aType];
 }
 
 //--------------------------------------------------------------------------------
@@ -47,7 +48,8 @@ data::DatabaseConnection::DatabaseConnection(const DBSettings& aDBS) noexcept
 
 data::DatabaseConnection::DatabaseConnection(
     const ConnectionType& aType) noexcept
-    : mDatabase(mConnectionTypeSettings[aType])
+    : mDBSettings(getConnectionTypeSettings(aType)),
+      mDatabase(getConnectionTypeSettings(aType))
 {
     WRITE_LOG("Creating_database_quare");
 }
@@ -72,20 +74,20 @@ data::DatabaseConnection::createTable(
     const std::string& aTableName,
     const std::vector<ColumnSetting>& aColums) noexcept
 {
-    mDatabase.createTable(aTableName, aColums, mDBSettings.user);
+    mDatabase.createTable(getTableName(aTableName), aColums, mDBSettings.user);
 }
 
 void
 data::DatabaseConnection::createEnvironment(
     const ConnectionType& aType) noexcept
 {
-    mDatabase.createEnvironment(mConnectionTypeSettings[aType]);
+    mDatabase.createEnvironment(getConnectionTypeSettings(aType));
 }
 
 void
 data::DatabaseConnection::dropDatabase(const ConnectionType& aType) noexcept
 {
-    mDatabase.deleteDatabase(mConnectionTypeSettings[aType].name);
+    mDatabase.deleteDatabase(getConnectionTypeSettings(aType).name);
 }
 
 //--------------------------------------------------------------------------------
@@ -118,4 +120,13 @@ data::DatabaseConnection::securityCheck(const std::string& aStr) noexcept
     }
 
     return result;
+}
+
+//--------------------------------------------------------------------------------
+
+std::string
+data::DatabaseConnection::getTableName(
+    const std::string& aTableName) const noexcept
+{
+    return mDBSettings.shame + "." + aTableName;
 }

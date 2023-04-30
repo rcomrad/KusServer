@@ -107,7 +107,7 @@ public:
 
     template <typename T,
               typename = dom::enableIfDerivedOf<data::BaseDataDummy, T>>
-    int writ(T& aData) noexcept
+    int write(T& aData) noexcept
     {
         int res = -1;
         if (aData.id == 0)
@@ -245,15 +245,15 @@ private:
     int mColumnNumber;
 
     static std::unordered_map<ConnectionType, data::DBSettings>
-        mConnectionTypeSettings;
+    generateConnectionTypeSettings() noexcept;
+    static data::DBSettings getConnectionTypeSettings(
+        const ConnectionType& aType) noexcept;
 
-    static std::unordered_map<ConnectionType, data::DBSettings>
-    getConnectionTypeSettings() noexcept;
-
+    std::string getTableName(const std::string& aTableName) const noexcept;
     template <typename T>
     std::string getTableName() const noexcept
     {
-        return mDBSettings.shame + "." + T::tableName;
+        return getTableName(T::tableName);
     }
 
     template <typename T>

@@ -73,8 +73,11 @@ data::Postgresql::select(const std::string& aTableName,
 void
 data::Postgresql::closeStatment() noexcept
 {
-    mStatement->commit();
-    mStatement = nullptr;
+    if (mStatement != nullptr)
+    {
+        mStatement->commit();
+        mStatement = nullptr;
+    }
 }
 
 //--------------------------------------------------------------------------------
@@ -167,9 +170,9 @@ data::Postgresql::createTable(const std::string& aTableName,
         statement += i.name + " ";
         statement += i.type + " ";
         statement += i.info + " ";
-        statement += ", ";
+        statement += ",";
     }
-    statement[statement.size() - 2] = ')';
+    statement.back() = ')';
 
     exec(statement);
     exec("ALTER TABLE " + aTableName + " OWNER TO " + aUserName);
@@ -309,15 +312,13 @@ data::Postgresql::createSequence(const std::string& aTableName,
 {
     std::string sequenceName = aTableName + "_id_seq";
 
-    std::vector<std::string> statements;
-    statements.reserve(4);
-    statements.emplace_back("CREATE SEQUENCE " + sequenceName +
-                            " AS integer "
-                            " START WITH 1 "
-                            " INCREMENT BY 1 "
-                            " NO MINVALUE "
-                            " NO MAXVALUE "
-                            " CACHE 1 ");
+    exec("CREATE SEQUENCE " + sequenceName +
+         " AS integer "
+         " START WITH 1 "
+         " INCREMENT BY 1 "
+         " NO MINVALUE "
+         " NO MAXVALUE "
+         " CACHE 1 ");
     exec("ALTER TABLE " + sequenceName + " OWNER TO " + aUserName);
     exec("ALTER SEQUENCE " + sequenceName + " OWNED BY " + aTableName + ".id");
     exec("ALTER TABLE ONLY " + aTableName +

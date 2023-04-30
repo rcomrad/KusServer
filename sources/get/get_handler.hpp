@@ -34,9 +34,9 @@ public:
         const std::unordered_set<std::string>& aColumn,
         data::SmartConnection& aConnection) noexcept
     {
-        auto table     = aConnection.val.getDataArray<T>(aColumn);
+        auto table = aConnection.val.getNextDataArray<data::User>(aColumn);
         crow::json::wvalue result;
-        result[T::tableName] = std::move(table. getAsJList());
+        result[T::tableName] = std::move(table.getAsJList());
         return result;
     }
 
