@@ -13,10 +13,7 @@ namespace post
 class PlanHandler : protected PostHandler
 {
 public:
-    static crow::json::wvalue rawDataHandler(
-        std::vector<std::vector<std::string>>& aData,
-        const std::vector<std::vector<std::string>>& aAdditionalInfo =
-            {}) noexcept;
+    static crow::json::wvalue rawDataHandler(data::RawData& aData) noexcept;
 };
 } // namespace post
 

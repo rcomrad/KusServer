@@ -48,25 +48,23 @@ post::UserHandler::process(const crow::request& aReq) noexcept
 }
 
 crow::json::wvalue
-post::UserHandler::rawDataHandler(
-    std::vector<std::vector<std::string>>& aData,
-    const std::vector<std::vector<std::string>>& aAdditionalInfo) noexcept
+post::UserHandler::rawDataHandler(data::RawData& aData) noexcept
 {
-    for (size_t i = 0; i < aData.size(); ++i)
+    for (size_t i = 0; i < aData.value.size(); ++i)
     {
-        if (aAdditionalInfo[i].size())
+        if (aData.additionalInfo[i].size())
         {
             std::set<std::string> roles;
-            for (auto& j : aAdditionalInfo[i])
+            for (auto& j : aData.additionalInfo[i])
             {
                 roles.insert(j);
             }
-            aData[i].emplace_back(
+            aData.value[i].emplace_back(
                 data::wrap(core::Role::getInstance().getRoleID(roles)));
         }
     }
 
-    return rawDataInsert<data::User>(aData);
+    return rawDataInsert<data::User>(aData.value);
 }
 
 crow::response

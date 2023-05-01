@@ -95,24 +95,27 @@ struct UpperDataStruct : public T
             auto temp = toString(T::types[i], T::ptrs[i]);
             if (!temp.empty())
             {
-                result += temp + " AND ";
+                result += T::names[i];
+                result.push_back('=');
+                result += temp;
+                result += " AND "s;
             }
         }
-        result.resize(result.size() - 5);
+        if (result.size() > 4) result.resize(result.size() - 5);
         return result;
     }
 
     std::string getAsInsert() const noexcept
     {
-        std::string result = "(";
+        std::string result = "("s;
         for (size_t i = 0; i < T::types.size(); ++i)
         {
             auto temp = toString(T::types[i], T::ptrs[i]);
-            if (temp.empty()) temp = "default";
+            if (temp.empty()) temp = "default"s;
             result += temp;
             result.push_back(',');
         }
-        result.back() = ')';
+        if (!result.empty()) result.back() = ')';
         return result;
     }
 
@@ -124,10 +127,13 @@ struct UpperDataStruct : public T
             auto temp = toString(T::types[i], T::ptrs[i]);
             if (!temp.empty())
             {
-                result += T::names[i] + "=" + temp + ",";
+                result += T::names[i];
+                result.push_back('=');
+                result += temp;
+                result.push_back(',');
             }
         }
-        result.pop_back();
+        if (!result.empty()) result.pop_back();
         return result;
     }
 
@@ -234,7 +240,7 @@ protected:
                 break;
             case data::Type::BOOL:
                 // TODO: other bool formats
-                *(bool*)aPtr = aData == "true";
+                *(bool*)aPtr = aData == "true"s;
                 break;
             case data::Type::STRING:
                 *(std::string*)aPtr = aData;

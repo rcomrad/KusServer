@@ -31,10 +31,10 @@ data::Postgresql::Postgresql(const DBSettings& aDBS)
     {
         // clang-format off
         mConnection = std::make_unique<pqxx::connection>(
-            "dbname = "     +   aDBS.name       + " " +
-            "user = "       +   aDBS.user           + " " +
-            "password = "   +   aDBS.password   + " " +  
-            "hostaddr = 127.0.0.1 port = 5432"
+            "dbname = "s     +   aDBS.name       + " "s +
+            "user = "s       +   aDBS.user           + " "s +
+            "password = "s   +   aDBS.password   + " "s +  
+            "hostaddr = 127.0.0.1 port = 5432"s
         );
         // clang-format on
     }
@@ -63,11 +63,25 @@ data::Postgresql::select(const std::string& aTableName,
                          const std::string& aColum,
                          const std::string& aConditon) noexcept
 {
-    std::string statement = "SELECT "s + (aColum == "" ? "*" : aColum) +
-                            " FROM " + aTableName +
-                            (aConditon == "" ? "" : " WHERE ") + aConditon;
+    std::string statement = "SELECT "s + (aColum == ""s ? "*"s : aColum) +
+                            " FROM "s + aTableName +
+                            (aConditon == ""s ? ""s : " WHERE "s) + aConditon;
 
     prepare(statement);
+}
+
+std::string
+data::DatabaseConnection::getCell(const std::string& aTableName,
+                                  const std::string& aColumnName,
+                                  const std::string& aCondition) noexcept
+{
+    std::string statement =
+        "SELECT "s + aColum + " FROM "s + aTableName + " WHERE "s + aConditon;
+
+    prepare(statement);
+    std::string result = getRaw(0);
+    closeStatment();
+    return result;
 }
 
 void
@@ -238,6 +252,12 @@ std::string
 data::Postgresql::getColumnAsStringUnsafe(int aColumNumber) noexcept
 {
     return mResultIterator[aColumNumber].as<std::string>();
+}
+
+std::string
+data::Postgresql::getRaw(int aColumNumber) noexcept
+{
+    return std::string(mResultIterator[aColumNumber].c_str());
 }
 
 //--------------------------------------------------------------------------------

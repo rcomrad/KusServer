@@ -22,6 +22,7 @@ public:
     void setDefaultResultEnd(const std::string& aDefaultResultEnd);
 
     void addInclude(const std::string& aInclude, bool aIsSTD = false);
+    void addCPPInclude(const std::string& aInclude, bool aIsSTD = false);
     // void addFunction(const std::string& aTemplate,
     //                  const std::string& aReturnType,
     //                  const std::string& aSignature, const std::string&
@@ -131,6 +132,7 @@ private:
     std::string mDefaultResultEnd;
 
     std::set<std::string> mIncludes;
+    std::set<std::string> mCPPIncludes;
     std::vector<Function> mFunctions;
     std::vector<StaticVar> mStaticVariables;
 

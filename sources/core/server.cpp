@@ -144,12 +144,12 @@ core::Server::Server()
                 return res;
             });
 
-    CROW_ROUTE(app, "/api/upload")
+    CROW_ROUTE(app, "/api/upload/<string>")
         .methods("POST"_method)(
-            [&](const crow::request& req)
+            [&](const crow::request& req, std::string aType)
             {
                 crow::response res;
-                res = post::PostHandler::uploadFromFileRequest(req);
+                res = post::PostHandler::uploadFromFileRequest(aType, req);
                 return res;
             });
 

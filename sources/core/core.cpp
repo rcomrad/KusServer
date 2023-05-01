@@ -33,20 +33,48 @@ core::Core::remakeDatabase()
 {
     createEnvironment();
     createDatabaseFromFile("database.psql_db");
-    post::PostHandler::uploadFromFile("database.dmp");
+    post::PostHandler::uploadFromFile(
+        {
+            {"type", "nun"}
+    },
+        "database.dmp");
 }
 
 void
 core::Core::populate()
 {
-    post::PostHandler::uploadFromFile("../tests/example.dmp");
+    post::PostHandler::uploadFromFile(
+        {
+            {"type", "nun"}
+    },
+        "../tests/example.dmp");
 
-    post::PostHandler::uploadFromFile("../tests/user.data");
+    post::PostHandler::uploadFromFile(
+        {
+            {"type", "user"}
+    },
+        "../tests/user.data");
 
-    post::PostHandler::uploadFromFile("../tests/plan_test.csv");
-    post::PostHandler::uploadFromFile("../tests/plan_cpp.csv");
+    post::PostHandler::uploadFromFile(
+        {
+            {"type",       "plan"                  },
+            {"name",       "Информатике"},
+            {"subject_id", "1"                     }
+    },
+        "../tests/plan_test.csv");
+    post::PostHandler::uploadFromFile(
+        {
+            {"type",       "plan"},
+            {"name",       "C++" },
+            {"subject_id", "1"   }
+    },
+        "../tests/plan_cpp.csv");
 
-    post::PostHandler::uploadFromFile("../tests/journal.data");
+    post::PostHandler::uploadFromFile(
+        {
+            {"type", "journal_table"}
+    },
+        "../tests/journal.data");
 }
 
 void

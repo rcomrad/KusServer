@@ -63,6 +63,10 @@ public:
                 const std::string& aColum    = "",
                 const std::string& aConditon = "") noexcept;
 
+    std::string getCell(const std::string& aTableName,
+                        const std::string& aColumnName,
+                        const std::string& aCondition) noexcept;
+
     void closeStatment() noexcept;
 
     // TODO: aColums
@@ -152,6 +156,8 @@ public:
     bool getColumnBoolUnsafe(int aColumNumber) noexcept;
     const char* getColumnAsCharsUnsafe(int aColumNumber) noexcept;
     std::string getColumnAsStringUnsafe(int aColumNumber) noexcept;
+
+    std::string getRaw(int aColumNumber) noexcept;
 
     //--------------------------------------------------------------------------------
 

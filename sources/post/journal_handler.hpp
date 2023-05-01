@@ -17,10 +17,9 @@ class JournalHandler : protected PostHandler
 public:
     static crow::json::wvalue process(const crow::request& aReq) noexcept;
 
-    static crow::json::wvalue rawDataHandler(
-        std::vector<std::vector<std::string>>& aData,
-        const std::vector<std::vector<std::string>>& aAdditionalInfo =
-            {}) noexcept;
+    static crow::json::wvalue rawDataHandler(data::RawData& aData) noexcept;
+    // static void headerParser(data::RawData& aData,
+    //                          const crow::multipart::message& msg) noexcept;
 
 private:
     static void makeSchedule(data::Journal_table& aJournal) noexcept;

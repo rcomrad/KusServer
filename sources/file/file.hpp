@@ -5,30 +5,26 @@
 
 #include <array>
 #include <string>
-#include <unordered_map>
 #include <vector>
+
+#include "database/raw_data.hpp"
 
 //--------------------------------------------------------------------------------
 
 namespace file
 {
 
-struct FileData
-{
-    std::vector<std::vector<std::string>> value;
-    std::vector<std::vector<std::string>> additionalInfo;
-};
-using FileDataArray = std::unordered_map<std::string, FileData>;
-
 class File
 {
 private:
     static bool isSeparator(char c) noexcept;
     static bool isDMPSeparator(char c) noexcept;
+    static bool isCSVSeparator(char c) noexcept;
 
 public:
-    static FileDataArray dmpParser(const std::string& aFileName) noexcept;
-    static FileDataArray dataParser(const std::string& aFileName) noexcept;
+    static data::RawDataArray dmpParser(const std::string& aFileName) noexcept;
+    static data::RawDataArray dataParser(const std::string& aFileName) noexcept;
+    static data::RawDataArray csvParser(const std::string& aFileName) noexcept;
 
     static std::string getAllData(const std::string& aFileName,
                                   bool aIsCritical = false) noexcept;

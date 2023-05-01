@@ -15,34 +15,40 @@ post::JournalHandler::process(const crow::request& aReq) noexcept
 {
     auto req     = crow::json::load(aReq.body);
     auto journal = parseRequest<data::Journal_table>(req).data;
+
+    std::string temp = journal.id ? journal.schedule : "";
     {
         auto connection = data::ConnectionManager::getUserConnection();
         connection.val.write(journal);
+        if (!temp.empty())
+        {
+            journal = connection.val.getData<data::Journal_table>(
+                "id=" + data::wrap(journal.id));
+        }
     }
-    makeSchedule(journal);
+
+    if (temp.empty() || journal.schedule != temp) makeSchedule(journal);
     return {journal.id};
 }
 
 crow::json::wvalue
-post::JournalHandler::rawDataHandler(
-    std::vector<std::vector<std::string>>& aData,
-    const std::vector<std::vector<std::string>>& aAdditionalInfo) noexcept
+post::JournalHandler::rawDataHandler(data::RawData& aData) noexcept
 {
-    for (size_t i = 0; i < aData.size(); ++i)
+    for (size_t i = 0; i < aData.value.size(); ++i)
     {
-        if (aAdditionalInfo[i].size())
+        if (aData.additionalInfo[i].size())
         {
-            aData[i].emplace_back();
-            for (auto& j : aAdditionalInfo[i])
+            aData.value[i].emplace_back();
+            for (auto& j : aData.additionalInfo[i])
             {
-                aData[i].back() += j;
-                aData[i].back().push_back(' ');
+                aData.value[i].back() += j;
+                aData.value[i].back().push_back(' ');
             }
         }
     }
 
-    auto res = rawDataInsert<data::Journal_table>(aData);
-    data::DataArray<data::Journal_table> journals(aData);
+    auto res = rawDataInsert<data::Journal_table>(aData.value);
+    data::DataArray<data::Journal_table> journals(aData.value);
     for (auto& i : journals)
     {
         makeSchedule(i);
@@ -81,8 +87,8 @@ post::JournalHandler::makeSchedule(data::Journal_table& aJournal) noexcept
     };
 
     data::DataArray<data::Holiday> holidays =
-        connection.val.getData<data::Holiday>("school_id = " +
-                                              data::wrap(schoolID));
+        connection.val.getDataArray<data::Holiday>("school_id = " +
+                                                   data::wrap(schoolID));
 
     boost::gregorian::date startDate{year, month, day};
     boost::gregorian::date date = startDate;
@@ -134,5 +140,5 @@ post::JournalHandler::makeSchedule(data::Journal_table& aJournal) noexcept
         ++i;
     }
 
-    connection.val.update(lessons);
+    connection.val.write(lessons);
 }

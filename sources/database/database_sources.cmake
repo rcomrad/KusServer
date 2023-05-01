@@ -23,6 +23,8 @@ set(
     postgresql.cpp
     postgresql.hpp
 
+    raw_data.hpp
+
     row.hpp
 
     sql_wrapper.cpp

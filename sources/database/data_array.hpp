@@ -16,10 +16,10 @@ public:
     {
     }
 
-    DataArray(T&& aData)
-    {
-        emplace_back(std::move(aData));
-    }
+    // DataArray(T&& aData)
+    // {
+    //     emplace_back(std::move(aData));
+    // }
 
     DataArray(const std::vector<std::vector<std::string>>& aRaw)
     {

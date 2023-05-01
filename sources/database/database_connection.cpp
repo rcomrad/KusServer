@@ -125,6 +125,16 @@ data::DatabaseConnection::securityCheck(const std::string& aStr) noexcept
 //--------------------------------------------------------------------------------
 
 std::string
+data::DatabaseConnection::getCell(const std::string& aTableName,
+                                  const std::string& aColumnName,
+                                  const std::string& aCondition) noexcept
+{
+    return mDatabase.getCell(getTableName(aTableName), aColumnName, aCondition);
+}
+
+//--------------------------------------------------------------------------------
+
+std::string
 data::DatabaseConnection::getTableName(
     const std::string& aTableName) const noexcept
 {

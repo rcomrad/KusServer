@@ -97,9 +97,9 @@ TABLE problem
 	memory_limit integer NOT NULL
 	
 TABLE competition_problem
-	name character varying(50) NOT NULL
 	competition_id integer NOT NULL
 	problem_id integer NOT NULL
+	name character varying(50) NOT NULL
 
 TABLE submission
 	user_id integer NOT NULL
@@ -117,9 +117,9 @@ TABLE question
 	jury_answer character varying(12) NOT NULL
 
 TABLE competition_question
-	name character varying(50) NOT NULL
 	competition_id integer NOT NULL
 	question_id integer NOT NULL
+	name character varying(50) NOT NULL
 
 TABLE answer
 	user_id integer NOT NULL

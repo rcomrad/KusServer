@@ -7,11 +7,11 @@
 
 #include "path.hpp"
 
-file::FileDataArray
+data::RawDataArray
 file::File::dmpParser(const std::string& aFileName) noexcept
 {
     auto words = File::getWords(aFileName, false, &file::File::isDMPSeparator);
-    file::FileDataArray res;
+    data::RawDataArray res;
     for (size_t i = 0; i < words.size(); ++i)
     {
         if (words[i].empty()) continue;
@@ -26,19 +26,19 @@ file::File::dmpParser(const std::string& aFileName) noexcept
     return res;
 }
 
-file::FileDataArray
+data::RawDataArray
 file::File::dataParser(const std::string& aFileName) noexcept
 {
     auto words = File::getWords(aFileName);
-    file::FileDataArray res;
+    data::RawDataArray res;
     for (size_t i = 0; i < words.size(); ++i)
     {
         if (words[i].empty()) continue;
         auto& curArray      = res[words[i][0]];
         int additionalLines = std::stoi(words[i][1]);
 
-        for (++i; i < words.size() && words[i].size() && words[i][0] != "END";
-             ++i)
+        for (i += 2;
+             i < words.size() && words[i].size() && words[i][0] != "END"; ++i)
         {
             curArray.value.emplace_back(std::move(words[i]));
             for (int j = 0; j < additionalLines; ++j)
@@ -46,6 +46,21 @@ file::File::dataParser(const std::string& aFileName) noexcept
                 curArray.additionalInfo.emplace_back(std::move(words[++i]));
             }
         }
+    }
+    return res;
+}
+
+data::RawDataArray
+file::File::csvParser(const std::string& aFileName) noexcept
+{
+    auto words = File::getWords(aFileName, false, &file::File::isCSVSeparator);
+    data::RawDataArray res;
+    auto& curArray = res["data"];
+    words[0].clear();
+    for (auto& i : words)
+    {
+        if (i.empty()) continue;
+        curArray.value.emplace_back(std::move(i));
     }
     return res;
 }
@@ -150,6 +165,12 @@ bool
 file::File::isDMPSeparator(char c) noexcept
 {
     return c == '\t' || c == ';' || c == '\0';
+}
+
+bool
+file::File::isCSVSeparator(char c) noexcept
+{
+    return c == ';' || c == '\0';
 }
 
 std::string

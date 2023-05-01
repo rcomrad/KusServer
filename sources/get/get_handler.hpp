@@ -68,7 +68,7 @@ public:
         data::DataArray<T> table;
         {
             auto connection = data::ConnectionManager::getUserConnection();
-            table           = connection.val.getData<T>();
+            table           = connection.val.getDataArray<T>();
         }
 
         std::string result = table.getTableName() + "\n";

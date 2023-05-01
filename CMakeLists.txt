@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.21.3)
 
 if(NOT DEFINED VCPKG_ROOT)
-    set(VCPKG_ROOT "/home/sanya/vcpkg")
+    set(VCPKG_ROOT "D:/lib/vcpkg")
 endif()
 
 set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")

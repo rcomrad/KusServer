@@ -9,35 +9,49 @@
 //--------------------------------------------------------------------------------
 
 crow::json::wvalue
-post::PostHandler::uploadFromFile(const std::string aType,
-                                  const std::string aFileName) noexcept
+post::PostHandler::uploadFromFile(
+    std::unordered_map<std::string, std::string>&& aHeader,
+    const std::string& aFileName) noexcept
 {
     auto data = file::FileRouter::process(aFileName);
 
-    if (aType.empty())
+    if (aHeader["type"] == "nun")
     {
         for (auto& i : data)
         {
-            PostRouter::rawDataRouter(i.first, i.second.value,
-                                      i.second.additionalInfo);
+            PostRouter::rawDataRouter(i.first, i.second);
         }
     }
     else
     {
-        PostRouter::rawDataRouter(aType, i.begin()->second.value,
-                                  i.begin()->second.additionalInfo);
+        aHeader["url"]              = aFileName;
+        data.begin()->second.header = std::move(aHeader);
+        PostRouter::rawDataRouter(data.begin()->second.header["type"],
+                                  data.begin()->second);
     }
 
     return {200};
 }
 
 crow::json::wvalue
-post::PostHandler::uploadFromFileRequest(const std::string aType,
+post::PostHandler::uploadFromFileRequest(const std::string& aType,
                                          const crow::request& aReq) noexcept
 {
     crow::multipart::message msg(aReq);
     std::string filePath = uploadFile(msg);
-    return uploadFromFile(aType, filePath);
+
+    std::unordered_map<std::string, std::string> header = {
+        {"type", aType}
+    };
+    for (auto& i : msg.part_map)
+    {
+        if (i.first != "filename" && i.first != "file")
+        {
+            header[i.first] = i.second.body;
+        }
+    }
+
+    return uploadFromFile(std::move(header), filePath);
 }
 
 //--------------------------------------------------------------------------------
@@ -63,19 +77,22 @@ post::PostHandler::uploadFile(crow::multipart::message& aMsg,
     }
 
     auto file_handler = std::ofstream(filePath);
-    file_handler << file;
-    file_handler.close();
+    if (file_handler.is_open())
+    {
+        file_handler << file;
+        file_handler.close();
+    }
 
     return filePath;
 }
 
-void
-post::PostHandler::transmitToMTMHandler(const std::string aTableName,
-                                        int aID,
-                                        bool aIsAdding,
-                                        std::vector<int> aIDForInsert,
-                                        const std::string aTrueNam) noexcept
-{
-    PostRouter::manyToManyRouter(aTableName, aID, aIsAdding, aIDForInsert,
-                                 aTrueNam);
-}
+// void
+// post::PostHandler::transmitToMTMHandler(const std::string aTableName,
+//                                         int aID,
+//                                         bool aIsAdding,
+//                                         std::vector<int> aIDForInsert,
+//                                         const std::string aTrueNam) noexcept
+// {
+//     PostRouter::manyToManyRouter(aTableName, aID, aIsAdding, aIDForInsert,
+//                                  aTrueNam);
+// }

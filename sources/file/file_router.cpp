@@ -5,10 +5,11 @@
 std::unordered_map<std::string, decltype(&file::File::dmpParser)>
     file::FileRouter::mRouter = {
         {"dmp",  &file::File::dmpParser },
-        {"data", &file::File::dataParser}
+        {"data", &file::File::dataParser},
+        {"csv",  &file::File::csvParser }
 };
 
-file::FileDataArray
+data::RawDataArray
 file::FileRouter::process(const std::string& aFileName) noexcept
 {
     int indx = aFileName.size() - 1;
@@ -16,7 +17,7 @@ file::FileRouter::process(const std::string& aFileName) noexcept
     std::string extension = aFileName.substr(indx + 1);
 
     auto it = mRouter.find(extension);
-    std::unordered_map<std::string, FileData> result;
+    data::RawDataArray result;
     if (it != mRouter.end()) result = it->second(aFileName);
     return result;
 }

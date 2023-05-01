@@ -1,5 +1,11 @@
 #include "post_router.hpp"
 
+#include "answer_handler.hpp"
+#include "journal_handler.hpp"
+#include "mark_handler.hpp"
+#include "plan_handler.hpp"
+#include "user_handler.hpp"
+
 std::unordered_map<std::string,
                    decltype(&post::PostHandler::process<data::Dummy>)>
     post::PostRouter::mPostRouterMap = {
@@ -32,40 +38,6 @@ std::unordered_map<std::string,
          &post::PostHandler::process<data::Competition_question>                 },
         {"answer",               &post::AnswerHandler::process                   },
         {"file_exchange",        &post::PostHandler::process<data::File_exchange>}
-};
-
-std::unordered_map<std::string,
-                   decltype(&post::PostHandler::manyToMany<data::Dummy>)>
-    post::PostRouter::mManyToManyRouterMap = {
-        {"dummy",                &post::PostHandler::manyToMany<data::Dummy>        },
-        {"school",               &post::PostHandler::manyToMany<data::School>       },
-        {"user",                 &post::PostHandler::manyToMany<data::User>         },
-        {"role",                 &post::PostHandler::manyToMany<data::Role>         },
-        {"grade",                &post::PostHandler::manyToMany<data::Grade>        },
-        {"grade_student",        &post::PostHandler::manyToMany<data::Grade_student>},
-        {"group",                &post::PostHandler::manyToMany<data::Group>        },
-        {"group_student",        &post::PostHandler::manyToMany<data::Group_student>},
-        {"lesson",               &post::PostHandler::manyToMany<data::Lesson>       },
-        {"journal_table",        &post::PostHandler::manyToMany<data::Journal_table>},
-        {"subject",              &post::PostHandler::manyToMany<data::Subject>      },
-        {"mark",                 &post::PostHandler::manyToMany<data::Mark>         },
-        {"plan",                 &post::PostHandler::manyToMany<data::Plan>         },
-        {"theme",                &post::PostHandler::manyToMany<data::Theme>        },
-        {"file",                 &post::PostHandler::manyToMany<data::File>         },
-        {"safe_file",            &post::PostHandler::manyToMany<data::Safe_file>    },
-        {"holiday",              &post::PostHandler::manyToMany<data::Holiday>      },
-        {"competition",          &post::PostHandler::manyToMany<data::Competition>  },
-        {"user_competition",
-         &post::PostHandler::manyToMany<data::User_competition>                     },
-        {"problem",              &post::PostHandler::manyToMany<data::Problem>      },
-        {"competition_problem",
-         &post::PostHandler::manyToMany<data::Competition_problem>                  },
-        {"submission",           &post::PostHandler::manyToMany<data::Submission>   },
-        {"question",             &post::PostHandler::manyToMany<data::Question>     },
-        {"competition_question",
-         &post::PostHandler::manyToMany<data::Competition_question>                 },
-        {"answer",               &post::PostHandler::manyToMany<data::Answer>       },
-        {"file_exchange",        &post::PostHandler::manyToMany<data::File_exchange>}
 };
 
 std::unordered_map<std::string, decltype(&post::PostHandler::drop<data::Dummy>)>

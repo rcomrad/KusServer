@@ -138,7 +138,7 @@ public:
         {
             mDatabase.update(getTableName<T>(), aData.getAsUpdate(),
                              aConditon.size() ? aConditon
-                                              : data::wrap(aData.id));
+                                              : "id=" + data::wrap(aData.id));
             res = aData.id;
         }
         return res;
@@ -148,13 +148,9 @@ public:
               typename = dom::enableIfDerivedOf<data::BaseDataDummy, T>>
     int drop(T& aData) noexcept
     {
-        int res = -1;
-        if (aData.id != 0)
-        {
-            mDatabase.drop(getTableName<T>(), aData.getAsCondition());
-            res = 1;
-        }
-        return res;
+        mDatabase.drop(getTableName<T>(), aData.getAsCondition());
+        // TODO: result
+        return 1;
     }
 
     template <typename T>
@@ -175,20 +171,23 @@ public:
 
     //--------------------------------------------------------------------------------
 
-    // template <typename T>
-    // int writeTable(Table<T>& aData) noexcept
-    // {
-    //     int res = 0;
-    //     if (aData.size() > 0)
-    //     {
-    //         res = insert(aData);
-    //     }
-    //     else
-    //     {
-    //         res = update(aData);
-    //     }
-    //     return res;
-    // }
+    template <typename T>
+    int write(DataArray<T>& aData) noexcept
+    {
+        int res = 0;
+        if (aData.size() > 0)
+        {
+            if (aData[0].id == 0)
+            {
+                res = insert(aData);
+            }
+            else
+            {
+                res = update(aData);
+            }
+        }
+        return res;
+    }
 
     template <typename T>
     int insert(DataArray<T>& aData) noexcept
@@ -232,6 +231,12 @@ public:
     //--------------------------------------------------------------------------------
 
     static bool securityCheck(const std::string& aStr) noexcept;
+
+    //--------------------------------------------------------------------------------
+
+    std::string getCell(const std::string& aTableName,
+                        const std::string& aColumnName,
+                        const std::string& aCondition) noexcept;
 
     //--------------------------------------------------------------------------------
 

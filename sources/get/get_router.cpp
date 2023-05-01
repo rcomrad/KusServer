@@ -1,5 +1,8 @@
 #include "get_router.hpp"
 
+#include "question_handler.hpp"
+#include "user_handler.hpp"
+
 std::unordered_map<std::string,
                    decltype(&get::GetHandler::process<data::Dummy>)>
     get::GetRouter::mBasicRouterMap = {

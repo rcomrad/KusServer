@@ -3,12 +3,7 @@
 
 #include <unordered_map>
 
-#include "answer_handler.hpp"
-#include "journal_handler.hpp"
-#include "mark_handler.hpp"
-#include "plan_handler.hpp"
 #include "post_handler.hpp"
-#include "user_handler.hpp"
 
 namespace post
 {
@@ -22,16 +17,6 @@ public:
         crow::json::wvalue result;
         auto it = mPostRouterMap.find(aTableName);
         if (it != mPostRouterMap.end()) result = it->second(args...);
-        return result;
-    }
-
-    template <typename... Args>
-    static crow::json::wvalue manyToManyRouter(const std::string& aTableName,
-                                               Args&&... args) noexcept
-    {
-        crow::json::wvalue result;
-        auto it = mManyToManyRouterMap.find(aTableName);
-        if (it != mManyToManyRouterMap.end()) result = it->second(args...);
         return result;
     }
 
@@ -60,10 +45,6 @@ private:
         std::string,
         decltype(&post::PostHandler::process<data::Dummy>)>
         mPostRouterMap;
-    static std::unordered_map<
-        std::string,
-        decltype(&post::PostHandler::manyToMany<data::Dummy>)>
-        mManyToManyRouterMap;
     static std::unordered_map<std::string,
                               decltype(&post::PostHandler::drop<data::Dummy>)>
         mDropRouterMap;
