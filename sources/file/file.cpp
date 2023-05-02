@@ -174,18 +174,6 @@ file::File::isCSVSeparator(char c) noexcept
 }
 
 std::string
-file::File::getAllWithBr(const std::string& aFileName) noexcept
-{
-    auto temp = getLines(aFileName);
-    std::string result;
-    for (auto& i : temp)
-    {
-        result += i + "<br>";
-    }
-    return result;
-}
-
-std::string
 file::File::writeData(const std::string& aFolderName,
                       const std::string& aFileName,
                       const std::string& aData) noexcept

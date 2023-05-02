@@ -362,9 +362,8 @@ generateDatabaseStructuresHPPFile()
                 temp        = "";
                 columnCount = 0;
 
-                file << "\nstruct " << structName
-                     << " : public UpperDataStruct<" << baseName
-                     << ">\n{\n};\n";
+                file << "\nusing " << structName << " = UpperDataStruct<"
+                     << baseName << ">;\n\n";
             }
 
             if (s2 == "NUN") break;

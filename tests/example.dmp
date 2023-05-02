@@ -94,20 +94,8 @@ question
 	Задача 3;t3;1;1;ag.
 END
 
-problem
-	Задача C1;mean;NUN;1;1;1000;100
-	Задача C2;pashs;NUN;1;1;1000;100
-	Задача C3;space;NUN;1;1;1000;100
-END
-
-competition_question
+competition_problem
 	Задача 1;1;1
 	Задача 2;1;2
 	Задача 3;2;3
-END
-
-competition_problem
-	Задача C1;1;1
-	Задача C2;1;2
-	Задача C3;2;3
 END

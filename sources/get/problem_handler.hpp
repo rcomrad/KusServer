@@ -18,8 +18,6 @@ public:
     static crow::json::wvalue process(
         const std::unordered_set<std::string>& aColumn,
         data::SmartConnection& aConnection) noexcept;
-
-    static crow::json::wvalue getProblem(int aProblemID, int aUserID) noexcept;
 };
 } // namespace get
 

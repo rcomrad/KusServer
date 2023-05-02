@@ -3,7 +3,7 @@
 #include "database/connection_manager.hpp"
 
 crow::json::wvalue
-post::MarkHandler::process(post::PostRequest<data::Mark>& aReq) noexcept
+post::MarkHandler::process(PostRequest<data::Mark>& aReq) noexcept
 {
     auto& mark      = aReq.data;
     auto connection = data::ConnectionManager::getUserConnection();

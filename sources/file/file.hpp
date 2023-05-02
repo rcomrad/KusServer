@@ -39,8 +39,6 @@ public:
     static std::vector<std::array<std::string, 2>> getMap(
         const std::string& aFileName, bool aIsCritical = false) noexcept;
 
-    static std::string getAllWithBr(const std::string& aFileName) noexcept;
-
     static std::string writeData(const std::string& aFolderName,
                                  const std::string& aFileName,
                                  const std::string& aData) noexcept;
