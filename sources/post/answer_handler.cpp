@@ -9,10 +9,9 @@ core::ProgramState& post::AnswerHandler::mProgramState =
     core::ProgramState::getInstance();
 
 crow::json::wvalue
-post::AnswerHandler::process(const crow::request& aReq) noexcept
+post::AnswerHandler::process(PostRequest<data::Answer>& aReq) noexcept
 {
-    auto body   = crow::json::load(aReq.body);
-    auto answer = parseRequest<data::Answer>(body).data;
+    auto& answer = aReq.data;
 
     answer.verdict = '?';
     answer.time    = dom::DateAndTime::getCurentTime();

@@ -9,11 +9,8 @@
 #include "get/get_handler.hpp"
 
 crow::json::wvalue
-post::UserHandler::process(const crow::request& aReq) noexcept
+post::UserHandler::process(PostRequest<data::User>& aReq) noexcept
 {
-    auto body    = crow::json::load(aReq.body);
-    auto request = parseRequest<data::User>(body);
-
     // //TODO: move somevere
     //     int tt;
     //     for (auto& i : request.manyToMany)
@@ -22,27 +19,24 @@ post::UserHandler::process(const crow::request& aReq) noexcept
     //                              i.second);
     //     }
 
-    auto it = request.other.find("role");
-
-    if (it != request.other.end())
+    auto it = aReq.leftovers.find("role");
+    if (it != aReq.leftovers.end())
     {
-
         std::set<std::string> roles;
         for (auto& i : it->second)
         {
             roles.insert(i.s());
         }
 
-        request.data.role_id = core::Role::getInstance().getRoleID(roles);
+        aReq.data.role_id = core::Role::getInstance().getRoleID(roles);
     }
+    aReq.leftovers.erase("role");
 
     int res;
     {
         auto connection = data::ConnectionManager::getUserConnection();
-        res             = connection.val.write(request.data);
+        res             = connection.val.write(aReq.data);
     }
-
-    manyToManyTransmiter(request);
 
     return {res};
 }

@@ -20,43 +20,50 @@
 
 namespace post
 {
+
 class PostHandler
 {
 private:
+    enum class ManyToMany
+    {
+        NUN,
+        ADD,
+        REPLACE
+    };
+
     template <typename T>
     struct PostRequest
     {
-        enum class ManyToMany
-        {
-            NUN,
-            ADD,
-            REPLACE
-        };
-
         T data;
         ManyToMany type;
-        std::unordered_map<std::string, std::vector<int>> manyToMany;
-        std::unordered_map<std::string, crow::json::rvalue> other;
+        std::unordered_map<std::string, crow::json::rvalue> leftovers;
     };
 
 public:
-    template <typename T>
-    static crow::json::wvalue process(const crow::request& aReq) noexcept
+    template <typename HandlerType, typename TableType>
+    static crow::json::wvalue basicPost(const crow::request& aReq) noexcept
     {
         auto body    = crow::json::load(aReq.body);
-        auto request = parseRequest<T>(body);
+        auto request = parseRequest<TableType>(body);
 
+        crow::json::wvalue res;
+        res = HandlerType::process(request);
+
+        if (request.type != ManyToMany::NUN)
+        {
+            manyToMany(request.data.id, request.data.geName(), request.type,
+                       request.leftovers);
+        }
+
+        return res;
+    }
+
+    template <typename T>
+    static crow::json::wvalue process(PostRequest<T>& aReq) noexcept
+    {
         int res;
-        {
-            auto connection = data::ConnectionManager::getUserConnection();
-            res             = connection.val.write(request.data);
-        }
-
-        if (request.type != PostRequest::ManyToMany::NUN)
-        {
-            res = manyToMany(request);
-        }
-
+        auto connection = data::ConnectionManager::getUserConnection();
+        res             = connection.val.write(aReq.data);
         return {res};
     }
 
@@ -93,34 +100,41 @@ public:
     //     }
     // }
 
-    template <typename T>
-    static crow::json::wvalue manyToMany(const PostRequest<T>& aReq) noexcept
-    {
-        auto it = T::nameToNum.find(aTableName + "_id"s);
-        crow::json::wvalue res;
+    // template <typename T>
+    // static crow::json::wvalue manyToMany(const PostRequest<T>& aReq) noexcept
+    // {
+    //     for (auto& other : aReq.leftovers)
+    //     {
+    //         data::RawData aData;
+    //         // header;
+    //         auto& value = aData.value;
+    //     }
 
-        data::DataArray<T> table;
-        if (request.type == PostRequest::ManyToMany::REPLACE)
-        {
-            auto connection = data::ConnectionManager::getUserConnection();
-            connection.val.drop(request.data);
-            table = connection.val.getDataArray(request.data);
-        }
+    //     auto it = T::nameToNum.find(aTableName + "_id"s);
+    //     crow::json::wvalue res;
 
-        int l = it->second;
-        int r = l == 1 ? 2 : 1;
+    //     data::DataArray<T> table;
+    //     if (request.type == PostRequest::ManyToMany::REPLACE)
+    //     {
+    //         auto connection = data::ConnectionManager::getUserConnection();
+    //         connection.val.drop(request.data);
+    //         table = connection.val.getDataArray(request.data);
+    //     }
 
-        for (auto i : aIDForInsert)
-        {
-            table.emplace_back();
-            *(int*)table.back()[l] = aID;
-            *(int*)table.back()[r] = i;
-        }
+    //     int l = it->second;
+    //     int r = l == 1 ? 2 : 1;
 
-        res = connection.val.insert<T>(table);
+    //     for (auto i : aIDForInsert)
+    //     {
+    //         table.emplace_back();
+    //         *(int*)table.back()[l] = aID;
+    //         *(int*)table.back()[r] = i;
+    //     }
 
-        return res;
-    }
+    //     res = connection.val.insert<T>(table);
+
+    //     return res;
+    // }
 
     // template <typename T>
     // static crow::json::wvalue manyToMany(int aID,
@@ -179,7 +193,7 @@ public:
         {
             std::vector<int> ids;
             for (auto& i : *req.begin()) ids.push_back(i.i());
-            connection.val.dropByID<T>(ids);
+            connection.val.dropByID(T::tableName, ids);
         }
 
         return {};
@@ -196,6 +210,30 @@ public:
     template <typename T>
     static crow::json::wvalue rawDataHandler(data::RawData& aData) noexcept
     {
+        auto it = aData.header.find("partly");
+        if (it != aData.header.end() && it->second == "true" &&
+            T::types.size() > 3)
+        {
+            std::string first = T::names[1];
+            first.resize(first.size() - 3);
+            std::string second = T::names[2];
+            second.resize(second.size() - 3);
+
+            for (size_t i = 3; i < T::types.size(); ++i)
+            {
+                std::string temp = T::names[i];
+                first.resize(first.size());
+
+                if (temp == first)
+                {
+                    setRawData(aData.value, 0, first, T::names[i]);
+                }
+                else
+                {
+                    setRawData(aData.value, 1, second, T::names[i]);
+                }
+            }
+        }
         return rawDataInsert<T>(aData.value);
     }
 
@@ -217,26 +255,28 @@ protected:
     static auto parseRequest(const crow::json::rvalue& aReq) noexcept
     {
         PostRequest<T> result;
+        result.type = ManyToMany::NUN;
         result.data.setFromJson(aReq);
 
         for (auto& i : aReq)
         {
-            if (!T::nameToNum.count(i.key()))
+            if (i.key() == "many_to_many"s)
             {
-                if (i.t() == crow::json::type::List &&
-                    i[0].t() == crow::json::type::Number)
+                if (i.s() == "add")
                 {
-                    auto& list = result.manyToMany[i.key()];
-                    for (auto& j : i) list.push_back(j.i());
+                    result.type = ManyToMany::ADD;
                 }
-                else
+                else if (i.s() == "replace")
                 {
-                    result.other[i.key()] = i;
+                    result.type = ManyToMany::REPLACE;
                 }
                 continue;
             }
+            if (!T::nameToNum.count(i.key()))
+            {
+                result.leftovers[i.key()] = i;
+            }
         }
-
         return result;
     }
 
@@ -250,7 +290,21 @@ protected:
     //                                      std::vector<int> aIDForInsert,
     //                                      const std::string aTrueNam)
     //                                      noexcept;
+
+private:
+    static crow::json::wvalue manyToMany(
+        int aID,
+        const std::string& aTableName,
+        ManyToMany& aType,
+        std::unordered_map<std::string, crow::json::rvalue>
+            aLeftovers) noexcept;
+
+    static void setRawData(std::vector<std::vector<std::string>>& aData,
+                           int aNum,
+                           const std::string& aTableName,
+                           const std::string& aColumnName) noexcept;
 };
+
 } // namespace post
 
 //--------------------------------------------------------------------------------

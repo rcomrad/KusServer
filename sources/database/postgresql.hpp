@@ -61,7 +61,7 @@ public:
 
     void select(const std::string& aTableName,
                 const std::string& aColum    = "",
-                const std::string& aConditon = "") noexcept;
+                const std::string& aCondition = "") noexcept;
 
     std::string getCell(const std::string& aTableName,
                         const std::string& aColumnName,
@@ -134,9 +134,9 @@ public:
                const std::string& aData) noexcept;
     void update(const std::string& aTableName,
                 const std::string& aData,
-                const std::string& aConditon) noexcept;
+                const std::string& aCondition) noexcept;
     void drop(const std::string& aTableName,
-              const std::string& aConditon) noexcept;
+              const std::string& aCondition) noexcept;
     //--------------------------------------------------------------------------------
 
     void createEnvironment(const DBSettings& aDBS) noexcept;

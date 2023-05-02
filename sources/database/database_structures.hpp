@@ -347,11 +347,11 @@ struct Competition : public UpperDataStruct<CompetitionBase>
 {
 };
 
-struct User_competitionBase : public BaseDataStruct<3>
+struct Competition_userBase : public BaseDataStruct<3>
 {
     int id             = 0;
-    int user_id        = 0;
     int competition_id = 0;
+    int user_id        = 0;
 
     static std::string tableName;
     static std::vector<data::Type> types;
@@ -361,7 +361,7 @@ struct User_competitionBase : public BaseDataStruct<3>
     void reset();
 };
 
-struct User_competition : public UpperDataStruct<User_competitionBase>
+struct Competition_user : public UpperDataStruct<Competition_userBase>
 {
 };
 
@@ -390,10 +390,10 @@ struct Problem : public UpperDataStruct<ProblemBase>
 
 struct Competition_problemBase : public BaseDataStruct<4>
 {
-    int id = 0;
-    std::string name;
+    int id             = 0;
     int competition_id = 0;
     int problem_id     = 0;
+    std::string name;
 
     static std::string tableName;
     static std::vector<data::Type> types;
@@ -452,10 +452,10 @@ struct Question : public UpperDataStruct<QuestionBase>
 
 struct Competition_questionBase : public BaseDataStruct<4>
 {
-    int id = 0;
-    std::string name;
+    int id             = 0;
     int competition_id = 0;
     int question_id    = 0;
+    std::string name;
 
     static std::string tableName;
     static std::vector<data::Type> types;

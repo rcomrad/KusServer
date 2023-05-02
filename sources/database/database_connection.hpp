@@ -131,14 +131,14 @@ public:
 
     template <typename T,
               typename = dom::enableIfDerivedOf<data::BaseDataDummy, T>>
-    int update(const T& aData, const std::string& aConditon = "") noexcept
+    int update(const T& aData, const std::string& aCondition = "") noexcept
     {
         int res = -1;
         if (aData.id != 0)
         {
             mDatabase.update(getTableName<T>(), aData.getAsUpdate(),
-                             aConditon.size() ? aConditon
-                                              : "id=" + data::wrap(aData.id));
+                             aCondition.size() ? aCondition
+                                               : "id=" + data::wrap(aData.id));
             res = aData.id;
         }
         return res;
@@ -153,21 +153,8 @@ public:
         return 1;
     }
 
-    template <typename T>
-    int dropByID(const std::vector<int>& aIDs) noexcept
-    {
-        int res = -1;
-        if (aIDs.size())
-        {
-            auto name = getTableName<T>();
-            for (auto i : aIDs)
-            {
-                mDatabase.drop(name, "id=" + data::wrap(i));
-            }
-            res = 1;
-        }
-        return res;
-    }
+    int dropByID(const std::string& aTableName,
+                 const std::vector<int>& aIDs) noexcept;
 
     //--------------------------------------------------------------------------------
 
@@ -200,12 +187,12 @@ public:
 
     template <typename T>
     int update(const DataArray<T>& aData,
-               const std::string& aConditon = "") noexcept
+               const std::string& aCondition = "") noexcept
     {
         int res = aData.size();
         for (auto& i : aData)
         {
-            update(i, aConditon);
+            update(i, aCondition);
         }
         return res;
     }

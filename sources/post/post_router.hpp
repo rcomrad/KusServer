@@ -43,7 +43,7 @@ public:
 private:
     static std::unordered_map<
         std::string,
-        decltype(&post::PostHandler::process<data::Dummy>)>
+        decltype(&post::PostHandler::basicPost<post::PostHandler, data::Dummy>)>
         mPostRouterMap;
     static std::unordered_map<std::string,
                               decltype(&post::PostHandler::drop<data::Dummy>)>

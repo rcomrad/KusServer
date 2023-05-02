@@ -87,6 +87,12 @@ struct UpperDataStruct : public T
         T::reset();
         return *this;
     }
+
+    static std::string geName() noexcept
+    {
+        return T::tableName;
+    }
+
     std::string getAsCondition() const noexcept
     {
         std::string result;
@@ -208,6 +214,27 @@ struct UpperDataStruct : public T
             ++offset;
         }
     }
+
+    // static std::vector<std::string> getNunExample() noexcept
+    // {
+    //     std::vector<std::string> result(T::types.size());
+    //     for (size_t i = 0; i < T::types.size(); ++i)
+    //     {
+    //         switch (T::types[i])
+    //         {
+    //             case data::Type::INT:
+    //                 types.emplace_back("-1"s);
+    //                 break;
+    //             case data::Type::BOOL:
+    //                 types.emplace_back("-1"s);
+    //                 break;
+    //             case data::Type::STRING:
+    //                 types.emplace_back("NUN"s);
+    //                 break;
+    //         }
+    //     }
+    //     return result;
+    // }
 
 protected:
     static std::string toString(data::Type aType, void* aPtr) noexcept

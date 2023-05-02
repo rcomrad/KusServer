@@ -83,9 +83,9 @@ TABLE competition
 	start_time timestamp NOT NULL
 	end_time timestamp NOT NULL
 
-TABLE user_competition
-	user_id integer NOT NULL
+TABLE competition_user
 	competition_id integer NOT NULL
+	user_id integer NOT NULL
 
 TABLE problem
 	name character varying(50) NOT NULL

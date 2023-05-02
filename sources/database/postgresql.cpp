@@ -61,25 +61,27 @@ data::Postgresql::Postgresql(const DBSettings& aDBS)
 void
 data::Postgresql::select(const std::string& aTableName,
                          const std::string& aColum,
-                         const std::string& aConditon) noexcept
+                         const std::string& aCondition) noexcept
 {
     std::string statement = "SELECT "s + (aColum == ""s ? "*"s : aColum) +
                             " FROM "s + aTableName +
-                            (aConditon == ""s ? ""s : " WHERE "s) + aConditon;
+                            (aCondition == ""s ? ""s : " WHERE "s) + aCondition;
 
     prepare(statement);
 }
 
 std::string
-data::DatabaseConnection::getCell(const std::string& aTableName,
-                                  const std::string& aColumnName,
-                                  const std::string& aCondition) noexcept
+data::Postgresql::getCell(const std::string& aTableName,
+                          const std::string& aColumnName,
+                          const std::string& aCondition) noexcept
 {
-    std::string statement =
-        "SELECT "s + aColum + " FROM "s + aTableName + " WHERE "s + aConditon;
+    std::string statement = "SELECT "s + aColumnName + " FROM "s + aTableName +
+                            " WHERE "s + aCondition;
 
     prepare(statement);
+    step();
     std::string result = getRaw(0);
+    // std::string result = getColumnAsStringUnsafe(0);
     closeStatment();
     return result;
 }
@@ -115,18 +117,19 @@ data::Postgresql::insert(const std::string& aTableName,
 void
 data::Postgresql::update(const std::string& aTableName,
                          const std::string& aData,
-                         const std::string& aConditon) noexcept
+                         const std::string& aCondition) noexcept
 {
     std::string statement =
-        "UPDATE " + aTableName + " SET " + aData + " WHERE " + aConditon;
+        "UPDATE " + aTableName + " SET " + aData + " WHERE " + aCondition;
     exec(statement);
 }
 
 void
 data::Postgresql::drop(const std::string& aTableName,
-                       const std::string& aConditon) noexcept
+                       const std::string& aCondition) noexcept
 {
-    std::string statement = "DELETE FROM " + aTableName + " WHERE " + aConditon;
+    std::string statement =
+        "DELETE FROM " + aTableName + " WHERE " + aCondition;
     exec(statement);
 }
 

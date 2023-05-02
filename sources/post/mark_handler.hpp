@@ -13,7 +13,7 @@ namespace post
 class MarkHandler : protected PostHandler
 {
 public:
-    static crow::json::wvalue process(const crow::request& aReq) noexcept;
+    static crow::json::wvalue process(PostRequest<data::Mark>& aReq) noexcept;
 };
 } // namespace post
 

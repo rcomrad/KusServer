@@ -3,10 +3,9 @@
 #include "database/connection_manager.hpp"
 
 crow::json::wvalue
-post::MarkHandler::process(const crow::request& aReq) noexcept
+post::MarkHandler::process(PostRequest<data::Mark>& aReq) noexcept
 {
-    auto req        = crow::json::load(aReq.body);
-    auto mark       = parseRequest<data::Mark>(req).data;
+    auto& mark      = aReq.data;
     auto connection = data::ConnectionManager::getUserConnection();
 
     if (mark.lesson_id == 0)

@@ -91,28 +91,29 @@ core::Server::Server()
         });
 
     CROW_ROUTE(app, "/api/command/<string>/<string>")
-    ([](std::string aType, std::string aValue)
+    ([](const std::string& aType, const std::string& aValue)
      { return get::CommandHandler::process(aType, aValue); });
 
     //---------------------------------------------------------------------
 
     CROW_ROUTE(app, "/api/get/all/<string>")
-    ([&](std::string aRequest)
+    ([&](const std::string& aRequest)
      { return get::GetHandler::multiplelGet(aRequest, ""); });
 
     CROW_ROUTE(app, "/api/get/by_id/<string>/<string>")
-    ([&](std::string aRequest, std::string aID)
+    ([&](const std::string& aRequest, const std::string& aID)
      { return get::GetHandler::singlGet(aRequest, "id = " + aID); });
 
     CROW_ROUTE(app, "/api/get/if/<string>/<string>")
     (
-        [&](std::string aRequest, std::string aCondition) {
+        [&](const std::string& aRequest, std::string aCondition) {
             return get::GetHandler::multiplelGet(aRequest,
                                                  std::move(aCondition));
         });
 
     CROW_ROUTE(app, "/api/dump/<string>")
-    ([&](std::string aName) { return get::GetRouter::dumpRouter(aName); });
+    ([&](const std::string& aName)
+     { return get::GetRouter::dumpRouter(aName); });
 
     CROW_ROUTE(app, "/api/get_all_competition/<int>/<int>")
     ([&](int aUserID, int aCompetitionID)
@@ -126,7 +127,7 @@ core::Server::Server()
 
     CROW_ROUTE(app, "/api/drop/<string>")
         .methods("POST"_method)(
-            [&](const crow::request& req, std::string aTableName)
+            [&](const crow::request& req, const std::string& aTableName)
             {
                 crow::response res;
                 res = post::PostRouter::dropRouter(aTableName, req);
@@ -137,7 +138,7 @@ core::Server::Server()
 
     CROW_ROUTE(app, "/api/post/<string>")
         .methods("POST"_method)(
-            [&](const crow::request& req, std::string aTableName)
+            [&](const crow::request& req, const std::string& aTableName)
             {
                 crow::response res;
                 res = post::PostRouter::basicRouter(aTableName, req);
@@ -146,7 +147,7 @@ core::Server::Server()
 
     CROW_ROUTE(app, "/api/upload/<string>")
         .methods("POST"_method)(
-            [&](const crow::request& req, std::string aType)
+            [&](const crow::request& req, const std::string& aType)
             {
                 crow::response res;
                 res = post::PostHandler::uploadFromFileRequest(aType, req);

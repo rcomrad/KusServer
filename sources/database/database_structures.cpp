@@ -371,24 +371,24 @@ data::CompetitionBase::reset()
     ptrs[3] = (void*)(&end_time);
 }
 
-std::string data::User_competitionBase::tableName         = "user_competition";
-std::vector<data::Type> data::User_competitionBase::types = {
+std::string data::Competition_userBase::tableName         = "competition_user";
+std::vector<data::Type> data::Competition_userBase::types = {
     data::Type::INT, data::Type::INT, data::Type::INT};
-std::vector<std::string> data::User_competitionBase::names = {"id", "user_id",
-                                                              "competition_id"};
-std::unordered_map<std::string, uint8_t> data::User_competitionBase::nameToNum =
+std::vector<std::string> data::Competition_userBase::names = {
+    "id", "competition_id", "user_id"};
+std::unordered_map<std::string, uint8_t> data::Competition_userBase::nameToNum =
     {
         {"id",             0},
-        {"user_id",        1},
-        {"competition_id", 2}
+        {"competition_id", 1},
+        {"user_id",        2}
 };
 
 void
-data::User_competitionBase::reset()
+data::Competition_userBase::reset()
 {
     ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&user_id);
-    ptrs[2] = (void*)(&competition_id);
+    ptrs[1] = (void*)(&competition_id);
+    ptrs[2] = (void*)(&user_id);
 }
 
 std::string data::ProblemBase::tableName         = "problem";
@@ -424,24 +424,24 @@ data::ProblemBase::reset()
 
 std::string data::Competition_problemBase::tableName = "competition_problem";
 std::vector<data::Type> data::Competition_problemBase::types = {
-    data::Type::INT, data::Type::STRING, data::Type::INT, data::Type::INT};
+    data::Type::INT, data::Type::INT, data::Type::INT, data::Type::STRING};
 std::vector<std::string> data::Competition_problemBase::names = {
-    "id", "name", "competition_id", "problem_id"};
+    "id", "competition_id", "problem_id", "name"};
 std::unordered_map<std::string, uint8_t>
     data::Competition_problemBase::nameToNum = {
         {"id",             0},
-        {"name",           1},
-        {"competition_id", 2},
-        {"problem_id",     3}
+        {"competition_id", 1},
+        {"problem_id",     2},
+        {"name",           3}
 };
 
 void
 data::Competition_problemBase::reset()
 {
     ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&name);
-    ptrs[2] = (void*)(&competition_id);
-    ptrs[3] = (void*)(&problem_id);
+    ptrs[1] = (void*)(&competition_id);
+    ptrs[2] = (void*)(&problem_id);
+    ptrs[3] = (void*)(&name);
 }
 
 std::string data::SubmissionBase::tableName         = "submission";
@@ -501,24 +501,24 @@ data::QuestionBase::reset()
 
 std::string data::Competition_questionBase::tableName = "competition_question";
 std::vector<data::Type> data::Competition_questionBase::types = {
-    data::Type::INT, data::Type::STRING, data::Type::INT, data::Type::INT};
+    data::Type::INT, data::Type::INT, data::Type::INT, data::Type::STRING};
 std::vector<std::string> data::Competition_questionBase::names = {
-    "id", "name", "competition_id", "question_id"};
+    "id", "competition_id", "question_id", "name"};
 std::unordered_map<std::string, uint8_t>
     data::Competition_questionBase::nameToNum = {
         {"id",             0},
-        {"name",           1},
-        {"competition_id", 2},
-        {"question_id",    3}
+        {"competition_id", 1},
+        {"question_id",    2},
+        {"name",           3}
 };
 
 void
 data::Competition_questionBase::reset()
 {
     ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&name);
-    ptrs[2] = (void*)(&competition_id);
-    ptrs[3] = (void*)(&question_id);
+    ptrs[1] = (void*)(&competition_id);
+    ptrs[2] = (void*)(&question_id);
+    ptrs[3] = (void*)(&name);
 }
 
 std::string data::AnswerBase::tableName         = "answer";

@@ -9,6 +9,66 @@
 //--------------------------------------------------------------------------------
 
 crow::json::wvalue
+post::PostHandler::manyToMany(
+    int aID,
+    const std::string& aTableName,
+    ManyToMany& aType,
+    std::unordered_map<std::string, crow::json::rvalue> aLeftovers) noexcept
+{
+    crow::json::wvalue res;
+
+    std::string id = data::wrap(aID);
+
+    for (auto& other : aLeftovers)
+    {
+        if (!(other.second.t() == crow::json::type::List &&
+              other.second[0].t() == crow::json::type::Number))
+        {
+            continue;
+        }
+        data::RawData data;
+        data.header["partly"] = "true";
+        auto& value           = data.value;
+
+        bool flag = aTableName < other.first;
+
+        // TODO:
+        // value.reserve(other.second.size());
+        for (auto& i : other.second)
+        {
+            value.emplace_back();
+            if (flag)
+            {
+                value.back().emplace_back(id);
+                value.back().emplace_back(std::to_string(i.i()));
+            }
+            else
+            {
+                value.back().emplace_back(std::to_string(i.i()));
+                value.back().emplace_back(id);
+            }
+        }
+
+        std::string mtmTable;
+        mtmTable.reserve(aTableName.size() + other.first.size() + 1);
+        mtmTable += flag ? aTableName : other.first;
+        mtmTable.push_back('_');
+        mtmTable += !flag ? aTableName : other.first;
+
+        if (aType == ManyToMany::REPLACE)
+        {
+            auto connection = data::ConnectionManager::getUserConnection();
+            connection.val.dropByID(mtmTable, {aID});
+        }
+        post::PostRouter::rawDataRouter(mtmTable, data);
+    }
+
+    return res;
+}
+
+//--------------------------------------------------------------------------------
+
+crow::json::wvalue
 post::PostHandler::uploadFromFile(
     std::unordered_map<std::string, std::string>&& aHeader,
     const std::string& aFileName) noexcept
@@ -96,3 +156,17 @@ post::PostHandler::uploadFile(crow::multipart::message& aMsg,
 //     PostRouter::manyToManyRouter(aTableName, aID, aIsAdding, aIDForInsert,
 //                                  aTrueNam);
 // }
+
+void
+post::PostHandler::setRawData(std::vector<std::vector<std::string>>& aData,
+                              int aNum,
+                              const std::string& aTableName,
+                              const std::string& aColumnName) noexcept
+{
+    auto connection = data::ConnectionManager::getUserConnection();
+    for (auto& i : aData)
+    {
+        i.push_back(
+            connection.val.getCell(aTableName, aColumnName, "id=" + i[aNum]));
+    }
+}

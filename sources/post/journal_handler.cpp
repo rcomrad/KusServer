@@ -11,10 +11,9 @@
 #include "file/file.hpp"
 
 crow::json::wvalue
-post::JournalHandler::process(const crow::request& aReq) noexcept
+post::JournalHandler::process(PostRequest<data::Journal_table>& aReq) noexcept
 {
-    auto req     = crow::json::load(aReq.body);
-    auto journal = parseRequest<data::Journal_table>(req).data;
+    auto& journal = aReq.data;
 
     std::string temp = journal.id ? journal.schedule : "";
     {

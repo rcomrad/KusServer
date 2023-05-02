@@ -35,7 +35,8 @@ public:
 
     void generateMapTable(
         const std::string& aName,
-        const std::unordered_map<std::string, std::string>& aGotoTable = {});
+        const std::unordered_map<std::string, std::string>& aGotoTable = {},
+        bool aAddTemplate                                              = false);
 
     void write();
     void writeHPP();

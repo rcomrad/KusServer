@@ -176,7 +176,8 @@ core::GenerateCode::generateElseIfTable(
 void
 core::GenerateCode::generateMapTable(
     const std::string& aName,
-    const std::unordered_map<std::string, std::string>& aGotoTable)
+    const std::unordered_map<std::string, std::string>& aGotoTable,
+    bool aAddTemplate)
 {
     addInclude("unordered_map", true);
 
@@ -214,7 +215,7 @@ core::GenerateCode::generateMapTable(
         temp += "\"" + name + "\"";
         temp += ", &";
         temp += funkName;
-        if (!specialTreatment) temp += structName + ">";
+        if (!specialTreatment || aAddTemplate) temp += structName + ">";
         temp += "}";
 
         flag = true;
@@ -702,12 +703,15 @@ generatePostHandlerFile()
     generator.generateMapTable(
         "mPostRouterMap",
         {
-            {"default",       "post::PostHandler::process<data::"},
-            {"user",          "post::UserHandler::process"       },
-            {"answer",        "post::AnswerHandler::process"     },
-            {"journal_table", "post::JournalHandler::process"    },
-            {"mark",          "post::MarkHandler::process"       }
-    });
+  // clang-format off
+            {"default",       "post::PostHandler::basicPost<post::PostHandler, data::"},
+            {"user",          "post::PostHandler::basicPost<post::UserHandler, data::"       },
+            {"answer",        "post::PostHandler::basicPost<post::AnswerHandler, data::"     },
+            {"journal_table", "post::PostHandler::basicPost<post::JournalHandler, data::"    },
+            {"mark",          "post::PostHandler::basicPost<post::MarkHandler, data::"       }
+  // clang-format on
+    },
+        true);
 
     //--------------------------------------------------------------------------------
 

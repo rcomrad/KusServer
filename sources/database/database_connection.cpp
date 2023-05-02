@@ -67,6 +67,23 @@ data::DatabaseConnection::complexSelect(
     mDatabase.select(tabl, col, con);
 }
 
+int
+data::DatabaseConnection::dropByID(const std::string& aTableName,
+                                   const std::vector<int>& aIDs) noexcept
+{
+    int res = -1;
+    if (aIDs.size())
+    {
+        auto name = getTableName(aTableName);
+        for (auto i : aIDs)
+        {
+            mDatabase.drop(name, "id=" + data::wrap(i));
+        }
+        res = 1;
+    }
+    return res;
+}
+
 //--------------------------------------------------------------------------------
 
 void

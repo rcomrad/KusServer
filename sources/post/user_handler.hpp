@@ -10,7 +10,7 @@ namespace post
 class UserHandler : public PostHandler
 {
 public:
-    static crow::json::wvalue process(const crow::request& aReq) noexcept;
+    static crow::json::wvalue process(PostRequest<data::User>& aReq) noexcept;
 
     static crow::json::wvalue rawDataHandler(data::RawData& aData) noexcept;
 
