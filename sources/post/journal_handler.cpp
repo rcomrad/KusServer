@@ -11,7 +11,8 @@
 #include "file/file.hpp"
 
 crow::json::wvalue
-post::JournalHandler::process(PostRequest<data::Journal_table>& aReq) noexcept
+post::JournalHandler::process(
+    post::PostRequest<data::Journal_table>& aReq) noexcept
 {
     auto& journal = aReq.data;
 

@@ -101,7 +101,8 @@ test::Test::checkTest() noexcept
     mSolutionProcess = *mSolutionTemplate;
     mSolutionProcess.create();
     WRITE_LOG("Test_cell_num:", mTesterID, "Write_data:", mTLM.mTest);
-    // mSolutionProcess.writeData(mTLM.mTest, true);
+    mSolutionProcess.writeData(mTLM.mTest);
+    mSolutionProcess.writeData("\n");
     auto testRes = mSolutionProcess.runWithLimits();
 
     if (!testRes.has_value())

@@ -15,7 +15,8 @@ namespace post
 class JournalHandler : protected PostHandler
 {
 public:
-    static crow::json::wvalue process(PostRequest<data::Journal_table>& aReq) noexcept;
+    static crow::json::wvalue process(
+        PostRequest<data::Journal_table>& aReq) noexcept;
 
     static crow::json::wvalue rawDataHandler(data::RawData& aData) noexcept;
     // static void headerParser(data::RawData& aData,
