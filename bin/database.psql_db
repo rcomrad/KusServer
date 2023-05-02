@@ -107,7 +107,7 @@ TABLE submission
 	date_val timestamp NOT NULL
 	verdict character varying(3) NOT NULL
 	test integer NOT NULL
-	source_name character varying(12) NOT NULL
+	source_name character varying(100) NOT NULL
 
 TABLE question
 	name character varying(50) NOT NULL
