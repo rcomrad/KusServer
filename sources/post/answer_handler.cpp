@@ -9,7 +9,7 @@ core::ProgramState& post::AnswerHandler::mProgramState =
     core::ProgramState::getInstance();
 
 crow::json::wvalue
-post::AnswerHandler::process(PostRequest<data::Answer>& aReq) noexcept
+post::AnswerHandler::process(post::PostRequest<data::Answer>& aReq) noexcept
 {
     auto& answer = aReq.data;
 

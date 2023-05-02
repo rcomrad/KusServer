@@ -21,23 +21,23 @@
 namespace post
 {
 
+enum class ManyToMany
+{
+    NUN,
+    ADD,
+    REPLACE
+};
+
+template <typename T>
+struct PostRequest
+{
+    T data;
+    ManyToMany type;
+    std::unordered_map<std::string, crow::json::rvalue> leftovers;
+};
+
 class PostHandler
 {
-private:
-    enum class ManyToMany
-    {
-        NUN,
-        ADD,
-        REPLACE
-    };
-
-    template <typename T>
-    struct PostRequest
-    {
-        T data;
-        ManyToMany type;
-        std::unordered_map<std::string, crow::json::rvalue> leftovers;
-    };
 
 public:
     template <typename HandlerType, typename TableType>
