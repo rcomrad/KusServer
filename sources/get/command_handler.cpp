@@ -48,6 +48,9 @@ get::CommandHandler::restart(const std::string aValue) noexcept
         res = "OK\nTester restart!";
     }
 
+    while (state.needRestart())
+        ;
+
     return res;
 }
 

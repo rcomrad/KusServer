@@ -15,18 +15,16 @@ post::SubmitHandler::process(const crow::request& aReq) noexcept
     crow::json::wvalue res;
     res["result"] = "ok";
 
-    data::Table<data::Submission> submition;
-    submition.emplace_back();
+    data::Submission submition;
 
     crow::multipart::message msg(aReq);
-    submition.back().user_id = std::stoi(msg.get_part_by_name("user_id").body);
-    submition.back().problem_id =
-        std::stoi(msg.get_part_by_name("problem_id").body);
+    submition.user_id     = std::stoi(msg.get_part_by_name("user_id").body);
+    submition.problem_id = std::stoi(msg.get_part_by_name("problem_id").body);
 
-    submition.back().date_val = getCurentTime();
-    submition.back().verdict  = "NUN";
-    submition.back().test     = -1;
-    submition.back().source_name =
+    submition.date_val = getCurentTime();
+    submition.verdict  = "NUN";
+    submition.test     = -1;
+    submition.source_name =
         uploadFile(msg, file::Path::getInstance().getPath("submition").value());
 
     {

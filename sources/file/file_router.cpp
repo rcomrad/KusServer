@@ -4,29 +4,20 @@
 
 std::unordered_map<std::string, decltype(&file::File::dmpParser)>
     file::FileRouter::mRouter = {
-        {"dmp",    &file::File::dmpParser},
-        {"dmprar", &file::File::dmpParser}
+        {"dmp",  &file::File::dmpParser },
+        {"data", &file::File::dataParser},
+        {"csv",  &file::File::csvParser }
 };
 
-void
+data::RawDataArray
 file::FileRouter::process(const std::string& aFileName) noexcept
-{
-    auto data = getFileData(aFileName);
-    for (auto& i : data)
-    {
-        post::PostRouter::rawDataRouter(i.first, i.second.value);
-    }
-}
-
-file::FileData
-file::FileRouter::getFileData(const std::string& aFileName) noexcept
 {
     int indx = aFileName.size() - 1;
     while (aFileName[indx] != '.') --indx;
     std::string extension = aFileName.substr(indx + 1);
 
     auto it = mRouter.find(extension);
-    file::FileData result;
+    data::RawDataArray result;
     if (it != mRouter.end()) result = it->second(aFileName);
     return result;
 }

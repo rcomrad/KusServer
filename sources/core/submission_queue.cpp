@@ -24,23 +24,22 @@ core::SubmissionQueue::isEmpty() noexcept
 }
 
 void
-core::SubmissionQueue::push(
-    data::Table<data::Submission>&& aSubmission) noexcept
+core::SubmissionQueue::push(data::Submission&& aSubmission) noexcept
 {
     if (mIsActive)
     {
         mSubmissionMutex.lock();
-        mQueue.push(std::move(aSubmission));
+        mQueue.emplace_back(std::move(aSubmission));
         mSubmissionMutex.unlock();
     }
 }
 
-data::Table<data::Submission>
+data::Submission
 core::SubmissionQueue::get() noexcept
 {
     const std::lock_guard<std::mutex> lock(mSubmissionMutex);
-    data::Table<data::Submission> temp = std::move(mQueue.front());
-    mQueue.pop();
+    data::Submission temp = std::move(mQueue.back());
+    mQueue.pop_back();
     return std::move(temp);
 }
 
@@ -65,14 +64,6 @@ core::SubmissionQueue::reload() noexcept
     decltype(mQueue) empty;
     std::swap(mQueue, empty);
     auto connection = data::ConnectionManager::getUserConnection();
-    auto problemTable =
-        connection.val.getData<data::Submission>("verdict=\'NUN\'");
-
-    for (auto& i : problemTable)
-    {
-        data::Table<data::Submission> sub;
-        sub.emplace_back(std::move(i));
-        mQueue.push(std::move(sub));
-    }
+    auto mQueue = connection.val.getDataArray<data::Submission>("verdict=\'NUN\'");
     mSubmissionMutex.unlock();
 }

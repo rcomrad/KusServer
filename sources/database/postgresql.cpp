@@ -17,18 +17,24 @@
 
 //--------------------------------------------------------------------------------
 
+data::ColumnSetting::ColumnSetting(std::string aName,
+                                   std::string aType,
+                                   std::string aInfo) noexcept
+    : name(aName), type(aType), info(aInfo)
+{
+}
+
 data::Postgresql::Postgresql(const DBSettings& aDBS)
-    : mShame(aDBS.shame), mUser(aDBS.user), mDatabase(aDBS.name)
 {
     WRITE_LOG("Creating_postgresql_database_connection");
     try
     {
         // clang-format off
         mConnection = std::make_unique<pqxx::connection>(
-            "dbname = "     +   mDatabase       + " " +
-            "user = "       +   mUser           + " " +
-            "password = "   +   aDBS.password   + " " +  
-            "hostaddr = 127.0.0.1 port = 5432"
+            "dbname = "s     +   aDBS.name       + " "s +
+            "user = "s       +   aDBS.user           + " "s +
+            "password = "s   +   aDBS.password   + " "s +  
+            "hostaddr = 127.0.0.1 port = 5432"s
         );
         // clang-format on
     }
@@ -52,175 +58,54 @@ data::Postgresql::Postgresql(const DBSettings& aDBS)
 
 //--------------------------------------------------------------------------------
 
-// data::RowArray
-// data::Postgresql::selectAll(const std::string& aTableName,
-//                             const std::vector<std::string>& aColums,
-//                             const std::string& aConditon) noexcept
-// {
-//     std::string statement;
-//     statement.reserve(60);
-//     statement += "SELECT ";
-//     for (auto& i : aColums)
-//         statement += i + ", ";
-//     if (aColums.size()) statement[statement.size() - 2] = ' ';
-//     else statement += " * ";
-
-//     std::string tableName = mShame + "."s + aTableName;
-//     statement += "FROM " + tableName;
-//     statement += (aConditon == "" ? "" : " WHERE ") + aConditon;
-
-//     std::cout << "select size: " << statement.size() << "\n";
-//     prepare({std::move(statement)});
-
-//     data::RowArray result;
-//     while (true)
-//     {
-//         step();
-//         if (!hasData()) break;
-//         std::cout << "new cicle\n";
-//         // result.resize(result.size() + 1);
-//         std::cout << "pushed" << std::endl;
-//         boost::unordered::unordered_map<std::string, dom::Any> row;
-//         for (size_t i = 0; true; ++i)
-//         {
-//             std::cout << "start for loop\n";
-//             if (mResultIterator[i].is_null()) break;
-//             std::cout << "i: " << i << "\n";
-//             auto name = mResultIterator[i].name();
-//             std::cout << "name: " << name << "\n";
-//             auto& temp = row[name];
-//             // auto& temp = result.back()[name];
-
-//             auto type = mResultIterator[i].type();
-//             std::cout << "type: " << type << "\n";
-//             switch (type)
-//             {
-//                 case 16: // int
-//                     temp.fromInt(mResultIterator[i].as<bool>());
-//                     break;
-//                 case 23: // bool
-//                     temp.fromInt(mResultIterator[i].as<int>());
-//                     break;
-//                 case 1082: // data
-//                     temp.fromString(mResultIterator[i].as<const char*>());
-//                     break;
-//                 case 1043: // text
-//                     temp.fromString(mResultIterator[i].as<const char*>());
-//                     break;
-//                 default:
-//                     break;
-//             }
-//             // row.push_back(std::move(temp));
-//         }
-//         result.emplace_back(std::move(row));
-//         // result.emplace_back(std::make_move_iterator(std::begin(row)),
-//         //                     std::make_move_iterator(std::end(row)));
-//     }
-
-//     return result;
-// }
-
-//--------------------------------------------------------------------------------
-
-std::vector<data::Type>
-data::Postgresql::getColumnTypes(const std::string& aTableName) noexcept
-{
-    std::vector<data::Type> result;
-
-    select(aTableName);
-    step();
-
-    for (const auto& i : mResultIterator)
-    {
-        auto type = i.type();
-        switch (type)
-        {
-            case 23: // int
-                result.emplace_back(data::Type::INT);
-                break;
-            case 16: // bool
-                result.emplace_back(data::Type::BOOL);
-                break;
-            case 1082: // data
-                result.emplace_back(data::Type::STRING);
-                break;
-            case 1043: // text
-                result.emplace_back(data::Type::STRING);
-                break;
-        }
-    }
-
-    closeStatment();
-    return result;
-}
-
-std::unordered_map<std::string, uint8_t>
-data::Postgresql::getColumnNames(const std::string& aTableName) noexcept
-{
-    std::unordered_map<std::string, uint8_t> result;
-
-    select(aTableName);
-    step();
-
-    int cnt = 0;
-    for (const auto& i : mResultIterator)
-    {
-        result[std::string(i.name())] = cnt++;
-    }
-
-    // mResultIterator.size() for (size_t i = 0; true; ++i)
-    // {
-    //     if (mResultIterator[i].is_null()) break;
-    // }
-
-    closeStatment();
-    return result;
-}
-
-//--------------------------------------------------------------------------------
-
 void
 data::Postgresql::select(const std::string& aTableName,
-                         const std::vector<std::string>& aColum,
-                         const std::string& aConditon) noexcept
+                         const std::string& aColum,
+                         const std::string& aCondition) noexcept
 {
-    std::string tableName = mShame + "."s + aTableName;
-    auto colum            = merge(aColum);
-    std::string statement = "SELECT "s + (colum == "" ? "*" : colum) +
-                            " FROM " + tableName +
-                            (aConditon == "" ? "" : " WHERE ") + aConditon;
+    std::string statement = "SELECT "s + (aColum == ""s ? "*"s : aColum) +
+                            " FROM "s + aTableName +
+                            (aCondition == ""s ? ""s : " WHERE "s) + aCondition;
 
-    prepare({std::move(statement)});
+    prepare(statement);
 }
+
+std::string
+data::Postgresql::getCell(const std::string& aTableName,
+                          const std::string& aColumnName,
+                          const std::string& aCondition) noexcept
+{
+    std::string statement = "SELECT "s + aColumnName + " FROM "s + aTableName +
+                            " WHERE "s + aCondition;
+
+    prepare(statement);
+    step();
+    std::string result = getRaw(0);
+    // std::string result = getColumnAsStringUnsafe(0);
+    closeStatment();
+    return result;
+}
+
+void
+data::Postgresql::closeStatment() noexcept
+{
+    if (mStatement != nullptr)
+    {
+        mStatement->commit();
+        mStatement = nullptr;
+    }
+}
+
+//--------------------------------------------------------------------------------
 
 int
 data::Postgresql::insert(const std::string& aTableName,
-                         const std::vector<std::string>& aData) noexcept
+                         const std::string& aData) noexcept
 {
-    return insertWithID(aTableName, 0, aData);
-}
+    std::string statement =
+        "INSERT INTO " + aTableName + " VALUES " + aData + " RETURNING id;";
 
-int
-data::Postgresql::insertWithID(const std::string& aTableName,
-                               int id,
-                               const std::vector<std::string>& aData) noexcept
-{
-    std::string tableName = mShame + "." + aTableName;
-
-    std::string statement;
-    if (id == 0)
-    {
-        statement = "INSERT INTO " + tableName + " VALUES (default, ";
-    }
-    else
-    {
-        statement = "INSERT INTO " + tableName + " VALUES (" + wrap(id) + ", ";
-    }
-
-    merge(statement, aData);
-    statement += ") RETURNING id;";
-
-    prepare({std::move(statement)});
+    prepare(statement);
     step();
     int res = 0;
     if (hasData(0)) res = getColumnIntUnsafe(0);
@@ -231,36 +116,21 @@ data::Postgresql::insertWithID(const std::string& aTableName,
 
 void
 data::Postgresql::update(const std::string& aTableName,
-                         const std::vector<std::string>& aValue,
-                         const std::string& aConditon) noexcept
+                         const std::string& aData,
+                         const std::string& aCondition) noexcept
 {
-    std::string tableName = mShame + "." + aTableName;
-    auto value            = merge(aValue);
     std::string statement =
-        "UPDATE " + tableName + " SET " + value + " WHERE " + aConditon;
-    exec({std::move(statement)});
+        "UPDATE " + aTableName + " SET " + aData + " WHERE " + aCondition;
+    exec(statement);
 }
 
 void
 data::Postgresql::drop(const std::string& aTableName,
-                       const std::string& aConditon) noexcept
+                       const std::string& aCondition) noexcept
 {
-    std::string tableName = mShame + "." + aTableName;
-    std::string statement = "DELETE FROM " + tableName + " WHERE " + aConditon;
-    exec({std::move(statement)});
-}
-
-void
-data::Postgresql::dropByID(const std::string& aTableName,
-                           const std::vector<int>& aIDs) noexcept
-{
-    std::string tableName = mShame + "." + aTableName;
-    for (auto& i : aIDs)
-    {
-        std::string statement =
-            "DELETE FROM " + tableName + " WHERE id = " + wrap(i);
-        exec({std::move(statement)});
-    }
+    std::string statement =
+        "DELETE FROM " + aTableName + " WHERE " + aCondition;
+    exec(statement);
 }
 
 //--------------------------------------------------------------------------------
@@ -280,18 +150,10 @@ data::Postgresql::createEnvironment(const data::DBSettings& aDBS) noexcept
     statement += ";";
     nontransaction(statement);
 
-    std::vector<std::string> statements;
-    statements.reserve(4);
-
-    statements.emplace_back("CREATE USER " + aDBS.user + " WITH PASSWORD \'" +
-                            aPassword + "\'");
-    statements.emplace_back("ALTER ROLE " + aDBS.user +
-                            " SET client_encoding TO \'ISO_8859_5\'");
-    statements.emplace_back("ALTER ROLE " + aUserName +
-                            " SET timezone TO 'UTC+3'");
-    statements.emplace_back("GRANT ALL PRIVILEGES ON DATABASE " + aDBName +
-                            " TO " + aUserName);
-    exec(statements);
+    exec("CREATE USER " + aDBS.user + " WITH PASSWORD \'" + aPassword + "\'");
+    exec("ALTER ROLE " + aDBS.user + " SET client_encoding TO \'ISO_8859_5\'");
+    exec("ALTER ROLE " + aUserName + " SET timezone TO 'UTC+3'");
+    exec("GRANT ALL PRIVILEGES ON DATABASE " + aDBName + " TO " + aUserName);
 
     std::unique_ptr<pqxx::connection> temp = std::move(mConnection);
     // clang-format off
@@ -304,28 +166,20 @@ data::Postgresql::createEnvironment(const data::DBSettings& aDBS) noexcept
     );
     // clang-format on
 
-    statements.clear();
-    statements.reserve(4);
-
-    statements.emplace_back("CREATE SCHEMA " + aShameName);
-    statements.emplace_back("GRANT USAGE ON SCHEMA " + aShameName + " TO " +
-                            aUserName);
-    statements.emplace_back("GRANT CREATE ON SCHEMA " + aShameName + " TO " +
-                            aUserName);
-    statements.emplace_back("GRANT CONNECT ON DATABASE " + aDBName + " TO " +
-                            aUserName);
-    exec(statements);
+    exec("CREATE SCHEMA " + aShameName);
+    exec("GRANT USAGE ON SCHEMA " + aShameName + " TO " + aUserName);
+    exec("GRANT CREATE ON SCHEMA " + aShameName + " TO " + aUserName);
+    exec("GRANT CONNECT ON DATABASE " + aDBName + " TO " + aUserName);
 
     mConnection = std::move(temp);
 }
 
 void
-data::Postgresql::createTable(
-    const std::string& aTableName,
-    const std::vector<ColumnSetting>& aColumns) noexcept
+data::Postgresql::createTable(const std::string& aTableName,
+                              const std::vector<ColumnSetting>& aColumns,
+                              const std::string& aUserName) noexcept
 {
-    std::string tableName = mShame + "." + aTableName;
-    std::string statement = "CREATE TABLE " + tableName + " ( ";
+    std::string statement = "CREATE TABLE " + aTableName + " ( ";
 
     statement += "id integer PRIMARY KEY,";
     for (auto& i : aColumns)
@@ -333,51 +187,22 @@ data::Postgresql::createTable(
         statement += i.name + " ";
         statement += i.type + " ";
         statement += i.info + " ";
-        statement += ", ";
+        statement += ",";
     }
-    statement[statement.size() - 2] = ')';
+    statement.back() = ')';
 
-    std::vector<std::string> statements;
-    statements.reserve(2);
+    exec(statement);
+    exec("ALTER TABLE " + aTableName + " OWNER TO " + aUserName);
 
-    statements.emplace_back(std::move(statement));
-    statements.emplace_back("ALTER TABLE " + tableName + " OWNER TO " + mUser);
-    exec(statements);
-
-    createSequence(aTableName);
+    createSequence(aTableName, aUserName);
 }
 
 void
-data::Postgresql::deleteDatabase(const std::string& aDBName,
-                                 const std::string& aUserName) noexcept
+data::Postgresql::deleteDatabase(const std::string& aDBName) noexcept
 {
     std::string statement = "DROP DATABASE " + aDBName;
     statement += ";";
     nontransaction(statement);
-
-    //     statement = "DROP USER " + aDBName + ";";
-    //     nontransaction(statement);
-}
-
-//--------------------------------------------------------------------------------
-
-void
-data::Postgresql::step() noexcept
-{
-    mResultIterator++;
-}
-
-bool
-data::Postgresql::hasData(int num) const noexcept
-{
-    return !mResultIterator[num].is_null();
-}
-
-void
-data::Postgresql::closeStatment() noexcept
-{
-    mStatement->commit();
-    mStatement = nullptr;
 }
 
 //--------------------------------------------------------------------------------
@@ -432,7 +257,25 @@ data::Postgresql::getColumnAsStringUnsafe(int aColumNumber) noexcept
     return mResultIterator[aColumNumber].as<std::string>();
 }
 
+std::string
+data::Postgresql::getRaw(int aColumNumber) noexcept
+{
+    return std::string(mResultIterator[aColumNumber].c_str());
+}
+
 //--------------------------------------------------------------------------------
+
+void
+data::Postgresql::step() noexcept
+{
+    mResultIterator++;
+}
+
+bool
+data::Postgresql::hasData(int num) const noexcept
+{
+    return !mResultIterator[num].is_null();
+}
 
 void
 data::Postgresql::prepare(const std::string& aStatment) noexcept
@@ -441,6 +284,7 @@ data::Postgresql::prepare(const std::string& aStatment) noexcept
     std::cout << aStatment << "\n";
 #endif
 
+    closeStatment();
     try
     {
         mStatement      = std::make_unique<pqxx::work>(*mConnection);
@@ -456,13 +300,11 @@ data::Postgresql::prepare(const std::string& aStatment) noexcept
 }
 
 void
-data::Postgresql::exec(const std::vector<std::string>& aStatements) noexcept
+data::Postgresql::exec(const std::string& aStatements) noexcept
 {
-    for (auto& st : aStatements)
-    {
-        prepare(st);
-        closeStatment();
-    }
+    prepare(aStatements);
+    // step();
+    closeStatment();
 }
 
 void
@@ -489,59 +331,23 @@ data::Postgresql::nontransaction(const std::string& aStatment) noexcept
 //--------------------------------------------------------------------------------
 
 void
-data::Postgresql::createSequence(const std::string& aTableName) noexcept
+data::Postgresql::createSequence(const std::string& aTableName,
+                                 const std::string& aUserName) noexcept
 {
-    std::string tableName    = mShame + "." + aTableName;
-    std::string sequenceName = mShame + "." + aTableName + "_id_seq";
+    std::string sequenceName = aTableName + "_id_seq";
 
-    std::vector<std::string> statements;
-    statements.reserve(4);
-    statements.emplace_back("CREATE SEQUENCE " + sequenceName +
-                            " AS integer "
-                            " START WITH 1 "
-                            " INCREMENT BY 1 "
-                            " NO MINVALUE "
-                            " NO MAXVALUE "
-                            " CACHE 1 ");
-    statements.emplace_back("ALTER TABLE " + sequenceName + " OWNER TO " +
-                            mUser);
-    statements.emplace_back("ALTER SEQUENCE " + sequenceName + " OWNED BY " +
-                            tableName + ".id");
-    statements.emplace_back("ALTER TABLE ONLY " + tableName +
-                            " ALTER COLUMN id SET DEFAULT nextval(\' " +
-                            sequenceName + "\'::regclass)");
-    exec(statements);
-}
-
-//--------------------------------------------------------------------------------
-
-std::string
-data::Postgresql::merge(const std::vector<std::string>& aStrings)
-{
-    std::string result;
-    merge(result, aStrings);
-    return result;
-}
-
-// TODO: duplicate (database_wraper)
-void
-data::Postgresql::merge(std::string& aResult,
-                        const std::vector<std::string>& aStrings)
-{
-    if (aStrings.empty()) return;
-
-    size_t size = 0;
-    for (auto& i : aStrings) size += i.size() + 2;
-    aResult.reserve(aResult.size() + size);
-
-    for (auto& i : aStrings)
-    {
-        if (i == "") continue;
-
-        aResult += i;
-        aResult += ", ";
-    }
-    aResult.resize(aResult.size() - 2);
+    exec("CREATE SEQUENCE " + sequenceName +
+         " AS integer "
+         " START WITH 1 "
+         " INCREMENT BY 1 "
+         " NO MINVALUE "
+         " NO MAXVALUE "
+         " CACHE 1 ");
+    exec("ALTER TABLE " + sequenceName + " OWNER TO " + aUserName);
+    exec("ALTER SEQUENCE " + sequenceName + " OWNED BY " + aTableName + ".id");
+    exec("ALTER TABLE ONLY " + aTableName +
+         " ALTER COLUMN id SET DEFAULT nextval(\' " + sequenceName +
+         "\'::regclass)");
 }
 
 //--------------------------------------------------------------------------------

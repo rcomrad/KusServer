@@ -10,6 +10,7 @@ using namespace std::literals;
 
 namespace data
 {
+
 class SQLWrapper
 {
 public:
@@ -40,27 +41,7 @@ wrap(T arg, char delim = '\0')
     }
     return res;
 }
+
 } // namespace data
-
-// std::string
-// SQLMultyStringWrapper(std::string str) noexcept
-// {
-//     return str;
-// }
-
-// template <typename... Args>
-// std::string
-// SQLMultyStringWrapper(std::string str, Args&&... args) noexcept
-// {
-//     return str + SQLMultyStringWrapper(args...);
-// }
-
-// template <typename... Args>
-// std::string
-// SQLMultyWrapper(Args&&... args) noexcept
-// {
-//     auto res = SQLMultyStringWrapper(std::string(SQLWrapper(args), true)...);
-//     res.resize(res.size() - 2);
-// }
 
 #endif // !SQL_WRAPPER_HPP

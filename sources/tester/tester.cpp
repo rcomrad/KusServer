@@ -27,24 +27,21 @@ test::Tester::Tester(uint8_t aThreadCount) noexcept
 //--------------------------------------------------------------------------------
 
 void
-test::Tester::run(data::Table<data::Submission>&& aSubmission) noexcept
+test::Tester::run(data::Submission&& aSubmission) noexcept
 {
     mIsmIsCorapted = false;
 
-    auto& submission = aSubmission[0];
-    data::Table<data::Problem> problemTable;
+    data::Problem problem;
     {
         auto connection = data::ConnectionManager::getUserConnection();
-        problemTable    = connection.val.getData<data::Problem>(
-            "id=" + data::wrap(submission.problem_id));
+        problem         = connection.val.getData<data::Problem>(
+            "id=" + data::wrap(aSubmission.problem_id));
     }
-
-    auto& problem = problemTable[0];
 
     std::string curPath = file::Path::getInstance().getPath("problem").value();
     curPath += problem.nickname + "/";
 
-    std::string submissionPath = submission.source_name;
+    std::string submissionPath = aSubmission.source_name;
     std::string checkerPath    = problem.checker_name;
 
     if (checkerPath == "NUN")
@@ -90,8 +87,8 @@ test::Tester::run(data::Table<data::Submission>&& aSubmission) noexcept
         mFinalVerdict = Test::TestVerdict::CE;
     }
 
-    if (mFinalVerdict != Test::TestVerdict::OK) aSubmission[0].test = ttt;
-    submission.verdict = verdictTostring(mFinalVerdict);
+    if (mFinalVerdict != Test::TestVerdict::OK) aSubmission.test = ttt;
+    aSubmission.verdict = verdictTostring(mFinalVerdict);
     {
         auto connection = data::ConnectionManager::getUserConnection();
         connection.val.update(aSubmission);

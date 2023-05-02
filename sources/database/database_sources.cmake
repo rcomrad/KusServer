@@ -7,6 +7,8 @@ set(
     connection_pool.cpp
     connection_pool.hpp
 
+    data_array.hpp
+
     data_request.cpp
     data_request.hpp
 
@@ -16,11 +18,14 @@ set(
     database_structures.cpp
     database_structures.hpp
 
-    database_wrappers.cpp
     database_wrappers.hpp
 
     postgresql.cpp
     postgresql.hpp
+
+    raw_data.hpp
+
+    row.hpp
 
     sql_wrapper.cpp
     sql_wrapper.hpp

@@ -10,11 +10,11 @@ namespace post
 class UserHandler : public PostHandler
 {
 public:
-    static crow::json::wvalue process(const crow::request& aReq);
-    static crow::json::wvalue uploadFromFile(const crow::request& aReq);
-    static crow::json::wvalue dataFileUpload(const std::string& aFilePath);
+    static crow::json::wvalue process(PostRequest<data::User>& aReq) noexcept;
 
-    static crow::response autorisation(const crow::request& aReq);
+    static crow::json::wvalue rawDataHandler(data::RawData& aData) noexcept;
+
+    static crow::response autorisation(const crow::request& aReq) noexcept;
 };
 } // namespace post
 

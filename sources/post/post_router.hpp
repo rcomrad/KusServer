@@ -21,26 +21,6 @@ public:
     }
 
     template <typename... Args>
-    static crow::json::wvalue manyToManyRouter(const std::string& aTableName,
-                                               Args&&... args) noexcept
-    {
-        crow::json::wvalue result;
-        auto it = mManyToManyRouterMap.find(aTableName);
-        if (it != mManyToManyRouterMap.end()) result = it->second(args...);
-        return result;
-    }
-
-    template <typename... Args>
-    static crow::json::wvalue uploadRouter(const std::string& aTableName,
-                                           Args&&... args) noexcept
-    {
-        crow::json::wvalue result;
-        auto it = mUploadRouterMap.find(aTableName);
-        if (it != mUploadRouterMap.end()) result = it->second(args...);
-        return result;
-    }
-
-    template <typename... Args>
     static crow::json::wvalue dropRouter(const std::string& aTableName,
                                          Args&&... args) noexcept
     {
@@ -61,23 +41,16 @@ public:
     }
 
 private:
-    static std::unordered_map<std::string,
-                              decltype(&post::PostHandler::process<data::User>)>
+    static std::unordered_map<
+        std::string,
+        decltype(&post::PostHandler::basicPost<post::PostHandler, data::Dummy>)>
         mPostRouterMap;
-    static std::unordered_map<
-        std::string,
-        decltype(&post::PostHandler::manyToMany<data::User>)>
-        mManyToManyRouterMap;
-    static std::unordered_map<
-        std::string,
-        decltype(&post::PostHandler::uploadFromFile<data::User>)>
-        mUploadRouterMap;
     static std::unordered_map<std::string,
-                              decltype(&post::PostHandler::drop<data::User>)>
+                              decltype(&post::PostHandler::drop<data::Dummy>)>
         mDropRouterMap;
     static std::unordered_map<
         std::string,
-        decltype(&post::PostHandler::rawDataInsert<data::User>)>
+        decltype(&post::PostHandler::rawDataHandler<data::Dummy>)>
         mRawDataRouter;
 };
 

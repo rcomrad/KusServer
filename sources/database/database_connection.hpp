@@ -10,12 +10,15 @@
 #include <unordered_map>
 #include <vector>
 
+#include "domain/metaprogramming.hpp"
+
 #include "postgresql.hpp"
 
 //--------------------------------------------------------------------------------
 
 namespace data
 {
+
 enum class ConnectionType
 {
     ADMIN,
@@ -36,78 +39,230 @@ public:
     DatabaseConnection& operator=(DatabaseConnection&& other) noexcept =
         default;
 
-    template <typename T>
-    Table<T> getData(const std::string& aCondition = "") noexcept
-    {
-        return mDatabase.select<T>({}, aCondition);
-    }
+    //--------------------------------------------------------------------------------
 
-    template <typename T, typename... Args>
-    Table<T> select(Args&&... args) noexcept
-    {
-        return mDatabase.select<T>(args...);
-    }
-
-    template <typename T, typename... Args>
-    Table<T> select2(Args&&... args) noexcept
-    {
-        return mDatabase.select2<T>(args...);
-    }
-
-    void handSelect(data::TableInfoAray& request) noexcept
-    {
-        mDatabase.handSelect(request);
-    }
-
-    void handClose() noexcept
-    {
-        mDatabase.handClose();
-    }
+    void complexSelect(const data::DataRequest& request) noexcept;
 
     template <typename T>
-    int update(Table<T>& aData) noexcept
+    DataArray<T> getNextDataArray(
+        const std::unordered_set<std::string>& aColumnNames = {}) noexcept
     {
-        return mDatabase.update(aData);
-    }
-
-    template <typename T>
-    void drop(const Table<T>& aData) noexcept
-    {
-        for (int i = 0; i < aData.size(); ++i)
+        DataArray<T> result;
+        std::unordered_set<int> columnNums;
+        for (auto& i : aColumnNames)
         {
-            mDatabase.drop(T::tableName, aData.getCondition(i));
+            columnNums.insert(T::nameToNum[i]);
         }
+        mDatabase.getDataArray<T>(result, mColumnNumber, columnNums, false);
+        // TODO close
+        return result;
     }
 
     template <typename T>
-    void dropByID(const std::vector<int>& aIDs) noexcept
+    DataArray<T> getDataArray(
+        const std::unordered_set<std::string>& aColumnNames) noexcept
     {
-        mDatabase.dropByID(T::tableName, aIDs);
+        return getDataArray<T>("", aColumnNames);
     }
 
-    // TODO: delete
-    int insert(const std::string& aTableName,
-               const std::vector<std::string>& aData) noexcept;
+    template <typename T>
+    DataArray<T> getDataArray(
+        const std::string& aCondition                       = "",
+        const std::unordered_set<std::string>& aColumnNames = {}) noexcept
+    {
+        DataArray<T> result;
+        auto columnNums = launchSelect<T>(aCondition, aColumnNames);
+        mDatabase.getDataArray<T>(result, mColumnNumber, columnNums);
+        return result;
+    }
+
+    // template <typename T>
+    // void updateTable(
+    //     Table<T>& result,
+    //     const std::string& aCondition                       = "",
+    //     const std::unordered_set<std::string>& aColumnNames = {}) noexcept
+    // {
+    //     auto columnNums = launchSelect(aCondition, aColumnNames);
+    //     mDatabase.getTable(result, mColumnNumber, columnNums);
+    // }
+
+    template <typename T>
+    T getData(const std::unordered_set<std::string>& aColumnNames) noexcept
+    {
+        return getData<T>("", aColumnNames);
+    }
+
+    template <typename T>
+    T getData(const std::string& aCondition                       = "",
+              const std::unordered_set<std::string>& aColumnNames = {}) noexcept
+    {
+
+        T result;
+        auto columnNums = launchSelect<T>(aCondition, aColumnNames);
+        mDatabase.getData(result, mColumnNumber, columnNums);
+        return result;
+    }
+
+    //--------------------------------------------------------------------------------
+
+    template <typename T,
+              typename = dom::enableIfDerivedOf<data::BaseDataDummy, T>>
+    int write(T& aData) noexcept
+    {
+        int res = -1;
+        if (aData.id == 0)
+        {
+            res = insert(aData);
+        }
+        else
+        {
+            res = update(aData);
+        }
+        return res;
+    }
+
+    template <typename T,
+              typename = dom::enableIfDerivedOf<data::BaseDataDummy, T>>
+    int insert(T& aData) noexcept
+    {
+        aData.id = mDatabase.insert(getTableName<T>(), aData.getAsInsert());
+        return aData.id;
+    }
+
+    template <typename T,
+              typename = dom::enableIfDerivedOf<data::BaseDataDummy, T>>
+    int update(const T& aData, const std::string& aCondition = "") noexcept
+    {
+        int res = -1;
+        if (aData.id != 0)
+        {
+            mDatabase.update(getTableName<T>(), aData.getAsUpdate(),
+                             aCondition.size() ? aCondition
+                                               : "id=" + data::wrap(aData.id));
+            res = aData.id;
+        }
+        return res;
+    }
+
+    template <typename T,
+              typename = dom::enableIfDerivedOf<data::BaseDataDummy, T>>
+    int drop(T& aData) noexcept
+    {
+        mDatabase.drop(getTableName<T>(), aData.getAsCondition());
+        // TODO: result
+        return 1;
+    }
+
+    int dropByID(const std::string& aTableName,
+                 const std::vector<int>& aIDs) noexcept;
+
+    //--------------------------------------------------------------------------------
+
+    template <typename T>
+    int write(DataArray<T>& aData) noexcept
+    {
+        int res = 0;
+        if (aData.size() > 0)
+        {
+            if (aData[0].id == 0)
+            {
+                res = insert(aData);
+            }
+            else
+            {
+                res = update(aData);
+            }
+        }
+        return res;
+    }
+
+    template <typename T>
+    int insert(DataArray<T>& aData) noexcept
+    {
+        // TODO: id's?
+        int res = aData.size();
+        mDatabase.insert(getTableName<T>(), aData.getAsInsert());
+        return res;
+    }
+
+    template <typename T>
+    int update(const DataArray<T>& aData,
+               const std::string& aCondition = "") noexcept
+    {
+        int res = aData.size();
+        for (auto& i : aData)
+        {
+            update(i, aCondition);
+        }
+        return res;
+    }
+
+    template <typename T>
+    int drop(const DataArray<T>& aData) noexcept
+    {
+        int res = aData.size();
+        for (auto& i : aData)
+        {
+            drop(i);
+        }
+        return res;
+    }
+
+    //--------------------------------------------------------------------------------
 
     void createTable(const std::string& aTableName,
                      const std::vector<ColumnSetting>& aColumns) noexcept;
     void createEnvironment(const ConnectionType& aType) noexcept;
     void dropDatabase(const ConnectionType& aType) noexcept;
 
-    std::vector<data::Type> getColumnTypes(
-        const std::string& aTableName) noexcept;
-    std::unordered_map<std::string, uint8_t> getColumnNames(
-        const std::string& aTableName) noexcept;
+    //--------------------------------------------------------------------------------
+
+    static bool securityCheck(const std::string& aStr) noexcept;
+
+    //--------------------------------------------------------------------------------
+
+    std::string getCell(const std::string& aTableName,
+                        const std::string& aColumnName,
+                        const std::string& aCondition) noexcept;
+
+    //--------------------------------------------------------------------------------
 
 private:
+    DBSettings mDBSettings;
     Postgresql mDatabase;
 
-    static std::unordered_map<ConnectionType, data::DBSettings>
-        mConnectionTypeSettings;
+    int mColumnNumber;
 
     static std::unordered_map<ConnectionType, data::DBSettings>
-    getConnectionTypeSettings() noexcept;
+    generateConnectionTypeSettings() noexcept;
+    static data::DBSettings getConnectionTypeSettings(
+        const ConnectionType& aType) noexcept;
+
+    std::string getTableName(const std::string& aTableName) const noexcept;
+    template <typename T>
+    std::string getTableName() const noexcept
+    {
+        return getTableName(T::tableName);
+    }
+
+    template <typename T>
+    std::unordered_set<int> launchSelect(
+        const std::string& aCondition,
+        const std::unordered_set<std::string>& aColumnNames) noexcept
+    {
+        mColumnNumber = 0;
+        std::string columns;
+        std::unordered_set<int> result;
+        for (auto& i : aColumnNames)
+        {
+            columns += i;
+            result.insert(T::nameToNum[i]);
+        }
+        mDatabase.select(getTableName<T>(), columns, aCondition);
+        return result;
+    }
 };
+
 } // namespace data
 
 //--------------------------------------------------------------------------------

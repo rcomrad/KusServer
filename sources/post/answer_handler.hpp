@@ -10,7 +10,7 @@ namespace post
 class AnswerHandler : public PostHandler
 {
 public:
-    static crow::json::wvalue process(const crow::request& aReq);
+    static crow::json::wvalue process(PostRequest<data::Answer>& aReq) noexcept;
 
 private:
     static core::ProgramState& mProgramState;

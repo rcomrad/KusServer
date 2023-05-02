@@ -7,54 +7,72 @@
 
 #include "path.hpp"
 
-file::FileData
+data::RawDataArray
 file::File::dmpParser(const std::string& aFileName) noexcept
 {
-    std::ifstream ios(aFileName);
-    if (!ios.is_open())
+    auto words = File::getWords(aFileName, false, &file::File::isDMPSeparator);
+    data::RawDataArray res;
+    for (size_t i = 0; i < words.size(); ++i)
     {
-        std::cout << "NO_SUCH_FILE: " + aFileName + "\n";
-    }
-    else
-    {
-        std::cout << "Extracting_file: " + aFileName + "\n";
-    }
+        if (words[i].empty()) continue;
+        auto& curArray = res[words[i][0]];
 
-    file::FileData res;
-
-    std::string name;
-    while (std::getline(ios, name))
-    {
-        if (name.empty()) continue;
-        auto& curArray = res.data[name];
-
-        std::string row;
-        while (std::getline(ios, row) && row != "END")
+        for (++i; i < words.size() && words[i].size() && words[i][0] != "END";
+             ++i)
         {
-            curArray.value.emplace_back();
-            int indx = 0;
-            while (indx < row.size())
+            curArray.value.emplace_back(std::move(words[i]));
+        }
+    }
+    return res;
+}
+
+data::RawDataArray
+file::File::dataParser(const std::string& aFileName) noexcept
+{
+    auto words = File::getWords(aFileName);
+    data::RawDataArray res;
+    for (size_t i = 0; i < words.size(); ++i)
+    {
+        if (words[i].empty()) continue;
+        auto& curArray      = res[words[i][0]];
+        int additionalLines = std::stoi(words[i][1]);
+
+        for (i += 2;
+             i < words.size() && words[i].size() && words[i][0] != "END"; ++i)
+        {
+            curArray.value.emplace_back(std::move(words[i]));
+            for (int j = 0; j < additionalLines; ++j)
             {
-                while (row[indx] == '\t') indx++;
-                int from = indx;
-                while (row[indx] != ';' && row[indx] != '\0') indx++;
-                curArray.value.back().emplace_back(
-                    row.substr(from, indx - from));
-                indx += 1;
+                curArray.additionalInfo.emplace_back(std::move(words[++i]));
             }
         }
     }
+    return res;
+}
 
+data::RawDataArray
+file::File::csvParser(const std::string& aFileName) noexcept
+{
+    auto words = File::getWords(aFileName, false, &file::File::isCSVSeparator);
+    data::RawDataArray res;
+    auto& curArray = res["data"];
+    words[0].clear();
+    for (auto& i : words)
+    {
+        if (i.empty()) continue;
+        curArray.value.emplace_back(std::move(i));
+    }
     return res;
 }
 
 std::string
-file::File::getAllData(const std::string& aFileName) noexcept
+file::File::getAllData(const std::string& aFileName, bool aIsCritical) noexcept
 {
     std::ifstream ios(aFileName);
     if (!ios.is_open())
     {
         std::cout << "NO_SUCH_FILE: " + aFileName + "\n";
+        if (aIsCritical) exit(0);
     }
     else
     {
@@ -72,9 +90,9 @@ file::File::getAllData(const std::string& aFileName) noexcept
 }
 
 std::vector<std::string>
-file::File::getLines(const std::string& aFileName) noexcept
+file::File::getLines(const std::string& aFileName, bool aIsCritical) noexcept
 {
-    std::string temp = getAllData(aFileName);
+    std::string temp = getAllData(aFileName, aIsCritical);
     std::vector<std::string> result;
     int last = 0;
     for (int i = 0; i < temp.size() + 1; ++i)
@@ -84,6 +102,8 @@ file::File::getLines(const std::string& aFileName) noexcept
             if (i - last > 1)
             {
                 result.emplace_back(temp.substr(last, i - last));
+                // TODO: check or update?
+                if (result.back().back() == '\r') result.back().pop_back();
             }
             last = i + 1;
         }
@@ -92,9 +112,11 @@ file::File::getLines(const std::string& aFileName) noexcept
 }
 
 std::vector<std::vector<std::string>>
-file::File::getWords(const std::string& aFileName) noexcept
+file::File::getWords(const std::string& aFileName,
+                     bool aIsCritical,
+                     decltype(&file::File::isSeparator) funk) noexcept
 {
-    auto lines = getLines(aFileName);
+    auto lines = getLines(aFileName, aIsCritical);
     std::vector<std::vector<std::string>> result;
     for (auto& line : lines)
     {
@@ -102,12 +124,33 @@ file::File::getWords(const std::string& aFileName) noexcept
         int indx = 0;
         while (indx < line.size())
         {
-            while (isSeparator(line[indx])) indx++;
+            while (funk(line[indx])) indx++;
             int from = indx;
-            while (!isSeparator(line[indx])) indx++;
+            while (!funk(line[indx])) indx++;
             result.back().emplace_back(line.substr(from, indx - from));
             indx += 1;
         }
+    }
+    return result;
+}
+
+std::vector<std::array<std::string, 2>>
+file::File::getMap(const std::string& aFileName, bool aIsCritical) noexcept
+{
+    auto lines = getLines(aFileName, aIsCritical);
+    static std::vector<std::array<std::string, 2>> result;
+    for (auto& line : lines)
+    {
+        result.emplace_back();
+        int indx = 0;
+
+        while (isSeparator(line[indx])) indx++;
+        int from = indx;
+        while (!isSeparator(line[indx])) indx++;
+        result.back()[0] = line.substr(from, indx - from);
+
+        while (isSeparator(line[indx])) indx++;
+        result.back()[1] = line.substr(indx);
     }
     return result;
 }
@@ -116,6 +159,18 @@ bool
 file::File::isSeparator(char c) noexcept
 {
     return c == '\t' || c == ' ' || c == ';' || c == '\0';
+}
+
+bool
+file::File::isDMPSeparator(char c) noexcept
+{
+    return c == '\t' || c == ';' || c == '\0';
+}
+
+bool
+file::File::isCSVSeparator(char c) noexcept
+{
+    return c == ';' || c == '\0';
 }
 
 std::string
@@ -151,7 +206,7 @@ file::File::writeData(const std::string& aFolderName,
         {
             auto connection = data::ConnectionManager::getUserConnection();
             auto table      = connection.val.getData<data::File>();
-            resultFileName  = std::to_string(table[0].num++) + "-" + aFileName;
+            resultFileName  = std::to_string(table.num++) + "-" + aFileName;
             filePath        = pathPrefix + resultFileName;
             connection.val.update<data::File>(table);
         }

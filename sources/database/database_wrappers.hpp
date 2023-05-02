@@ -7,25 +7,16 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
-#include "database/sql_wrapper.hpp"
+#include "crow.h"
+#include "sql_wrapper.hpp"
 
 //--------------------------------------------------------------------------------
 
 namespace data
 {
-struct ColumnSetting
-{
-    std::string name;
-    std::string type;
-    std::string info;
-
-    // For stupid GNU!
-    ColumnSetting(std::string aName,
-                  std::string aType,
-                  std::string aInfo = "") noexcept;
-};
 
 enum class Type
 {
@@ -36,22 +27,35 @@ enum class Type
     STRING
 };
 
+struct BaseDataDummy
+{
+};
+
 template <size_t size>
-struct BaseDataStruct
+struct BaseDataStruct : private BaseDataDummy
 {
     void* ptrs[size];
 
-    void* operator[](size_t num)
+    void* operator[](size_t num) noexcept
     {
         return ptrs[num];
     }
 
     // TODO: is it safe?
     // const void const* operator[](size_t num) const
-    const void* operator[](size_t num) const
+    const void* operator[](size_t num) const noexcept
     {
         return ptrs[num];
     }
+
+    BaseDataStruct() noexcept = default;
+    ~BaseDataStruct()         = default;
+
+    BaseDataStruct(const BaseDataStruct& other)            = delete;
+    BaseDataStruct& operator=(const BaseDataStruct& other) = delete;
+
+    BaseDataStruct(BaseDataStruct&& other) noexcept            = default;
+    BaseDataStruct& operator=(BaseDataStruct&& other) noexcept = default;
 };
 
 template <typename T>
@@ -61,253 +65,215 @@ struct UpperDataStruct : public T
     {
         T::reset();
     }
+
+    UpperDataStruct(const std::vector<std::string>& aRaw) noexcept : T()
+    {
+        T::reset();
+        setFromRaw(aRaw);
+    }
+
     ~UpperDataStruct() = default;
 
     UpperDataStruct(const UpperDataStruct& other)            = delete;
     UpperDataStruct& operator=(const UpperDataStruct& other) = delete;
 
-    UpperDataStruct(UpperDataStruct&& other) noexcept : T(other)
+    UpperDataStruct(UpperDataStruct&& other) noexcept : T(std::move(other))
     {
         T::reset();
     }
     UpperDataStruct& operator=(UpperDataStruct&& other) noexcept
     {
+        T::operator=(std::move(other));
         T::reset();
         return *this;
     }
-};
 
-template <typename T>
-class Table
-{
-public:
-    Table(int aSize = 0)
-    {
-        reset();
-        data.resize(aSize);
-    }
-
-    std::string getTableName() const
+    static std::string geName() noexcept
     {
         return T::tableName;
     }
 
-    void emplace_back()
+    std::string getAsCondition() const noexcept
     {
-        data.emplace_back();
-    }
-
-    void emplace_back(T&& other)
-    {
-        data.emplace_back(std::move(other));
-    }
-
-    void pop_back()
-    {
-        data.pop_back();
-    }
-
-    void clear()
-    {
-        data.clear();
-    }
-
-    void reserve(int aSize)
-    {
-        data.reserve(aSize);
-    }
-
-    size_t getIndex(const std::string& aName)
-    {
-        auto it    = names.find(aName);
-        size_t res = -1;
-        if (it != names.end()) return it->second;
-        return res;
-    }
-
-    T& operator[](size_t num)
-    {
-        return data[num];
-    }
-
-    const T& operator[](size_t num) const
-    {
-        return data[num];
-    }
-
-    void reset()
-    {
-        types = T::types;
-        names = T::columnNames;
-    }
-
-    T& back()
-    {
-        return data.back();
-    }
-
-    auto begin()
-    {
-        return data.begin();
-    }
-
-    auto end()
-    {
-        return data.end();
-    }
-
-    auto begin() const
-    {
-        return data.cbegin();
-    }
-
-    auto end() const
-    {
-        return data.cend();
-    }
-
-    size_t columnCount()
-    {
-        return types.size();
-    }
-
-    size_t size() const
-    {
-        return data.size();
-    }
-
-    std::string getCondition(int num = 0) const
-    {
-        auto strs = makeStrings(num);
-        std::string res;
-        for (const auto& i : strs) res += i + " AND ";
-        res.resize(res.size() - 4);
-        return res;
-    }
-
-    std::string getString(int num = 0, bool aSkipID = false) const
-    {
-        auto strs = makeStrings(aSkipID);
-        std::string res;
-        for (const auto& i : strs) res += i + ", ";
-        res.resize(res.size() - 2);
-        return res;
-    }
-
-    std::vector<std::string> makeStrings(int num,
-                                         bool aSkipName = false,
-                                         bool aSkipID   = false) const noexcept
-    {
-        std::vector<std::string> res(names.size());
-
-        std::string row;
-        int id = 0;
-        for (const auto& j : names)
+        std::string result;
+        for (size_t i = 0; i < T::types.size(); ++i)
         {
-            if (aSkipID && j.first == "id" && j.second == 0)
+            auto temp = toString(T::types[i], T::ptrs[i]);
+            if (!temp.empty())
             {
-                continue;
-            }
-
-            auto temp = data[num][j.second];
-            char bb   = 0;
-            switch (types[j.second])
-            {
-                case data::Type::INT:
-                    row += wrap(*((int*)temp));
-                    break;
-                case data::Type::BOOL:
-                    bb = *((char*)temp);
-                    if (bb != -1) row += wrap(bool(bb));
-                    break;
-                case data::Type::CHARS:
-                    row += wrap(*((char*)temp));
-                    break;
-                case data::Type::STRING:
-                    row += wrap(*((std::string*)temp));
-                    break;
-            }
-
-            if (!row.empty() && row != "\'\'" && row != "0")
-            {
-                if (!aSkipName) row = j.first + " = " + row;
-                res[j.second] = std::move(row);
-            }
-            row.clear();
-        }
-
-        int l = 0;
-        while (!res[l].empty()) l++;
-        int r = l + 1;
-
-        while (r < res.size())
-        {
-            while (r < res.size() && res[r].empty()) ++r;
-            if (!(r < res.size())) break;
-
-            res[l] = std::move(res[r]);
-            ++l;
-        }
-
-        res.resize(l);
-
-        return res;
-    }
-
-    void turnOffEmptyColumns()
-    {
-    }
-
-    void turnOffColumn(const std::string& aColumnName)
-    {
-        // names[aColumnName] *= -1;
-        names.erase(aColumnName);
-    }
-
-    //--------------------------------------------------------------------------------
-
-    bool loadFromRawData(const std::vector<std::vector<std::string>>& aData)
-    {
-        bool result = false;
-
-        if (aData.size() != 0 && aData[0].size() != 0 &&
-            (aData[0].size() == names.size() ||
-             aData[0].size() == names.size() - 1))
-        {
-            result     = true;
-            int offset = names.size() - aData[0].size();
-
-            for (auto& i : aData)
-            {
-                emplace_back();
-                for (int j = 0; j < i.size(); ++j)
-                {
-                    int ind = offset + j;
-                    switch (types[ind])
-                    {
-                        case data::Type::INT:
-                            *(int*)back()[ind] = std::stoi(i[j]);
-                            break;
-                        case data::Type::BOOL:
-                            *(bool*)back()[ind] = i[j] == "true";
-                            break;
-                        case data::Type::STRING:
-                            *(std::string*)back()[ind] = i[j];
-                            break;
-                    }
-                }
+                result += T::names[i];
+                result.push_back('=');
+                result += temp;
+                result += " AND "s;
             }
         }
-
+        if (result.size() > 4) result.resize(result.size() - 5);
         return result;
     }
 
-    //--------------------------------------------------------------------------------
+    std::string getAsInsert() const noexcept
+    {
+        std::string result = "("s;
+        for (size_t i = 0; i < T::types.size(); ++i)
+        {
+            auto temp = toString(T::types[i], T::ptrs[i]);
+            if (temp.empty()) temp = "default"s;
+            result += temp;
+            result.push_back(',');
+        }
+        if (!result.empty()) result.back() = ')';
+        return result;
+    }
 
-public:
-    std::unordered_map<std::string, uint8_t> names;
-    std::vector<data::Type> types;
-    std::vector<T> data;
+    std::string getAsUpdate() const noexcept
+    {
+        std::string result;
+        for (size_t i = 1; i < T::types.size(); ++i)
+        {
+            auto temp = toString(T::types[i], T::ptrs[i]);
+            if (!temp.empty())
+            {
+                result += T::names[i];
+                result.push_back('=');
+                result += temp;
+                result.push_back(',');
+            }
+        }
+        if (!result.empty()) result.pop_back();
+        return result;
+    }
+
+    std::string getAsDMP() const noexcept
+    {
+        std::string result;
+        for (size_t i = 0; i < T::types.size(); ++i)
+        {
+            result += toString(T::types[i], T::ptrs[i]);
+            result.push_back(';');
+        }
+        return result;
+    }
+
+    crow::json::wvalue getAsJson(
+        const std::unordered_set<std::string>& aTurnOff = {}) const noexcept
+    {
+        crow::json::wvalue result;
+        for (size_t i = 0; i < T::types.size(); ++i)
+        {
+            if (aTurnOff.count(T::names[i])) continue;
+            switch (T::types[i])
+            {
+                case data::Type::INT:
+                    if (*(int*)T::ptrs[i] != 0)
+                        result[T::names[i]] = *(int*)T::ptrs[i];
+                    break;
+                case data::Type::BOOL:
+                    // TODO:
+                    result[T::names[i]] = *(bool*)T::ptrs[i];
+                    break;
+                case data::Type::STRING:
+                    if ((*(std::string*)T::ptrs[i])[0] != 0)
+                        result[T::names[i]] = *(std::string*)T::ptrs[i];
+                    break;
+            }
+        }
+        return result;
+    }
+
+    void setFromJson(const crow::json::rvalue& aReq) noexcept
+    {
+        for (auto& i : aReq)
+        {
+            auto it = T::nameToNum.find(i.key());
+            if (it != T::nameToNum.end())
+            {
+                switch (T::types[it->second])
+                {
+                    case data::Type::INT:
+                        *(int*)T::ptrs[it->second] = i.i();
+                        break;
+                    case data::Type::BOOL:
+                        *(bool*)T::ptrs[it->second] = i.b();
+                        break;
+                    case data::Type::STRING:
+                        *(std::string*)T::ptrs[it->second] = i.s();
+                        break;
+                }
+            }
+        }
+    }
+
+    void setFromRaw(const std::vector<std::string>& aRaw) noexcept
+    {
+        size_t offset = T::types.size() - aRaw.size();
+        // TODO: check?
+        if (offset != 0 && offset != 1) return;
+        for (auto& i : aRaw)
+        {
+            fromString(T::types[offset], T::ptrs[offset], i);
+            ++offset;
+        }
+    }
+
+    // static std::vector<std::string> getNunExample() noexcept
+    // {
+    //     std::vector<std::string> result(T::types.size());
+    //     for (size_t i = 0; i < T::types.size(); ++i)
+    //     {
+    //         switch (T::types[i])
+    //         {
+    //             case data::Type::INT:
+    //                 types.emplace_back("-1"s);
+    //                 break;
+    //             case data::Type::BOOL:
+    //                 types.emplace_back("-1"s);
+    //                 break;
+    //             case data::Type::STRING:
+    //                 types.emplace_back("NUN"s);
+    //                 break;
+    //         }
+    //     }
+    //     return result;
+    // }
+
+protected:
+    static std::string toString(data::Type aType, void* aPtr) noexcept
+    {
+        std::string result;
+        switch (aType)
+        {
+            case data::Type::INT:
+                if (*((int*)aPtr) != 0) result = wrap(*((int*)aPtr));
+                break;
+            case data::Type::BOOL:
+                if (*((char*)aPtr) != -1) result = wrap(bool(*((char*)aPtr)));
+                break;
+            case data::Type::STRING:
+                if (!((std::string*)aPtr)->empty())
+                    result = wrap(*((std::string*)aPtr));
+                break;
+        }
+        return result;
+    }
+
+    static void fromString(data::Type aType,
+                           void* aPtr,
+                           const std::string& aData) noexcept
+    {
+        switch (aType)
+        {
+            case data::Type::INT:
+                *(int*)aPtr = std::stoi(aData);
+                break;
+            case data::Type::BOOL:
+                // TODO: other bool formats
+                *(bool*)aPtr = aData == "true"s;
+                break;
+            case data::Type::STRING:
+                *(std::string*)aPtr = aData;
+                break;
+        }
+    }
 };
 
 } // namespace data

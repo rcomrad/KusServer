@@ -48,13 +48,12 @@ core::Role::reset() noexcept
     mRoleToInt.clear();
     mIntToRole.clear();
 
-    data::Table<data::Role> table;
+    data::DataArray<data::Role> table;
     {
         auto connection = data::ConnectionManager::getUserConnection();
-        table           = connection.val.getData<data::Role>();
+        table           = connection.val.getDataArray<data::Role>();
     }
 
-    mIntToRole.reserve(table.size());
     for (auto& rol : table)
     {
         mIntToRole.emplace_back(std::move(rol.name));

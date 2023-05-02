@@ -83,6 +83,13 @@ core::GenerateCode::addInclude(const std::string& aInclude, bool aIsSTD)
     else mIncludes.insert("\"" + aInclude + ".hpp\"\n");
 }
 
+void
+core::GenerateCode::addCPPInclude(const std::string& aInclude, bool aIsSTD)
+{
+    if (aIsSTD) mCPPIncludes.insert("<" + aInclude + ">\n");
+    else mCPPIncludes.insert("\"" + aInclude + ".hpp\"\n");
+}
+
 // void
 // core::GenerateCode::addFunction(const std::string& aTemplate,
 //                                 const std::string& aReturnType,
@@ -169,7 +176,8 @@ core::GenerateCode::generateElseIfTable(
 void
 core::GenerateCode::generateMapTable(
     const std::string& aName,
-    const std::unordered_map<std::string, std::string>& aGotoTable)
+    const std::unordered_map<std::string, std::string>& aGotoTable,
+    bool aAddTemplate)
 {
     addInclude("unordered_map", true);
 
@@ -177,7 +185,7 @@ core::GenerateCode::generateMapTable(
     mStaticVariables.back().name = aName;
     mStaticVariables.back().type =
         "std::unordered_map<std::string, decltype(&" +
-        aGotoTable.find("default")->second + "User>)>";
+        aGotoTable.find("default")->second + "Dummy>)>";
 
     std::string& temp = mStaticVariables.back().initialisation;
 
@@ -207,7 +215,7 @@ core::GenerateCode::generateMapTable(
         temp += "\"" + name + "\"";
         temp += ", &";
         temp += funkName;
-        if (!specialTreatment) temp += structName + ">";
+        if (!specialTreatment || aAddTemplate) temp += structName + ">";
         temp += "}";
 
         flag = true;
@@ -269,6 +277,12 @@ core::GenerateCode::writeCPP()
     std::ofstream cppFle(mPath + mFileName + ".cpp");
 
     cppFle << "#include \"" << mFileName + ".hpp\"";
+    cppFle << "\n\n";
+
+    for (auto& i : mCPPIncludes)
+    {
+        cppFle << "#include " + i;
+    }
     cppFle << "\n\n";
 
     for (auto& i : mStaticVariables)
@@ -340,8 +354,9 @@ generateDatabaseStructuresHPPFile()
                 file << temp << "\n";
                 file << "\tstatic std::string tableName;\n";
                 file << "\tstatic std::vector<data::Type> types;\n";
+                file << "\tstatic std::vector<std::string> names;\n";
                 file << "\tstatic std::unordered_map<std::string, uint8_t> "
-                        "columnNames;\n";
+                        "nameToNum;\n";
                 file << "\n\tvoid reset();\n";
                 file << "};\n";
                 temp        = "";
@@ -410,24 +425,24 @@ generateDatabaseStructuresHPPFile()
     drawLine(file);
     file << "#endif // !DATABASE_STRUCTURES_HPP\n";
 
-    file << "#ifndef ASTERISK_HENDLER_HPP\n";
-    file << "#define ASTERISK_HENDLER_HPP\n";
-    file << "\n";
-    file << "#include <string>\n";
-    file << "#include <vector>\n";
-    file << "#include <unordered_map>\n";
-    file << "\n";
-    file << "struct AsteriskHendler\n";
-    file << "{ \n";
+    // file << "#ifndef ASTERISK_HENDLER_HPP\n";
+    // file << "#define ASTERISK_HENDLER_HPP\n";
+    // file << "\n";
+    // file << "#include <string>\n";
+    // file << "#include <vector>\n";
+    // file << "#include <unordered_map>\n";
+    // file << "\n";
+    // file << "struct AsteriskHendler\n";
+    // file << "{ \n";
 
-    file << "    static std::unordered_map<std::string_view, "
-            "std::vector<std::string>> "
-            "table;\n";
+    // file << "    static std::unordered_map<std::string_view, "
+    //         "std::vector<std::string>> "
+    //         "table;\n";
 
-    file << "};\n\n";
-    file << "#endif // !ASTERISK_HENDLER_HPP\n";
+    // file << "};\n\n";
+    // file << "#endif // !ASTERISK_HENDLER_HPP\n";
 
-    file.close();
+    // file.close();
 }
 
 void
@@ -444,8 +459,9 @@ generateDatabaseStructuresCPPFile()
     std::string smallName  = "";
     int columnCount        = 0;
     std::string tempCPP;
-    std::string columnNames = "{ {\"id\", 0},";
-    std::string columnTypes = "{ data::Type::INT, ";
+    std::string columnNames     = "{ {\"id\", 0}, ";
+    std::string columnTypes     = "{ data::Type::INT, ";
+    std::string columnNamesTrue = "{ \"id\", ";
     std::string temp;
     while (true)
     {
@@ -459,16 +475,19 @@ generateDatabaseStructuresCPPFile()
             {
                 columnNames.resize(columnNames.size() - 2);
                 columnTypes.resize(columnTypes.size() - 2);
+                columnNamesTrue.resize(columnNamesTrue.size() - 2);
                 columnCount = 0;
 
                 fileCPP << "std::string data::" << baseName
                         << "::tableName         = \"" << smallName << "\";\n";
                 fileCPP << "std::vector<data::Type> data::" << baseName
                         << "::types = " << columnTypes << "};\n";
+                fileCPP << "std::vector<std::string> data::" << baseName
+                        << "::names = " << columnNamesTrue << "};\n";
 
                 fileCPP << "std::unordered_map<std::string, uint8_t> "
                            "data::"
-                        << baseName << "::columnNames = " << columnNames
+                        << baseName << "::nameToNum = " << columnNames
                         << "};\n";
 
                 fileCPP << "\nvoid\n";
@@ -477,9 +496,10 @@ generateDatabaseStructuresCPPFile()
                 fileCPP << "\tptrs[0] = (void*)(&id);\n";
                 fileCPP << tempCPP;
                 fileCPP << "}\n\n";
-                tempCPP     = "";
-                columnNames = "{ {\"id\", 0},";
-                columnTypes = "{ data::Type::INT, ";
+                tempCPP         = "";
+                columnNames     = "{ {\"id\", 0},";
+                columnTypes     = "{ data::Type::INT, ";
+                columnNamesTrue = "{ \"id\", ";
             }
 
             if (s2 == "NUN") break;
@@ -529,25 +549,28 @@ generateDatabaseStructuresCPPFile()
             columnNames += "{\"" + s1 + "\", ";
             columnNames += std::to_string(columnCount);
             columnNames += "}, ";
+
+            columnNamesTrue += "\"" + s1 + "\", ";
         }
 
         columnCount++;
         std::getline(database, s2);
     }
 
-    fileCPP << "std::unordered_map<std::string_view, std::vector<std::string>> "
-               "AsteriskHendler::table = \n{\n";
+    // fileCPP << "std::unordered_map<std::string_view,
+    // std::vector<std::string>> "
+    //            "AsteriskHendler::table = \n{\n";
 
-    temp[0] = ' ';
-    temp[1] = ' ';
-    temp[2] = ' ';
+    // temp[0] = ' ';
+    // temp[1] = ' ';
+    // temp[2] = ' ';
 
-    temp[temp.size() - 2] = ' ';
-    temp += "}}};";
+    // temp[temp.size() - 2] = ' ';
+    // temp += "}}};";
 
-    fileCPP << temp;
+    // fileCPP << temp;
 
-    fileCPP << "\n";
+    // fileCPP << "\n";
 
     fileCPP.close();
 }
@@ -615,8 +638,8 @@ generateGetRouterFile()
     //--------------------------------------------------------------------------------
 
     generator.addInclude("get_handler");
-    generator.addInclude("user_handler");
-    generator.addInclude("question_handler");
+    generator.addCPPInclude("user_handler");
+    generator.addCPPInclude("question_handler");
 
     //--------------------------------------------------------------------------------
 
@@ -625,11 +648,12 @@ generateGetRouterFile()
                                "Args&&... args) noexcept");
     generator.pushToFunctionBody(wrap("mBasicRouterMap"));
     generator.generateMapTable(
-        "mBasicRouterMap", {
-                               {"default",  "get::GetHandler::process<data::"},
-                               {"user",     "get::UserHandler::process"      }
-                            //    ,
-                            //    {"question", "get::QuestionHandler::process"  }
+        "mBasicRouterMap",
+        {
+            {"default", "get::GetHandler::process<data::"},
+            {"user",    "get::UserHandler::process"      }
+  //    ,
+  //    {"question", "get::QuestionHandler::process"  }
     });
 
     //--------------------------------------------------------------------------------
@@ -663,56 +687,59 @@ generatePostHandlerFile()
 
     //--------------------------------------------------------------------------------
 
-    generator.addInclude("answer_handler");
-    generator.addInclude("journal_handler");
-    generator.addInclude("plan_handler");
     generator.addInclude("post_handler");
-    generator.addInclude("user_handler");
-    generator.addInclude("mark_handler");
+    generator.addCPPInclude("answer_handler");
+    generator.addCPPInclude("journal_handler");
+    generator.addCPPInclude("plan_handler");
+    generator.addCPPInclude("user_handler");
+    generator.addCPPInclude("mark_handler");
 
     //--------------------------------------------------------------------------------
 
-    // postHandler
+    // basicHandler
     generator.pushBackFunction("basicRouter(const std::string& aTableName, "
                                "Args&&... args) noexcept");
     generator.pushToFunctionBody(wrap("mPostRouterMap"));
     generator.generateMapTable(
         "mPostRouterMap",
         {
-            {"default",       "post::PostHandler::process<data::"},
-            {"user",          "post::UserHandler::process"       },
-            {"answer",        "post::AnswerHandler::process"     },
-            {"journal_table", "post::JournalHandler::process"    },
-            {"mark",          "post::MarkHandler::process"       }
-    });
+  // clang-format off
+            {"default",       "post::PostHandler::basicPost<post::PostHandler, data::"},
+            {"user",          "post::PostHandler::basicPost<post::UserHandler, data::"       },
+            {"answer",        "post::PostHandler::basicPost<post::AnswerHandler, data::"     },
+            {"journal_table", "post::PostHandler::basicPost<post::JournalHandler, data::"    },
+            {"mark",          "post::PostHandler::basicPost<post::MarkHandler, data::"       }
+  // clang-format on
+    },
+        true);
 
     //--------------------------------------------------------------------------------
 
-    // manyToManyHandler
-    generator.pushBackFunction(
-        "manyToManyRouter(const std::string& aTableName, "
-        "Args&&... args) noexcept");
-    generator.pushToFunctionBody(wrap("mManyToManyRouterMap"));
-    generator.generateMapTable(
-        "mManyToManyRouterMap",
-        {
-            {"default", "post::PostHandler::manyToMany<data::"}
-    });
+    // // manyToManyHandler
+    // generator.pushBackFunction(
+    //     "manyToManyRouter(const std::string& aTableName, "
+    //     "Args&&... args) noexcept");
+    // generator.pushToFunctionBody(wrap("mManyToManyRouterMap"));
+    // generator.generateMapTable(
+    //     "mManyToManyRouterMap",
+    //     {
+    //         {"default", "post::PostHandler::manyToMany<data::"}
+    // });
 
     //--------------------------------------------------------------------------------
 
-    // uploadPostHandler
-    generator.pushBackFunction("uploadRouter(const std::string& aTableName, "
-                               "Args&&... args) noexcept");
-    generator.pushToFunctionBody(wrap("mUploadRouterMap"));
-    generator.generateMapTable(
-        "mUploadRouterMap",
-        {
-            {"default",       "post::PostHandler::uploadFromFile<data::"},
-            {"journal_table", "post::JournalHandler::uploadFromFile"    },
-            {"user",          "post::UserHandler::uploadFromFile"       },
-            {"plan",          "post::PlanHandler::uploadFromFile"       }
-    });
+    // // uploadPostHandler
+    // generator.pushBackFunction("uploadRouter(const std::string& aTableName, "
+    //                            "Args&&... args) noexcept");
+    // generator.pushToFunctionBody(wrap("mUploadRouterMap"));
+    // generator.generateMapTable(
+    //     "mUploadRouterMap",
+    //     {
+    //         {"default",       "post::PostHandler::uploadFromFile<data::"},
+    //         {"journal_table", "post::JournalHandler::uploadFromFile"    },
+    //         {"user",          "post::UserHandler::uploadFromFile"       },
+    //         {"plan",          "post::PlanHandler::uploadFromFile"       }
+    // });
 
     //--------------------------------------------------------------------------------
 
@@ -727,114 +754,35 @@ generatePostHandlerFile()
 
     //--------------------------------------------------------------------------------
 
-    // fileHandler
+    // rawDataHandler
     generator.pushBackFunction("rawDataRouter(const std::string& aTableName, "
                                "Args&&... args) noexcept");
     generator.pushToFunctionBody(wrap("mRawDataRouter"));
     generator.generateMapTable(
         "mRawDataRouter",
         {
-            {"default", "post::PostHandler::rawDataInsert<data::"}
+            {"default",       "post::PostHandler::rawDataHandler<data::"},
+            {"journal_table", "post::JournalHandler::rawDataHandler"    },
+            {"user",          "post::UserHandler::rawDataHandler"       },
+            {"plan",          "post::PlanHandler::rawDataHandler"       }
     });
 
     //--------------------------------------------------------------------------------
-    generator.write();
-}
 
-void
-generateAsteriskHendler()
-{
-    core::GenerateCode generator;
-    generator.setClassName("GetRouter");
-    generator.setNamespace("get");
-
-    //--------------------------------------------------------------------------------
-
-    generator.setDefaultTemplate("template <typename... Args>");
-    generator.setDefaultReturnType("static crow::json::wvalue");
+    // // headerHandler
+    // generator.pushBackFunction("headerRouter(const std::string& aTableName, "
+    //                            "Args&&... args) noexcept");
+    // generator.pushToFunctionBody(wrap("mHeaderRouter"));
+    // generator.generateMapTable(
+    //     "mHeaderRouter",
+    //     {
+    //         {"default", "post::PostHandler::headerParser<data::"},
+    //         {"plan",    "post::PlanHandler::headerParser"       }
+    // });
 
     //--------------------------------------------------------------------------------
-
-    // generator.addInclude("journal_handler");
-    // generator.addInclude("plan_handler");
-    // generator.addInclude("post_handler");
-    // generator.addInclude("user_answer_handler");
-    // generator.addInclude("user_handler");
-    // generator.addInclude("mark_handler");
-
-    //--------------------------------------------------------------------------------
-
-    // postHandler
-    generator.pushBackFunction("basicRouter(const std::string& aTableName, "
-                               "Args&&... args) noexcept");
-    generator.pushToFunctionBody(wrap("mPostRouterMap"));
-    generator.generateMapTable(
-        "mPostRouterMap",
-        {
-            {"default",       "post::PostHandler::process<data::"},
-            {"user",          "post::UserHandler::process"       },
-            {"user_answer",   "post::UserAnswerHandler::process" },
-            {"journal_table", "post::JournalHandler::process"    },
-            {"mark",          "post::MarkHandler::process"       }
-    });
 
     generator.write();
-
-    // std::ofstream file("../sources/server/asterisk_hendler.hpp");
-
-    // file << "#ifndef ASTERISK_HENDLER_HPP\n";
-    // file << "#define ASTERISK_HENDLER_HPP\n";
-    // file << "\n";
-    // file << "#include <string>\n";
-    // file << "#include <vector>\n";
-    // file << "#include <unordered_map>\n";
-    // file << "\n";
-    // file << "struct AsteriskHendler\n";
-    // file << "{ \n";
-
-    // file << "    static std::unordered_map<std::string_view, "
-    //         "std::vector<std::string>> "
-    //         "table;\n";
-
-    // file << "};\n\n";
-    // file << "#endif // !ASTERISK_HENDLER_HPP\n";
-
-    // file.close();
-
-    // file.open("../sources/server/asterisk_hendler.cpp");
-    // std::ifstream database("database.data");
-    // file << "#include \"asterisk_hendler.hpp\"\n\n";
-    // file << "std::unordered_map<std::string_view, std::vector<std::string>> "
-    //         "AsteriskHendler::table = \n{\n";
-
-    // std::string temp;
-    // while (true)
-    // {
-    //     std::string s1, s2;
-    //     database >> s1;
-    //     getline(database, s2, ' ');
-    //     getline(database, s2);
-    //     if (s2 == "NUN") break;
-
-    //     if (s1 == "TABLE")
-    //     {
-    //         temp += "}}, { \"" + s2 + "\", { \"id\", ";
-    //     }
-    //     else
-    //     {
-    //         temp += "\"" + s1 + "\", ";
-    //     }
-    // }
-    // temp[0] = ' ';
-    // temp[1] = ' ';
-    // temp[2] = ' ';
-
-    // temp[temp.size() - 2] = ' ';
-    // temp += "}}};";
-
-    // file << temp;
-
-    // file << "\n";
 }
 
 void

@@ -3,8 +3,10 @@
 #include "question_handler.hpp"
 #include "user_handler.hpp"
 
-std::unordered_map<std::string, decltype(&get::GetHandler::process<data::User>)>
+std::unordered_map<std::string,
+                   decltype(&get::GetHandler::process<data::Dummy>)>
     get::GetRouter::mBasicRouterMap = {
+        {"dummy",                &get::GetHandler::process<data::Dummy>           },
         {"school",               &get::GetHandler::process<data::School>          },
         {"user",                 &get::UserHandler::process                       },
         {"role",                 &get::GetHandler::process<data::Role>            },
@@ -22,7 +24,7 @@ std::unordered_map<std::string, decltype(&get::GetHandler::process<data::User>)>
         {"safe_file",            &get::GetHandler::process<data::Safe_file>       },
         {"holiday",              &get::GetHandler::process<data::Holiday>         },
         {"competition",          &get::GetHandler::process<data::Competition>     },
-        {"user_competition",     &get::GetHandler::process<data::User_competition>},
+        {"competition_user",     &get::GetHandler::process<data::Competition_user>},
         {"problem",              &get::GetHandler::process<data::Problem>         },
         {"competition_problem",
          &get::GetHandler::process<data::Competition_problem>                     },
@@ -34,8 +36,9 @@ std::unordered_map<std::string, decltype(&get::GetHandler::process<data::User>)>
         {"file_exchange",        &get::GetHandler::process<data::File_exchange>   }
 };
 
-std::unordered_map<std::string, decltype(&get::GetHandler::dump<data::User>)>
+std::unordered_map<std::string, decltype(&get::GetHandler::dump<data::Dummy>)>
     get::GetRouter::mDumpRouterMap = {
+        {"dummy",                &get::GetHandler::dump<data::Dummy>           },
         {"school",               &get::GetHandler::dump<data::School>          },
         {"user",                 &get::GetHandler::dump<data::User>            },
         {"role",                 &get::GetHandler::dump<data::Role>            },
@@ -53,7 +56,7 @@ std::unordered_map<std::string, decltype(&get::GetHandler::dump<data::User>)>
         {"safe_file",            &get::GetHandler::dump<data::Safe_file>       },
         {"holiday",              &get::GetHandler::dump<data::Holiday>         },
         {"competition",          &get::GetHandler::dump<data::Competition>     },
-        {"user_competition",     &get::GetHandler::dump<data::User_competition>},
+        {"competition_user",     &get::GetHandler::dump<data::Competition_user>},
         {"problem",              &get::GetHandler::dump<data::Problem>         },
         {"competition_problem",
          &get::GetHandler::dump<data::Competition_problem>                     },

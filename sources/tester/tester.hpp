@@ -29,7 +29,7 @@ public:
     Tester(Tester&& other) noexcept            = default;
     Tester& operator=(Tester&& other) noexcept = default;
 
-    void run(data::Table<data::Submission>&& aSubmission) noexcept;
+    void run(data::Submission&& aSubmission) noexcept;
 
     std::shared_ptr<proc::Process> prepareFile(
         const std::string& aFileName,

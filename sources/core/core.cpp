@@ -33,29 +33,48 @@ core::Core::remakeDatabase()
 {
     createEnvironment();
     createDatabaseFromFile("database.psql_db");
-    file::FileRouter::process("database.dmp");
+    post::PostHandler::uploadFromFile(
+        {
+            {"type", "nun"}
+    },
+        "database.dmp");
 }
 
 void
 core::Core::populate()
 {
-    // populateDatabaseFromFile("../tests/example.dmp");
-    file::FileRouter::process("../tests/example.dmp");
+    post::PostHandler::uploadFromFile(
+        {
+            {"type", "nun"}
+    },
+        "../tests/example.dmp");
 
-    post::UserHandler::dataFileUpload("../tests/user.data");
+    post::PostHandler::uploadFromFile(
+        {
+            {"type", "user"}
+    },
+        "../tests/user.data");
 
-    post::PlanHandler::PlanData data;
-    data.subjectID = 1;
+    post::PostHandler::uploadFromFile(
+        {
+            {"type",       "plan"                  },
+            {"name",       "Информатике"},
+            {"subject_id", "1"                     }
+    },
+        "../tests/plan_test.csv");
+    post::PostHandler::uploadFromFile(
+        {
+            {"type",       "plan"},
+            {"name",       "C++" },
+            {"subject_id", "1"   }
+    },
+        "../tests/plan_cpp.csv");
 
-    data.name = "Тест";
-    data.url  = "../tests/plan_test.csv";
-    post::PlanHandler::csvFileUpload(data);
-
-    data.name = "C++";
-    data.url  = "../tests/plan_cpp.csv";
-    post::PlanHandler::csvFileUpload(data);
-
-    post::JournalHandler::dataFileUpload("../tests/journal.data");
+    post::PostHandler::uploadFromFile(
+        {
+            {"type", "journal_table"}
+    },
+        "../tests/journal.data");
 }
 
 void
@@ -125,31 +144,19 @@ core::Core::createDatabaseFromFile(std::string aFileName) noexcept
     auto connection = data::ConnectionManager::getUserConnection();
 
     std::vector<data::ColumnSetting> colums;
-    std::ifstream ios(aFileName);
-    if (!ios.is_open())
-    {
-        std::cout << "NO_SUCH_FILE!\n";
-        return;
-    }
-    else
-    {
-        std::cout << "Extracting_file\n";
-    }
-    std::string s1, s2;
+    auto lines = file::File::getMap(aFileName, true);
     std::string name;
-    while (ios >> s1)
+    for (auto i : lines)
     {
-        std::getline(ios, s2, ' ');
-        std::getline(ios, s2);
-        if (s1 == "TABLE")
+        if (i[0] == "TABLE")
         {
-            if (name.size()) connection.val.createTable(name, colums);
+            if (!name.empty()) connection.val.createTable(name, colums);
             colums.clear();
-            name = s2;
+            name = i[1];
         }
         else
         {
-            colums.emplace_back(s1, s2);
+            colums.emplace_back(i[0], i[1]);
         }
     }
 }
