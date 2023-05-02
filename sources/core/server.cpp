@@ -77,9 +77,13 @@ core::Server::Server()
     (
         []()
         {
-            file::FileRouter::process("exload.dmprar");
+            post::PostHandler::uploadFromFile(
+                {
+                    {"type", "nun"}
+            },
+                "exload.dmp");
 
-            return "5";
+            return "Exfinished";
         });
 
     CROW_ROUTE(app, "/api/get_results/<int>")

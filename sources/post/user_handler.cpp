@@ -46,7 +46,7 @@ post::UserHandler::rawDataHandler(data::RawData& aData) noexcept
 {
     for (size_t i = 0; i < aData.value.size(); ++i)
     {
-        if (aData.additionalInfo[i].size())
+        if (aData.additionalInfo.size() && aData.additionalInfo[i].size())
         {
             std::set<std::string> roles;
             for (auto& j : aData.additionalInfo[i])
