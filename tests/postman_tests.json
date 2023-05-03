@@ -2746,6 +2746,95 @@
 			"response": []
 		},
 		{
+			"name": "Add competitions to 1 user 2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"many_to_many\" : \"add\",\r\n    \"id\": 1,\r\n    \"competition\": [\r\n        1\r\n    ]\r\n}"
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/post/user",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"post",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check competition of users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Journal changed successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"competition_users\": [\r",
+							"            {\r",
+							"                \"competition\": {\r",
+							"                    \"id\": 1,\r",
+							"                    \"name\": \"Пробный тур\",\r",
+							"                    \"start_time\": \"2023-04-02 15:00:00\"\r",
+							"                },\r",
+							"                \"id\": 5,\r",
+							"                \"user_id\": 1\r",
+							"            },\r",
+							"            {\r",
+							"                \"competition\": {\r",
+							"                    \"id\": 2,\r",
+							"                    \"name\": \"Очный тур\",\r",
+							"                    \"start_time\": \"2023-04-03 12:00:00\"\r",
+							"                },\r",
+							"                \"id\": 2,\r",
+							"                \"user_id\": 1\r",
+							"            }\r",
+							"        ]\r",
+							"    };\r",
+							"\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:18080/api/get/if/competition_user[competition_id[id;name;start_time]]/user_id=1",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"get",
+						"if",
+						"competition_user[competition_id[id;name;start_time]]",
+						"user_id=1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Send user answer",
 			"event": [
 				{

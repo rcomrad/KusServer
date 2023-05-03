@@ -60,7 +60,7 @@ public:
     //--------------------------------------------------------------------------------
 
     void select(const std::string& aTableName,
-                const std::string& aColum    = "",
+                const std::string& aColum     = "",
                 const std::string& aCondition = "") noexcept;
 
     std::string getCell(const std::string& aTableName,
@@ -77,14 +77,28 @@ public:
                       bool aIsAutoClose                      = true) noexcept
     {
         mResultIterator = --mResult.begin();
+        int num1        = aOffset;
+        int num2        = aOffset;
         while (true)
         {
+            // TODO: without num
             T temp;
+            aOffset   = num1;
             auto flag = getData(temp, aOffset, aColums, false);
+
             // TODO: check move
-            if (flag) result.emplace_back(std::move(temp));
-            else break;
+            if (flag)
+            {
+                result.emplace_back(std::move(temp));
+                num2 = aOffset;
+            }
+            else
+            {
+                aOffset = num2;
+                break;
+            }
         }
+
         if (aIsAutoClose) closeStatment();
     }
 
@@ -102,26 +116,25 @@ public:
 
             for (int i = 0; i < T::types.size(); ++i)
             {
-                int num = aOffset + i;
-                if (!hasData(num)) break;
+                if (!hasData(aOffset)) break;
                 if (!aColums.empty() && !aColums.count(i)) continue;
 
                 switch (T::types[i])
                 {
                     case data::Type::INT:
-                        *((int*)result.ptrs[i]) = getColumnIntUnsafe(num);
+                        *((int*)result.ptrs[i]) = getColumnIntUnsafe(aOffset);
                         break;
                     case data::Type::BOOL:
-                        *((bool*)result.ptrs[i]) = getColumnBoolUnsafe(num);
+                        *((bool*)result.ptrs[i]) = getColumnBoolUnsafe(aOffset);
                         break;
                     case data::Type::STRING:
                         *((std::string*)result.ptrs[i]) =
-                            getColumnAsStringUnsafe(num);
+                            getColumnAsStringUnsafe(aOffset);
                         break;
                 }
-            }
 
-            aOffset += aColums.size();
+                ++aOffset;
+            }
         }
 
         if (aIsAutoClose) closeStatment();

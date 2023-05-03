@@ -40,6 +40,11 @@ private:
     std::string mCondition;
 
     static std::unordered_map<std::string, std::string> aTableNames;
+    static std::unordered_map<std::string, std::unordered_set<std::string>>
+        aTableColumns;
+
+    static std::unordered_map<std::string, std::unordered_set<std::string>>
+    getTableColumns() noexcept;
 
     void pushTable(int iter,
                    int& last,

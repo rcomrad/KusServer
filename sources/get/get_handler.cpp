@@ -54,7 +54,7 @@ get::GetHandler::mainGet(const std::string& aRequest,
         }
     }
 
-    for (size_t i = req.size() - 1; i >= 1; ++i)
+    for (size_t i = req.size() - 1; i >= 1; --i)
     {
         const auto& curName    = req.getNickname(i);
         const auto& oldName    = req.getTableName(i);

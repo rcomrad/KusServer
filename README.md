@@ -2,7 +2,7 @@
 
 KusServer API documentation
 
-No Guarantee No Warranty No Return
+No guarantee | No warranty | No return
 
 ## POST Insert|Update request (/api/post/<string: TableName>)
 

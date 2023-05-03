@@ -2,29 +2,61 @@
 
 #include "database_structures.hpp"
 
+#include "file/file.hpp"
+
 std::unordered_map<std::string, std::string> data::DataRequest::aTableNames = {
     {"methodist", "user"},
     {"teacher",   "user"}
 };
+
+std::unordered_map<std::string, std::unordered_set<std::string>>
+    data::DataRequest::aTableColumns = getTableColumns();
+
+std::unordered_map<std::string, std::unordered_set<std::string>>
+data::DataRequest::getTableColumns() noexcept
+{
+    std::unordered_map<std::string, std::unordered_set<std::string>> result;
+
+    auto words = file::File::getWords("database.psql_db", true);
+    std::unordered_map<std::string, std::unordered_set<std::string>>::iterator
+        it;
+
+    for (auto& i : words)
+    {
+        if (i[0] == "TABLE")
+        {
+            result[i[1]] = {"id"};
+            it           = result.find(i[1]);
+            // it = result.insert(i[1], {"id"}).first;
+        }
+        else
+        {
+            it->second.insert(i[0]);
+        }
+    }
+
+    return result;
+}
 
 data::DataRequest::DataRequest(const std::string& aRequest,
                                std::string&& aCondition) noexcept
 {
     mCondition = std::move(aCondition);
 
-    int curPrev = -1;
+    int curPrev = 0;
     int last    = 0;
     for (int iter = 0; iter < aRequest.size() + 1; ++iter)
     {
         switch (aRequest[iter])
         {
             case '[':
-                curPrev = mTables.size();
+                mPrev.emplace_back(curPrev);
+                curPrev = mNicknames.size();
                 pushTable(iter, last, aRequest, curPrev ? 3 : 0);
                 break;
 
             case '\0':
-                if (mTables.empty())
+                if (mNicknames.empty())
                 {
                     pushTable(iter, last, aRequest, 0);
                     break;
@@ -54,6 +86,27 @@ data::DataRequest::DataRequest(const std::string& aRequest,
             mTables.emplace_back(i);
         }
     }
+
+    if (mColumns.size() > 1)
+    {
+        bool flag = false;
+        for (size_t i = 0; i < mColumns.size(); ++i)
+        {
+            if (mColumns[i].empty())
+            {
+                flag        = true;
+                mColumns[i] = aTableColumns[mTables[i]];
+            }
+        }
+
+        if (flag)
+        {
+            for (size_t i = 0; i < mPrev.size(); ++i)
+            {
+                mColumns[mPrev[i]].erase(mTables[i] + "_id");
+            }
+        }
+    }
 }
 
 std::string
@@ -64,7 +117,7 @@ data::DataRequest::getTables() const noexcept
     {
         result += "inner join journal." + mTables[i] + " on journal." +
                   mTables[mPrev[i]] + "." + mTables[i] + "_id" + " = journal." +
-                  mTables[mPrev[i]] + ".id ";
+                  mTables[i] + ".id ";
     }
     return result;
 }
