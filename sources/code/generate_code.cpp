@@ -1,17 +1,280 @@
 #include "generate_code.hpp"
 
-#include <fstream>
-#include <map>
-#include <string>
+#include "file/file.hpp"
 
-std::unordered_map<std::string, std::string> core::GenerateCode::mglobalPaths =
-    {
+code::GenerateCode::GenerateCode() noexcept
+{
+    mPaths = {
         {"post", "../sources/post/"},
         {"get",  "../sources/get/" }
-};
+    };
 
-std::vector<std::string> core::GenerateCode::mDatabaseTables =
-    core::GenerateCode::getDatabaseTables();
+    getTableData();
+}
+
+void
+code::GenerateCode::getTableData() noexcept
+{
+    auto words = file::File::getWords("database.psql_db", true);
+    for (auto& i : words)
+    {
+        if (i[0] == "TABLE")
+        {
+            mTables.emplace_back();
+            mTables.back().name = i[1];
+        }
+        else if (!mTables.empty())
+        {
+            mTables.back().fields.push_back(i[0]);
+        }
+    }
+
+    for (auto& i : mTables)
+    {
+        auto& name = i.className;
+        name       = i.name;
+        name[0]    = std::toupper(name[0]);
+
+        int it = name.find('_');
+        while (it != std::string::npos)
+        {
+            name[it + 1] = std::toupper(name[it + 1]);
+            name.erase(it);
+            it = name.find('_');
+        }
+    }
+}
+
+void
+code::GenerateCode::getTableData() noexcept
+{
+    generateAllFiles();
+    generatePostHandlerFile();
+    generateGetRouterFile();
+}
+
+void
+code::GenerateCode::generateDatabaseStructureFiles() noexcept
+{
+    generateDatabaseStructuresHPPFile();
+    generateDatabaseStructuresCPPFile();
+}
+
+void
+generateGetRouterFile()
+{
+    //     core::GenerateCode generator;
+    //     generator.setClassName("GetRouter");
+    //     generator.setNamespace("get");
+
+    //     //--------------------------------------------------------------------------------
+
+    //     generator.setDefaultTemplate("template <typename... Args>");
+    //     generator.setDefaultReturnType("void");
+
+    //     //--------------------------------------------------------------------------------
+
+    //     generator.addInclude("get_handler");
+
+    //     //--------------------------------------------------------------------------------
+
+    //     // postHandler
+    //     // generator.p
+    //     generator.pushBackFunction("getRouter(const data::TableInfoAray&
+    //     request, "
+    //                                "data::DBSettings& aDBS, "
+    //                                "Args&&... args) noexcept");
+
+    //     generator.pushToFunctionBody(
+    //         "auto temp = request.popTableName();\n"
+    //         "if (temp){\n"
+    //         "getRouter(request, aDBS, args..., );\n"
+    //         "}\n"
+    //         "else{\n"
+    //         "get::GetHandler::process(request, aDBS, args...);\n"
+    //         "}\n"
+
+    //     );
+
+    //     generator.write();
+
+    core::GenerateCode generator;
+    generator.setClassName("GetRouter");
+    generator.setNamespace("get");
+
+    //--------------------------------------------------------------------------------
+
+    generator.setDefaultTemplate("template <typename... Args>");
+    generator.setDefaultReturnType("static crow::json::wvalue");
+
+    //--------------------------------------------------------------------------------
+
+    generator.addInclude("get_handler");
+    generator.addCPPInclude("user_handler");
+    generator.addCPPInclude("question_handler");
+
+    //--------------------------------------------------------------------------------
+
+    // basicRouter
+    generator.pushBackFunction("basicRouter(const std::string& aTableName, "
+                               "Args&&... args) noexcept");
+    generator.pushToFunctionBody(wrap("mBasicRouterMap"));
+    generator.generateMapTable(
+        "mBasicRouterMap",
+        {
+            {"default", "get::GetHandler::process<data::"},
+            {"user",    "get::UserHandler::process"      }
+  //    ,
+  //    {"question", "get::QuestionHandler::process"  }
+    });
+
+    //--------------------------------------------------------------------------------
+
+    // dumpRouter
+    generator.pushBackFunction("dumpRouter(const std::string& aTableName, "
+                               "Args&&... args) noexcept");
+    generator.pushToFunctionBody(wrap("mDumpRouterMap"));
+    generator.generateMapTable(
+        "mDumpRouterMap", {
+                              {"default", "get::GetHandler::dump<data::"}
+    });
+
+    //--------------------------------------------------------------------------------
+
+    generator.setDefaultTemplate("");
+    generator.setDefaultReturnType("auto");
+
+    //--------------------------------------------------------------------------------
+
+    // dumpRouter
+    generator.pushBackFunction(
+        "getNameToNum(const std::string& aTableName) noexcept");
+
+    std::string body =
+
+        generator.pushToFunctionBody(wrap("mDumpRouterMap"));
+    generator.generateMapTable(
+        "mDumpRouterMap", {
+                              {"default", "get::GetHandler::dump<data::"}
+    });
+
+    //--------------------------------------------------------------------------------
+
+    generator.write();
+}
+
+void
+generatePostHandlerFile()
+{
+
+    core::GenerateCode generator;
+    generator.setClassName("PostRouter");
+    generator.setNamespace("post");
+
+    //--------------------------------------------------------------------------------
+
+    generator.setDefaultTemplate("template <typename... Args>");
+    generator.setDefaultReturnType("static crow::json::wvalue");
+
+    //--------------------------------------------------------------------------------
+
+    generator.addInclude("post_handler");
+    generator.addCPPInclude("answer_handler");
+    generator.addCPPInclude("journal_handler");
+    generator.addCPPInclude("plan_handler");
+    generator.addCPPInclude("user_handler");
+    generator.addCPPInclude("mark_handler");
+
+    //--------------------------------------------------------------------------------
+
+    // basicHandler
+    generator.pushBackFunction("basicRouter(const std::string& aTableName, "
+                               "Args&&... args) noexcept");
+    generator.pushToFunctionBody(wrap("mPostRouterMap"));
+    generator.generateMapTable(
+        "mPostRouterMap",
+        {
+  // clang-format off
+            {"default",       "post::PostHandler::basicPost<post::PostHandler, data::"},
+            {"user",          "post::PostHandler::basicPost<post::UserHandler, data::"       },
+            {"answer",        "post::PostHandler::basicPost<post::AnswerHandler, data::"     },
+            {"journal_table", "post::PostHandler::basicPost<post::JournalHandler, data::"    },
+            {"mark",          "post::PostHandler::basicPost<post::MarkHandler, data::"       }
+  // clang-format on
+    },
+        true);
+
+    //--------------------------------------------------------------------------------
+
+    // // manyToManyHandler
+    // generator.pushBackFunction(
+    //     "manyToManyRouter(const std::string& aTableName, "
+    //     "Args&&... args) noexcept");
+    // generator.pushToFunctionBody(wrap("mManyToManyRouterMap"));
+    // generator.generateMapTable(
+    //     "mManyToManyRouterMap",
+    //     {
+    //         {"default", "post::PostHandler::manyToMany<data::"}
+    // });
+
+    //--------------------------------------------------------------------------------
+
+    // // uploadPostHandler
+    // generator.pushBackFunction("uploadRouter(const std::string& aTableName, "
+    //                            "Args&&... args) noexcept");
+    // generator.pushToFunctionBody(wrap("mUploadRouterMap"));
+    // generator.generateMapTable(
+    //     "mUploadRouterMap",
+    //     {
+    //         {"default",       "post::PostHandler::uploadFromFile<data::"},
+    //         {"journal_table", "post::JournalHandler::uploadFromFile"    },
+    //         {"user",          "post::UserHandler::uploadFromFile"       },
+    //         {"plan",          "post::PlanHandler::uploadFromFile"       }
+    // });
+
+    //--------------------------------------------------------------------------------
+
+    // dropHandler
+    generator.pushBackFunction("dropRouter(const std::string& aTableName, "
+                               "Args&&... args) noexcept");
+    generator.pushToFunctionBody(wrap("mDropRouterMap"));
+    generator.generateMapTable(
+        "mDropRouterMap", {
+                              {"default", "post::PostHandler::drop<data::"}
+    });
+
+    //--------------------------------------------------------------------------------
+
+    // rawDataHandler
+    generator.pushBackFunction("rawDataRouter(const std::string& aTableName, "
+                               "Args&&... args) noexcept");
+    generator.pushToFunctionBody(wrap("mRawDataRouter"));
+    generator.generateMapTable(
+        "mRawDataRouter",
+        {
+            {"default",       "post::PostHandler::rawDataHandler<data::"},
+            {"journal_table", "post::JournalHandler::rawDataHandler"    },
+            {"user",          "post::UserHandler::rawDataHandler"       },
+            {"plan",          "post::PlanHandler::rawDataHandler"       }
+    });
+
+    //--------------------------------------------------------------------------------
+
+    // // headerHandler
+    // generator.pushBackFunction("headerRouter(const std::string& aTableName, "
+    //                            "Args&&... args) noexcept");
+    // generator.pushToFunctionBody(wrap("mHeaderRouter"));
+    // generator.generateMapTable(
+    //     "mHeaderRouter",
+    //     {
+    //         {"default", "post::PostHandler::headerParser<data::"},
+    //         {"plan",    "post::PlanHandler::headerParser"       }
+    // });
+
+    //--------------------------------------------------------------------------------
+
+    generator.write();
+}
 
 void
 drawLine(std::ofstream& file)
@@ -20,28 +283,6 @@ drawLine(std::ofstream& file)
     file << "//";
     for (int i = 0; i < 80; ++i) file << "-";
     file << "\n\n";
-}
-
-void
-core::GenerateCode::setClassName(const std::string& aName)
-{
-    mClassName = aName;
-
-    mClassName[0] -= 'A' - 'a';
-    for (auto i : mClassName)
-    {
-        if (i >= 'A' && i <= 'Z')
-        {
-            mFileName.push_back('_');
-            mDefineName.push_back('_');
-            i -= 'A' - 'a';
-        }
-
-        mFileName.push_back(i);
-        i += 'A' - 'a';
-        mDefineName.push_back(i);
-    }
-    mClassName[0] += 'A' - 'a';
 }
 
 void
@@ -587,209 +828,17 @@ wrap(std::string aname)
            "result= it->second(args...);return result;\n";
 }
 
-void
-generateGetRouterFile()
+std::string
+wrap2(std::string aname)
 {
-    //     core::GenerateCode generator;
-    //     generator.setClassName("GetRouter");
-    //     generator.setNamespace("get");
-
-    //     //--------------------------------------------------------------------------------
-
-    //     generator.setDefaultTemplate("template <typename... Args>");
-    //     generator.setDefaultReturnType("void");
-
-    //     //--------------------------------------------------------------------------------
-
-    //     generator.addInclude("get_handler");
-
-    //     //--------------------------------------------------------------------------------
-
-    //     // postHandler
-    //     // generator.p
-    //     generator.pushBackFunction("getRouter(const data::TableInfoAray&
-    //     request, "
-    //                                "data::DBSettings& aDBS, "
-    //                                "Args&&... args) noexcept");
-
-    //     generator.pushToFunctionBody(
-    //         "auto temp = request.popTableName();\n"
-    //         "if (temp){\n"
-    //         "getRouter(request, aDBS, args..., );\n"
-    //         "}\n"
-    //         "else{\n"
-    //         "get::GetHandler::process(request, aDBS, args...);\n"
-    //         "}\n"
-
-    //     );
-
-    //     generator.write();
-
-    core::GenerateCode generator;
-    generator.setClassName("GetRouter");
-    generator.setNamespace("get");
-
-    //--------------------------------------------------------------------------------
-
-    generator.setDefaultTemplate("template <typename... Args>");
-    generator.setDefaultReturnType("static crow::json::wvalue");
-
-    //--------------------------------------------------------------------------------
-
-    generator.addInclude("get_handler");
-    generator.addCPPInclude("user_handler");
-    generator.addCPPInclude("question_handler");
-
-    //--------------------------------------------------------------------------------
-
-    // basicRouter
-    generator.pushBackFunction("basicRouter(const std::string& aTableName, "
-                               "Args&&... args) noexcept");
-    generator.pushToFunctionBody(wrap("mBasicRouterMap"));
-    generator.generateMapTable(
-        "mBasicRouterMap",
-        {
-            {"default", "get::GetHandler::process<data::"},
-            {"user",    "get::UserHandler::process"      }
-  //    ,
-  //    {"question", "get::QuestionHandler::process"  }
-    });
-
-    //--------------------------------------------------------------------------------
-
-    // dumpRouter
-    generator.pushBackFunction("dumpRouter(const std::string& aTableName, "
-                               "Args&&... args) noexcept");
-    generator.pushToFunctionBody(wrap("mDumpRouterMap"));
-    generator.generateMapTable(
-        "mDumpRouterMap", {
-                              {"default", "get::GetHandler::dump<data::"}
-    });
-
-    //--------------------------------------------------------------------------------
-
-    generator.write();
-}
-
-void
-generatePostHandlerFile()
-{
-
-    core::GenerateCode generator;
-    generator.setClassName("PostRouter");
-    generator.setNamespace("post");
-
-    //--------------------------------------------------------------------------------
-
-    generator.setDefaultTemplate("template <typename... Args>");
-    generator.setDefaultReturnType("static crow::json::wvalue");
-
-    //--------------------------------------------------------------------------------
-
-    generator.addInclude("post_handler");
-    generator.addCPPInclude("answer_handler");
-    generator.addCPPInclude("journal_handler");
-    generator.addCPPInclude("plan_handler");
-    generator.addCPPInclude("user_handler");
-    generator.addCPPInclude("mark_handler");
-
-    //--------------------------------------------------------------------------------
-
-    // basicHandler
-    generator.pushBackFunction("basicRouter(const std::string& aTableName, "
-                               "Args&&... args) noexcept");
-    generator.pushToFunctionBody(wrap("mPostRouterMap"));
-    generator.generateMapTable(
-        "mPostRouterMap",
-        {
-  // clang-format off
-            {"default",       "post::PostHandler::basicPost<post::PostHandler, data::"},
-            {"user",          "post::PostHandler::basicPost<post::UserHandler, data::"       },
-            {"answer",        "post::PostHandler::basicPost<post::AnswerHandler, data::"     },
-            {"journal_table", "post::PostHandler::basicPost<post::JournalHandler, data::"    },
-            {"mark",          "post::PostHandler::basicPost<post::MarkHandler, data::"       }
-  // clang-format on
-    },
-        true);
-
-    //--------------------------------------------------------------------------------
-
-    // // manyToManyHandler
-    // generator.pushBackFunction(
-    //     "manyToManyRouter(const std::string& aTableName, "
-    //     "Args&&... args) noexcept");
-    // generator.pushToFunctionBody(wrap("mManyToManyRouterMap"));
-    // generator.generateMapTable(
-    //     "mManyToManyRouterMap",
-    //     {
-    //         {"default", "post::PostHandler::manyToMany<data::"}
-    // });
-
-    //--------------------------------------------------------------------------------
-
-    // // uploadPostHandler
-    // generator.pushBackFunction("uploadRouter(const std::string& aTableName, "
-    //                            "Args&&... args) noexcept");
-    // generator.pushToFunctionBody(wrap("mUploadRouterMap"));
-    // generator.generateMapTable(
-    //     "mUploadRouterMap",
-    //     {
-    //         {"default",       "post::PostHandler::uploadFromFile<data::"},
-    //         {"journal_table", "post::JournalHandler::uploadFromFile"    },
-    //         {"user",          "post::UserHandler::uploadFromFile"       },
-    //         {"plan",          "post::PlanHandler::uploadFromFile"       }
-    // });
-
-    //--------------------------------------------------------------------------------
-
-    // dropHandler
-    generator.pushBackFunction("dropRouter(const std::string& aTableName, "
-                               "Args&&... args) noexcept");
-    generator.pushToFunctionBody(wrap("mDropRouterMap"));
-    generator.generateMapTable(
-        "mDropRouterMap", {
-                              {"default", "post::PostHandler::drop<data::"}
-    });
-
-    //--------------------------------------------------------------------------------
-
-    // rawDataHandler
-    generator.pushBackFunction("rawDataRouter(const std::string& aTableName, "
-                               "Args&&... args) noexcept");
-    generator.pushToFunctionBody(wrap("mRawDataRouter"));
-    generator.generateMapTable(
-        "mRawDataRouter",
-        {
-            {"default",       "post::PostHandler::rawDataHandler<data::"},
-            {"journal_table", "post::JournalHandler::rawDataHandler"    },
-            {"user",          "post::UserHandler::rawDataHandler"       },
-            {"plan",          "post::PlanHandler::rawDataHandler"       }
-    });
-
-    //--------------------------------------------------------------------------------
-
-    // // headerHandler
-    // generator.pushBackFunction("headerRouter(const std::string& aTableName, "
-    //                            "Args&&... args) noexcept");
-    // generator.pushToFunctionBody(wrap("mHeaderRouter"));
-    // generator.generateMapTable(
-    //     "mHeaderRouter",
-    //     {
-    //         {"default", "post::PostHandler::headerParser<data::"},
-    //         {"plan",    "post::PlanHandler::headerParser"       }
-    // });
-
-    //--------------------------------------------------------------------------------
-
-    generator.write();
-}
-
-void
-core::generateDatabaseStructuresFiles()
-{
-    // generateDatabaseStructuresHPPFile();
-    // generateDatabaseStructuresCPPFile();
-
-    // generatePostHandlerFile();
-    // generateGetRouterFile();
+    return "decltype(" + aname +
+           ".begin()->second) result;\n"
+           "auto it = " +
+           aname +
+           ".find(aTableName);\n"
+           "if (it != " +
+           aname +
+           ".end())\n"
+           "auto result= it->second;"
+           "return result;\n";
 }

@@ -70,6 +70,12 @@ data::Postgresql::select(const std::string& aTableName,
     prepare(statement);
 }
 
+void
+data::Postgresql::directSelect(const std::string& aRequest) noexcept
+{
+    prepare(aRequest);
+}
+
 std::string
 data::Postgresql::getCell(const std::string& aTableName,
                           const std::string& aColumnName,

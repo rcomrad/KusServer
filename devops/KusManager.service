@@ -44,4 +44,4 @@ WantedBy=multi-user.target
 # sudo ps axu
 # sudo netstat -ntlp
 # sudo kill -9
-#  ps -efj
+# ps -efj

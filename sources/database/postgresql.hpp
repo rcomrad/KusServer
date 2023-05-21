@@ -63,6 +63,8 @@ public:
                 const std::string& aColum     = "",
                 const std::string& aCondition = "") noexcept;
 
+    void directSelect(const std::string& aRequest) noexcept;
+
     std::string getCell(const std::string& aTableName,
                         const std::string& aColumnName,
                         const std::string& aCondition) noexcept;

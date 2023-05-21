@@ -7,11 +7,35 @@
 #include <unordered_map>
 #include <vector>
 
-namespace core
+namespace code
 {
 class GenerateCode
 {
 public:
+    GenerateCode() noexcept;
+
+    void generateAllFiles() noexcept;
+
+    void generateDatabaseStructureFiles() noexcept;
+    void generateDatabaseStructuresHPPFile() noexcept;
+    void generateDatabaseStructuresCPPFile() noexcept;
+
+    void generatePostHandlerFile() noexcept;
+    void generateGetRouterFile() noexcept;
+
+private:
+    std::unordered_map<std::string, std::string> mPaths;
+
+    struct Table
+    {
+        std::string name;
+        std::string className;
+        std::vector<std::string> fields;
+    };
+    std::vector<Table> mTables;
+
+    void getTableData() noexcept;
+
     void setClassName(const std::string& aName);
     void setNamespace(const std::string& aName);
 
@@ -146,6 +170,6 @@ private:
 void
 generateDatabaseStructuresFiles();
 
-} // namespace core
+} // namespace code
 
 #endif // !GENERATE_CODE_HPP

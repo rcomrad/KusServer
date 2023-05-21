@@ -1,6 +1,6 @@
 cd ../..
 git config --global --add safe.directory ./server
-sudo -S apt install gcc g++ make curl zip unzip tar pkg-config autoconf postgresql net-tools -y
+sudo -S apt install gcc g++ make curl zip unzip tar pkg-config autoconf postgresql net-tools cmake build-essential -y
 
 # pascal compiler
 sudo -S apt install fp-compiler -y
@@ -29,7 +29,8 @@ printf "$1\n$1\n" > database.pass
 cd ../devops
 sudo cp pg_hba.conf /etc/postgresql/12/main/pg_hba.conf
 sudo -u postgres psql -c "ALTER USER postgres password '$1';"
-#  sudo psql -U journal_user -h localhost -d journal_db 
+# sudo psql -U journal_user -h localhost -d journal_db 
+# sudo psql -U postgres -h localhost -d postgres 
 
 # TODO: add journal_user and database from start
 sudo -u postgres psql -c "CREATE USER $2;"

@@ -58,13 +58,10 @@ data::DatabaseConnection::DatabaseConnection(
 
 void
 data::DatabaseConnection::complexSelect(
-    const data::DataRequest& request) noexcept
+    const data::DataRequest& aRequest) noexcept
 {
     mColumnNumber = 0;
-    auto tabl     = request.getTables();
-    auto col      = request.getColumns();
-    auto con      = request.getCondition();
-    mDatabase.select(tabl, col, con);
+    mDatabase.directSelect(aRequest.getStatement());
 }
 
 int
