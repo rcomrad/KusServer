@@ -4,10 +4,6 @@
 
 code::GenerateCode::GenerateCode() noexcept
 {
-    mPaths = {
-        {"post", "../sources/post/"},
-        {"get",  "../sources/get/" }
-    };
 
     getTableData();
 }
@@ -46,9 +42,9 @@ code::GenerateCode::getTableData() noexcept
 }
 
 void
-code::GenerateCode::getTableData() noexcept
+code::GenerateCode::generateAllFiles() noexcept
 {
-    generateAllFiles();
+    generateDatabaseStructureFiles();
     generatePostHandlerFile();
     generateGetRouterFile();
 }

@@ -15,6 +15,7 @@ public:
     void setClass(const std::string& aClass) noexcept;
 
     void makeStatic() noexcept;
+    void makeFunctor() noexcept;
     void makeVariadic() noexcept;
 
     void setTemplate(const std::string& aTemplate) noexcept;
@@ -26,10 +27,11 @@ public:
     void outputToHpp(std::ofstream& aOut) const noexcept;
     void outputToCpp(std::ofstream& aOut) const noexcept;
 
-    void makeRouter(std::string aMapName, std::string aExecExpr) noexcept;
+    void makeRouter(std::string aMapName) noexcept;
 
 private:
     bool mIsStatic;
+    bool mIsFunctor;
     bool mIsVariadic;
 
     std::string mNamespace;

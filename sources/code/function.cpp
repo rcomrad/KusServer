@@ -3,6 +3,7 @@
 code::Function::Function() noexcept
 {
     mIsStatic   = false;
+    mIsFunctor  = false;
     mIsVariadic = false;
     mType       = "auto";
 }
@@ -26,8 +27,16 @@ code::Function::makeStatic() noexcept
 }
 
 void
+code::Function::makeFunctor() noexcept
+{
+    mIsFunctor  = true;
+    mIsVariadic = false;
+}
+
+void
 code::Function::makeVariadic() noexcept
 {
+    mIsFunctor  = false;
     mIsVariadic = true;
 }
 
@@ -96,11 +105,15 @@ code::Function::outputToCpp(std::ofstream& aOut) const noexcept
 }
 
 void
-code::Function::makeRouter(std::string aMapName, std::string aExecExpr) noexcept
+code::Function::makeRouter(std::string aMapName) noexcept
 {
     mArguments = "const std::string& aName";
 
-    mBody = "decltype(" + aMapName + ".begin()->second" + aExecExpr +
+    std::string execExpr;
+    if (mIsFunctor) execExpr = "()";
+    if (mIsVariadic) execExpr = "(args...)";
+
+    mBody = "decltype(" + aMapName + ".begin()->second" + execExpr +
             ") result;\n"
             "auto it = " +
             aMapName +
@@ -109,7 +122,7 @@ code::Function::makeRouter(std::string aMapName, std::string aExecExpr) noexcept
             aMapName +
             ".end())\n"
             "result= it->second" +
-            aExecExpr +
+            execExpr +
             ";"
             "return result;\n";
 }

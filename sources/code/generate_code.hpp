@@ -9,10 +9,10 @@
 
 namespace code
 {
-class GenerateCode
+class CodeGenerator
 {
 public:
-    GenerateCode() noexcept;
+    CodeGenerator() noexcept;
 
     void generateAllFiles() noexcept;
 
@@ -161,7 +161,7 @@ private:
     std::vector<Function> mFunctions;
     std::vector<StaticVar> mStaticVariables;
 
-    static std::unordered_map<std::string, std::string> mglobalPaths;
+
     static std::vector<std::string> mDatabaseTables;
 
     static std::vector<std::string> getDatabaseTables();
