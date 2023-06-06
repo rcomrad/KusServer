@@ -9,11 +9,11 @@ get::UserHandler::process(const std::unordered_set<std::string>& aColumn,
     auto table     = aConnection.val.getNextDataArray<data::User>(aColumn);
     auto tableList = table.getAsJList({"role_id"});
 
-    if (table.size() > 0 && table[0].role_id != 0)
+    if (table.size() > 0 && table[0].roleID != 0)
     {
         for (int num = 0; num < table.size(); ++num)
         {
-            auto roles = core::Role::getInstance().getRoles(table[num].role_id);
+            auto roles = core::Role::getInstance().getRoles(table[num].roleID);
             crow::json::wvalue::list roleList;
             for (auto& i : roles)
             {

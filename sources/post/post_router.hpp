@@ -7,52 +7,50 @@
 
 namespace post
 {
-class PostRouter
+struct PostRouter
 {
-public:
-    template <typename... Args>
-    static crow::json::wvalue basicRouter(const std::string& aTableName,
-                                          Args&&... args) noexcept
-    {
-        crow::json::wvalue result;
-        auto it = mPostRouterMap.find(aTableName);
-        if (it != mPostRouterMap.end()) result = it->second(args...);
-        return result;
-    }
 
-    template <typename... Args>
-    static crow::json::wvalue dropRouter(const std::string& aTableName,
-                                         Args&&... args) noexcept
-    {
-        crow::json::wvalue result;
-        auto it = mDropRouterMap.find(aTableName);
-        if (it != mDropRouterMap.end()) result = it->second(args...);
-        return result;
-    }
-
-    template <typename... Args>
-    static crow::json::wvalue rawDataRouter(const std::string& aTableName,
-                                            Args&&... args) noexcept
-    {
-        crow::json::wvalue result;
-        auto it = mRawDataRouter.find(aTableName);
-        if (it != mRawDataRouter.end()) result = it->second(args...);
-        return result;
-    }
-
-private:
     static std::unordered_map<
         std::string,
-        decltype(&post::PostHandler::basicPost<post::PostHandler, data::Dummy>)>
-        mPostRouterMap;
+        decltype(&post::PostHandler::postSubrouter<post::PostHandler,
+                                                   data::Dummy>)>
+        mProcessRouter;
     static std::unordered_map<std::string,
                               decltype(&post::PostHandler::drop<data::Dummy>)>
-        mDropRouterMap;
+        mDropRouter;
     static std::unordered_map<
         std::string,
         decltype(&post::PostHandler::rawDataHandler<data::Dummy>)>
         mRawDataRouter;
+
+    template <typename... Args>
+    static auto processRouter(std::string aName, Args&&... args)
+    {
+        decltype(mProcessRouter.begin()->second(args...)) result;
+        auto it = mProcessRouter.find(aName);
+        if (it != mProcessRouter.end()) result = it->second(args...);
+        return result;
+    }
+
+    template <typename... Args>
+    static auto dropRouter(std::string aName, Args&&... args)
+    {
+        decltype(mDropRouter.begin()->second(args...)) result;
+        auto it = mDropRouter.find(aName);
+        if (it != mDropRouter.end()) result = it->second(args...);
+        return result;
+    }
+
+    template <typename... Args>
+    static auto rawDataRouter(std::string aName, Args&&... args)
+    {
+        decltype(mRawDataRouter.begin()->second(args...)) result;
+        auto it = mRawDataRouter.find(aName);
+        if (it != mRawDataRouter.end()) result = it->second(args...);
+        return result;
+    }
 };
 
-} // namespace post
-#endif // !POST_ROUTER
+};                     // namespace post
+
+#endif POST_ROUTER_HPP // !POST_ROUTER_HPP

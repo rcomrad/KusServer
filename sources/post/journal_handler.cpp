@@ -12,7 +12,7 @@
 
 crow::json::wvalue
 post::JournalHandler::process(
-    post::PostRequest<data::Journal_table>& aReq) noexcept
+    post::PostRequest<data::JournalTable>& aReq) noexcept
 {
     auto& journal = aReq.data;
 
@@ -22,7 +22,7 @@ post::JournalHandler::process(
         connection.val.write(journal);
         if (!temp.empty())
         {
-            journal = connection.val.getData<data::Journal_table>(
+            journal = connection.val.getData<data::JournalTable>(
                 "id=" + data::wrap(journal.id));
         }
     }
@@ -47,8 +47,8 @@ post::JournalHandler::rawDataHandler(data::RawData& aData) noexcept
         }
     }
 
-    auto res = rawDataInsert<data::Journal_table>(aData.value);
-    data::DataArray<data::Journal_table> journals(aData.value);
+    auto res = rawDataInsert<data::JournalTable>(aData.value);
+    data::DataArray<data::JournalTable> journals(aData.value);
     for (auto& i : journals)
     {
         makeSchedule(i);
@@ -57,7 +57,7 @@ post::JournalHandler::rawDataHandler(data::RawData& aData) noexcept
 }
 
 void
-post::JournalHandler::makeSchedule(data::Journal_table& aJournal) noexcept
+post::JournalHandler::makeSchedule(data::JournalTable& aJournal) noexcept
 {
     auto connection = data::ConnectionManager::getUserConnection();
 
@@ -66,12 +66,12 @@ post::JournalHandler::makeSchedule(data::Journal_table& aJournal) noexcept
         if (i >= '1' && i <= '7') schedule.emplace_back(i - '0');
 
     data::User methodist = connection.val.getData<data::User>(
-        "id = " + data::wrap(aJournal.methodist_id));
+        "_id = " + data::wrap(aJournal.methodistID));
 
     int methodistSchool = -1;
-    if (methodist.id) methodistSchool = methodist.school_id;
+    if (methodist.id) methodistSchool = methodist.schoolID;
     data::School school = connection.val.getData<data::School>(
-        "id = " + data::wrap(methodistSchool));
+        "_id = " + data::wrap(methodistSchool));
 
     int schoolID  = -1;
     uint16_t year = 1991;
@@ -81,9 +81,9 @@ post::JournalHandler::makeSchedule(data::Journal_table& aJournal) noexcept
     {
         schoolID = school.id;
 
-        year  = uint16_t(std::stoi(school.start_date.substr(0, 4)));
-        month = uint8_t(std::stoi(school.start_date.substr(5, 2)));
-        day   = uint8_t(std::stoi(school.start_date.substr(8, 2)));
+        year  = uint16_t(std::stoi(school.startDate.substr(0, 4)));
+        month = uint8_t(std::stoi(school.startDate.substr(5, 2)));
+        day   = uint8_t(std::stoi(school.startDate.substr(8, 2)));
     };
 
     data::DataArray<data::Holiday> holidays =
@@ -107,15 +107,15 @@ post::JournalHandler::makeSchedule(data::Journal_table& aJournal) noexcept
     std::set<boost::gregorian::date> holidaysSet;
     for (auto& i : holidays)
     {
-        holidaysSet.insert(boost::gregorian::date{
-            uint16_t(std::stoi(i.date_val.substr(0, 4))),
-            uint8_t(std::stoi(i.date_val.substr(5, 2))),
-            uint8_t(std::stoi(i.date_val.substr(8, 2)))});
+        holidaysSet.insert(
+            boost::gregorian::date{uint16_t(std::stoi(i.dateVal.substr(0, 4))),
+                                   uint8_t(std::stoi(i.dateVal.substr(5, 2))),
+                                   uint8_t(std::stoi(i.dateVal.substr(8, 2)))});
     }
 
     data::DataArray<data::Theme> themes =
-        connection.val.getDataArray<data::Theme>("plan_id = " +
-                                                 data::wrap(aJournal.plan_id));
+        connection.val.getDataArray<data::Theme>("plan__id = " +
+                                                 data::wrap(aJournal.planID));
     data::DataArray<data::Lesson> lessons;
     for (int i = 0; i < themes.size();)
     {
@@ -133,9 +133,9 @@ post::JournalHandler::makeSchedule(data::Journal_table& aJournal) noexcept
                               std::to_string(newData.day());
 
         lessons.emplace_back();
-        lessons.back().theme_id         = themes[i].id;
-        lessons.back().date_val         = dateStr;
-        lessons.back().journal_table_id = aJournal.id;
+        lessons.back().themeID        = themes[i].id;
+        lessons.back().dateVal        = dateStr;
+        lessons.back().journalTableID = aJournal.id;
 
         ++i;
     }

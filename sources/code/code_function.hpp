@@ -1,15 +1,15 @@
-#ifndef FUNCTION_HPP
-#define FUNCTION_HPP
+#ifndef CODE_FUNCTION_HPP
+#define CODE_FUNCTION_HPP
 
 #include <fstream>
 #include <string>
 
 namespace code
 {
-class Function
+class CodeFunction
 {
 public:
-    Function() noexcept;
+    CodeFunction(const std::string& aName = "foo") noexcept;
 
     void setNamespace(const std::string& aNamespace) noexcept;
     void setClass(const std::string& aClass) noexcept;
@@ -46,4 +46,4 @@ private:
 
 } // namespace code
 
-#endif // !FUNCTION_HPP
+#endif // !CODE_FUNCTION_HPP

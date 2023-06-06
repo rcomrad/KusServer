@@ -18,13 +18,13 @@ post::SubmitHandler::process(const crow::request& aReq) noexcept
     data::Submission submition;
 
     crow::multipart::message msg(aReq);
-    submition.user_id     = std::stoi(msg.get_part_by_name("user_id").body);
-    submition.problem_id = std::stoi(msg.get_part_by_name("problem_id").body);
+    submition.userID     = std::stoi(msg.get_part_by_name("user_id").body);
+    submition.problemID = std::stoi(msg.get_part_by_name("problem_id").body);
 
-    submition.date_val = getCurentTime();
-    submition.verdict  = "NUN";
-    submition.test     = -1;
-    submition.source_name =
+    submition.dateVal = getCurentTime();
+    submition.verdict = "NUN";
+    submition.test    = -1;
+    submition.sourceName =
         uploadFile(msg, file::Path::getInstance().getPath("submition").value());
 
     {

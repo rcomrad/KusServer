@@ -10,7 +10,7 @@ get::CompetitionHandler::process(int aUserID, int aCompetitionID) noexcept
 {
     crow::json::wvalue result;
     // data::Table<data::Competition> competition;
-    // data::Table<data::Competition_problem> problemIDs;
+    // data::Table<data::CompetitionProblem> problemIDs;
 
     // std::vector<data::Table<data::Problem>> problems;
     // std::vector<data::Table<data::Submission>> submissions;
@@ -22,7 +22,7 @@ get::CompetitionHandler::process(int aUserID, int aCompetitionID) noexcept
 
     //     competition = connection.val.select<data::Competition>(
     //         empty, "id=" + data::wrap(aCompetitionID));
-    //     problemIDs = connection.val.select<data::Competition_problem>(
+    //     problemIDs = connection.val.select<data::CompetitionProblem>(
     //         empty, "competition_id=" + data::wrap(aCompetitionID));
 
     //     std::vector<data::Table<data::Problem>> p(problemIDs.size());

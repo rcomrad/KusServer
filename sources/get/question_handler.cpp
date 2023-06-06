@@ -28,7 +28,7 @@ get::QuestionHandler::process(int aQuestionID, int aUserId) noexcept
             auto connection = data::ConnectionManager::getUserConnection();
             answer          = connection.val.getData<data::Answer>(
                 "user_id=" + data::wrap(aUserId) + " AND " +
-                "question_id=" + data::wrap(aQuestionID));
+                "questionID=" + data::wrap(aQuestionID));
         }
         if (answer.id)
         {

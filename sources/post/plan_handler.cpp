@@ -25,7 +25,7 @@ post::PlanHandler::rawDataHandler(data::RawData& aData) noexcept
     //         themes.emplace_back();
     //         themes.back().name       = aData.additionalInfo[i][0];
     //         themes.back().hour_count = std::stoi(aData.additionalInfo[i][1]);
-    //         themes.back().plan_id    = plan.id;
+    //         themes.back().planID    = plan.id;
     //     }
     //     {
     //         auto connection = data::ConnectionManager::getUserConnection();
@@ -35,7 +35,7 @@ post::PlanHandler::rawDataHandler(data::RawData& aData) noexcept
 
     data::Plan plan;
     plan.name       = aData.header["name"];
-    plan.subject_id = std::stoi(aData.header["subject_id"]);
+    plan.subjectID = std::stoi(aData.header["subject_id"]);
     plan.url        = aData.header["url"];
 
     {
@@ -48,8 +48,8 @@ post::PlanHandler::rawDataHandler(data::RawData& aData) noexcept
     {
         themes.emplace_back();
         themes.back().name       = i[0];
-        themes.back().hour_count = std::stoi(i[1]);
-        themes.back().plan_id    = plan.id;
+        themes.back().hourCount = std::stoi(i[1]);
+        themes.back().planID    = plan.id;
     }
 
     {

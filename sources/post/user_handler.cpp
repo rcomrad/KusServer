@@ -28,7 +28,7 @@ post::UserHandler::process(post::PostRequest<data::User>& aReq) noexcept
             roles.insert(i.s());
         }
 
-        aReq.data.role_id = core::Role::getInstance().getRoleID(roles);
+        aReq.data.roleID = core::Role::getInstance().getRoleID(roles);
     }
     aReq.leftovers.erase("role");
 
@@ -87,7 +87,7 @@ post::UserHandler::autorisation(const crow::request& aReq) noexcept
             if (tokenHandler.isActive())
                 uJson["user"]["token"] = tokenHandler.generate(user);
 
-            auto roles = core::Role::getInstance().getRoles(user.role_id);
+            auto roles = core::Role::getInstance().getRoles(user.roleID);
             crow::json::wvalue::list roleList;
             for (auto& i : roles)
             {

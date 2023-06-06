@@ -18,7 +18,7 @@ post::AnswerHandler::process(post::PostRequest<data::Answer>& aReq) noexcept
     answer.weight  = -1;
 
     // crow::multipart::message msg(aReq);
-    // submition.back().user_id =
+    // submition.back().userID =
     // std::stoi(msg.get_part_by_name("user_id").body);
 
     if (answer.value.size() < ANSWER_FNAME_SIZE)
@@ -34,15 +34,15 @@ post::AnswerHandler::process(post::PostRequest<data::Answer>& aReq) noexcept
     {
         auto connection = data::ConnectionManager::getUserConnection();
         question        = connection.val.getData<data::Question>(
-            "id=" + data::wrap(answer.question_id));
+            "id=" + data::wrap(answer.questionID));
     }
-    answer.verdict = answer.value == question.jury_answer ? 'T' : 'F';
+    answer.verdict = answer.value == question.juryAnswer ? 'T' : 'F';
 
     if (mProgramState.checkFlag(core::Flag::ANS_CHECK))
     {
         // auto ansTable = connection.val.getData<data::Question>(
-        //     "id = " + data::wrap(table[0].question_id));
-        //     auto answer = ansTable[0].jury_answer;
+        //     "_id = " + data::wrap(table[0].questionID));
+        //     auto answer = ansTable[0].juryAnswer;
 
         // if (answer == table[0].value) table[0].is_correct = 'T';
         // else table[0].is_correct = 'F';

@@ -57,11 +57,10 @@ data::DatabaseConnection::DatabaseConnection(
 //--------------------------------------------------------------------------------
 
 void
-data::DatabaseConnection::complexSelect(
-    const data::DataRequest& aRequest) noexcept
+data::DatabaseConnection::complexSelect(const std::string& aRequest) noexcept
 {
     mColumnNumber = 0;
-    mDatabase.directSelect(aRequest.getStatement());
+    mDatabase.directSelect(aRequest);
 }
 
 int

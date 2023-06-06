@@ -7,37 +7,35 @@
 
 namespace get
 {
-class GetRouter
+struct GetRouter
 {
-public:
-    template <typename... Args>
-    static crow::json::wvalue basicRouter(const std::string& aTableName,
-                                          Args&&... args) noexcept
-    {
-        crow::json::wvalue result;
-        auto it = mBasicRouterMap.find(aTableName);
-        if (it != mBasicRouterMap.end()) result = it->second(args...);
-        return result;
-    }
 
-    template <typename... Args>
-    static crow::json::wvalue dumpRouter(const std::string& aTableName,
-                                         Args&&... args) noexcept
-    {
-        crow::json::wvalue result;
-        auto it = mDumpRouterMap.find(aTableName);
-        if (it != mDumpRouterMap.end()) result = it->second(args...);
-        return result;
-    }
-
-private:
     static std::unordered_map<std::string,
                               decltype(&get::GetHandler::process<data::Dummy>)>
-        mBasicRouterMap;
+        mBasicRouter;
     static std::unordered_map<std::string,
                               decltype(&get::GetHandler::dump<data::Dummy>)>
-        mDumpRouterMap;
+        mDumpRouter;
+
+    template <typename... Args>
+    static auto basicRouter(std::string aName, Args&&... args)
+    {
+        decltype(mBasicRouter.begin()->second(args...)) result;
+        auto it = mBasicRouter.find(aName);
+        if (it != mBasicRouter.end()) result = it->second(args...);
+        return result;
+    }
+
+    template <typename... Args>
+    static auto dumpRouter(std::string aName, Args&&... args)
+    {
+        decltype(mDumpRouter.begin()->second(args...)) result;
+        auto it = mDumpRouter.find(aName);
+        if (it != mDumpRouter.end()) result = it->second(args...);
+        return result;
+    }
 };
 
-} // namespace get
-#endif // !GET_ROUTER
+};                    // namespace get
+
+#endif GET_ROUTER_HPP // !GET_ROUTER_HPP

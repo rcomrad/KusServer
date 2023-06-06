@@ -1,90 +1,95 @@
-#include "function.hpp"
+#include "code_function.hpp"
 
-code::Function::Function() noexcept
+code::CodeFunction::CodeFunction(const std::string& aName) noexcept
 {
     mIsStatic   = false;
     mIsFunctor  = false;
     mIsVariadic = false;
     mType       = "auto";
+    setName(aName);
 }
 
 void
-code::Function::setNamespace(const std::string& aNamespace) noexcept
+code::CodeFunction::setNamespace(const std::string& aNamespace) noexcept
 {
     mNamespace = aNamespace;
 }
 
 void
-code::Function::setClass(const std::string& aClass) noexcept
+code::CodeFunction::setClass(const std::string& aClass) noexcept
 {
     mClass = aClass;
 }
 
 void
-code::Function::makeStatic() noexcept
+code::CodeFunction::makeStatic() noexcept
 {
     mIsStatic = true;
 }
 
 void
-code::Function::makeFunctor() noexcept
+code::CodeFunction::makeFunctor() noexcept
 {
     mIsFunctor  = true;
     mIsVariadic = false;
 }
 
 void
-code::Function::makeVariadic() noexcept
+code::CodeFunction::makeVariadic() noexcept
 {
     mIsFunctor  = false;
     mIsVariadic = true;
 }
 
 void
-code::Function::setTemplate(const std::string& aTemplate) noexcept
+code::CodeFunction::setTemplate(const std::string& aTemplate) noexcept
 {
     mTemplate = aTemplate;
 }
 
 void
-code::Function::setReturnType(const std::string& aType) noexcept
+code::CodeFunction::setReturnType(const std::string& aType) noexcept
 {
     mType = aType;
 }
 
 void
-code::Function::setName(const std::string& aName) noexcept
+code::CodeFunction::setName(const std::string& aName) noexcept
 {
     mName = aName;
 }
 
 void
-code::Function::setArguments(const std::string& aArguments) noexcept
+code::CodeFunction::setArguments(const std::string& aArguments) noexcept
 {
     mArguments = aArguments;
 }
 
 void
-code::Function::setBody(const std::string& aBody) noexcept
+code::CodeFunction::setBody(const std::string& aBody) noexcept
 {
     mBody = aBody;
 }
 
 void
-code::Function::outputToHpp(std::ofstream& aOut) const noexcept
+code::CodeFunction::outputToHpp(std::ofstream& aOut) const noexcept
 {
-    aOut << mType << "\n";
+    if (mIsVariadic)
+    {
+        aOut << "template <typename... Args>";
+    }
     if (mIsStatic) aOut << "static ";
+    aOut << mType << "\n";
     aOut << mName << "(" << mArguments;
     if (mIsVariadic)
     {
         aOut << ", "
-             << "Args&& args";
+             << "Args&&... args";
     }
 
     if (!mTemplate.empty() || mIsVariadic)
     {
-        aOut << ")\n{\n" << mBody << "}\n";
+        aOut << ")\n{\n" << mBody << "}\n\n";
     }
     else
     {
@@ -93,7 +98,7 @@ code::Function::outputToHpp(std::ofstream& aOut) const noexcept
 }
 
 void
-code::Function::outputToCpp(std::ofstream& aOut) const noexcept
+code::CodeFunction::outputToCpp(std::ofstream& aOut) const noexcept
 {
     if (!(!mTemplate.empty() || mIsVariadic))
     {
@@ -105,7 +110,7 @@ code::Function::outputToCpp(std::ofstream& aOut) const noexcept
 }
 
 void
-code::Function::makeRouter(std::string aMapName) noexcept
+code::CodeFunction::makeRouter(std::string aMapName) noexcept
 {
     mArguments = "const std::string& aName";
 
@@ -113,7 +118,7 @@ code::Function::makeRouter(std::string aMapName) noexcept
     if (mIsFunctor) execExpr = "()";
     if (mIsVariadic) execExpr = "(args...)";
 
-    mBody = "decltype(" + aMapName + ".begin()->second" + execExpr +
+    mBody = "decltype(" + aMapName + ".begin()->second(args...)" + execExpr +
             ") result;\n"
             "auto it = " +
             aMapName +
@@ -121,7 +126,7 @@ code::Function::makeRouter(std::string aMapName) noexcept
             "if (it != " +
             aMapName +
             ".end())\n"
-            "result= it->second" +
+            "result= it->second(args...)" +
             execExpr +
             ";"
             "return result;\n";

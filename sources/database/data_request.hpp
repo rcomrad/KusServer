@@ -15,36 +15,45 @@
 namespace data
 {
 
-class DataRequest
+class RequestParser
 {
+private:
+    struct DataRequest
+    {
+    private:
+        struct TableData
+        {
+            int prev;
+            std::string name;
+            std::string nickname;
+            std::unordered_set<std::string> columns;
+        };
+
+    public:
+        size_t size;
+        std::string statement;
+        std::vector<TableData> tables;
+    };
+
 public:
-    DataRequest(const std::string& aRequest, std::string&& aCondition) noexcept;
-
-    std::string getTables() const noexcept;
-    std::string getColumns() const noexcept;
-    const std::string& getCondition() const noexcept;
-
-    const std::string& getTableName(size_t aNum) const noexcept;
-    std::string getNickname(size_t aNum) const noexcept;
-    const std::unordered_set<std::string>& getTableColumns(
-        size_t aNum) const noexcept;
-    int getPreviousNum(size_t aNum) const noexcept;
-
-    size_t size() const noexcept;
+    RequestParser() noexcept = default;
+    DataRequest process(const std::string& aRequest,
+                        const std::string& aCondition) noexcept;
 
 private:
     std::vector<int> mPrev;
     std::vector<std::string> mTables;
     std::vector<std::string> mNicknames;
     std::vector<std::unordered_set<std::string>> mColumns;
-    std::string mCondition;
 
-    static std::unordered_map<std::string, std::string> aTableNames;
-    static std::unordered_map<std::string, std::unordered_set<std::string>>
-        aTableColumns;
+    static std::unordered_map<std::string, std::string> mActualNames;
 
-    static std::unordered_map<std::string, std::unordered_set<std::string>>
-    getTableColumns() noexcept;
+    std::string getTables() const noexcept;
+    std::string getColumns() const noexcept;
+
+    void parse(const std::string& aRequest) noexcept;
+    void arrangeActualNames() noexcept;
+    void arrangeColumns() noexcept;
 
     void pushTable(int iter,
                    int& last,

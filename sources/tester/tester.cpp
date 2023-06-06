@@ -35,14 +35,14 @@ test::Tester::run(data::Submission&& aSubmission) noexcept
     {
         auto connection = data::ConnectionManager::getUserConnection();
         problem         = connection.val.getData<data::Problem>(
-            "id=" + data::wrap(aSubmission.problem_id));
+            "id=" + data::wrap(aSubmission.problemID));
     }
 
     std::string curPath = file::Path::getInstance().getPath("problem").value();
     curPath += problem.nickname + "/";
 
-    std::string submissionPath = aSubmission.source_name;
-    std::string checkerPath    = problem.checker_name;
+    std::string submissionPath = aSubmission.sourceName;
+    std::string checkerPath    = problem.checkerName;
 
     if (checkerPath == "NUN")
     {
@@ -62,8 +62,8 @@ test::Tester::run(data::Submission&& aSubmission) noexcept
     if (!mIsmIsCorapted)
     {
         proc::Limits limits;
-        limits.timeLimit   = problem.time_limit;
-        limits.memoryLimit = problem.memory_limit;
+        limits.timeLimit   = problem.timeLimit;
+        limits.memoryLimit = problem.memoryLimit;
         solProc->setLimits(limits);
 
         // Test testTemplate(solProc, checkProc, &mThreadSignals);
@@ -79,7 +79,7 @@ test::Tester::run(data::Submission&& aSubmission) noexcept
             mTests[i].setLimits(limits);
         }
 
-        TestReader testReader(curPath + "test/", problem.test_count);
+        TestReader testReader(curPath + "test/", problem.testCount);
         check(testReader);
     }
     else

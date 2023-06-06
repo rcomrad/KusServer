@@ -34,12 +34,14 @@ code::StaticVariable::setInitialisation(
 void
 code::StaticVariable::outputToHpp(std::ofstream& aOut) const noexcept
 {
-    aOut << mType << " " << mNamespace << "::" << mClass << "::" << mName
-         << " = " << mInitialisation << ";\n";
+    aOut << "static " << mType << " " << mName << ";\n";
 }
 
 void
 code::StaticVariable::outputToCpp(std::ofstream& aOut) const noexcept
 {
-    aOut << "static " << mType << " " << mName << ";\n";
+    aOut << mType << " " << mNamespace << "::" << mClass << "::" << mName
+         << " = {" << mInitialisation << "};\n";
+
+    if (mInitialisation.size() > 1000) aOut << "\n";
 }

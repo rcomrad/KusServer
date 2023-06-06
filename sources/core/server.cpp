@@ -106,7 +106,7 @@ core::Server::Server()
 
     CROW_ROUTE(app, "/api/get/by_id/<string>/<string>")
     ([&](const std::string& aRequest, const std::string& aID)
-     { return get::GetHandler::singlGet(aRequest, "id = " + aID); });
+     { return get::GetHandler::singlGet(aRequest, "_id = " + aID); });
 
     CROW_ROUTE(app, "/api/get/if/<string>/<string>")
     (
@@ -145,7 +145,7 @@ core::Server::Server()
             [&](const crow::request& req, const std::string& aTableName)
             {
                 crow::response res;
-                res = post::PostRouter::basicRouter(aTableName, req);
+                res = post::PostRouter::processRouter(aTableName, req);
                 return res;
             });
 

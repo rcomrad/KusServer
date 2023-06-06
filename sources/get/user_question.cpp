@@ -11,7 +11,7 @@
 //     auto temp = QuestionHandler::process(aColumn, aConnection);
 
 //     auto table = aConnection.val.select2<data::Question>(aColumn);
-//     table.turnOffColumn("jury_answer");
+//     table.turnOffColumn("juryAnswer");
 
 
 //         table.turnOffColumn("nickname");

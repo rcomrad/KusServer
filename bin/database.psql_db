@@ -135,5 +135,3 @@ TABLE file_exchange
 	index character varying(4) NOT NULL
 	name character varying(40) NOT NULL
 	extension character varying(5) NOT NULL
-	
-TABLE NUN

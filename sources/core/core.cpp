@@ -6,13 +6,13 @@
 
 #include "database/connection_manager.hpp"
 
+#include "code/generate_code.hpp"
 #include "file/file_router.hpp"
 #include "post/journal_handler.hpp"
 #include "post/plan_handler.hpp"
 #include "post/user_handler.hpp"
 #include "tester/tester.hpp"
 
-#include "generate_code.hpp"
 #include "program_state.hpp"
 #include "server.hpp"
 #include "submission_queue.hpp"
@@ -21,7 +21,10 @@
 
 core::Core::Core() noexcept
 {
-    generateDatabaseStructuresFiles();
+    code::CodeGenerator cg;
+    cg.makeAll();
+    cg.generate();
+
     auto& state     = ProgramState::getInstance();
     mApps["server"] = std::move(std::thread(&Core::serverThread, this));
     if (state.checkFlag(Flag::SUB_CHECK))
@@ -72,7 +75,7 @@ core::Core::populate()
 
     post::PostHandler::uploadFromFile(
         {
-            {"type", "journal_table"}
+            {"type", "JournalTable"}
     },
         "../tests/journal.data");
 }

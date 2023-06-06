@@ -4,109 +4,34 @@
 
 #include "file/file.hpp"
 
-std::unordered_map<std::string, std::string> data::DataRequest::aTableNames = {
+std::unordered_map<std::string, std::string> data::DataRequest::mActualNames = {
     {"methodist", "user"},
     {"teacher",   "user"}
 };
 
-std::unordered_map<std::string, std::unordered_set<std::string>>
-    data::DataRequest::aTableColumns = getTableColumns();
-
-std::unordered_map<std::string, std::unordered_set<std::string>>
-data::DataRequest::getTableColumns() noexcept
+data::DataRequest
+data::RequestParser::process(const std::string& aRequest,
+                             const std::string& aCondition) noexcept
 {
-    std::unordered_map<std::string, std::unordered_set<std::string>> result;
+    parse(aRequest);
+    arrangeActualNames();
+    arrangeColumns();
 
-    auto words = file::File::getWords("database.psql_db", true);
-    std::unordered_map<std::string, std::unordered_set<std::string>>::iterator
-        it;
+    DataRequest result;
+    result.statement = "SELECT " + getColumns() + " FROM " + getTables() +
+                       (aCondition.empty() ? "" : " WHERE " + aCondition);
 
-    for (auto& i : words)
+    result.size = mPrev.size();
+    for (size_t i = 0; i < result.size; ++i)
     {
-        if (i[0] == "TABLE")
-        {
-            result[i[1]] = {"id"};
-            it           = result.find(i[1]);
-            // it = result.insert(i[1], {"id"}).first;
-        }
-        else
-        {
-            it->second.insert(i[0]);
-        }
+        auto& temp    = result.tables.emplace_back();
+        temp.prev     = mPrev[i];
+        temp.name     = mTables[i];
+        temp.nickname = mNicknames[i];
+        temp.columns  = mColumns[i];
     }
 
     return result;
-}
-
-data::DataRequest::DataRequest(const std::string& aRequest,
-                               std::string&& aCondition) noexcept
-{
-    mCondition = std::move(aCondition);
-
-    int curPrev = 0;
-    int last    = 0;
-    for (int iter = 0; iter < aRequest.size() + 1; ++iter)
-    {
-        switch (aRequest[iter])
-        {
-            case '[':
-                mPrev.emplace_back(curPrev);
-                curPrev = mNicknames.size();
-                pushTable(iter, last, aRequest, curPrev ? 3 : 0);
-                break;
-
-            case '\0':
-                if (mNicknames.empty())
-                {
-                    pushTable(iter, last, aRequest, 0);
-                    break;
-                }
-            case ']':
-            case ';':
-                pushName(iter, last, aRequest, curPrev);
-                if (aRequest[iter] == ']') curPrev = mPrev[curPrev];
-                break;
-                // case '-':
-                // case '+':
-                // case '\\':
-                //     // TODO: ban
-                //     break;
-        }
-    }
-
-    for (auto& i : mNicknames)
-    {
-        auto it = aTableNames.find(i);
-        if (it != aTableNames.end())
-        {
-            mTables.emplace_back(it->second);
-        }
-        else
-        {
-            mTables.emplace_back(i);
-        }
-    }
-
-    if (mColumns.size() > 1)
-    {
-        bool flag = false;
-        for (size_t i = 0; i < mColumns.size(); ++i)
-        {
-            if (mColumns[i].empty())
-            {
-                flag        = true;
-                mColumns[i] = aTableColumns[mTables[i]];
-            }
-        }
-
-        if (flag)
-        {
-            for (size_t i = 0; i < mPrev.size(); ++i)
-            {
-                mColumns[mPrev[i]].erase(mTables[i] + "_id");
-            }
-        }
-    }
 }
 
 std::string
@@ -140,40 +65,76 @@ data::DataRequest::getColumns() const noexcept
     return result;
 }
 
-const std::string&
-data::DataRequest::getCondition() const noexcept
+void
+data::DataRequest::parse(const std::string& aRequest) noexcept
 {
-    return mCondition;
+    int curPrev = 0;
+    int last    = 0;
+    for (int iter = 0; iter < aRequest.size() + 1; ++iter)
+    {
+        switch (aRequest[iter])
+        {
+            case '[':
+                mPrev.emplace_back(curPrev);
+                curPrev = mNicknames.size();
+                pushTable(iter, last, aRequest, curPrev ? 3 : 0);
+                break;
+
+            case '\0':
+                if (mNicknames.empty())
+                {
+                    pushTable(iter, last, aRequest, 0);
+                    break;
+                }
+            case ']':
+            case ';':
+                pushName(iter, last, aRequest, curPrev);
+                if (aRequest[iter] == ']') curPrev = mPrev[curPrev];
+                break;
+        }
+    }
 }
 
-const std::string&
-data::DataRequest::getTableName(size_t aNum) const noexcept
+void
+data::DataRequest::arrangeActualNames() noexcept
 {
-    return mTables[aNum];
+    for (auto& i : mNicknames)
+    {
+        auto it = aTableNames.find(i);
+        if (it != aTableNames.end())
+        {
+            mTables.emplace_back(it->second);
+        }
+        else
+        {
+            mTables.emplace_back(i);
+        }
+    }
 }
 
-std::string
-data::DataRequest::getNickname(size_t aNum) const noexcept
+void
+data::DataRequest::arrangeColumns() noexcept
 {
-    return mNicknames[aNum];
-}
+    if (mColumns.size() > 1)
+    {
+        bool flag = false;
+        for (size_t i = 0; i < mColumns.size(); ++i)
+        {
+            if (mColumns[i].empty())
+            {
+                flag        = true;
+                mColumns[i] = aTableColumns[mTables[i]];
+            }
+        }
 
-const std::unordered_set<std::string>&
-data::DataRequest::getTableColumns(size_t aNum) const noexcept
-{
-    return mColumns[aNum];
-}
-
-int
-data::DataRequest::getPreviousNum(size_t aNum) const noexcept
-{
-    return mPrev[aNum];
-}
-
-size_t
-data::DataRequest::size() const noexcept
-{
-    return mTables.size();
+        if (flag)
+        {
+            for (size_t i = 0; i < mPrev.size(); ++i)
+            {
+                mColumns[mPrev[i]].erase(mTables[i] + "_id");
+            }
+        }
+    }
 }
 
 void

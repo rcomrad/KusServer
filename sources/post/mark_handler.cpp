@@ -8,16 +8,16 @@ post::MarkHandler::process(post::PostRequest<data::Mark>& aReq) noexcept
     auto& mark      = aReq.data;
     auto connection = data::ConnectionManager::getUserConnection();
 
-    if (mark.lesson_id == 0)
+    if (mark.lessonID == 0)
     {
-        mark.lesson_id =
+        mark.lessonID =
             connection.val.getData<data::Mark>("id = " + data::wrap(mark.id))
-                .lesson_id;
+                .lessonID;
     }
 
     auto lesson = connection.val.getData<data::Lesson>(
-        "id = " + data::wrap(mark.lesson_id));
-    mark.journal_table_id = lesson.journal_table_id;
+        "id = " + data::wrap(mark.lessonID));
+    mark.journalTableID = lesson.journalTableID;
     connection.val.write(mark);
     return {mark.id};
 }

@@ -34,7 +34,7 @@ core::TokenHandler::getInstance() noexcept
 std::string
 core::TokenHandler::generate(const data::User& aUser) noexcept
 {
-    std::string result = std::to_string(aUser.role_id);
+    std::string result = std::to_string(aUser.roleID);
 
     // mMutex.lock();
     // while (true)

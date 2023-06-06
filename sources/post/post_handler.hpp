@@ -40,8 +40,35 @@ class PostHandler
 {
 
 public:
+    // template <typename HandlerType, typename TableType>
+    // static crow::json::wvalue basicPost(const crow::request& aReq) noexcept
+    // {
+    //     auto body    = crow::json::load(aReq.body);
+    //     auto request = parseRequest<TableType>(body);
+
+    //     crow::json::wvalue res;
+    //     res = HandlerType::process(request);
+
+    //     if (request.type != ManyToMany::NUN)
+    //     {
+    //         manyToMany(request.data.id, request.data.geName(), request.type,
+    //                    request.leftovers);
+    //     }
+
+    //     return res;
+    // }
+
+    // template <typename T>
+    // static crow::json::wvalue process(PostRequest<T>& aReq) noexcept
+    // {
+    //     int res;
+    //     auto connection = data::ConnectionManager::getUserConnection();
+    //     res             = connection.val.write(aReq.data);
+    //     return {res};
+    // }
+
     template <typename HandlerType, typename TableType>
-    static crow::json::wvalue basicPost(const crow::request& aReq) noexcept
+    static crow::json::wvalue postSubrouter(const crow::request& aReq) noexcept
     {
         auto body    = crow::json::load(aReq.body);
         auto request = parseRequest<TableType>(body);

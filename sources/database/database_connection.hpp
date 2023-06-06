@@ -41,7 +41,7 @@ public:
 
     //--------------------------------------------------------------------------------
 
-    void complexSelect(const data::DataRequest& aRequest) noexcept;
+    void complexSelect(const std::string& aRequest) noexcept;
 
     template <typename T>
     DataArray<T> getNextDataArray(

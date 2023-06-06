@@ -50,24 +50,24 @@ get::RequestHandler::getTableColumns() noexcept
     return result;
 }
 
-Request
-get::RequestHandler::processRequest(const std::string& aRequest,
-                                    const std::string& aCondition) noexcept
-{
-    Request result;
-    parseRequest(result, aRequest);
-    makeTableNames(result);
-    makeColumnNums(result);
+// Request
+// get::RequestHandler::processRequest(const std::string& aRequest,
+//                                     const std::string& aCondition) noexcept
+// {
+//     Request result;
+//     parseRequest(result, aRequest);
+//     makeTableNames(result);
+//     makeColumnNums(result);
 
-    result.statement = getStatement();
+//     result.statement = getStatement();
 
-    if (aCondition.size())
-    {
-        result.statement += " WHERE " + aCondition;
-    }
+//     if (aCondition.size())
+//     {
+//         result.statement += " WHERE " + aCondition;
+//     }
 
-    return result;
-}
+//     return result;
+// }
 
 //--------------------------------------------------------------------------------
 
@@ -122,26 +122,26 @@ get::RequestHandler::makeTableNames(Request& result) noexcept
 void
 get::RequestHandler::makeColumnNums(Request& result) noexcept
 {
-    if (mColumns.size() > 1)
-    {
-        bool flag = false;
-        for (size_t i = 0; i < result.columnNums.size(); ++i)
-        {
-            if (mColumns[i].empty())
-            {
-                flag = true;
-                mColumns[i].insert(mTableColumns[mTables[i]]);
-            }
-        }
+    // if (mColumns.size() > 1)
+    // {
+    //     bool flag = false;
+    //     for (size_t i = 0; i < result.columnNums.size(); ++i)
+    //     {
+    //         if (mColumns[i].empty())
+    //         {
+    //             flag = true;
+    //             mColumns[i].insert(mTableColumns[mTables[i]]);
+    //         }
+    //     }
 
-        if (flag)
-        {
-            for (size_t i = 0; i < mPrev.size(); ++i)
-            {
-                mColumns[mPrev[i]].erase(mTables[i] + "_id");
-            }
-        }
-    }
+    //     if (flag)
+    //     {
+    //         for (size_t i = 0; i < mPrev.size(); ++i)
+    //         {
+    //             mColumns[mPrev[i]].erase(mTables[i] + "_id");
+    //         }
+    //     }
+    // }
 }
 
 std::string
@@ -156,36 +156,36 @@ std::string
 get::RequestHandler::getStatement() const noexcept
 {
     std::string result = "SELECT ";
-    int sz             = result.size();
+    // int sz             = result.size();
 
-    //--------------------------------------------------------------------------------
+    // //--------------------------------------------------------------------------------
 
-    for (size_t i = 0; i < mColumns.size(); ++i)
-    {
-        for (auto& j : mColumns[i])
-        {
-            result += "journal." + mTables[i] + "." + std::to_string(j) + ", ";
-        }
-    }
+    // for (size_t i = 0; i < mColumns.size(); ++i)
+    // {
+    //     for (auto& j : mColumns[i])
+    //     {
+    //         result += "journal." + mTables[i] + "." + std::to_string(j) + ", ";
+    //     }
+    // }
 
-    if (result.size() != sz)
-    {
-        result.resize(result.size() - 2);
-    }
-    else
-    {
-        result += "* ";
-    }
+    // if (result.size() != sz)
+    // {
+    //     result.resize(result.size() - 2);
+    // }
+    // else
+    // {
+    //     result += "* ";
+    // }
 
-    //--------------------------------------------------------------------------------
+    // //--------------------------------------------------------------------------------
 
-    result += "FROM journal." + mTables[0] + " ";
-    for (size_t i = 1; i < mTables.size(); ++i)
-    {
-        result += "inner join journal." + mTables[i] + " on journal." +
-                  mTables[mPrev[i]] + "." + mTables[i] + "_id" + " = journal." +
-                  mTables[i] + ".id ";
-    }
+    // result += "FROM journal." + mTables[0] + " ";
+    // for (size_t i = 1; i < mTables.size(); ++i)
+    // {
+    //     result += "inner join journal." + mTables[i] + " on journal." +
+    //               mTables[mPrev[i]] + "." + mTables[i] + "_id" + " = journal." +
+    //               mTables[i] + ".id ";
+    // }
 
     return result;
 }
@@ -198,12 +198,12 @@ get::RequestHandler::pushTable(int iter,
                                const std::string& aRequest,
                                int aOffset) noexcept
 {
-    if (iter - last > 1)
-    {
-        mColumns.emplace_back();
-        mNicknames.emplace_back(aRequest.substr(last, iter - last - aOffset));
-    }
-    last = iter + 1;
+    // if (iter - last > 1)
+    // {
+    //     mColumns.emplace_back();
+    //     mNicknames.emplace_back(aRequest.substr(last, iter - last - aOffset));
+    // }
+    // last = iter + 1;
 }
 
 void
@@ -212,9 +212,9 @@ get::RequestHandler::pushName(int iter,
                               const std::string& aRequest,
                               int curPrev) noexcept
 {
-    if (iter - last > 1)
-    {
-        mColumns[curPrev].insert(aRequest.substr(last, iter - last));
-    }
-    last = iter + 1;
+    // if (iter - last > 1)
+    // {
+    //     mColumns[curPrev].insert(aRequest.substr(last, iter - last));
+    // }
+    // last = iter + 1;
 }

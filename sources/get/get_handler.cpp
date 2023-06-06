@@ -58,7 +58,7 @@ get::GetHandler::mainGet(const std::string& aRequest,
     {
         const auto& curName    = req.getNickname(i);
         const auto& oldName    = req.getTableName(i);
-        auto parent     = req.getPreviousNum(i);
+        const auto& parent     = req.getPreviousNum(i);
         const auto& targetName = req.getTableName(parent);
 
         for (size_t j = 0; j < temp[parent][targetName].size(); ++j)
