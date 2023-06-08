@@ -81,20 +81,8 @@ core::Core::populate()
 }
 
 void
-core::Core::run(const std::vector<std::string>& argv) noexcept
+core::Core::run() noexcept
 {
-    // mCommand.process(argv);
-
-    // std::map<Command::Type, std::function<void()>> methodMap{
-    //     {Command::Type::GET_USERS,           [&]() { printUsers(); }       },
-    //     {Command::Type::GET_ACTIVE_USERS,    [&]() { printUsers(); }       },
-    //     {Command::Type::GET_DELETED_USERS,   [&]() { printUsers(); }       },
-    //     {Command::Type::RENAME_USERS,        [&]() { renameUsers(); }      },
-    //     {Command::Type::GENERATE_NAMES,      [&]() { generateNames(); }    },
-    //     {Command::Type::GENERATE_ROBO_NAMES, [&]() { generateRoboNames(); }},
-    //     {Command::Type::EVALUATE,            [&]() { getResults(); }       }
-    // };
-
     auto& state = ProgramState::getInstance();
 
     bool flag = true;
@@ -148,6 +136,7 @@ core::Core::createDatabaseFromFile(std::string aFileName) noexcept
 
     std::vector<data::ColumnSetting> colums;
     auto lines = file::File::getMap(aFileName, true);
+    lines.emplace_back(std::array<std::string, 2>{"TABLE", "NUN"});
     std::string name;
     for (auto i : lines)
     {

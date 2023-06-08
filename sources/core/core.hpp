@@ -24,7 +24,7 @@ public:
     Core(Core&& other) noexcept            = default;
     Core& operator=(Core&& other) noexcept = default;
 
-    void run(const std::vector<std::string>& argv) noexcept;
+    void run() noexcept;
 
     // static data::DBSettings mDBS;
     // static void databaseSettingsInit() noexcept;

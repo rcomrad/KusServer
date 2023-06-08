@@ -66,12 +66,12 @@ post::JournalHandler::makeSchedule(data::JournalTable& aJournal) noexcept
         if (i >= '1' && i <= '7') schedule.emplace_back(i - '0');
 
     data::User methodist = connection.val.getData<data::User>(
-        "_id = " + data::wrap(aJournal.methodistID));
+        "id = " + data::wrap(aJournal.methodistID));
 
     int methodistSchool = -1;
     if (methodist.id) methodistSchool = methodist.schoolID;
     data::School school = connection.val.getData<data::School>(
-        "_id = " + data::wrap(methodistSchool));
+        "id = " + data::wrap(methodistSchool));
 
     int schoolID  = -1;
     uint16_t year = 1991;
@@ -114,7 +114,7 @@ post::JournalHandler::makeSchedule(data::JournalTable& aJournal) noexcept
     }
 
     data::DataArray<data::Theme> themes =
-        connection.val.getDataArray<data::Theme>("plan__id = " +
+        connection.val.getDataArray<data::Theme>("plan_id = " +
                                                  data::wrap(aJournal.planID));
     data::DataArray<data::Lesson> lessons;
     for (int i = 0; i < themes.size();)

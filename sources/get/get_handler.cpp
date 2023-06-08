@@ -3,14 +3,15 @@
 #include <ranges>
 
 #include "get_router.hpp"
+#include "request_storage.hpp"
 
 crow::json::wvalue
 get::GetHandler::singlGet(const std::string& aRequest,
-                          std::string&& aCondition) noexcept
+                          const std::string& aCondition) noexcept
 {
     crow::json::wvalue result;
 
-    auto temp = mainGet(aRequest, std::move(aCondition));
+    auto temp = mainGet(aRequest, aCondition);
     auto keys = temp.keys();
     if (keys.size() > 0 && temp[keys[0]].size() > 0)
     {
@@ -22,11 +23,11 @@ get::GetHandler::singlGet(const std::string& aRequest,
 
 crow::json::wvalue
 get::GetHandler::multiplelGet(const std::string& aRequest,
-                              std::string&& aCondition) noexcept
+                              const std::string& aCondition) noexcept
 {
     crow::json::wvalue result = {401};
 
-    auto temp = mainGet(aRequest, std::move(aCondition));
+    auto temp = mainGet(aRequest, aCondition);
     auto keys = temp.keys();
     if (keys.size() > 0)
     {
@@ -38,28 +39,28 @@ get::GetHandler::multiplelGet(const std::string& aRequest,
 
 crow::json::wvalue
 get::GetHandler::mainGet(const std::string& aRequest,
-                         std::string&& aCondition) noexcept
+                         const std::string& aCondition) noexcept
 {
     crow::json::wvalue result;
 
-    data::DataRequest req(aRequest, std::move(aCondition));
+    auto req = RequestStorage::getRequest(aRequest);
     std::vector<crow::json::wvalue> temp;
     {
         auto connection = data::ConnectionManager::getUserConnection();
-        connection.val.complexSelect(req);
-        for (size_t i = 0; i < req.size(); ++i)
+        connection.val.complexSelect(req.getFullStatement(aCondition));
+        for (size_t i = 0; i < req.size; ++i)
         {
             temp.emplace_back(get::GetRouter::basicRouter(
-                req.getTableName(i), req.getTableColumns(i), connection));
+                req[i].name, req[i].columnNums, connection));
         }
     }
 
-    for (size_t i = req.size() - 1; i >= 1; --i)
+    for (size_t i = req.size - 1; i >= 1; --i)
     {
-        const auto& curName    = req.getNickname(i);
-        const auto& oldName    = req.getTableName(i);
-        const auto& parent     = req.getPreviousNum(i);
-        const auto& targetName = req.getTableName(parent);
+        const auto& curName    = req[i].nickname;
+        const auto& oldName    = req[i].name;
+        auto parent            = req[i].prev;
+        const auto& targetName = req[parent].name;
 
         for (size_t j = 0; j < temp[parent][targetName].size(); ++j)
         {

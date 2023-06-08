@@ -4,7 +4,6 @@
 //--------------------------------------------------------------------------------
 
 #include "database/connection_manager.hpp"
-#include "database/data_request.hpp"
 
 #include "get_handler.hpp"
 
@@ -16,7 +15,7 @@ class UserHandler : public GetHandler
 {
 public:
     static crow::json::wvalue process(
-        const std::unordered_set<std::string>& aColumn,
+        const std::unordered_set<int>& aColumn,
         data::SmartConnection& aConnection) noexcept;
 };
 } // namespace get

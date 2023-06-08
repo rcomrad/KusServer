@@ -23,12 +23,12 @@ public:
 
     void addParent(const std::string& aName) noexcept;
 
-    void addRouterFunction(const std::string& aName,
-                           const std::string& aType,
-                           const std::string& aBody) noexcept;
-    void addFuncRouterForDatabase(const std::string& aName,
-                                  const std::string& aFunction,
-                                  const std::string& aBody) noexcept;
+    CodeFunction& addRouterFunction(const std::string& aName,
+                                    const std::string& aType,
+                                    const std::string& aBody) noexcept;
+    CodeFunction& addFuncRouterForDatabase(const std::string& aName,
+                                           const std::string& aFunction,
+                                           const std::string& aBody) noexcept;
 
     void addFunction(const CodeFunction& aFunc) noexcept;
 

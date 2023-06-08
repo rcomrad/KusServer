@@ -42,7 +42,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/so
 if    (${OS} MATCHES "LINUS_LINUX")
     target_compile_definitions(${PROJECT_NAME} PRIVATE LINUS_LINUX)
 elseif(${OS} MATCHES "BILL_WINDOWS")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE BILL_WINDOWS)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE BILL_WINDOWS _WIN32_WINNT=0x0601)
 endif()
 
 # Libraries include

@@ -111,7 +111,8 @@ code::CodeGenerator::makeDatabaseStructure() noexcept
         temp.addStaticVariable("tableName", "std::string",
                                "\"" + i.first + "\"");
         temp.addStaticVariable("types", "std::vector<data::Type>", types);
-        temp.addStaticVariable("names", "std::vector<std::string>", names);
+        temp.addStaticVariable("columnNames", "std::vector<std::string>",
+                               names);
         temp.addStaticVariable(
             "nameToNum", "std::unordered_map<std::string, uint8_t>", nameNum);
     }
@@ -197,6 +198,19 @@ code::CodeGenerator::makeGetRouter() noexcept
               {
                   {"default", "get::GetHandler::dump"}
     });
+
+    auto& func =
+        temp.addRouterFunction("columnNamesRouter", "std::vector<std::string>",
+                               makeRouterFunction(
+                                   {
+                                       {"default", ""}
+    },
+                                   "::columnNames")[1]);
+    func.setReturnType("std::vector<std::string>&");
+    func.setBody("auto it = mColumnNamesRouter.find(aName);"
+                 "if (it == mColumnNamesRouter.end())"
+                 "it = mColumnNamesRouter.find(\"dummy\");"
+                 "return it->second;");
 }
 
 void
@@ -212,18 +226,28 @@ void
 code::CodeGenerator::addRouter(
     code::CodeClass& aClass,
     const std::string& aName,
-    const std::unordered_map<std::string, std::string>& aNameMap) const noexcept
+    std::unordered_map<std::string, std::string> aNameMap) const noexcept
 {
+    for (auto& i : aNameMap) i.second.insert(0, 1, '&');
     auto temp = makeRouterFunction(aNameMap);
     aClass.addFuncRouterForDatabase(aName, temp[0], temp[1]);
 }
 
 std::array<std::string, 2>
 code::CodeGenerator::makeRouterFunction(
-    const std::unordered_map<std::string, std::string>& aNameMap) const noexcept
+    const std::unordered_map<std::string, std::string>& aNameMap,
+    std::string aPostfix) const noexcept
 {
     bool templateOpened =
         aNameMap.find("default")->second.find('<') != std::string::npos;
+    if (aPostfix.empty())
+    {
+        aPostfix = ">";
+    }
+    else
+    {
+        templateOpened = true;
+    }
     std::array<std::string, 2> result;
 
     for (auto& i : mTables)
@@ -237,12 +261,13 @@ code::CodeGenerator::makeRouterFunction(
         }
 
         result[1] += "{\"" + i.first + "\",";
-        std::string temp = " &" + it->second;
+
+        std::string temp = it->second;
         if (flag || templateOpened)
         {
             if (!templateOpened) temp.push_back('<');
-            temp +=
-                "data::" + StringAlgorithms::normalizeName(i.first, true) + ">";
+            temp += "data::" + StringAlgorithms::normalizeName(i.first, true) +
+                    aPostfix;
         }
         result[1] += temp + "},";
 

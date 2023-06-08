@@ -9,9 +9,6 @@ set(
 
     data_array.hpp
 
-    data_request.cpp
-    data_request.hpp
-
     database_connection.cpp
     database_connection.hpp
 

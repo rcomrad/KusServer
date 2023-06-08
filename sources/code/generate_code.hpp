@@ -34,14 +34,14 @@ private:
 
     void getTableData() noexcept;
 
-    void addRouter(code::CodeClass& aClass,
-                   const std::string& aName,
-                   const std::unordered_map<std::string, std::string>& aNameMap)
-        const noexcept;
+    void addRouter(
+        code::CodeClass& aClass,
+        const std::string& aName,
+        std::unordered_map<std::string, std::string> aNameMap) const noexcept;
 
     std::array<std::string, 2> makeRouterFunction(
-        const std::unordered_map<std::string, std::string>& aNameMap)
-        const noexcept;
+        const std::unordered_map<std::string, std::string>& aNameMap,
+        std::string aPostfix = "") const noexcept;
 };
 
 } // namespace code

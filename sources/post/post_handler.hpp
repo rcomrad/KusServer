@@ -241,23 +241,23 @@ public:
         if (it != aData.header.end() && it->second == "true" &&
             T::types.size() > 3)
         {
-            std::string first = T::names[1];
+            std::string first = T::columnNames[1];
             first.resize(first.size() - 3);
-            std::string second = T::names[2];
+            std::string second = T::columnNames[2];
             second.resize(second.size() - 3);
 
             for (size_t i = 3; i < T::types.size(); ++i)
             {
-                std::string temp = T::names[i];
+                std::string temp = T::columnNames[i];
                 first.resize(first.size());
 
                 if (temp == first)
                 {
-                    setRawData(aData.value, 0, first, T::names[i]);
+                    setRawData(aData.value, 0, first, T::columnNames[i]);
                 }
                 else
                 {
-                    setRawData(aData.value, 1, second, T::names[i]);
+                    setRawData(aData.value, 1, second, T::columnNames[i]);
                 }
             }
         }

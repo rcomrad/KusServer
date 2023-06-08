@@ -45,15 +45,10 @@ public:
 
     template <typename T>
     DataArray<T> getNextDataArray(
-        const std::unordered_set<std::string>& aColumnNames = {}) noexcept
+        const std::unordered_set<int>& aColumnNums = {}) noexcept
     {
         DataArray<T> result;
-        std::unordered_set<int> columnNums;
-        for (auto& i : aColumnNames)
-        {
-            columnNums.insert(T::nameToNum[i]);
-        }
-        mDatabase.getDataArray<T>(result, mColumnNumber, columnNums, false);
+        mDatabase.getDataArray<T>(result, mColumnNumber, aColumnNums, false);
         // TODO close
         return result;
     }

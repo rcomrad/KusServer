@@ -101,7 +101,7 @@ struct UpperDataStruct : public T
             auto temp = toString(T::types[i], T::ptrs[i]);
             if (!temp.empty())
             {
-                result += T::names[i];
+                result += T::columnNames[i];
                 result.push_back('=');
                 result += temp;
                 result += " AND "s;
@@ -133,7 +133,7 @@ struct UpperDataStruct : public T
             auto temp = toString(T::types[i], T::ptrs[i]);
             if (!temp.empty())
             {
-                result += T::names[i];
+                result += T::columnNames[i];
                 result.push_back('=');
                 result += temp;
                 result.push_back(',');
@@ -160,20 +160,20 @@ struct UpperDataStruct : public T
         crow::json::wvalue result;
         for (size_t i = 0; i < T::types.size(); ++i)
         {
-            if (aTurnOff.count(T::names[i])) continue;
+            if (aTurnOff.count(T::columnNames[i])) continue;
             switch (T::types[i])
             {
                 case data::Type::INT:
                     if (*(int*)T::ptrs[i] != 0)
-                        result[T::names[i]] = *(int*)T::ptrs[i];
+                        result[T::columnNames[i]] = *(int*)T::ptrs[i];
                     break;
                 case data::Type::BOOL:
                     // TODO:
-                    result[T::names[i]] = *(bool*)T::ptrs[i];
+                    result[T::columnNames[i]] = *(bool*)T::ptrs[i];
                     break;
                 case data::Type::STRING:
                     if ((*(std::string*)T::ptrs[i])[0] != 0)
-                        result[T::names[i]] = *(std::string*)T::ptrs[i];
+                        result[T::columnNames[i]] = *(std::string*)T::ptrs[i];
                     break;
             }
         }

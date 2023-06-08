@@ -7,7 +7,6 @@
 #include <unordered_set>
 
 #include "database/connection_manager.hpp"
-#include "database/data_request.hpp"
 
 #include "file/path.hpp"
 
@@ -21,17 +20,17 @@ class GetHandler
 {
 public:
     static crow::json::wvalue singlGet(const std::string& aRequest,
-                                       std::string&& aCondition) noexcept;
+                                       const std::string& aCondition) noexcept;
 
-    static crow::json::wvalue multiplelGet(const std::string& aRequest,
-                                           std::string&& aCondition) noexcept;
+    static crow::json::wvalue multiplelGet(
+        const std::string& aRequest, const std::string& aCondition) noexcept;
 
     static crow::json::wvalue mainGet(const std::string& aRequest,
-                                      std::string&& aCondition) noexcept;
+                                      const std::string& aCondition) noexcept;
 
     template <typename T>
     static crow::json::wvalue process(
-        const std::unordered_set<std::string>& aColumn,
+        const std::unordered_set<int>& aColumn,
         data::SmartConnection& aConnection) noexcept
     {
         auto table = aConnection.val.getNextDataArray<T>(aColumn);

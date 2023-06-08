@@ -16,9 +16,11 @@ struct GetRouter
     static std::unordered_map<std::string,
                               decltype(&get::GetHandler::dump<data::Dummy>)>
         mDumpRouter;
+    static std::unordered_map<std::string, std::vector<std::string>>
+        mColumnNamesRouter;
 
     template <typename... Args>
-    static auto basicRouter(std::string aName, Args&&... args)
+    static auto basicRouter(const std::string& aName, Args&&... args)
     {
         decltype(mBasicRouter.begin()->second(args...)) result;
         auto it = mBasicRouter.find(aName);
@@ -27,13 +29,16 @@ struct GetRouter
     }
 
     template <typename... Args>
-    static auto dumpRouter(std::string aName, Args&&... args)
+    static auto dumpRouter(const std::string& aName, Args&&... args)
     {
         decltype(mDumpRouter.begin()->second(args...)) result;
         auto it = mDumpRouter.find(aName);
         if (it != mDumpRouter.end()) result = it->second(args...);
         return result;
     }
+
+    static std::vector<std::string>& columnNamesRouter(
+        const std::string& aName);
 };
 
 };                    // namespace get

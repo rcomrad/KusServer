@@ -4,7 +4,6 @@
 //--------------------------------------------------------------------------------
 
 #include "database/connection_manager.hpp"
-#include "database/data_request.hpp"
 
 #include "get_handler.hpp"
 
@@ -19,7 +18,7 @@ public:
 
     // static std::vector<std::string> mRoles;
 
-// private:
+    // private:
     // static std::string mProblemPath;
 
     // static std::vector<std::string> getAllRoles() noexcept;

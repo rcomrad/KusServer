@@ -25,6 +25,12 @@ set(
     request_map.cpp
     request_map.hpp
 
+    request_parser.cpp
+    request_parser.hpp
+
+    request_storage.cpp
+    request_storage.hpp
+
     user_handler.cpp
     user_handler.hpp
 

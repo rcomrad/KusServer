@@ -1,5 +1,5 @@
-#ifndef DATA_REQUEST_HPP
-#define DATA_REQUEST_HPP
+#ifndef REQUEST_PARSER_HPP
+#define REQUEST_PARSER_HPP
 
 //--------------------------------------------------------------------------------
 
@@ -12,12 +12,12 @@
 
 //--------------------------------------------------------------------------------
 
-namespace data
+namespace get
 {
 
 class RequestParser
 {
-private:
+public:
     struct DataRequest
     {
     private:
@@ -26,27 +26,32 @@ private:
             int prev;
             std::string name;
             std::string nickname;
-            std::unordered_set<std::string> columns;
+            std::unordered_set<int> columnNums;
+            std::vector<std::string> columnNames;
         };
 
     public:
         size_t size;
-        std::string statement;
+        std::string rowStatement;
         std::vector<TableData> tables;
+
+        const TableData& operator[](int num) const noexcept;
+        std::string getFullStatement(
+            const std::string& aCondition) const noexcept;
     };
 
-public:
-    RequestParser() noexcept = default;
-    DataRequest process(const std::string& aRequest,
-                        const std::string& aCondition) noexcept;
+    static DataRequest process(const std::string& aRequest) noexcept;
 
 private:
     std::vector<int> mPrev;
     std::vector<std::string> mTables;
     std::vector<std::string> mNicknames;
-    std::vector<std::unordered_set<std::string>> mColumns;
+    std::vector<std::unordered_set<int>> mColumnNums;
+    std::vector<std::vector<std::string>> mColumnNames;
 
     static std::unordered_map<std::string, std::string> mActualNames;
+
+    RequestParser() noexcept = default;
 
     std::string getTables() const noexcept;
     std::string getColumns() const noexcept;
@@ -66,8 +71,8 @@ private:
                   int curPrev) noexcept;
 };
 
-} // namespace data
+} // namespace get
 
 //--------------------------------------------------------------------------------
 
-#endif // !DATA_REQUEST_HPP
+#endif // !REQUEST_PARSER_HPP

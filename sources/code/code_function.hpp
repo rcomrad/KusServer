@@ -42,6 +42,11 @@ private:
     std::string mName;
     std::string mArguments;
     std::string mBody;
+    std::string mMapName;
+
+    std::string generateRouterBody() const noexcept;
+
+    bool isTemplate() const noexcept;
 };
 
 } // namespace code

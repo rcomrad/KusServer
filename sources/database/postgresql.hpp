@@ -18,7 +18,6 @@
 #include "pqxx/pqxx"
 
 #include "data_array.hpp"
-#include "data_request.hpp"
 
 //--------------------------------------------------------------------------------
 

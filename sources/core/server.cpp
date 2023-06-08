@@ -106,13 +106,13 @@ core::Server::Server()
 
     CROW_ROUTE(app, "/api/get/by_id/<string>/<string>")
     ([&](const std::string& aRequest, const std::string& aID)
-     { return get::GetHandler::singlGet(aRequest, "_id = " + aID); });
+     { return get::GetHandler::singlGet(aRequest, "id = " + aID); });
 
     CROW_ROUTE(app, "/api/get/if/<string>/<string>")
     (
         [&](const std::string& aRequest, std::string aCondition) {
             return get::GetHandler::multiplelGet(aRequest,
-                                                 std::move(aCondition));
+                                                 aCondition);
         });
 
     CROW_ROUTE(app, "/api/dump/<string>")

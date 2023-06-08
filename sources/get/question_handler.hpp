@@ -4,7 +4,6 @@
 //--------------------------------------------------------------------------------
 
 #include "database/connection_manager.hpp"
-#include "database/data_request.hpp"
 
 #include "get_handler.hpp"
 

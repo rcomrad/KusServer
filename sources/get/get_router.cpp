@@ -61,3 +61,40 @@ std::unordered_map<std::string, decltype(&get::GetHandler::dump<data::Dummy>)> g
     {"theme",                &get::GetHandler::dump<data::Theme>              },
     {"user",                 &get::GetHandler::dump<data::User>               }
 };
+
+std::unordered_map<std::string, std::vector<std::string>> get::GetRouter::mColumnNamesRouter = {
+    {"answer",               data::Answer::columnNames             },
+    {"competition",          data::Competition::columnNames        },
+    {"competition_problem",  data::CompetitionProblem::columnNames },
+    {"competition_question", data::CompetitionQuestion::columnNames},
+    {"competition_user",     data::CompetitionUser::columnNames    },
+    {"dummy",                data::Dummy::columnNames              },
+    {"file",                 data::File::columnNames               },
+    {"file_exchange",        data::FileExchange::columnNames       },
+    {"grade",                data::Grade::columnNames              },
+    {"grade_student",        data::GradeStudent::columnNames       },
+    {"group",                data::Group::columnNames              },
+    {"group_student",        data::GroupStudent::columnNames       },
+    {"holiday",              data::Holiday::columnNames            },
+    {"journal_table",        data::JournalTable::columnNames       },
+    {"lesson",               data::Lesson::columnNames             },
+    {"mark",                 data::Mark::columnNames               },
+    {"plan",                 data::Plan::columnNames               },
+    {"problem",              data::Problem::columnNames            },
+    {"question",             data::Question::columnNames           },
+    {"role",                 data::Role::columnNames               },
+    {"safe_file",            data::SafeFile::columnNames           },
+    {"school",               data::School::columnNames             },
+    {"subject",              data::Subject::columnNames            },
+    {"submission",           data::Submission::columnNames         },
+    {"theme",                data::Theme::columnNames              },
+    {"user",                 data::User::columnNames               }
+};
+
+std::vector<std::string>&
+get::GetRouter::columnNamesRouter(const std::string& aName)
+{
+    auto it = mColumnNamesRouter.find(aName);
+    if (it == mColumnNamesRouter.end()) it = mColumnNamesRouter.find("dummy");
+    return it->second;
+}

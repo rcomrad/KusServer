@@ -74,6 +74,9 @@ code::CodeFunction::setBody(const std::string& aBody) noexcept
 void
 code::CodeFunction::outputToHpp(std::ofstream& aOut) const noexcept
 {
+    std::string body = mBody;
+    if (!mMapName.empty()) body = generateRouterBody();
+
     if (mIsVariadic)
     {
         aOut << "template <typename... Args>";
@@ -87,9 +90,9 @@ code::CodeFunction::outputToHpp(std::ofstream& aOut) const noexcept
              << "Args&&... args";
     }
 
-    if (!mTemplate.empty() || mIsVariadic)
+    if (isTemplate())
     {
-        aOut << ")\n{\n" << mBody << "}\n\n";
+        aOut << ")\n{\n" << body << "}\n\n";
     }
     else
     {
@@ -100,7 +103,7 @@ code::CodeFunction::outputToHpp(std::ofstream& aOut) const noexcept
 void
 code::CodeFunction::outputToCpp(std::ofstream& aOut) const noexcept
 {
-    if (!(!mTemplate.empty() || mIsVariadic))
+    if (!isTemplate())
     {
         aOut << mType << "\n";
         aOut << mNamespace << "::" << mClass << "::" << mName << "("
@@ -113,21 +116,32 @@ void
 code::CodeFunction::makeRouter(std::string aMapName) noexcept
 {
     mArguments = "const std::string& aName";
+    mMapName   = aMapName;
+}
 
+std::string
+code::CodeFunction::generateRouterBody() const noexcept
+{
     std::string execExpr;
     if (mIsFunctor) execExpr = "()";
     if (mIsVariadic) execExpr = "(args...)";
 
-    mBody = "decltype(" + aMapName + ".begin()->second(args...)" + execExpr +
-            ") result;\n"
-            "auto it = " +
-            aMapName +
-            ".find(aName);\n"
-            "if (it != " +
-            aMapName +
-            ".end())\n"
-            "result= it->second(args...)" +
-            execExpr +
-            ";"
-            "return result;\n";
+    return "decltype(" + mMapName + ".begin()->second" + execExpr +
+           ") result;\n"
+           "auto it = " +
+           mMapName +
+           ".find(aName);\n"
+           "if (it != " +
+           mMapName +
+           ".end())\n"
+           "result= it->second" +
+           execExpr +
+           ";"
+           "return result;\n";
+}
+
+bool
+code::CodeFunction::isTemplate() const noexcept
+{
+    return !mTemplate.empty() || mIsVariadic || mType == "auto";
 }

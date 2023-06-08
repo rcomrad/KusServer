@@ -30,7 +30,7 @@ code::CodeClass::addParent(const std::string& aName) noexcept
     mParent = aName;
 }
 
-void
+code::CodeFunction&
 code::CodeClass::addRouterFunction(const std::string& aName,
                                    const std::string& aType,
                                    const std::string& aBody) noexcept
@@ -38,28 +38,28 @@ code::CodeClass::addRouterFunction(const std::string& aName,
     std::string variableName = "m" + aName;
     variableName[1]          = std::toupper(variableName[1]);
 
-    mFunctions.emplace_back();
-    auto& funk = mFunctions.back();
+    auto& funk = mFunctions.emplace_back();
     funk.makeStatic();
     funk.setName(aName);
     funk.setClass(mClassName);
     funk.setNamespace(mNamespace);
-    funk.makeRouter(variableName);
     funk.setArguments("std::string aName");
+    funk.makeRouter(variableName);
 
     addStaticVariable(variableName,
                       "std::unordered_map<std::string, " + aType + ">", aBody);
+
+    return funk;
 }
 
-void
+code::CodeFunction&
 code::CodeClass::addFuncRouterForDatabase(const std::string& aName,
                                           const std::string& aFunction,
                                           const std::string& aBody) noexcept
 {
-    addRouterFunction(aName, "decltype(" + aFunction + ")",
-                      aBody);
-    auto& funk = mFunctions.back();
+    auto& funk = addRouterFunction(aName, "decltype(" + aFunction + ")", aBody);
     funk.makeVariadic();
+    return funk;
 }
 
 void
