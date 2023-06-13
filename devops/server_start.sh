@@ -1,14 +1,25 @@
 cd ../..
-git config --global --add safe.directory ./server
+
+# swapon --show
+# swapon -s
+# free -m
+# df -h
+# top
+# 
+sudo swapoff -a
+sudo rm -f /swapfile
+sudo fallocate -l 8G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+
 sudo -S apt install gcc g++ make curl zip unzip tar pkg-config autoconf postgresql net-tools cmake build-essential -y
 
-# pascal compiler
-sudo -S apt install fp-compiler -y
+# pascal compiler and python
+sudo -S apt install fp-compiler python -y
 
+git config --global --add safe.directory ./server
 cd server
-git switch autocommit
-# TODO: folder name
-git config --global --add safe.directory /home/rcomrad/server
 
 cd devops
 # install cmake
@@ -51,16 +62,22 @@ sudo ./nginx.sh
 
 # zsh
 # TODO autoconfirm
-# sudo chmod +x zsh.sh
+sudo chmod +x zsh.sh
 # sudo ./zsh.sh
 
 # compile
 sudo chmod +x remake.sh
 sudo ./remake.sh
 
-
 sudo apt update && sudo apt upgrade -y
+
+# ssh-keys
+sudo chmod +x rsa.sh
+sudo ./rsa.sh
 
 # TODO: add paths.path
 # TODO: new database.pass
 # TODO: create data folder
+
+# rcomrad@ruvds-6tpn5:~/server/devops$ git config --global user.email "comrade_1997@mail.ru"
+# rcomrad@ruvds-6tpn5:~/server/devops$ git config --global user.name "r_comrad"
