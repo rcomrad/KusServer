@@ -1,0 +1,20 @@
+[Unit]
+Description=KusManager
+
+Wants=network.target
+After=syslog.target network-online.target
+
+[Service]
+Type=simple
+ExecStart=/home/rcomrad/server/bin/Server.exe
+WorkingDirectory=/home/rcomrad/server/bin
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=KusManager
+Restart=on-failure
+RestartSec=5
+KillMode=process
+TimeoutStopSec=1
+
+[Install]
+WantedBy=multi-user.target

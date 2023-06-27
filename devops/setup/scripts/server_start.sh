@@ -1,11 +1,5 @@
-cd ../..
+cd ../../../..
 
-# swapon --show
-# swapon -s
-# free -m
-# df -h
-# top
-# 
 sudo swapoff -a
 sudo rm -f /swapfile
 sudo fallocate -l 8G /swapfile
@@ -18,15 +12,16 @@ sudo -S apt install gcc g++ make curl zip unzip tar pkg-config autoconf postgres
 # pascal compiler and python
 sudo -S apt install fp-compiler python -y
 
+git clone -b $3 data
 git config --global --add safe.directory ./server
-cd server
+git config --global --add safe.directory ./data
 
-cd devops
+cd server/devops/setup/scripts
 # install cmake
 sudo chmod +x ./cmake_install.sh
 sudo ./cmake_install.sh
 
-cd ../..
+cd ../../../..
 git clone https://github.com/Microsoft/vcpkg.git
 cd ./vcpkg
 ./bootstrap-vcpkg.sh
@@ -35,22 +30,17 @@ cd ./vcpkg
 ./vcpkg install libpqxx:x64-linux
 
 cd ../server/bin
-printf "$1\n$1\n" > database.pass
+printf "0 postgres postgres $1 public\n1 journal_db journal_user $1 journal\n" > database.pass
+printf "default /home/$2/data/" > paths.path
 
-cd ../devops
-sudo cp pg_hba.conf /etc/postgresql/12/main/pg_hba.conf
+cd ../devops/setup/scripts
+sudo cp ../data/pg_hba.conf /etc/postgresql/12/main/pg_hba.conf
 sudo -u postgres psql -c "ALTER USER postgres password '$1';"
-# sudo psql -U journal_user -h localhost -d journal_db 
-# sudo psql -U postgres -h localhost -d postgres 
 
 # TODO: add journal_user and database from start
 sudo -u postgres psql -c "CREATE USER $2;"
 sudo -u postgres psql -c "ALTER USER $2 password '$1';"
 sudo -u postgres psql -c "CREATE DATABASE journal_db;"
-
-# sudo -u postgres psql -c "CREATE USER journal_user;"
-# sudo -u postgres psql -c "ALTER USER journal_user password '$1';"
-# 
 
 # add demon
 sudo chmod +x make_servis.sh
@@ -58,26 +48,20 @@ sudo ./make_servis.sh
 
 # nginx
 sudo chmod +x nginx.sh
-sudo ./nginx.sh
-
-# zsh
-# TODO autoconfirm
-sudo chmod +x zsh.sh
-# sudo ./zsh.sh
-
-# compile
-sudo chmod +x remake.sh
-sudo ./remake.sh
-
-sudo apt update && sudo apt upgrade -y
+sudo ./nginx.sh $4 $5
 
 # ssh-keys
 sudo chmod +x rsa.sh
 sudo ./rsa.sh
 
-# TODO: add paths.path
-# TODO: new database.pass
-# TODO: create data folder
+sudo apt update && sudo apt upgrade -y
 
-# rcomrad@ruvds-6tpn5:~/server/devops$ git config --global user.email "comrade_1997@mail.ru"
-# rcomrad@ruvds-6tpn5:~/server/devops$ git config --global user.name "r_comrad"
+# zsh
+cd ..
+sudo chmod +x zsh.sh
+
+# compile
+cd ../maintain/scripts
+sudo chmod +x remake.sh
+sudo ./remake.sh
+

@@ -7,10 +7,8 @@ sudo apt update
 sudo apt install nginx -y
 sudo systemctl restart nginx
 
-sudo ./ssl.sh
-sudo ./ssl.sh
-sudo cp default.conf /etc/nginx/conf.d/default.conf
+sudo ./ssl.sh $1 $2
+sudo cp ../data/default.conf /etc/nginx/conf.d/default.conf
 
 sudo nginx -s reload
 
-# sudo systemctl status nginx
