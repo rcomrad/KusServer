@@ -64,4 +64,3 @@ sudo chmod +x zsh.sh
 cd ../maintain/scripts
 sudo chmod +x remake.sh
 sudo ./remake.sh
-

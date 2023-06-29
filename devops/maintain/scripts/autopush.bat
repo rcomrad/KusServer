@@ -1,4 +1,4 @@
-cd ..
+cd ../../..
 git branch -D autocommit
 git branch autocommit
 git stash --include-untracked
