@@ -12,13 +12,13 @@ sudo -S apt install gcc g++ make curl zip unzip tar pkg-config autoconf postgres
 # pascal compiler and python
 sudo -S apt install fp-compiler python -y
 
-git clone -b $3 data
-git config --global --add safe.directory ./server
-git config --global --add safe.directory ./data
+git clone $3 data
+git config --global --add safe.directory /home/$2/server
+git config --global --add safe.directory /home/$2/data
 
 cd server/devops/setup/scripts
 # install cmake
-sudo chmod +x ./cmake_install.sh
+sudo chmod +x cmake_install.sh
 sudo ./cmake_install.sh
 
 cd ../../../..
@@ -50,11 +50,11 @@ sudo ./make_servis.sh
 sudo chmod +x nginx.sh
 sudo ./nginx.sh $4 $5
 
+sudo apt update && sudo apt upgrade -y
+
 # ssh-keys
 sudo chmod +x rsa.sh
 sudo ./rsa.sh
-
-sudo apt update && sudo apt upgrade -y
 
 # zsh
 cd ..

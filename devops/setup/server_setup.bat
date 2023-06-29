@@ -1,5 +1,5 @@
 call scripts/key.bat
-call ../maintain/scripts/autopush.bat
+call ./maintain/scripts/autopush.bat
 
 ssh-keygen -R %ip%
 echo y | plink -ssh %server_name%@%ip% "exit"
