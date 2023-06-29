@@ -461,4 +461,4 @@ using User = UpperDataStruct<UserBase>;
 
 };                             // namespace data
 
-#endif DATABASE_STRUCTURES_HPP // !DATABASE_STRUCTURES_HPP
+#endif // !DATABASE_STRUCTURES_HPP

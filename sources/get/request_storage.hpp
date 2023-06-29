@@ -23,4 +23,4 @@ private:
 
 };                         // namespace get
 
-#endif REQUEST_STORAGE_HPP // !REQUEST_STORAGE_HPP
+#endif // !REQUEST_STORAGE_HPP

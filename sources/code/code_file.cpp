@@ -96,7 +96,7 @@ code::CodeFile::generateHPP(const std::string& aPath) const noexcept
         CodeFile << "};\n";
     }
 
-    CodeFile << "\n#endif " << define << "// !" << define << "\n";
+    CodeFile << "\n#endif " << "// !" << define << "\n";
 }
 
 std::string

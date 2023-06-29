@@ -43,4 +43,4 @@ struct GetRouter
 
 };                    // namespace get
 
-#endif GET_ROUTER_HPP // !GET_ROUTER_HPP
+#endif // !GET_ROUTER_HPP

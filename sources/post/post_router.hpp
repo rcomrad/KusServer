@@ -53,4 +53,4 @@ struct PostRouter
 
 };                     // namespace post
 
-#endif POST_ROUTER_HPP // !POST_ROUTER_HPP
+#endif // !POST_ROUTER_HPP

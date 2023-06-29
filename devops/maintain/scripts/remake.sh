@@ -1,10 +1,8 @@
-cd ..
-
 git fetch --all
 git reset --hard origin/autocommit
 
-chmod +x remake.sh
-chmod +x build.sh
+sudo chmod +x remake.sh
+sudo chmod +x build.sh
 ./build.sh
 
 sudo systemctl restart KusManager
