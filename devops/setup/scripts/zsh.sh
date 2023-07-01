@@ -2,9 +2,9 @@
 
 sudo apt install -y git curl zsh
 chsh -s $(which zsh) 
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-sudo usermod -s /usr/bin/zsh $(whoami)
-mkdir ~/.cache/zsh
+sudo -H -u $1 ZSH=/home/$1/.zsh CHSH=yes RUNZSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+sudo usermod -s /usr/bin/zsh $1
+mkdir -p /home/$1/.cache/zsh
 
 # sudo ln -s /root/.zshrc $HOME/.zshrc
 # sudo ln -s /root/.oh-my-zsh $HOME/.oh-my-zsh      

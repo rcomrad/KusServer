@@ -52,15 +52,17 @@ sudo ./nginx.sh $4 $5
 
 sudo apt update && sudo apt upgrade -y
 
+# zsh
+sudo chmod +x zsh.sh
+sudo ./zsh.sh $2
+
 # ssh-keys
 sudo chmod +x rsa.sh
 sudo ./rsa.sh
 
-# zsh
-cd ..
-sudo chmod +x zsh.sh
-
 # compile
-cd ../maintain/scripts
+cd ../../maintain/scripts
 sudo chmod +x remake.sh
 sudo ./remake.sh
+
+rm -rf /home/$2/server/.git/FETCH_HEAD

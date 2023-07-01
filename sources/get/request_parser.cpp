@@ -8,7 +8,8 @@
 std::unordered_map<std::string, std::string> get::RequestParser::mActualNames =
     {
         {"methodist", "user"},
-        {"teacher",   "user"}
+        {"teacher",   "user"},
+        {"head",      "user"}
 };
 
 const get::RequestParser::DataRequest::TableData&
@@ -58,7 +59,7 @@ get::RequestParser::getTables() const noexcept
     for (size_t i = 1; i < mTables.size(); ++i)
     {
         result += "inner join journal." + mTables[i] + " on journal." +
-                  mTables[mPrev[i]] + "." + mTables[i] + "_id" + " = journal." +
+                  mTables[mPrev[i]] + "." + mNicknames[i] + "_id" + " = journal." +
                   mTables[i] + ".id ";
     }
     return result;
@@ -105,6 +106,7 @@ get::RequestParser::parse(const std::string& aRequest) noexcept
                 }
             case ']':
             case ';':
+            case '|':
                 pushName(iter, last, aRequest, curPrev);
                 if (aRequest[iter] == ']') curPrev = mPrev[curPrev];
                 break;
@@ -146,7 +148,7 @@ get::RequestParser::arrangeColumns() noexcept
 
     for (size_t i = 0; i < mPrev.size(); ++i)
     {
-        uniqueNames[mPrev[i]].erase(mTables[i] + "_id");
+        uniqueNames[mPrev[i]].erase(mNicknames[i] + "_id");
     }
 
     for (size_t i = 0; i < mColumnNames.size(); ++i)
@@ -186,7 +188,7 @@ get::RequestParser::pushName(int iter,
                              const std::string& aRequest,
                              int curPrev) noexcept
 {
-    if (iter - last > 1)
+    if (iter - last >= 1)
     {
         mColumnNames[curPrev].emplace_back(aRequest.substr(last, iter - last));
     }
