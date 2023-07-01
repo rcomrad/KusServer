@@ -8,7 +8,10 @@ sudo apt install nginx -y
 sudo systemctl restart nginx
 
 sudo cp ../data/default.conf /etc/nginx/conf.d/default.conf
+sudo sed -i 's/kussystem.ru/'$1'/g' /etc/nginx/conf.d/default.conf
+sudo sed -i 's/user_name/'$3'/g' /etc/nginx/conf.d/default.conf
 
+sudo chmod +x ssl.sh
 sudo ./ssl.sh $1 $2
 
 sudo nginx -s reload

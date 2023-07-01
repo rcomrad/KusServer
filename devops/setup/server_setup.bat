@@ -16,10 +16,6 @@ plink.exe -batch -ssh %user_name%@%ip% -pw %user_password% "echo -e '%user_passw
 
 plink.exe -batch -ssh %user_name%@%ip% -pw %user_password% "git config --global user.email %git_name%"
 plink.exe -batch -ssh %user_name%@%ip% -pw %user_password% "git config --global user.name %git_maile%"
-@REM TODO: is sudo necessary? 
-plink.exe -batch -ssh %user_name%@%ip% -pw %user_password% "sudo git config --global user.email %git_name%"
-plink.exe -batch -ssh %user_name%@%ip% -pw %user_password% "sudo git config --global user.name %git_maile%"
-
 plink.exe -batch -ssh %user_name%@%ip% -pw %user_password% "git clone -b autocommit %project_url% server"
 
 call rsa.bat

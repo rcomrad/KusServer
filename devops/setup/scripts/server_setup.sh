@@ -12,7 +12,7 @@ sudo -S apt install gcc g++ make curl zip unzip tar pkg-config autoconf postgres
 # pascal compiler and python
 sudo -S apt install fp-compiler python -y
 
-git clone $3 data
+sudo -H -u $2 git clone $3 data
 git config --global --add safe.directory /home/$2/server
 git config --global --add safe.directory /home/$2/data
 
@@ -22,16 +22,16 @@ sudo chmod +x cmake_install.sh
 sudo ./cmake_install.sh
 
 cd ../../../..
-git clone https://github.com/Microsoft/vcpkg.git
+sudo -H -u $2 git clone https://github.com/Microsoft/vcpkg.git
 cd ./vcpkg
-./bootstrap-vcpkg.sh
-./vcpkg install boost:x64-linux
-./vcpkg install crow:x64-linux
-./vcpkg install libpqxx:x64-linux
+sudo -H -u $2 ./bootstrap-vcpkg.sh
+sudo -H -u $2 ./vcpkg install boost:x64-linux
+sudo -H -u $2 ./vcpkg install crow:x64-linux
+sudo -H -u $2 ./vcpkg install libpqxx:x64-linux
 
 cd ../server/bin
-printf "0 postgres postgres $1 public\n1 journal_db journal_user $1 journal\n" > database.pass
-printf "default /home/$2/data/" > paths.path
+sudo -H -u $2 printf "0 postgres postgres $1 public\n1 journal_db journal_user $1 journal\n" > database.pass
+sudo -H -u $2 printf "default /home/$2/data/" > paths.path
 
 cd ../devops/setup/scripts
 sudo cp ../data/pg_hba.conf /etc/postgresql/12/main/pg_hba.conf
@@ -44,11 +44,11 @@ sudo -u postgres psql -c "CREATE DATABASE journal_db;"
 
 # add demon
 sudo chmod +x make_servis.sh
-sudo ./make_servis.sh
+sudo ./make_servis.sh $2
 
 # nginx
 sudo chmod +x nginx.sh
-sudo ./nginx.sh $4 $5
+sudo ./nginx.sh $4 $5 $2
 
 sudo apt update && sudo apt upgrade -y
 
@@ -64,5 +64,3 @@ sudo ./rsa.sh
 cd ../../maintain/scripts
 sudo chmod +x remake.sh
 sudo ./remake.sh
-
-rm -rf /home/$2/server/.git/FETCH_HEAD

@@ -1,9 +1,50 @@
-# API description
+# KusServer documentation
+KusServer is a cross-platform tool for configuring a server and supporting its API on C++.
 
-KusServer API documentation
+KusServer provides:
 
 No guarantee | No warranty | No return
 
+# Server setup
+To start the server, run the file /devops/setup/server_setup.bat. 
+This file extracts server configuration information from the local bat file. 
+The path to this bat file stored in the file /devops/setup/scripts/key.bat. 
+The local configuration file contains the following information
+
+	# IP address of the server
+	set ip=127.0.0.2
+
+	# name of root user
+	set server_name=root
+	# password for root user
+	set server_password=12345
+
+	# name of a user with sudo access to be created
+	set user_name=user
+	# password for created user
+	set user_password=12345
+
+	# name of your domain
+	set domain=kussystem.ru
+	# mail for letsencrypt
+	set domain_mail=kussystem@mail.ru
+
+	# url for cloning the current project
+	set project_url=https://github.com/r-comrad/server_v4
+	# url for cloning a data project (contains frontend code and static data for server)
+	set data_url=https://github.com/rcomrad/data
+
+	# path for generated ssh keys
+	set key_dir=D:/keys/
+	# path to windows ssh folder
+	set win_ssh_dir=C:\Users\r_comrad\.ssh
+
+	# git user name (for git config)
+	set git_name=r_comrad
+	# git mail (for git config)
+	set git_maile=git_maile@mail.ru
+
+# API description
 ## POST Insert|Update request (/api/post/<string: TableName>)
 
 All URLs of POST Insert|Update requests end with the name of the target table (object table).

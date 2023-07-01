@@ -1,4 +1,7 @@
 ls -a
+ls -s
+la
+la -s
 
 # ssh check
 sudo nano /etc/ssh/sshd_config
@@ -6,6 +9,7 @@ sudo nano /etc/ssh/sshd_config
 # nginx
 sudo systemctl status nginx
 sudo nginx -s reload
+sudo certbot install --cert-name kusmirror.ru
 
 # postgres
 sudo psql -U journal_user -h localhost -d journal_db 
@@ -25,7 +29,7 @@ sudo systemctl daemon-reload
 
 sudo journalctl -u KusManager
 sudo journalctl -u KusManager --since "2023-03-30 15:34:40"
-scp rcomrad@194.87.206.68:/home/rcomrad/logs D:/logs
+scp root@194.87.206.68:/home/root/logs D:/logs
 
 # proceses
 sudo ps axu

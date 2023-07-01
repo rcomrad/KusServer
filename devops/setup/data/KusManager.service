@@ -6,8 +6,8 @@ After=syslog.target network-online.target
 
 [Service]
 Type=simple
-ExecStart=/home/rcomrad/server/bin/Server.exe
-WorkingDirectory=/home/rcomrad/server/bin
+ExecStart=/home/user_name/server/bin/Server.exe
+WorkingDirectory=/home/user_name/server/bin
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=KusManager
