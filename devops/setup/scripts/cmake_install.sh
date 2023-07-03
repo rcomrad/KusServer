@@ -4,7 +4,8 @@ cd openssl
 mkdir build
 cd build
 ../Configure
-make -j $(nproc)
+# make -j $(nproc)
+make
 
 sudo make install
 
@@ -17,7 +18,8 @@ cd CMake
 mkdir build
 cd build
 ../bootstrap
-make -j $(nproc)
+# make -j $(nproc)
+make
 
 sudo make install
 
