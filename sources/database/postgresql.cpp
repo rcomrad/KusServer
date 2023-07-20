@@ -287,7 +287,7 @@ void
 data::Postgresql::prepare(const std::string& aStatment) noexcept
 {
 #if LOG_POSTGRES_QUERIES
-    std::cout << aStatment << "\n";
+    std::cout << aStatment << std::endl;
 #endif
 
     closeStatment();

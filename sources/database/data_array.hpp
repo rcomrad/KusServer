@@ -158,7 +158,7 @@ public:
             result += i.getAsInsert();
             result.push_back(',');
         }
-        result.pop_back();
+        if (!result.empty()) result.pop_back();
         return result;
     }
 

@@ -23,7 +23,7 @@ TABLE grade
 TABLE grade_student
 	grade_id integer NOT NULL
 	student_id integer NOT NULL
-	
+
 TABLE group
 	name character VARYING(80) NOT NULL
 	grade_id integer NOT NULL
@@ -67,7 +67,7 @@ TABLE theme
 	plan_id integer NOT NULL
 	name character varying(255)
 	hour_count integer NOT NULL
-	
+
 TABLE file
 	num integer NOT NULL
 
@@ -95,7 +95,7 @@ TABLE problem
 	example_count integer NOT NULL
 	time_limit integer NOT NULL
 	memory_limit integer NOT NULL
-	
+
 TABLE competition_problem
 	competition_id integer NOT NULL
 	problem_id integer NOT NULL

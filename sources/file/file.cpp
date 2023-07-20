@@ -94,22 +94,24 @@ file::File::getLines(const std::string& aFileName, bool aIsCritical) noexcept
 {
     std::string temp = getAllData(aFileName, aIsCritical);
     std::vector<std::string> result;
-    int last = 0;
+    int last = -1;
     for (int i = 0; i < temp.size() + 1; ++i)
     {
         if (temp[i] == '\n' || temp[i] == '\0')
         {
             if (i - last > 1)
             {
-                result.emplace_back(temp.substr(last, i - last));
+                result.emplace_back(temp.substr(last + 1, i - last - 1));
                 // TODO: check or update?
                 if (result.back().back() == '\r') result.back().pop_back();
             }
-            last = i + 1;
+            // last = i + 1;
+            last = i;
         }
     }
     return result;
 }
+
 
 std::vector<std::vector<std::string>>
 file::File::getWords(const std::string& aFileName,

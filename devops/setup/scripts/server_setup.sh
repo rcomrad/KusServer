@@ -30,7 +30,7 @@ sudo -H -u $2 ./vcpkg install crow:x64-linux
 sudo -H -u $2 ./vcpkg install libpqxx:x64-linux
 
 cd ../server/bin
-sudo -H -u $2 printf "0 postgres postgres $1 public\n1 journal_db journal_user $1 journal\n" > database.pass
+sudo -H -u $2 printf "0 postgres postgres $1 public\n1 journal_db $2 $1 journal\n" > database.pass
 sudo -H -u $2 printf "default /home/$2/data/" > paths.path
 
 cd ../devops/setup/scripts

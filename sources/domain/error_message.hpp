@@ -37,7 +37,7 @@
 
 #define LOGS_OUTPUT_TYPE   1
 #define ERRORS_OUTPUT_TYPE 1
-#define _DBG_
+// #define _DBG_
 
 #if LOGS_OUTPUT_TYPE == 0
 #    define LOGS_DEFAULT_OUTPUT
