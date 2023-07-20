@@ -75,7 +75,7 @@ core::Core::populate()
 
     post::PostHandler::uploadFromFile(
         {
-            {"type", "JournalTable"}
+            {"type", "journal_table"}
     },
         "../tests/journal.data");
 }

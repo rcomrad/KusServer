@@ -105,8 +105,7 @@ get::RequestParser::parse(const std::string& aRequest) noexcept
                     break;
                 }
             case ']':
-            case ';':
-            case '|':
+            case ',':
                 pushName(iter, last, aRequest, curPrev);
                 if (aRequest[iter] == ']') curPrev = mPrev[curPrev];
                 break;

@@ -94,7 +94,7 @@ get::RequestHandler::parseRequest(Request& result,
                     break;
                 }
             case ']':
-            case ';':
+            case ',':
                 pushName(iter, last, aRequest, curPrev);
                 if (aRequest[iter] == ']') curPrev = result.previous[curPrev];
                 break;
@@ -164,7 +164,8 @@ get::RequestHandler::getStatement() const noexcept
     // {
     //     for (auto& j : mColumns[i])
     //     {
-    //         result += "journal." + mTables[i] + "." + std::to_string(j) + ", ";
+    //         result += "journal." + mTables[i] + "." + std::to_string(j) + ",
+    //         ";
     //     }
     // }
 
@@ -183,8 +184,8 @@ get::RequestHandler::getStatement() const noexcept
     // for (size_t i = 1; i < mTables.size(); ++i)
     // {
     //     result += "inner join journal." + mTables[i] + " on journal." +
-    //               mTables[mPrev[i]] + "." + mTables[i] + "_id" + " = journal." +
-    //               mTables[i] + ".id ";
+    //               mTables[mPrev[i]] + "." + mTables[i] + "_id" + " =
+    //               journal." + mTables[i] + ".id ";
     // }
 
     return result;
@@ -201,7 +202,8 @@ get::RequestHandler::pushTable(int iter,
     // if (iter - last > 1)
     // {
     //     mColumns.emplace_back();
-    //     mNicknames.emplace_back(aRequest.substr(last, iter - last - aOffset));
+    //     mNicknames.emplace_back(aRequest.substr(last, iter - last -
+    //     aOffset));
     // }
     // last = iter + 1;
 }
