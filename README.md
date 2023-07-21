@@ -9,7 +9,7 @@ No guarantee | No warranty | No return
 To start the server, run the file /devops/setup/server_setup.bat. 
 This file extracts server configuration information from the local bat file. 
 The path to this bat file stored in the file /devops/setup/scripts/key.bat. 
-The local configuration file contains the following information
+The local configuration file should contain the following information:
 
 	# IP address of the server
 	set ip=127.0.0.2

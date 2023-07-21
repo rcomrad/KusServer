@@ -168,11 +168,12 @@ struct UpperDataStruct : public T
                         result[T::columnNames[i]] = *(int*)T::ptrs[i];
                     break;
                 case data::Type::BOOL:
-                    // TODO:
-                    result[T::columnNames[i]] = *(bool*)T::ptrs[i];
+                    if (*(char*)T::ptrs[i] != 0)
+                        result[T::columnNames[i]] =
+                            bool(*(char*)T::ptrs[i] + 1);
                     break;
                 case data::Type::STRING:
-                    if ((*(std::string*)T::ptrs[i])[0] != 0)
+                    if (!((std::string*)T::ptrs[i])->empty())
                         result[T::columnNames[i]] = *(std::string*)T::ptrs[i];
                     break;
             }
@@ -193,7 +194,7 @@ struct UpperDataStruct : public T
                         *(int*)T::ptrs[it->second] = i.i();
                         break;
                     case data::Type::BOOL:
-                        *(bool*)T::ptrs[it->second] = i.b();
+                        *(char*)T::ptrs[it->second] = i.b() ? 1 : -1;
                         break;
                     case data::Type::STRING:
                         *(std::string*)T::ptrs[it->second] = i.s();
@@ -246,7 +247,8 @@ protected:
                 if (*((int*)aPtr) != 0) result = wrap(*((int*)aPtr));
                 break;
             case data::Type::BOOL:
-                if (*((char*)aPtr) != -1) result = wrap(bool(*((char*)aPtr)));
+                if (*((char*)aPtr) != 0)
+                    result = wrap(bool((*((char*)aPtr)) + 1));
                 break;
             case data::Type::STRING:
                 if (!((std::string*)aPtr)->empty())
@@ -267,7 +269,7 @@ protected:
                 break;
             case data::Type::BOOL:
                 // TODO: other bool formats
-                *(bool*)aPtr = aData == "true"s;
+                *(char*)aPtr = aData == "true"s ? 1 : -1;
                 break;
             case data::Type::STRING:
                 *(std::string*)aPtr = aData;

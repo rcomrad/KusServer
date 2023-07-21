@@ -48,6 +48,7 @@ private:
     std::vector<std::string> mNicknames;
     std::vector<std::unordered_set<int>> mColumnNums;
     std::vector<std::vector<std::string>> mColumnNames;
+    std::vector<bool> mHasAttachment;
 
     static std::unordered_map<std::string, std::string> mActualNames;
 

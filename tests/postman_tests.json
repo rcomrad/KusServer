@@ -733,7 +733,7 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "plan_test.csv"
+							"src": "/D:/projects/VSCode/KusServer/tests/plan_test.csv"
 						},
 						{
 							"key": "index",
@@ -1691,6 +1691,57 @@
 						"by_id",
 						"grade",
 						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check head of grade",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Grade created successfully\", () => {\r",
+							"    const expectedObject = \r",
+							"    {\r",
+							"        \"grades\": [\r",
+							"            {\r",
+							"                \"id\": 1,\r",
+							"                \"name\": \"AUF\",\r",
+							"                \"head\": {\r",
+							"                    \"id\": 4,\r",
+							"                    \"name\": \"headN\"\r",
+							"                }\r",
+							"            }\r",
+							"        ]\r",
+							"    };\r",
+							"\r",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:18080/api/get/all/grade[*,head_id[id,name]]",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"get",
+						"all",
+						"grade[*,head_id[id,name]]"
 					]
 				}
 			},
@@ -2815,7 +2866,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "127.0.0.1:18080/api/get/if/competition_user[competition_id[id;name;start_time]]/user_id=1",
+					"raw": "127.0.0.1:18080/api/get/if/competition_user[*,competition_id[id,name,start_time]]/user_id=1",
 					"host": [
 						"127",
 						"0",
@@ -2827,7 +2878,7 @@
 						"api",
 						"get",
 						"if",
-						"competition_user[competition_id[id;name;start_time]]",
+						"competition_user[*,competition_id[id,name,start_time]]",
 						"user_id=1"
 					]
 				}
@@ -2893,7 +2944,7 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "user.data"
+							"src": "/D:/projects/VSCode/KusServer/tests/user.data"
 						},
 						{
 							"key": "index",
@@ -2936,7 +2987,7 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "journal.data"
+							"src": "/D:/projects/VSCode/KusServer/tests/journal.data"
 						},
 						{
 							"key": "index",
@@ -2979,7 +3030,7 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "source.cpp"
+							"src": "/D:/projects/VSCode/KusServer/tests/source.cpp"
 						},
 						{
 							"key": "user_id",
@@ -3026,7 +3077,7 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "source.cpp"
+							"src": "/D:/projects/VSCode/KusServer/tests/while_hello.cpp"
 						},
 						{
 							"key": "user_id",
@@ -3073,7 +3124,7 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "source.cpp"
+							"src": "/D:/projects/VSCode/KusServer/tests/empty.cpp"
 						},
 						{
 							"key": "user_id",
@@ -3120,7 +3171,7 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "while_empty.cpp"
+							"src": "/D:/projects/VSCode/KusServer/tests/while_empty.cpp"
 						},
 						{
 							"key": "user_id",
@@ -3200,57 +3251,6 @@
 						"get_all_competition",
 						"25",
 						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Check head of grade",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Grade created successfully\", () => {\r",
-							"    const expectedObject = \r",
-							"    {\r",
-							"        \"grades\": [\r",
-							"            {\r",
-							"                \"id\": 1,\r",
-							"                \"name\": \"AUF\",\r",
-							"                \"head\": {\r",
-							"                    \"id\": 4,\r",
-							"                    \"name\": \"headN\"\r",
-							"                }\r",
-							"            }\r",
-							"        ]\r",
-							"    };\r",
-							"\r",
-							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "127.0.0.1:18080/api/get/all/grade[*;head_id[id;name]]",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "18080",
-					"path": [
-						"api",
-						"get",
-						"all",
-						"grade[*;head_id[id;name]]"
 					]
 				}
 			},

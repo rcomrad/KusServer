@@ -229,7 +229,7 @@ struct JournalTableBase : public BaseDataStruct<9>
     int id          = 0;
     int teacherID   = 0;
     int methodistID = 0;
-    char isGroup    = -1;
+    char isGroup    = 0;
     int groupID     = 0;
     int subjectID   = 0;
     int planID      = 0;
@@ -459,6 +459,6 @@ struct UserBase : public BaseDataStruct<7>
 
 using User = UpperDataStruct<UserBase>;
 
-};                             // namespace data
+};     // namespace data
 
 #endif // !DATABASE_STRUCTURES_HPP

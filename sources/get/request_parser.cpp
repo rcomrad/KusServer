@@ -59,8 +59,8 @@ get::RequestParser::getTables() const noexcept
     for (size_t i = 1; i < mTables.size(); ++i)
     {
         result += "inner join journal." + mTables[i] + " on journal." +
-                  mTables[mPrev[i]] + "." + mNicknames[i] + "_id" + " = journal." +
-                  mTables[i] + ".id ";
+                  mTables[mPrev[i]] + "." + mNicknames[i] + "_id" +
+                  " = journal." + mTables[i] + ".id ";
     }
     return result;
 }
@@ -138,7 +138,11 @@ get::RequestParser::arrangeColumns() noexcept
     {
         auto& column = uniqueNames.emplace_back(mColumnNames[i].begin(),
                                                 mColumnNames[i].end());
-        if (column.empty() || column.count("*"))
+        if (column.empty() && mHasAttachment[i])
+        {
+            column.insert("-1");
+        }
+        else if (column.empty() || column.count("*"))
         {
             auto& temp = get::GetRouter::columnNamesRouter(mTables[i]);
             column = std::unordered_set<std::string>(temp.begin(), temp.end());
@@ -156,12 +160,19 @@ get::RequestParser::arrangeColumns() noexcept
         mColumnNames[i].clear();
         auto& temp = get::GetRouter::columnNamesRouter(mTables[i]);
 
-        for (size_t j = 0; j < temp.size(); ++j)
+        if (uniqueNames[i].count("-1"))
         {
-            if (uniqueNames[i].count(temp[j]))
+            mColumnNums.back().insert(-1);
+        }
+        else
+        {
+            for (size_t j = 0; j < temp.size(); ++j)
             {
-                mColumnNums.back().insert(j);
-                mColumnNames[i].emplace_back(temp[j]);
+                if (uniqueNames[i].count(temp[j]))
+                {
+                    mColumnNums.back().insert(j);
+                    mColumnNames[i].emplace_back(temp[j]);
+                }
             }
         }
     }
@@ -176,6 +187,8 @@ get::RequestParser::pushTable(int iter,
     if (iter - last > 1)
     {
         mColumnNames.emplace_back();
+        if (!mHasAttachment.empty()) mHasAttachment.back() = true;
+        mHasAttachment.emplace_back(false);
         mNicknames.emplace_back(aRequest.substr(last, iter - last - aOffset));
     }
     last = iter + 1;

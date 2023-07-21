@@ -115,26 +115,31 @@ public:
         {
             res = true;
 
-            for (int i = 0; i < T::types.size(); ++i)
+            if (!aColums.count(-1))
             {
-                if (!hasData(aOffset)) break;
-                if (!aColums.empty() && !aColums.count(i)) continue;
-
-                switch (T::types[i])
+                for (int i = 0; i < T::types.size(); ++i)
                 {
-                    case data::Type::INT:
-                        *((int*)result.ptrs[i]) = getColumnIntUnsafe(aOffset);
-                        break;
-                    case data::Type::BOOL:
-                        *((bool*)result.ptrs[i]) = getColumnBoolUnsafe(aOffset);
-                        break;
-                    case data::Type::STRING:
-                        *((std::string*)result.ptrs[i]) =
-                            getColumnAsStringUnsafe(aOffset);
-                        break;
-                }
+                    if (!hasData(aOffset)) break;
+                    if (!aColums.empty() && !aColums.count(i)) continue;
 
-                ++aOffset;
+                    switch (T::types[i])
+                    {
+                        case data::Type::INT:
+                            *((int*)result.ptrs[i]) =
+                                getColumnIntUnsafe(aOffset);
+                            break;
+                        case data::Type::BOOL:
+                            *((char*)result.ptrs[i]) =
+                                getColumnBoolUnsafe(aOffset) ? 1 : -1;
+                            break;
+                        case data::Type::STRING:
+                            *((std::string*)result.ptrs[i]) =
+                                getColumnAsStringUnsafe(aOffset);
+                            break;
+                    }
+
+                    ++aOffset;
+                }
             }
         }
 

@@ -65,9 +65,9 @@ code::CodeGenerator::makeDatabaseStructure() noexcept
     CodeFunction func("reset");
     func.setReturnType("void");
     std::unordered_map<std::string, std::string> initializationMap = {
-        {"std::string", ""  },
-        {"int",         "0" },
-        {"char",        "-1"}
+        {"std::string", "" },
+        {"int",         "0"},
+        {"char",        "0"}
     };
     std::unordered_map<std::string, std::string> typeToDataType = {
         {"std::string", "data::Type::STRING"},
