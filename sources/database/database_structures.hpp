@@ -144,11 +144,12 @@ struct FileExchangeBase : public BaseDataStruct<6>
 
 using FileExchange = UpperDataStruct<FileExchangeBase>;
 
-struct GradeBase : public BaseDataStruct<3>
+struct GradeBase : public BaseDataStruct<4>
 {
     int id = 0;
     std::string name;
-    int headID = 0;
+    int headID   = 0;
+    char isGroup = 0;
 
     static std::string tableName;
     static std::vector<data::Type> types;
@@ -176,38 +177,6 @@ struct GradeStudentBase : public BaseDataStruct<3>
 
 using GradeStudent = UpperDataStruct<GradeStudentBase>;
 
-struct GroupBase : public BaseDataStruct<3>
-{
-    int id = 0;
-    std::string name;
-    int gradeID = 0;
-
-    static std::string tableName;
-    static std::vector<data::Type> types;
-    static std::vector<std::string> columnNames;
-    static std::unordered_map<std::string, uint8_t> nameToNum;
-
-    void reset();
-};
-
-using Group = UpperDataStruct<GroupBase>;
-
-struct GroupStudentBase : public BaseDataStruct<3>
-{
-    int id        = 0;
-    int groupID   = 0;
-    int studentID = 0;
-
-    static std::string tableName;
-    static std::vector<data::Type> types;
-    static std::vector<std::string> columnNames;
-    static std::unordered_map<std::string, uint8_t> nameToNum;
-
-    void reset();
-};
-
-using GroupStudent = UpperDataStruct<GroupStudentBase>;
-
 struct HolidayBase : public BaseDataStruct<3>
 {
     int id       = 0;
@@ -224,13 +193,12 @@ struct HolidayBase : public BaseDataStruct<3>
 
 using Holiday = UpperDataStruct<HolidayBase>;
 
-struct JournalTableBase : public BaseDataStruct<9>
+struct JournalTableBase : public BaseDataStruct<8>
 {
     int id          = 0;
     int teacherID   = 0;
     int methodistID = 0;
-    char isGroup    = 0;
-    int groupID     = 0;
+    int gradeID     = 0;
     int subjectID   = 0;
     int planID      = 0;
     int headID      = 0;

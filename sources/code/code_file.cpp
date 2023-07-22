@@ -2,17 +2,17 @@
 
 #include <fstream>
 
-// std::unordered_map<std::string, std::string> code::CodeFile::globalPaths = {
-//     {"post", "../sources/post/"    },
-//     {"get",  "../sources/get/"     },
-//     {"data", "../sources/database/"}
-// };
-
 std::unordered_map<std::string, std::string> code::CodeFile::globalPaths = {
-    {"post", ""},
-    {"get",  ""},
-    {"data", ""}
+    {"post", "../sources/post/"    },
+    {"get",  "../sources/get/"     },
+    {"data", "../sources/database/"}
 };
+
+// std::unordered_map<std::string, std::string> code::CodeFile::globalPaths = {
+//     {"post", ""},
+//     {"get",  ""},
+//     {"data", ""}
+// };
 
 code::CodeFile::CodeFile(const std::string& aClassName,
                          const std::string& aNamespace) noexcept
@@ -96,7 +96,8 @@ code::CodeFile::generateHPP(const std::string& aPath) const noexcept
         CodeFile << "};\n";
     }
 
-    CodeFile << "\n#endif " << "// !" << define << "\n";
+    CodeFile << "\n#endif "
+             << "// !" << define << "\n";
 }
 
 std::string

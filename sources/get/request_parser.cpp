@@ -9,7 +9,8 @@ std::unordered_map<std::string, std::string> get::RequestParser::mActualNames =
     {
         {"methodist", "user"},
         {"teacher",   "user"},
-        {"head",      "user"}
+        {"head",      "user"},
+        {"student",   "user"}
 };
 
 const get::RequestParser::DataRequest::TableData&
@@ -43,10 +44,11 @@ get::RequestParser::process(const std::string& aRequest) noexcept
     {
         auto& temp = result.tables.emplace_back();
         if (instance.mPrev.size() > i) temp.prev = instance.mPrev[i];
-        temp.name        = instance.mTables[i];
-        temp.nickname    = instance.mNicknames[i];
-        temp.columnNames = instance.mColumnNames[i];
-        temp.columnNums  = instance.mColumnNums[i];
+        temp.name            = instance.mTables[i];
+        temp.nickname        = instance.mNicknames[i];
+        temp.columnNames     = instance.mColumnNames[i];
+        temp.columnNums      = instance.mColumnNums[i];
+        temp.additionalTable = instance.mAdditionalTable[i];
     }
 
     return result;
@@ -86,8 +88,9 @@ get::RequestParser::getColumns() const noexcept
 void
 get::RequestParser::parse(const std::string& aRequest) noexcept
 {
-    int curPrev = 0;
-    int last    = 0;
+    int curPrev     = 0;
+    int last        = 0;
+    int parentheses = 0;
     for (int iter = 0; iter < aRequest.size() + 1; ++iter)
     {
         switch (aRequest[iter])
@@ -98,6 +101,23 @@ get::RequestParser::parse(const std::string& aRequest) noexcept
                 pushTable(iter, last, aRequest, curPrev ? 3 : 0);
                 break;
 
+            case '(':
+                last = iter + 1;
+                
+                ++parentheses;
+                while (parentheses != 0)
+                {
+                    ++iter;
+                    if (aRequest[iter] == '(') ++parentheses;
+                    if (aRequest[iter] == ')') --parentheses;
+                }
+
+                mAdditionalTable[curPrev] = aRequest.substr(last, iter - last);
+
+                last = iter;
+                break;
+
+            case ')':
             case '\0':
                 if (mNicknames.empty())
                 {
@@ -187,6 +207,8 @@ get::RequestParser::pushTable(int iter,
     if (iter - last > 1)
     {
         mColumnNames.emplace_back();
+        // mAdditionalTable.emplace_back(nullptr);
+        mAdditionalTable.emplace_back();
         if (!mHasAttachment.empty()) mHasAttachment.back() = true;
         mHasAttachment.emplace_back(false);
         mNicknames.emplace_back(aRequest.substr(last, iter - last - aOffset));

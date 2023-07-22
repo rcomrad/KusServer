@@ -47,13 +47,17 @@ post::JournalHandler::rawDataHandler(data::RawData& aData) noexcept
         }
     }
 
-    auto res = rawDataInsert<data::JournalTable>(aData.value);
     data::DataArray<data::JournalTable> journals(aData.value);
+    {
+        auto connection = data::ConnectionManager::getUserConnection();
+        connection.val.insert(journals);
+    }
+
     for (auto& i : journals)
     {
         makeSchedule(i);
     }
-    return res;
+    return {"200"};
 }
 
 void

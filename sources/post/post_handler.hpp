@@ -268,6 +268,7 @@ public:
     static crow::json::wvalue rawDataInsert(
         const std::vector<std::vector<std::string>>& aData) noexcept
     {
+        // TODO: result
         data::DataArray<T> table;
         auto res        = table.loadFromRawData(aData);
         auto connection = data::ConnectionManager::getUserConnection();

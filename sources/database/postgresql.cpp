@@ -104,7 +104,7 @@ data::Postgresql::closeStatment() noexcept
 
 //--------------------------------------------------------------------------------
 
-int
+std::vector<int>
 data::Postgresql::insert(const std::string& aTableName,
                          const std::string& aData) noexcept
 {
@@ -112,9 +112,14 @@ data::Postgresql::insert(const std::string& aTableName,
         "INSERT INTO " + aTableName + " VALUES " + aData + " RETURNING id;";
 
     prepare(statement);
+
+    std::vector<int> res;
     step();
-    int res = 0;
-    if (hasData(0)) res = getColumnIntUnsafe(0);
+    while (hasData(0))
+    {
+        res.emplace_back(getColumnIntUnsafe(0));
+        step();
+    }
     closeStatment();
 
     return res;
@@ -301,7 +306,8 @@ data::Postgresql::prepare(const std::string& aStatment) noexcept
     {
         std::string s(e.what());
         auto str = dom::Cyrilic::global.translit(s);
-        WRITE_ERROR("Postgresql::prepare() ", str);
+        // WRITE_ERROR("Postgresql::prepare() ", str);
+        std::cout << "ERROR: " << str << "\n";
     }
 }
 
@@ -330,7 +336,8 @@ data::Postgresql::nontransaction(const std::string& aStatment) noexcept
     {
         std::string s(e.what());
         auto str = dom::Cyrilic::global.translit(s);
-        WRITE_ERROR(str);
+        // WRITE_ERROR(str);
+        std::cout << "ERROR: " << str << "\n";
     }
 }
 

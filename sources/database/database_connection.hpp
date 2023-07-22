@@ -120,7 +120,7 @@ public:
               typename = dom::enableIfDerivedOf<data::BaseDataDummy, T>>
     int insert(T& aData) noexcept
     {
-        aData.id = mDatabase.insert(getTableName<T>(), aData.getAsInsert());
+        aData.id = mDatabase.insert(getTableName<T>(), aData.getAsInsert())[0];
         return aData.id;
     }
 
@@ -154,9 +154,9 @@ public:
     //--------------------------------------------------------------------------------
 
     template <typename T>
-    int write(DataArray<T>& aData) noexcept
+    std::vector<int> write(DataArray<T>& aData) noexcept
     {
-        int res = 0;
+        std::vector<int> res;
         if (aData.size() > 0)
         {
             if (aData[0].id == 0)
@@ -172,19 +172,22 @@ public:
     }
 
     template <typename T>
-    int insert(DataArray<T>& aData) noexcept
+    std::vector<int> insert(DataArray<T>& aData) noexcept
     {
-        // TODO: id's?
-        int res = aData.size();
-        mDatabase.insert(getTableName<T>(), aData.getAsInsert());
+        auto res = mDatabase.insert(getTableName<T>(), aData.getAsInsert());
+        for (int i = 0; i < res.size(); ++i)
+        {
+            aData[i].id = res[i];
+        }
         return res;
     }
 
     template <typename T>
-    int update(const DataArray<T>& aData,
-               const std::string& aCondition = "") noexcept
+    std::vector<int> update(const DataArray<T>& aData,
+                            const std::string& aCondition = "") noexcept
     {
-        int res = aData.size();
+        // TODO:
+        std::vector<int> res = {-2};
         for (auto& i : aData)
         {
             update(i, aCondition);

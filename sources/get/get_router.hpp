@@ -41,6 +41,6 @@ struct GetRouter
         const std::string& aName);
 };
 
-};                    // namespace get
+};     // namespace get
 
 #endif // !GET_ROUTER_HPP

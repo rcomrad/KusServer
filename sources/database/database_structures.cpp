@@ -171,13 +171,14 @@ data::FileExchangeBase::reset()
 
 std::string data::GradeBase::tableName         = {"grade"};
 std::vector<data::Type> data::GradeBase::types = {
-    data::Type::INT, data::Type::STRING, data::Type::INT};
+    data::Type::INT, data::Type::STRING, data::Type::INT, data::Type::BOOL};
 std::vector<std::string> data::GradeBase::columnNames = {"id", "name",
-                                                         "head_id"};
+                                                         "head_id", "is_group"};
 std::unordered_map<std::string, uint8_t> data::GradeBase::nameToNum = {
-    {"id",      0},
-    {"name",    1},
-    {"head_id", 2}
+    {"id",       0},
+    {"name",     1},
+    {"head_id",  2},
+    {"is_group", 3}
 };
 
 void
@@ -186,6 +187,7 @@ data::GradeBase::reset()
     ptrs[0] = (void*)(&id);
     ptrs[1] = (void*)(&name);
     ptrs[2] = (void*)(&headID);
+    ptrs[3] = (void*)(&isGroup);
 }
 
 std::string data::GradeStudentBase::tableName         = {"grade_student"};
@@ -204,44 +206,6 @@ data::GradeStudentBase::reset()
 {
     ptrs[0] = (void*)(&id);
     ptrs[1] = (void*)(&gradeID);
-    ptrs[2] = (void*)(&studentID);
-}
-
-std::string data::GroupBase::tableName         = {"group"};
-std::vector<data::Type> data::GroupBase::types = {
-    data::Type::INT, data::Type::STRING, data::Type::INT};
-std::vector<std::string> data::GroupBase::columnNames = {"id", "name",
-                                                         "grade_id"};
-std::unordered_map<std::string, uint8_t> data::GroupBase::nameToNum = {
-    {"id",       0},
-    {"name",     1},
-    {"grade_id", 2}
-};
-
-void
-data::GroupBase::reset()
-{
-    ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&name);
-    ptrs[2] = (void*)(&gradeID);
-}
-
-std::string data::GroupStudentBase::tableName         = {"group_student"};
-std::vector<data::Type> data::GroupStudentBase::types = {
-    data::Type::INT, data::Type::INT, data::Type::INT};
-std::vector<std::string> data::GroupStudentBase::columnNames = {
-    "id", "group_id", "student_id"};
-std::unordered_map<std::string, uint8_t> data::GroupStudentBase::nameToNum = {
-    {"id",         0},
-    {"group_id",   1},
-    {"student_id", 2}
-};
-
-void
-data::GroupStudentBase::reset()
-{
-    ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&groupID);
     ptrs[2] = (void*)(&studentID);
 }
 
@@ -266,22 +230,20 @@ data::HolidayBase::reset()
 
 std::string data::JournalTableBase::tableName         = {"journal_table"};
 std::vector<data::Type> data::JournalTableBase::types = {
-    data::Type::INT,  data::Type::INT, data::Type::INT,
-    data::Type::BOOL, data::Type::INT, data::Type::INT,
-    data::Type::INT,  data::Type::INT, data::Type::STRING};
+    data::Type::INT, data::Type::INT, data::Type::INT, data::Type::INT,
+    data::Type::INT, data::Type::INT, data::Type::INT, data::Type::STRING};
 std::vector<std::string> data::JournalTableBase::columnNames = {
-    "id",         "teacher_id", "methodist_id", "is_group", "group_id",
+    "id",         "teacher_id", "methodist_id", "grade_id",
     "subject_id", "plan_id",    "head_id",      "schedule"};
 std::unordered_map<std::string, uint8_t> data::JournalTableBase::nameToNum = {
     {"id",           0},
     {"teacher_id",   1},
     {"methodist_id", 2},
-    {"is_group",     3},
-    {"group_id",     4},
-    {"subject_id",   5},
-    {"plan_id",      6},
-    {"head_id",      7},
-    {"schedule",     8}
+    {"grade_id",     3},
+    {"subject_id",   4},
+    {"plan_id",      5},
+    {"head_id",      6},
+    {"schedule",     7}
 };
 
 void
@@ -290,12 +252,11 @@ data::JournalTableBase::reset()
     ptrs[0] = (void*)(&id);
     ptrs[1] = (void*)(&teacherID);
     ptrs[2] = (void*)(&methodistID);
-    ptrs[3] = (void*)(&isGroup);
-    ptrs[4] = (void*)(&groupID);
-    ptrs[5] = (void*)(&subjectID);
-    ptrs[6] = (void*)(&planID);
-    ptrs[7] = (void*)(&headID);
-    ptrs[8] = (void*)(&schedule);
+    ptrs[3] = (void*)(&gradeID);
+    ptrs[4] = (void*)(&subjectID);
+    ptrs[5] = (void*)(&planID);
+    ptrs[6] = (void*)(&headID);
+    ptrs[7] = (void*)(&schedule);
 }
 
 std::string data::LessonBase::tableName         = {"lesson"};

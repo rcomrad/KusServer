@@ -17,19 +17,12 @@ TABLE role
 	name character varying(20) NOT NULL
 
 TABLE grade
-	name character varying(10) NOT NULL
+	name character varying(40) NOT NULL
 	head_id integer NOT NULL
+	is_group boolean NOT NULL
 
 TABLE grade_student
 	grade_id integer NOT NULL
-	student_id integer NOT NULL
-
-TABLE group
-	name character VARYING(80) NOT NULL
-	grade_id integer NOT NULL
-
-TABLE group_student
-	group_id integer NOT NULL
 	student_id integer NOT NULL
 
 TABLE lesson
@@ -42,8 +35,7 @@ TABLE lesson
 TABLE journal_table
 	teacher_id integer NOT NULL
 	methodist_id integer NOT NULL
-	is_group boolean NOT NULL
-	group_id integer NOT NULL
+	grade_id integer NOT NULL
 	subject_id smallint NOT NULL
 	plan_id integer NOT NULL
 	head_id integer NOT NULL

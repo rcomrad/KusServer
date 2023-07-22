@@ -19,9 +19,6 @@ set(
     question_handler.cpp
     question_handler.hpp
 
-    request_map.cpp
-    request_map.hpp
-
     request_parser.cpp
     request_parser.hpp
 

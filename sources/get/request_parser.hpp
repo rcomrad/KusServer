@@ -3,6 +3,7 @@
 
 //--------------------------------------------------------------------------------
 
+// #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
@@ -28,6 +29,8 @@ public:
             std::string nickname;
             std::unordered_set<int> columnNums;
             std::vector<std::string> columnNames;
+            // std::unique_ptr<DataRequest*> additionalTable;
+            std::string additionalTable;
         };
 
     public:
@@ -49,6 +52,8 @@ private:
     std::vector<std::unordered_set<int>> mColumnNums;
     std::vector<std::vector<std::string>> mColumnNames;
     std::vector<bool> mHasAttachment;
+    // std::vector<std::unique_ptr<DataRequest>> mAdditionalTable;
+    std::vector<std::string> mAdditionalTable;
 
     static std::unordered_map<std::string, std::string> mActualNames;
 

@@ -149,8 +149,8 @@ public:
 
     //--------------------------------------------------------------------------------
 
-    int insert(const std::string& aTableName,
-               const std::string& aData) noexcept;
+    std::vector<int> insert(const std::string& aTableName,
+                            const std::string& aData) noexcept;
     void update(const std::string& aTableName,
                 const std::string& aData,
                 const std::string& aCondition) noexcept;
