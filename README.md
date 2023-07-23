@@ -177,7 +177,7 @@ Using the example above, if you want to add all users for a specific organizatio
 
 	/api/get/all/organisation[id,(user[name,role])]
 
-In order for the parentheses to work, you must select an identid column ifier for the caller object (in this example for the organization).
+In order for the parentheses to work, you must select an id column for the caller object (in this example for the organization).
 
 ## Insert/Update request (/api/post/<string: TableName>) | POST
 
