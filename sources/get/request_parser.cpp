@@ -23,7 +23,11 @@ std::string
 get::RequestParser::DataRequest::getFullStatement(
     const std::string& aCondition) const noexcept
 {
-    return rowStatement + (aCondition.empty() ? "" : " WHERE " + aCondition);
+    // TODO: auto schema
+    return rowStatement +
+           (aCondition.empty()
+                ? ""
+                : " WHERE journal." + tables[0].name + "." + aCondition);
 }
 
 get::RequestParser::DataRequest
@@ -103,7 +107,7 @@ get::RequestParser::parse(const std::string& aRequest) noexcept
 
             case '(':
                 last = iter + 1;
-                
+
                 ++parentheses;
                 while (parentheses != 0)
                 {

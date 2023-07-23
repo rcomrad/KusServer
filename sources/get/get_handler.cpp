@@ -106,7 +106,7 @@ get::GetHandler::mainGet(const std::string& aRequest,
             for (int j = 0; j < curBlock.size(); ++j)
             {
                 auto additionalTable =
-                    mainGet(req[i].additionalTable,
+                    multiplelGet(req[i].additionalTable,
                             req[i].name + "_id=" + curBlock[j]["id"].dump());
                 if (name.empty()) name = additionalTable.keys()[0];
                 curBlock[j][name] = std::move(additionalTable[name]);

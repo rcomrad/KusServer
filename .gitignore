@@ -1,8 +1,5 @@
 /build
 /.vscode
-.vscode/*
-.vscode/settings.json
-**.json
 
 **.pdb
 **.obj
@@ -15,3 +12,5 @@
 **.path
 **.dmprar
 **.out
+
+git update-index --assume-unchanged ./.vscode/*
