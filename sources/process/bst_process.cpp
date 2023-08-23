@@ -4,7 +4,7 @@
 
 //--------------------------------------------------------------------------------
 
-#    include "domain/error_message.hpp"
+#    include "domain/log.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -46,8 +46,8 @@ proc::BoostProcess::create() noexcept
     //                bp::start_suspended);
     // mProcess = std::move(temp);
 
-    WRITE_LOG("Creating_process_with_name:", mProcessArgs);
-    WRITE_LOG("Runing_simple_process");
+    dom::writeInfo("Creating_process_with_name:", mProcessArgs);
+    dom::writeInfo("Runing_simple_process");
 
     try
     {
@@ -84,7 +84,7 @@ proc::BoostProcess::run() noexcept
 std::optional<Limits>
 proc::BoostProcess::runWithLimits() noexcept
 {
-    START_LOG_BLOCK("Runing_process_with_time_and_memory_evaluation");
+    dom::writeInfo("Runing_process_with_time_and_memory_evaluation");
 
     std::optional<Limits> result = {};
 

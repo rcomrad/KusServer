@@ -42,7 +42,7 @@ file::VariableStorage::reloadSettings() noexcept
                 mFlags[var.name] = var.value;
                 break;
             case file::Value::Type::String:
-                mWords[var.name] = var.value;
+                mWords[var.name] = std::string(var.value);
                 break;
         }
     }

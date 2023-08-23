@@ -56,7 +56,7 @@ file::Path::reset() noexcept
             continue;
         }
 
-        mPaths[var.name] = var.value;
+        mPaths[var.name] = std::string(var.value);
         addAllFolders(var.value);
     }
 }
