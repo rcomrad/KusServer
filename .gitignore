@@ -9,7 +9,7 @@
 **.exe
 **.dll
 **.pass
-**.path
+**/path.conf
 **.dmprar
 **.out
 
