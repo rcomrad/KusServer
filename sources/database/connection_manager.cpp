@@ -1,6 +1,6 @@
 #include "connection_manager.hpp"
 
-#include "core/program_state.hpp"
+#include "file_data/variable_storage.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -38,9 +38,9 @@ data::ConnectionManager::getAdminConnection() noexcept
 data::ConnectionManager::ConnectionManager() noexcept
     : mConnectionPools{
           ConnectionPool(1, data::ConnectionType::ADMIN),
-          ConnectionPool(
-              core::ProgramState::getInstance().getValue(core::Value::DB_THRD),
-              data::ConnectionType::USER)}
+          ConnectionPool(file::VariableStorage::getInstance().getIntUnsafe(
+                             "database_connection_count"),
+                         data::ConnectionType::USER)}
 {
     // auto& state              = core::ProgramState::getInstance();
     // uint16_t connectionCount = state.getDatabaseConnectionCount();
@@ -98,7 +98,9 @@ void
 data::ConnectionManager::turnOn() noexcept
 {
     getInstance().mConnectionPools[1].create(
-        core::ProgramState::getInstance().getValue(core::Value::DB_THRD),
+
+        file::VariableStorage::getInstance().getIntUnsafe(
+            "database_connection_count"),
         data::ConnectionType::USER);
 }
 

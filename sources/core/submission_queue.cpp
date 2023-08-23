@@ -2,11 +2,12 @@
 
 #include "database/connection_manager.hpp"
 
-#include "program_state.hpp"
+#include "file_data/variable_storage.hpp"
 
 core::SubmissionQueue::SubmissionQueue()
 {
-    mIsActive = ProgramState::getInstance().checkFlag(Flag::SUB_CHECK);
+    mIsActive = file::VariableStorage::getInstance().getFlagUnsafe(
+        "submission_auto_check");
 }
 
 core::SubmissionQueue&
@@ -64,6 +65,7 @@ core::SubmissionQueue::reload() noexcept
     decltype(mQueue) empty;
     std::swap(mQueue, empty);
     auto connection = data::ConnectionManager::getUserConnection();
-    auto mQueue = connection.val.getDataArray<data::Submission>("verdict=\'NUN\'");
+    auto mQueue =
+        connection.val.getDataArray<data::Submission>("verdict=\'NUN\'");
     mSubmissionMutex.unlock();
 }

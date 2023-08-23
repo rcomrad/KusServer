@@ -10,7 +10,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "domain/error_message.hpp"
+#include "domain/log.hpp"
 
 #include "database_structures.hpp"
 

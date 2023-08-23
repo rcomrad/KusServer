@@ -1,7 +1,8 @@
 #include "token_handler.hpp"
 
-#include "core/program_state.hpp"
-#include "file/file.hpp"
+#include "file_data/file.hpp"
+#include "file_data/path.hpp"
+#include "file_data/variable_storage.hpp"
 
 core::TokenHandler::TokenHandler() noexcept
 {
@@ -14,14 +15,15 @@ core::TokenHandler::TokenHandler() noexcept
     mDistribution = std::move(
         std::uniform_int_distribution<uint32_t>(0, mAlphabet.size() - 1));
 
-    auto urls = file::File::getWords("url.conf");
+    auto urls =
+        file::File::getWords(file::Path::getPathUnsafe("config", "url.conf"));
     for (auto& i : urls)
     {
         mURLs[i[0]];
     }
 
-    auto& state = core::ProgramState::getInstance();
-    mIsActive   = state.checkFlag(core::Flag::Authorisation);
+    mIsActive =
+        file::VariableStorage::getInstance().getFlagUnsafe("authorisation");
 }
 
 core::TokenHandler&

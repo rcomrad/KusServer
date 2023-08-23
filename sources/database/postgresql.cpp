@@ -26,7 +26,7 @@ data::ColumnSetting::ColumnSetting(std::string aName,
 
 data::Postgresql::Postgresql(const DBSettings& aDBS)
 {
-    WRITE_LOG("Creating_postgresql_database_connection");
+    dom::writeInfo("Creating_postgresql_database_connection");
     try
     {
         // clang-format off
@@ -40,18 +40,18 @@ data::Postgresql::Postgresql(const DBSettings& aDBS)
     }
     catch (const std::exception& e)
     {
-        WRITE_ERROR("Postgresql::Postgresql() ", e.what());
+        dom::writeError("Postgresql::Postgresql() ", e.what());
         // exit(0);
     }
 
-    WRITE_LOG("Opening_postgresql_database");
+    dom::writeInfo("Opening_postgresql_database");
     if (mConnection->is_open())
     {
-        WRITE_LOG("Opened_database_successfully");
+        dom::writeInfo("Opened_database_successfully");
     }
     else
     {
-        WRITE_LOG("Can't_open_database");
+        dom::writeInfo("Can't_open_database");
         // exit(0);
     }
 }
@@ -292,7 +292,7 @@ void
 data::Postgresql::prepare(const std::string& aStatment) noexcept
 {
 #if LOG_POSTGRES_QUERIES
-    std::cout << aStatment << std::endl;
+    dom::writeInfo(aStatment);
 #endif
 
     closeStatment();
@@ -305,9 +305,8 @@ data::Postgresql::prepare(const std::string& aStatment) noexcept
     catch (const pqxx::sql_error& e)
     {
         std::string s(e.what());
-        auto str = dom::Cyrilic::global.translit(s);
-        // WRITE_ERROR("Postgresql::prepare() ", str);
-        std::cout << "ERROR: " << str << "\n";
+        // auto str = dom::Cyrilic::global.translit(s);
+        dom::writeError(s, "req:", aStatment);
     }
 }
 
@@ -323,7 +322,7 @@ void
 data::Postgresql::nontransaction(const std::string& aStatment) noexcept
 {
 #if LOG_POSTGRES_QUERIES
-    std::cout << aStatment << "\n";
+    dom::writeInfo(aStatment);
 #endif
 
     try
@@ -335,9 +334,8 @@ data::Postgresql::nontransaction(const std::string& aStatment) noexcept
     catch (const pqxx::sql_error& e)
     {
         std::string s(e.what());
-        auto str = dom::Cyrilic::global.translit(s);
-        // WRITE_ERROR(str);
-        std::cout << "ERROR: " << str << "\n";
+        // auto str = dom::Cyrilic::global.translit(s);
+        dom::writeError(s, "req:", aStatment);
     }
 }
 

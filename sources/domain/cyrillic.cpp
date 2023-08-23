@@ -1,6 +1,7 @@
 #include "cyrillic.hpp"
 
 #include <cwctype>
+#include <unordered_map>
 #include <vector>
 
 //--------------------------------------------------------------------------------
@@ -270,8 +271,6 @@ dom::Cyrilic::toLowerCyrillic(const char* aCharacter) noexcept
     return res;
 }
 
-//--------------------------------------------------------------------------------
-
 char*
 dom::Cyrilic::toUpperCyrillic(const char* aCharacter) noexcept
 {
@@ -297,43 +296,108 @@ dom::Cyrilic::toUpperCyrillic(const char* aCharacter) noexcept
 
     return res;
 }
-#include <locale>
+
 //--------------------------------------------------------------------------------
 std::string
-dom::Cyrilic::translit(std::string& s)
+dom::Cyrilic::translit(const std::string& aStr) noexcept
 {
-    std::string rus[74] = {
-        "А", "а", "Б", "б", "В", "в", "Г", "г", "Ґ", "ґ", "Д", "д", "Е",
-        "е", "Є", "є", "Ж", "ж", "З", "з", "И", "и", "І", "і", "Ї", "ї",
-        "Й", "й", "К", "к", "Л", "л", "М", "м", "Н", "н", "О", "о", "П",
-        "п", "Р", "р", "С", "с", "Т", "т", "У", "у", "Ф", "ф", "Х", "х",
-        "Ц", "ц", "Ч", "ч", "Ш", "ш", "Щ", "щ", "Ь", "ь", "Ю", "ю", "Я",
-        "я", "Ы", "ы", "Ъ", "ъ", "Ё", "ё", "Э", "э"};
-    std::string eng[74] = {
-        "A",  "a",  "B",  "b",   "V",   "v",  "G",  "g",  "G",  "g",  "D",
-        "d",  "E",  "e",  "E",   "E",   "Zh", "zh", "Z",  "z",  "I",  "i",
-        "I",  "I",  "Yi", "yi",  "J",   "j",  "K",  "k",  "L",  "l",  "M",
-        "m",  "N",  "n",  "O",   "o",   "P",  "p",  "R",  "r",  "S",  "s",
-        "T",  "t",  "U",  "u",   "F",   "f",  "H",  "h",  "Ts", "ts", "ch",
-        "ch", "Sh", "sh", "Shh", "shh", "'",  "'",  "Yu", "yu", "Ya", "ya",
-        "Y",  "y",  "",   "",    "Yo",  "yo", "E",  "e"};
-
-    bool find = false;
-    std::string res;
-    for (int i = 0; i <= s.size(); i++)
-    {
-        find = false;
-        for (int j = 0; j < 74; j++)
+    static std::unordered_map<std::string, std::string> dict = {
+        {"А", "A"},
+        {"а", "a"},
+        {"Б", "B"},
+        {"б", "b"},
+        {"В", "V"},
+        {"в", "v"},
+        {"Г", "G"},
+        {"г", "g"},
+        {"Ґ", "G"},
+        {"ґ", "g"},
+        {"Д", "D"},
+        {"д", "d"},
+        {"Е", "E"},
+        {"е", "e"},
+        {"Є", "E"},
+        {"є", "e"},
+        {"Ж", "Zh"},
+        {"ж", "zh"},
+        {"З", "Z"},
+        {"з", "z"},
+        {"И", "I"},
+        {"и", "i"},
+        {"І", "I"},
+        {"і", "i"},
+        {"Ї", "Yi"},
+        {"ї", "yi"},
+        {"Й", "J"},
+        {"й", "j"},
+        {"К", "K"},
+        {"к", "k"},
+        {"Л", "L"},
+        {"л", "l"},
+        {"М", "M"},
+        {"м", "m"},
+        {"Н", "N"},
+        {"н", "n"},
+        {"О", "O"},
+        {"о", "o"},
+        {"П", "P"},
+        {"п", "p"},
+        {"Р", "R"},
+        {"р", "r"},
         {
-            if (s.substr(i, 2).compare(rus[j]) == 0)
-            {
-                res += eng[j];
-                find = true;
-                i++;
-                break;
-            }
+         "С", "S",
+         },
+        {"с", "s"},
+        {"Т", "T"},
+        {"т", "t"},
+        {"У", "U"},
+        {"у", "u"},
+        {"Ф", "F"},
+        {"ф", "f"},
+        {"Х", "H"},
+        {"х", "h"},
+        {"Ц", "Ts"},
+        {"ц", "ts"},
+        {"Ч", "ch"},
+        {"ч", "ch"},
+        {
+         "Ш", "Sh",
+         },
+        {"ш", "sh"},
+        {"Щ", "Shh"},
+        {"щ", "shh"},
+        {
+         "Ь", "'",
+         },
+        {"ь", "'"},
+        {"Ю", "Yu"},
+        {"ю", "yu"},
+        {"Я", "Ya"},
+        {"я", "ya"},
+        {"Ы", "Y"},
+        {"ы", "y"},
+        {"Ъ", ""},
+        {"ъ", ""},
+        {"Ё", "Yo"},
+        {"ё", "yo"},
+        {"Э", "E"},
+        {"э", "e"}
+    };
+
+    std::string result;
+    for (int i = 0; i < aStr.size(); ++i)
+    {
+        std::string temp = aStr.substr(i, 2);
+        auto it          = dict.find(temp);
+        if (it != dict.end())
+        {
+            result += it->second;
+            ++i;
         }
-        if (!find) res += s.substr(i, 1);
+        else
+        {
+            result += temp;
+        }
     }
-    return res;
+    return result;
 }

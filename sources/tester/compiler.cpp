@@ -2,16 +2,17 @@
 
 //--------------------------------------------------------------------------------
 
-#include "domain/error_message.hpp"
+#include <fstream>
 
-#include "file/path.hpp"
+#include "domain/log.hpp"
+
+#include "file_data/path.hpp"
 #include "process/process.hpp"
 
 //--------------------------------------------------------------------------------
 
 std::string test::Compiler::mCPPCompiler =
-    file::Path::getInstance().getPath("compiler").value() +
-    "magicCPPCompiler.cmd";
+    file::Path::getPathUnsafe("compiler") + "magicCPPCompiler.cmd";
 
 std::unordered_map<std::string, test::Compiler::Language>
     test::Compiler::mLanguages = {

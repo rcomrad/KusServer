@@ -4,11 +4,11 @@ set(
     core.cpp
     core.hpp 
 
+    file_router.cpp
+    file_router.hpp
+
     main.cpp
 
-    program_state.cpp
-    program_state.hpp
-    
     result_generator.cpp
     result_generator.hpp
 

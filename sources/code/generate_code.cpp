@@ -1,6 +1,7 @@
 #include "generate_code.hpp"
 
-#include "file/file.hpp"
+#include "file_data/file.hpp"
+#include "file_data/path.hpp"
 
 #include "string_algorithms.hpp"
 
@@ -22,7 +23,8 @@ code::CodeGenerator::getTableData() noexcept
         {"timestamp", "std::string"}
     };
 
-    auto words       = file::File::getWords("database.psql_db", true);
+    auto words = file::File::getWords(
+        file::Path::getPathUnsafe("config", "database.psql_db"), true);
     std::string last = "";
     for (auto& i : words)
     {

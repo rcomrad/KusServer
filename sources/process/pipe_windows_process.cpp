@@ -4,7 +4,7 @@
 
 //--------------------------------------------------------------------------------
 
-#    include "domain/error_message.hpp"
+#    include "domain/log.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ proc::PipeWindowsProcess::~PipeWindowsProcess()
 void
 proc::PipeWindowsProcess::IORedirection() noexcept
 {
-    WRITE_LOG("Rederecting_input_and_output_to_pipe");
+    dom::writeInfo("Rederecting_input_and_output_to_pipe");
 
     mIOSet = true;
 
@@ -33,14 +33,14 @@ proc::PipeWindowsProcess::IORedirection() noexcept
 
     if (!CreatePipe(&mChildSTDIN, &mThisSTDOUT, &securatyAttributes, 0))
     {
-        WRITE_ERROR("PipeProcess", "IORedirection", 20, "Can't_create_pipe",
-                    "Windows");
+        dom::writeError("PipeProcess", "IORedirection", 20, "Can't_create_pipe",
+                        "Windows");
     }
 
     if (!CreatePipe(&mThisSTDIN, &mChildSTDOUT, &securatyAttributes, 0))
     {
-        WRITE_ERROR("PipeProcess", "IORedirection", 21, "Can't_create_pipe",
-                    "Windows");
+        dom::writeError("PipeProcess", "IORedirection", 21, "Can't_create_pipe",
+                        "Windows");
     }
 
     ZeroMemory(&mStartupInfo, sizeof(STARTUPINFO));

@@ -8,7 +8,7 @@
 
 #include "database/connection_manager.hpp"
 
-#include "file/path.hpp"
+#include "file_data/path.hpp"
 
 #include "crow.h"
 
@@ -49,10 +49,9 @@ public:
         {
             auto connection = data::ConnectionManager::getUserConnection();
             auto table      = connection.val.getData<data::File>();
-            std::string pathPrefix =
-                file::Path::getInstance().getPath("dump").value();
-            filePath = pathPrefix + std::to_string(table.num++) + "-" +
-                       T::tableName + ".dmp";
+            filePath        = file::Path::getPathUnsafe(
+                "dump",
+                std::to_string(table.num++) + "-" + T::tableName + ".dmp");
             connection.val.update(table);
         }
 

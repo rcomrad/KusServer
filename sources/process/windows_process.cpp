@@ -4,7 +4,7 @@
 
 //--------------------------------------------------------------------------------
 
-#    include "domain/error_message.hpp"
+#    include "domain/log.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -20,7 +20,7 @@ bool
 proc::WindowsProcess::run() noexcept
 {
     bool result = true;
-    WRITE_LOG("Runing_simple_windows_process");
+    dom::writeInfo("Runing_simple_windows_process");
 
     ResumeThread(mProcessInfo.hThread);
     WaitForSingleObject(mProcessInfo.hProcess, mTimeLimit);
@@ -39,7 +39,7 @@ proc::WindowsProcess::run() noexcept
 std::optional<proc::Limits>
 proc::WindowsProcess::runWithLimits() noexcept
 {
-    START_LOG_BLOCK("Runing_windows_process_with_time_and_memory_evaluation");
+    dom::writeInfo("Runing_windows_process_with_time_and_memory_evaluation");
 
     std::optional<Limits> result = {};
 
@@ -55,8 +55,8 @@ proc::WindowsProcess::runWithLimits() noexcept
         timeUsage         = endTime - startTime;
         result            = {timeUsage, memoryUsage};
 
-        WRITE_LOG("time_usage:", timeUsage);
-        END_LOG_BLOCK("memory_usage:", memoryUsage);
+        dom::writeInfo("time_usage:", timeUsage);
+        dom::writeInfo("memory_usage:", memoryUsage);
     }
 
     return result;
@@ -78,8 +78,8 @@ proc::WindowsProcess::setComand(
 void
 proc::WindowsProcess::create() noexcept
 {
-    START_LOG_BLOCK("Creating_windows_process_with_name:", mProcessName);
-    WRITE_LOG("Args:", mProcessArgs);
+    dom::writeInfo("Creating_windows_process_with_name:", mProcessName);
+    dom::writeInfo("Args:", mProcessArgs);
 
     IORedirection();
 
@@ -90,12 +90,13 @@ proc::WindowsProcess::create() noexcept
                            CREATE_NO_WINDOW,
                        NULL, NULL, &mStartupInfo, &mProcessInfo) == FALSE)
     {
-        WRITE_ERROR("Process", "create", 10, "Can't_start_process",
-                    "Name:", mProcessName, "Args:", mProcessArgs);
-        WRITE_ERROR("Process", "create", 11,
-                    dom::Message::globalMessages.GetLastWinAPIError());
+        dom::writeError("Process", "create", 10, "Can't_start_process",
+                        "Name:", mProcessName, "Args:", mProcessArgs);
+
+        // TODO:
+        //  dom::writeError("Process", "create", 11,
+        //                  dom::Message::globalMessages.GetLastWinAPIError());
     }
-    END_LOG_BLOCK();
 }
 
 //--------------------------------------------------------------------------------
@@ -181,7 +182,7 @@ proc::WindowsProcess::getExitCode(HANDLE& hProcess) noexcept
 bool
 proc::WindowsProcess::killProcess(PROCESS_INFORMATION& processInfo) noexcept
 {
-    START_LOG_BLOCK("Killing_process");
+    dom::writeInfo("Killing_process");
 
     DWORD processId             = processInfo.dwProcessId;
     PROCESSENTRY32 processEntry = {0};
@@ -220,7 +221,7 @@ proc::WindowsProcess::killProcess(PROCESS_INFORMATION& processInfo) noexcept
         return false;
     }
 
-    END_LOG_BLOCK("Process killed?");
+    dom::writeInfo("Process killed?");
 
     return true;
 }

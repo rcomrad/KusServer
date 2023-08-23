@@ -25,7 +25,7 @@ public:
     void destroyWord(std::wstring& aStr, const std::wstring& aWord) noexcept;
     void cutOffEnding(std::wstring& aStr) noexcept;
     void standardProcedure(std::wstring& aStr) noexcept;
-    std::string translit(std::string& s);
+    static std::string translit(const std::string& aStr) noexcept;
 
 private:
     Cyrilic()  = default;

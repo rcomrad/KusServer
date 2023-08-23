@@ -1,7 +1,7 @@
 #include "question_handler.hpp"
 
-#include "file/file.hpp"
-#include "file/path.hpp"
+#include "file_data/file.hpp"
+#include "file_data/path.hpp"
 
 crow::json::wvalue
 get::QuestionHandler::process(int aQuestionID, int aUserId) noexcept
@@ -15,7 +15,7 @@ get::QuestionHandler::process(int aQuestionID, int aUserId) noexcept
             "id=" + data::wrap(aQuestionID));
     }
 
-    auto path = file::Path::getInstance().getPath("question");
+    auto path = file::Path::getPath("question");
     if (path)
     {
         auto temp   = question.getAsJson({"nickname"});

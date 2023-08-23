@@ -2,12 +2,14 @@
 
 #include "database/connection_manager.hpp"
 
-#include "program_state.hpp"
+#include "file_data/variable_storage.hpp"
 
 core::Role::Role() noexcept
 {
-    auto& state = ProgramState::getInstance();
-    if (!state.checkFlag(Flag::NEW_BD)) reset();
+    if (!file::VariableStorage::getInstance().getFlag("new_db_sitch"))
+    {
+        reset();
+    }
 }
 
 core::Role&

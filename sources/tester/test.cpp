@@ -2,7 +2,7 @@
 
 //--------------------------------------------------------------------------------
 
-#include "domain/error_message.hpp"
+#include "domain/log.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -78,7 +78,7 @@ test::Test::run(TestReader& aTestReader) noexcept
 void
 test::Test::runTesting(TestReader& aTestReader) noexcept
 {
-    START_LOG_BLOCK("Start_new_test", "Test_cell_num:", mTesterID);
+    dom::writeInfo("Start_new_test", "Test_cell_num:", mTesterID);
 
     mTLM = aTestReader.getTest();
     mTLM.makeTestSizes();
@@ -87,7 +87,7 @@ test::Test::runTesting(TestReader& aTestReader) noexcept
     checkTest();
     mThreadSignals->push(mTesterID);
 
-    END_LOG_BLOCK("End_test#", mTLM.mTestNumber, "Test_cell_num:", mTesterID);
+    dom::writeInfo("End_test#", mTLM.mTestNumber, "Test_cell_num:", mTesterID);
 }
 
 //--------------------------------------------------------------------------------
@@ -95,18 +95,18 @@ test::Test::runTesting(TestReader& aTestReader) noexcept
 void
 test::Test::checkTest() noexcept
 {
-    START_LOG_BLOCK("Checking_test#", mTLM.mTestNumber,
-                    "Test_cell_num:", mTesterID);
+    dom::writeInfo("Checking_test#", mTLM.mTestNumber,
+                   "Test_cell_num:", mTesterID);
 
     mSolutionProcess = *mSolutionTemplate;
     mSolutionProcess.create();
-    WRITE_LOG("Test_cell_num:", mTesterID, "Write_data:", mTLM.mTest);
+    dom::writeInfo("Test_cell_num:", mTesterID, "Write_data:", mTLM.mTest);
     // mSolutionProcess.writeData(mTLM.mTest, true);
     auto testRes = mSolutionProcess.runWithLimits();
 
     if (!testRes.has_value())
     {
-        WRITE_LOG("Test_cell_num:", mTesterID, "Output:", mTLM.mOutput);
+        dom::writeInfo("Test_cell_num:", mTesterID, "Output:", mTLM.mOutput);
         mVerdict = TestVerdict::TLE;
     }
     else
@@ -117,10 +117,9 @@ test::Test::checkTest() noexcept
         mSolutionProcess.readData(mTLM.mOutput);
         mTLM.makeOutputSizes();
 
-        START_LOG_BLOCK("Test_cell_num:", mTesterID, "Test:", mTLM.mTest);
-        WRITE_LOG("Test_cell_num:", mTesterID, "Output:", mTLM.mOutput);
-        END_LOG_BLOCK("Test_cell_num:", mTesterID, "Answer:", mTLM.mAnswer);
-        END_LOG_BLOCK();
+        dom::writeInfo("Test_cell_num:", mTesterID, "Test:", mTLM.mTest);
+        dom::writeInfo("Test_cell_num:", mTesterID, "Output:", mTLM.mOutput);
+        dom::writeInfo("Test_cell_num:", mTesterID, "Answer:", mTLM.mAnswer);
 
         mCheckerProcess = *mCheckerTemplate;
         mCheckerProcess.create();
@@ -143,9 +142,9 @@ test::Test::checkTest() noexcept
 void
 test::Test::resultEvoluation() noexcept
 {
-    START_LOG_BLOCK("Test_cell_num:", mTesterID, "Result_evoluation");
-    WRITE_LOG("time:", mUsedTime);
-    WRITE_LOG("memory:", mUsedMemory);
+    dom::writeInfo("Test_cell_num:", mTesterID, "Result_evoluation");
+    dom::writeInfo("time:", mUsedTime);
+    dom::writeInfo("memory:", mUsedMemory);
 
     std::string temp;
 
@@ -154,38 +153,35 @@ test::Test::resultEvoluation() noexcept
     if (temp.empty())
     {
         mVerdict = TestVerdict::TLE;
-        START_LOG_BLOCK("Result_is_TLE");
-        WRITE_LOG("wanted:", mUsedTime);
-        END_LOG_BLOCK("received:", mTimeLimit);
+        dom::writeInfo("Result_is_TLE");
+        dom::writeInfo("wanted:", mUsedTime);
+        dom::writeInfo("received:", mTimeLimit);
     }
     else if (temp.substr(0, 2) != "ok")
     {
         mVerdict = TestVerdict::WA;
-        START_LOG_BLOCK("Result_not_okay");
-        END_LOG_BLOCK("Checker_output:", temp);
+        dom::writeInfo("Result_not_okay");
+        dom::writeInfo("Checker_output:", temp);
     }
     else if (mUsedTime > mTimeLimit)
     {
         mVerdict = TestVerdict::TLE;
-        START_LOG_BLOCK("Result_is_TLE");
-        WRITE_LOG("wanted:", mUsedTime);
-        END_LOG_BLOCK("received:", mTimeLimit);
+        dom::writeInfo("Result_is_TLE");
+        dom::writeInfo("wanted:", mUsedTime);
+        dom::writeInfo("received:", mTimeLimit);
     }
     else if (mUsedMemory > mMemoryLimit)
     {
         mVerdict = TestVerdict::MLE;
-        START_LOG_BLOCK("Result_is_MLE");
-        WRITE_LOG("wanted:", mUsedMemory);
-        END_LOG_BLOCK("received:", mMemoryLimit);
+        dom::writeInfo("Result_is_MLE");
+        dom::writeInfo("wanted:", mUsedMemory);
+        dom::writeInfo("received:", mMemoryLimit);
     }
     else
     {
         mVerdict = TestVerdict::OK;
-        START_LOG_BLOCK("Test_cell_num:", mTesterID, "ok_test_passed");
-        END_LOG_BLOCK();
+        dom::writeInfo("Test_cell_num:", mTesterID, "ok_test_passed");
     }
-
-    END_LOG_BLOCK();
 }
 
 //--------------------------------------------------------------------------------

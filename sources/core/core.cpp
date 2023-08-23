@@ -2,18 +2,17 @@
 
 #include <fstream>
 
-#include "domain/error_message.hpp"
-
 #include "database/connection_manager.hpp"
 
 #include "code/generate_code.hpp"
-#include "file/file_router.hpp"
+#include "file_data/file.hpp"
+#include "file_data/path.hpp"
+#include "file_data/variable_storage.hpp"
 #include "post/journal_handler.hpp"
 #include "post/plan_handler.hpp"
 #include "post/user_handler.hpp"
 #include "tester/tester.hpp"
 
-#include "program_state.hpp"
 #include "server.hpp"
 #include "submission_queue.hpp"
 
@@ -25,9 +24,9 @@ core::Core::Core() noexcept
     cg.makeAll();
     cg.generate();
 
-    auto& state     = ProgramState::getInstance();
     mApps["server"] = std::move(std::thread(&Core::serverThread, this));
-    if (state.checkFlag(Flag::SUB_CHECK))
+    if (file::VariableStorage::getInstance().getFlagUnsafe(
+            "submission_auto_check"))
         mApps["tester"] = std::move(std::thread(&Core::testerThread, this));
 }
 
@@ -35,12 +34,13 @@ void
 core::Core::remakeDatabase()
 {
     createEnvironment();
-    createDatabaseFromFile("database.psql_db");
+    createDatabaseFromFile(
+        file::Path::getPathUnsafe("config", "database.psql_db"));
     post::PostHandler::uploadFromFile(
         {
             {"type", "nun"}
     },
-        "database.dmp");
+        file::Path::getPathUnsafe("config", "database.dmp"));
 }
 
 void
@@ -83,22 +83,23 @@ core::Core::populate()
 void
 core::Core::run() noexcept
 {
-    auto& state = ProgramState::getInstance();
+    auto& state = file::VariableStorage::getInstance();
 
+    // TODO: optional
     bool flag = true;
     while (true)
     {
-        if (state.needRestart())
+        auto num = state.getIntUnsafe("restart");
+        if (num)
         {
-            state.startRestart();
-            if (state.needRemakeDB()) remakeDatabase();
-            if (state.needPopulateDB()) populate();
-            if (state.needReloadSubmitions())
+            if (num & 1) remakeDatabase();
+            if (num & 2) populate();
+            if (num & 4)
             {
                 SubmissionQueue::getInstance().reload();
             }
 
-            state.endRestart();
+            state.setVariable("restart", 0);
         }
     }
 }
@@ -114,17 +115,18 @@ core::Core::serverThread() noexcept
 void
 core::Core::testerThread() noexcept
 {
-    auto& state = ProgramState::getInstance();
-    auto& sub   = SubmissionQueue::getInstance();
+    auto& sub = SubmissionQueue::getInstance();
     while (true)
     {
 
         if (!sub.isEmpty())
         {
-            std::cout << "start_checking\n";
-            test::Tester tester(state.getValue(Value::TEST_THRD));
+            dom::writeInfo("start_checking");
+            test::Tester tester(
+                file::VariableStorage::getInstance().getIntUnsafe(
+                    "tester_thread_count"));
             tester.run(sub.get());
-            std::cout << "end_checking\n";
+            dom::writeInfo("end_checking");
         }
     }
 }
@@ -135,8 +137,8 @@ core::Core::createDatabaseFromFile(std::string aFileName) noexcept
     auto connection = data::ConnectionManager::getUserConnection();
 
     std::vector<data::ColumnSetting> colums;
-    auto lines = file::File::getMap(aFileName, true);
-    lines.emplace_back(std::array<std::string, 2>{"TABLE", "NUN"});
+    auto lines = file::File::getWords(aFileName, true);
+    lines.emplace_back(std::vector<std::string>{"TABLE", "NUN"});
     std::string name;
     for (auto i : lines)
     {
@@ -148,7 +150,10 @@ core::Core::createDatabaseFromFile(std::string aFileName) noexcept
         }
         else
         {
-            colums.emplace_back(i[0], i[1]);
+            // TODO: beter
+            std::string col;
+            for (int j = 1; j < i.size(); ++j) col += i[j] + " ";
+            colums.emplace_back(i[0], col);
         }
     }
 }

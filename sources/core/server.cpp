@@ -1,7 +1,7 @@
 #include "server.hpp"
 
 #include "crow/middlewares/cors.h"
-#include "file/file_router.hpp"
+#include "core/file_router.hpp"
 #include "get/command_handler.hpp"
 #include "get/competition_handler.hpp"
 #include "get/get_handler.hpp"

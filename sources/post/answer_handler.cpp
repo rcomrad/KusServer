@@ -2,11 +2,8 @@
 
 #include "domain/date_and_time.hpp"
 
-#include "core/program_state.hpp"
-#include "file/file.hpp"
-
-core::ProgramState& post::AnswerHandler::mProgramState =
-    core::ProgramState::getInstance();
+#include "file_data/file.hpp"
+#include "file_data/variable_storage.hpp"
 
 crow::json::wvalue
 post::AnswerHandler::process(post::PostRequest<data::Answer>& aReq) noexcept
@@ -27,7 +24,9 @@ post::AnswerHandler::process(post::PostRequest<data::Answer>& aReq) noexcept
     }
     else
     {
-        answer.value = file::File::writeData("answer", "x.ans", answer.value);
+        // TODO: optional
+        answer.value =
+            file::File::writeData("answer", "x.ans", answer.value).value();
     }
 
     data::Question question;
@@ -38,7 +37,7 @@ post::AnswerHandler::process(post::PostRequest<data::Answer>& aReq) noexcept
     }
     answer.verdict = answer.value == question.juryAnswer ? 'T' : 'F';
 
-    if (mProgramState.checkFlag(core::Flag::ANS_CHECK))
+    if (file::VariableStorage::getInstance().getFlagUnsafe("answer_auto_check"))
     {
         // auto ansTable = connection.val.getData<data::Question>(
         //     "_id = " + data::wrap(table[0].questionID));

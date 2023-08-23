@@ -8,7 +8,7 @@
 
 #include "database/connection_manager.hpp"
 
-#include "file/file.hpp"
+#include "file_data/file.hpp"
 
 crow::json::wvalue
 post::JournalHandler::process(

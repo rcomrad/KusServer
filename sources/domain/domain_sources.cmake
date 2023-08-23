@@ -7,8 +7,15 @@ set(
     date_and_time.cpp
     date_and_time.hpp
 
-    error_message.cpp
-    error_message.hpp 
+    holy_trinity.hpp
+    
+    log.cpp
+    log.hpp 
 
     metaprogramming.hpp
+
+    pair.hpp
+
+    to_string.cpp
+    to_string.hpp
 )

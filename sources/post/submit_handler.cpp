@@ -4,9 +4,9 @@
 
 #include "database/connection_manager.hpp"
 
-#include "core/program_state.hpp"
 #include "core/submission_queue.hpp"
-#include "file/path.hpp"
+#include "file_data/path.hpp"
+#include "file_data/variable_storage.hpp"
 
 crow::json::wvalue
 post::SubmitHandler::process(const crow::request& aReq) noexcept
@@ -18,14 +18,14 @@ post::SubmitHandler::process(const crow::request& aReq) noexcept
     data::Submission submition;
 
     crow::multipart::message msg(aReq);
-    submition.userID     = std::stoi(msg.get_part_by_name("user_id").body);
+    submition.userID    = std::stoi(msg.get_part_by_name("user_id").body);
     submition.problemID = std::stoi(msg.get_part_by_name("problem_id").body);
 
     submition.dateVal = getCurentTime();
     submition.verdict = "NUN";
     submition.test    = -1;
     submition.sourceName =
-        uploadFile(msg, file::Path::getInstance().getPath("submition").value());
+        uploadFile(msg, file::Path::getPathUnsafe("submition"));
 
     {
         auto connection = data::ConnectionManager::getUserConnection();

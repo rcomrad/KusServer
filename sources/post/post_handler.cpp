@@ -2,7 +2,9 @@
 
 #include "database/connection_manager.hpp"
 
-#include "file/path.hpp"
+#include "core/file_router.hpp"
+#include "file_data/file.hpp"
+#include "file_data/path.hpp"
 
 #include "post_router.hpp"
 
@@ -73,7 +75,7 @@ post::PostHandler::uploadFromFile(
     std::unordered_map<std::string, std::string>&& aHeader,
     const std::string& aFileName) noexcept
 {
-    auto data = file::FileRouter::process(aFileName);
+    auto data = core::FileRouter::process(aFileName);
 
     if (aHeader["type"] == "nun")
     {
@@ -121,8 +123,7 @@ std::string
 post::PostHandler::uploadFile(crow::multipart::message& aMsg,
                               std::string aPathPrefix) noexcept
 {
-    if (aPathPrefix.empty())
-        aPathPrefix = file::Path::getInstance().getPath("upload").value();
+    if (aPathPrefix.empty()) aPathPrefix = file::Path::getPathUnsafe("upload");
 
     // TODO: filename
     auto fileName = aMsg.get_part_by_name("filename").body;
@@ -136,12 +137,7 @@ post::PostHandler::uploadFile(crow::multipart::message& aMsg,
         connection.val.update<data::File>(table);
     }
 
-    auto file_handler = std::ofstream(filePath);
-    if (file_handler.is_open())
-    {
-        file_handler << file;
-        file_handler.close();
-    }
+    file::File::writeData(filePath, file);
 
     return filePath;
 }

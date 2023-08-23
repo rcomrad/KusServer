@@ -8,7 +8,7 @@
 
 #include "database/connection_manager.hpp"
 
-#include "file/path.hpp"
+#include "file_data/path.hpp"
 #include "process/limits.hpp"
 
 #include "compiler.hpp"
@@ -38,7 +38,7 @@ test::Tester::run(data::Submission&& aSubmission) noexcept
             "id=" + data::wrap(aSubmission.problemID));
     }
 
-    std::string curPath = file::Path::getInstance().getPath("problem").value();
+    std::string curPath = file::Path::getPathUnsafe("problem");
     curPath += problem.nickname + "/";
 
     std::string submissionPath = aSubmission.sourceName;
@@ -50,12 +50,10 @@ test::Tester::run(data::Submission&& aSubmission) noexcept
     }
     else
     {
-        checkerPath =
-            file::Path::getInstance().getPath("checker").value() + checkerPath;
+        checkerPath = file::Path::getPathUnsafe("checker") + checkerPath;
     }
 
-    auto workDir =
-        file::Path::getInstance().getPath("working_directory").value();
+    auto workDir   = file::Path::getPathUnsafe("working_directory");
     auto solProc   = prepareFile(submissionPath, workDir + "sus_solution");
     auto checkProc = prepareFile(checkerPath, workDir + "sus_checker");
 
@@ -113,7 +111,7 @@ test::Tester::prepareFile(const std::string& aFileName,
 void
 test::Tester::check(TestReader& aTestReader) noexcept
 {
-    START_LOG_BLOCK("Checking_participant_code");
+    dom::writeInfo("Checking_participant_code");
     boost::posix_time::ptime timeLocal =
         boost::posix_time::second_clock::local_time();
 
@@ -123,7 +121,7 @@ test::Tester::check(TestReader& aTestReader) noexcept
         auto signal = mThreadSignals.getSignal();
         if (signal.has_value())
         {
-            WRITE_LOG("Signal_number", signal.value());
+            dom::writeInfo("Signal_number", signal.value());
             auto& test = mTests[signal.value()];
 
             if (mFinalVerdict == Test::TestVerdict::OK)
@@ -156,8 +154,8 @@ test::Tester::check(TestReader& aTestReader) noexcept
         }
     }
 
-    WRITE_LOG("Final_time:", mFinalTime);
-    END_LOG_BLOCK("Final_memory:", mFinalMemory);
+    dom::writeInfo("Final_time:", mFinalTime);
+    dom::writeInfo("Final_memory:", mFinalMemory);
 }
 
 std::string
@@ -188,7 +186,7 @@ test::Tester::verdictTostring(const Test::TestVerdict& aVerdict) const noexcept
             result = "WA";
             break;
     }
-    WRITE_LOG("Final_result:", result);
+    dom::writeInfo("Final_result:", result);
     return result;
 }
 
