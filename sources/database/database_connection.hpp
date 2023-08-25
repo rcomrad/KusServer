@@ -139,6 +139,9 @@ public:
         return res;
     }
 
+    int drop(const std::string& aTableName,
+             const std::string& aCondition) noexcept;
+
     template <typename T,
               typename = dom::enableIfDerivedOf<data::BaseDataDummy, T>>
     int drop(T& aData) noexcept

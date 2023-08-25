@@ -57,12 +57,16 @@ post::PostHandler::manyToMany(
         mtmTable.push_back('_');
         mtmTable += !flag ? aTableName : other.first;
 
-        if (aType == ManyToMany::REPLACE)
+        if (int(aType) & int(ManyToMany::Delete))
         {
             auto connection = data::ConnectionManager::getUserConnection();
-            connection.val.dropByID(mtmTable, {aID});
+            connection.val.drop(mtmTable,
+                                aTableName + "_id=" + std::to_string(aID));
         }
-        post::PostRouter::rawDataRouter(mtmTable, data);
+        if (int(aType) & int(ManyToMany::Add))
+        {
+            post::PostRouter::rawDataRouter(mtmTable, data);
+        }
     }
 
     return res;

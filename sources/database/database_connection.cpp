@@ -66,6 +66,20 @@ data::DatabaseConnection::complexSelect(const std::string& aRequest) noexcept
 }
 
 int
+data::DatabaseConnection::drop(const std::string& aTableName,
+                                   const std::string& aCondition) noexcept
+{
+    int res = -1;
+    if (!aCondition.empty())
+    {
+        auto name = getTableName(aTableName);
+        mDatabase.drop(name, aCondition);
+        res = 1;
+    }
+    return res;
+}
+
+int
 data::DatabaseConnection::dropByID(const std::string& aTableName,
                                    const std::vector<int>& aIDs) noexcept
 {

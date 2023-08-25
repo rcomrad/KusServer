@@ -20,9 +20,10 @@ namespace post
 
 enum class ManyToMany
 {
-    NUN,
-    ADD,
-    REPLACE
+    NUN     = 0,
+    Add     = 1,
+    Delete  = 2,
+    Replace = 3
 };
 
 template <typename T>
@@ -289,11 +290,15 @@ protected:
             {
                 if (i.s() == "add")
                 {
-                    result.type = ManyToMany::ADD;
+                    result.type = ManyToMany::Add;
+                }
+                else if (i.s() == "delete")
+                {
+                    result.type = ManyToMany::Delete;
                 }
                 else if (i.s() == "replace")
                 {
-                    result.type = ManyToMany::REPLACE;
+                    result.type = ManyToMany::Replace;
                 }
                 continue;
             }
