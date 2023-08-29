@@ -4,6 +4,9 @@ set(
     answer_handler.cpp
     answer_handler.hpp
 
+    attendance.cpp
+    attendance.hpp
+
     journal_handler.cpp
     journal_handler.hpp
 
@@ -18,6 +21,9 @@ set(
 
     post_router.cpp
     post_router.hpp
+
+    print_journal.cpp
+    print_journal.hpp
 
     submit_handler.cpp
     submit_handler.hpp
