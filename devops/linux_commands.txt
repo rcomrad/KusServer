@@ -43,3 +43,6 @@ swapon -s
 free -m
 df -h
 top
+
+
+sudo apt-get install texlive texinfo  texlive-fonts-recommended texlive-lang-cyrillic texlive-latex-extra latex-cjk-all -y

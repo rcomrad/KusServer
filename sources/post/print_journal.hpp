@@ -18,6 +18,8 @@ private:
     static std::string makeJournal(int aID) noexcept;
     static Attendance makeAttendance(
         const data::JournalTable& aJournal) noexcept;
+    static std::string makeFrontPage(
+        const data::JournalTable& aJournal) noexcept;
 
     static const int limit = 15;
 };

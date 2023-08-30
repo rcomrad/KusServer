@@ -24,7 +24,17 @@ post::PrintJournal::process(const std::string& aData) noexcept
     output += "\\end{document}";
 
     result = file::File::writeData("print", "j.tex", output).value();
+
+#ifdef LINUS_LINUX
+
+    system(("pdflatex "s + result).c_str());
+    result = "print/j.pdf";
+
+#else
+
     result = result.substr(result.find("data") + 5);
+
+#endif
 
     return result;
 }
@@ -42,6 +52,7 @@ post::PrintJournal::makeJournal(int aID) noexcept
     }
 
     auto attendance = makeAttendance(journal);
+    result += makeFrontPage(journal);
     while (!attendance.empty())
     {
         result += attendance.getNextAttendance();
@@ -94,4 +105,28 @@ post::PrintJournal::makeAttendance(const data::JournalTable& aJournal) noexcept
     attendance.reverse();
 
     return attendance;
+}
+
+std::string
+post::PrintJournal::makeFrontPage(const data::JournalTable& aJournal) noexcept
+{
+    auto connection = data::ConnectionManager::getUserConnection();
+    auto teacher    = connection.val.getData<data::User>(
+        "id=" + data::wrap(aJournal.teacherID));
+    auto plan =
+        connection.val.getData<data::Plan>("id=" + data::wrap(aJournal.planID));
+
+    static auto front = file::File::getAllData(
+        file::Path::getPathUnsafe("resource", "front.tex"), true);
+    std::string result = front;
+
+    auto numN    = result.find('N');
+    result[numN] = ' ';
+    result.insert(numN, plan.name);
+
+    auto numT    = result.find('T');
+    result[numT] = ' ';
+    result.insert(numT, teacher.surname + " " + teacher.name);
+
+    return result;
 }
