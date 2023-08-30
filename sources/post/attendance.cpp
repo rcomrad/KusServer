@@ -74,6 +74,13 @@ post::Attendance::emplaceLesson(uint8_t aDate,
 }
 
 void
+post::Attendance::addFiller() noexcept
+{
+    if (!dates.back().empty()) dates.back() += "&";
+    dates.back() += " ";
+}
+
+void
 post::Attendance::reverse() noexcept
 {
     std::reverse(attendance.begin(), attendance.end());

@@ -20,6 +20,7 @@ public:
     void emplaceLesson(uint8_t aDate,
                        const std::string& aTheme,
                        const std::string& aTeacher) noexcept;
+    void addFiller() noexcept;
 
     std::string getNextAttendance() noexcept;
     std::string getNextLessons() noexcept;

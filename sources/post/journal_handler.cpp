@@ -6,6 +6,8 @@
 #include <set>
 #include <string>
 
+#include "domain/date_and_time.hpp"
+
 #include "database/connection_manager.hpp"
 
 #include "file_data/file.hpp"
@@ -67,7 +69,7 @@ post::JournalHandler::makeSchedule(data::JournalTable& aJournal) noexcept
 
     std::vector<int> schedule;
     for (auto i : aJournal.schedule)
-        if (i >= '1' && i <= '7') schedule.emplace_back(i - '0');
+        if (i >= '1' && i <= '7') schedule.emplace_back(i - '1');
 
     data::User methodist = connection.val.getData<data::User>(
         "id = " + data::wrap(aJournal.methodistID));
@@ -108,13 +110,15 @@ post::JournalHandler::makeSchedule(data::JournalTable& aJournal) noexcept
         j++;
     }
 
+    // std::set<std::string> holidaysSet;
+    // for (auto& i : holidays)
+    // {
+    //     holidaysSet.insert(i.dateVal);
+    // }
     std::set<boost::gregorian::date> holidaysSet;
     for (auto& i : holidays)
     {
-        holidaysSet.insert(
-            boost::gregorian::date{uint16_t(std::stoi(i.dateVal.substr(0, 4))),
-                                   uint8_t(std::stoi(i.dateVal.substr(5, 2))),
-                                   uint8_t(std::stoi(i.dateVal.substr(8, 2)))});
+        holidaysSet.insert(dom::DateAndTime::getDate(i.dateVal));
     }
 
     data::DataArray<data::Theme> themes =
@@ -131,10 +135,7 @@ post::JournalHandler::makeSchedule(data::JournalTable& aJournal) noexcept
 
         auto newData = date + boost::gregorian::days(schedule[j++]);
         if (holidaysSet.count(newData)) continue;
-
-        std::string dateStr = std::to_string(newData.year()) + "-" +
-                              std::to_string(newData.month()) + "-" +
-                              std::to_string(newData.day());
+        auto dateStr = dom::DateAndTime::getDateStr(newData);
 
         lessons.emplace_back();
         lessons.back().themeID        = themes[i].id;

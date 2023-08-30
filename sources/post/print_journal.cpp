@@ -17,18 +17,22 @@ post::PrintJournal::process(const std::string& aData) noexcept
 
     int num = std::stoi(aData);
 
+    std::string name = dom::DateAndTime::getCurentTimeSafe();
+
     std::string output;
     output += file::File::getAllData(
         file::Path::getPathUnsafe("resource", "header.tex"), true);
     output += makeJournal(num);
     output += "\\end{document}";
 
-    result = file::File::writeData("print", "j.tex", output).value();
+    result = file::File::writeData("print", name + ".tex", output).value();
 
 #ifdef LINUS_LINUX
 
-    system(("pdflatex "s + result).c_str());
-    result = "print/j.pdf";
+    system(("cd /home/rcomrad/data/print; pwd; which zsh; ./pdf_compile "s +
+            result)
+               .c_str());
+    result = "print/" + name + ".pdf";
 
 #else
 
@@ -81,6 +85,12 @@ post::PrintJournal::makeAttendance(const data::JournalTable& aJournal) noexcept
         auto cur = dom::DateAndTime::getDate(l.dateVal);
         if (cur.month() != last.month() || cnt >= limit)
         {
+            while (cnt < limit)
+            {
+                attendance.addFiller();
+                ++cnt;
+            }
+
             attendance.newPage(cur.month().as_number());
             cnt = 0;
         }
@@ -113,8 +123,11 @@ post::PrintJournal::makeFrontPage(const data::JournalTable& aJournal) noexcept
     auto connection = data::ConnectionManager::getUserConnection();
     auto teacher    = connection.val.getData<data::User>(
         "id=" + data::wrap(aJournal.teacherID));
-    auto plan =
-        connection.val.getData<data::Plan>("id=" + data::wrap(aJournal.planID));
+    // auto plan =
+    //     connection.val.getData<data::Plan>("id=" +
+    //     data::wrap(aJournal.planID));
+    auto subject = connection.val.getData<data::Subject>(
+        "id=" + data::wrap(aJournal.subjectID));
 
     static auto front = file::File::getAllData(
         file::Path::getPathUnsafe("resource", "front.tex"), true);
@@ -122,7 +135,7 @@ post::PrintJournal::makeFrontPage(const data::JournalTable& aJournal) noexcept
 
     auto numN    = result.find('N');
     result[numN] = ' ';
-    result.insert(numN, plan.name);
+    result.insert(numN, subject.name);
 
     auto numT    = result.find('T');
     result[numT] = ' ';

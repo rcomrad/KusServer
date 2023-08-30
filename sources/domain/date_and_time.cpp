@@ -2,6 +2,10 @@
 
 #include <boost/date_time.hpp>
 
+#include <algorithm>
+
+#include "domain/metaprogramming.hpp"
+
 std::string
 dom::DateAndTime::getCurentTime() noexcept
 {
@@ -21,6 +25,15 @@ dom::DateAndTime::getCurentTime() noexcept
     return dateTime;
 }
 
+std::string
+dom::DateAndTime::getCurentTimeSafe() noexcept
+{
+    std::string result       = getCurentTime();
+    result[result.find(' ')] = '_';
+    std::replace(result.begin(), result.end(), ':', '-');
+    return result;
+}
+
 boost::gregorian::date
 dom::DateAndTime::getDate(const std::string& aDate) noexcept
 {
@@ -30,4 +43,16 @@ dom::DateAndTime::getDate(const std::string& aDate) noexcept
     boost::gregorian::date date{year, month, day};
 
     return date;
+}
+
+std::string
+dom::DateAndTime::getDateStr(const boost::gregorian::date& aDate) noexcept
+{
+    uint16_t year  = aDate.year();
+    uint16_t month = aDate.month().as_number();
+    uint16_t day   = aDate.day().as_number();
+
+    return std::to_string(year) + "-"s + (month < 10 ? "0"s : ""s) +
+           std::to_string(month) + "-"s + (day < 10 ? "0"s : ""s) +
+           std::to_string(day);
 }

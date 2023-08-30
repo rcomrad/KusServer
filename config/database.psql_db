@@ -42,7 +42,7 @@ TABLE journal_table
 	schedule character varying(255)
 
 TABLE subject
-	name character varying(50)
+	name character varying(100)
 
 TABLE mark
 	mark_value character varying(10) NOT NULL
