@@ -13,6 +13,9 @@ set(
     mark_handler.cpp
     mark_handler.hpp
 
+    multitool_handler.cpp
+    multitool_handler.hpp
+
     plan_handler.cpp
     plan_handler.hpp
 

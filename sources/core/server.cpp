@@ -99,6 +99,15 @@ core::Server::Server()
     ([](const std::string& aType, const std::string& aValue)
      { return get::CommandHandler::process(aType, aValue); });
 
+    // CROW_ROUTE(app, "/api/multitool/<string>")
+    //     .methods("POST"_method)(
+    //         [&](const crow::request& req, const std::string& aArg)
+    //         {
+    //             crow::response res;
+    //             res = post::PostHandler::uploadFromFileRequest(aType, req);
+    //             return res;
+    //         });
+
     //---------------------------------------------------------------------
 
     CROW_ROUTE(app, "/api/print_journal/<string>")

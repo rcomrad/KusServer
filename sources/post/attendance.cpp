@@ -7,6 +7,7 @@
 
 #include "file_data/file.hpp"
 #include "file_data/path.hpp"
+#include "tex_manager/tex_table.hpp"
 
 post::Attendance::Attendance(int aID, int aSize) noexcept : size(aSize)
 {
@@ -95,11 +96,40 @@ post::Attendance::getNextAttendance() noexcept
     static auto monthNums = file::File::getWordsMap(
         file::Path::getPathUnsafe("resource", "month.txt"), true);
 
-    static auto journalDate = file::File::getAllData(
-        file::Path::getPathUnsafe("resource", "attendance.tex"), true);
-    std::string result = journalDate;
+    // static auto journalDate = file::File::getAllData(
+    //     file::Path::getPathUnsafe("resource", "attendance.tex"), true);
+    // std::string result = journalDate;
 
-    std::string attStr;
+    tex::TexTable table({
+        {tex::ColumnType::Centr},
+        {tex::ColumnType::ParagraphLeft, 5},
+        {tex::ColumnType::ParagraphCentr, 0.4, 15}
+    });
+
+    table.setWithCount("УЧЁТ ПОСЕЩАЕМОСТИ И ВЫПОЛНЕНИЯ", tex::ColumnType::Right,
+                       17, tex::ColumnBorders::Nun);
+    table.newLine();
+
+    table.setWithRange("Месяц", tex::ColumnType::Left, 3, 9,
+                       tex::ColumnBorders::Nun);
+    table.setWithRange(monthNums[months.back()], tex::ColumnType::Right, 9,
+                       tex::ColumnBorders::Right);
+    months.pop_back();
+    table.newLine(3, 17);
+
+    table.pushBack("№");
+    table.pushBack("Фамилия, имя обучающегося");
+    table.setWithRange("Дата", tex::ColumnType::Centr, 2,
+                       tex::ColumnBorders::Right);
+    table.newLine(3, 17);
+
+    table.pushBack("");
+    table.pushBack("");
+    table.add("&");
+    table.add(dates.back());
+    dates.pop_back();
+    table.newLine();
+
     int cnt = 1;
     for (auto& flag : {false, true})
     {
@@ -110,34 +140,21 @@ post::Attendance::getNextAttendance() noexcept
             int id                  = i.second;
             const std::string& name = i.first;
 
-            attStr += std::to_string(cnt);
-            attStr += "&";
-            attStr += name;
+            table.pushBack(cnt);
+            table.pushBack(name);
             for (auto& j : attendance.back()[id])
             {
-                attStr += "&" + j;
+                table.pushBack(j);
             }
-            attStr += "\n\\\\ \\hline\n";
+            table.newLine();
+
             ++cnt;
         }
     }
     attendance.pop_back();
 
-    auto numA    = result.find('A');
-    result[numA] = ' ';
-    result.insert(numA, attStr);
-
-    auto numD    = result.find('D');
-    result[numD] = ' ';
-    result.insert(numD, dates.back());
-    dates.pop_back();
-
-    auto numM    = result.find('M');
-    result[numM] = ' ';
-    result.insert(numM, monthNums[months.back()]);
-    months.pop_back();
-
-    result += "\\clearpage\n";
+    table.finish();
+    std::string result = "\n" + table.get() + "\\clearpage\n";
 
     return result;
 }

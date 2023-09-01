@@ -10,5 +10,4 @@ cmake .. -DVCPKG_ROOT=/home/$KUS_BUILD_USER/vcpkg
 # make -j $(nproc)
 make
 cd ..
-rm -rf build
 cd devops/maintain/scripts
