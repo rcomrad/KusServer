@@ -11,3 +11,5 @@ sudo chmod +x build.sh
 sudo -H -u $KUS_BUILD_USER ./build.sh
 
 sudo systemctl restart KusManager
+
+sudo chmod +x ../../../scripts/pdf_compile.sh

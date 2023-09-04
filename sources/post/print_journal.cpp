@@ -39,8 +39,10 @@ post::PrintJournal::process(const std::string& aData) noexcept
 #ifdef LINUS_LINUX
 
     system(
-        ("./"s + file::Path::getPathUnsafe("pdf_compile.sh") + result).c_str());
-    result = "print/" + name + ".pdf";
+        (file::Path::getPathUnsafe("pdf_compile.sh") + " "s + result).c_str());
+    result = result.substr(result.find("print"), result.size());
+    result.resize(result.size() - 3);
+    result += "pdf";
 
 #else
 
