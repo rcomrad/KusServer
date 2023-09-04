@@ -1,5 +1,6 @@
 #include "parser.hpp"
 
+#include "domain/cyrillic.hpp"
 #include "domain/log.hpp"
 
 #include "file.hpp"
@@ -63,14 +64,16 @@ file::Parser::slice(const std::string& aStr,
 
         if (aDelimiters.find(i) == std::string::npos)
         {
-            if (!(std::isspace(i) && result.back().empty()))
+            // TODO: unicode
+            //  if (!(std::isspace(i) && result.back().empty()))
+            if (!(dom::isSpace(i) && result.back().empty()))
             {
                 result.back().push_back(i);
             }
         }
         else if (!result.back().empty())
         {
-            while (!result.back().empty() && std::isspace(result.back().back()))
+            while (!result.back().empty() && dom::isSpace(result.back().back()))
             {
                 result.back().pop_back();
             }

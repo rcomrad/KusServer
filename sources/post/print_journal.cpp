@@ -8,6 +8,7 @@
 #include "database/connection_manager.hpp"
 
 #include "file_data/file.hpp"
+#include "file_data/parser.hpp"
 #include "file_data/path.hpp"
 
 std::string
@@ -15,23 +16,30 @@ post::PrintJournal::process(const std::string& aData) noexcept
 {
     std::string result;
 
-    int num = std::stoi(aData);
+    // int num = std::stoi(aData);
 
-    std::string name = dom::DateAndTime::getCurentTimeSafe();
+    // std::string name = dom::DateAndTime::getCurentTimeSafe();
 
-    std::string output;
-    output += file::File::getAllData(
-        file::Path::getPathUnsafe("resource", "header.tex"), true);
-    output += makeJournal(num);
-    output += "\\end{document}";
+    // std::string output;
+    // output += file::File::getAllData(
+    //     file::Path::getPathUnsafe("resource", "header.tex"), true);
+    // output += makeJournal(num);
+    // output += "\\end{document}";
 
-    result = file::File::writeData("print", name + ".tex", output).value();
+    // result = file::File::writeData("print", name + ".tex", output).value();
+
+    auto nums = file::Parser::slice(aData, " ");
+    tex::TexFile outFile;
+    for (auto i : nums)
+    {
+        makeJournal(outFile, std::stoi(i));
+    }
+    result = outFile.printToFile();
 
 #ifdef LINUS_LINUX
 
-    system(("cd /home/rcomrad/data/print; pwd; which zsh; ./pdf_compile "s +
-            result)
-               .c_str());
+    system(
+        ("./"s + file::Path::getPathUnsafe("pdf_compile.sh") + result).c_str());
     result = "print/" + name + ".pdf";
 
 #else
@@ -44,24 +52,64 @@ post::PrintJournal::process(const std::string& aData) noexcept
 }
 
 std::string
-post::PrintJournal::makeJournal(int aID) noexcept
+post::PrintJournal::makeJournal(tex::TexFile& aTexFile, int aID) noexcept
 {
     std::string result;
 
     data::JournalTable journal;
+    data::User teacher;
+    data::Subject subject;
+    data::Grade group;
+    data::School school;
     {
         auto connection = data::ConnectionManager::getUserConnection();
         journal =
             connection.val.getData<data::JournalTable>("id=" + data::wrap(aID));
+        teacher = connection.val.getData<data::User>(
+            "id=" + data::wrap(journal.teacherID));
+        subject = connection.val.getData<data::Subject>(
+            "id=" + data::wrap(journal.subjectID));
+        group = connection.val.getData<data::Grade>(
+            "id=" + data::wrap(journal.gradeID));
+        school = connection.val.getData<data::School>(
+            "id=" + data::wrap(teacher.schoolID));
     }
 
     auto attendance = makeAttendance(journal);
-    result += makeFrontPage(journal);
-    while (!attendance.empty())
+
+    aTexFile.setVariable("$attendance", attendance.getAttendance());
+    aTexFile.setVariable("$lesson", attendance.getLessons());
+    aTexFile.setVariable("$date", attendance.getDates());
+    aTexFile.setVariable("$month", attendance.getMonths());
+
+    aTexFile.setVariable("$teacher", std::vector<std::string>{
+                                         teacher.surname + " " + teacher.name,
+                                         teacher.surname + " " + teacher.name});
+    aTexFile.setVariable("$subject",
+                         std::vector<std::string>{subject.name, subject.name});
+    aTexFile.setVariable(
+        "$school", std::vector<std::string>{school.fullName, school.fullName});
+
+    aTexFile.setVariable("$group", std::vector<std::string>{group.name});
+
+    static auto week =
+        file::File::getLines(file::Path::getPathUnsafe("week.txt"));
+
+    auto shedule = file::Parser::slice(journal.schedule, " ");
+
+    std::string last              = "";
+    std::vector<std::string> time = {"17.20-18.05", "18.15-19.00"};
+    std::string weekTime;
+    for (auto& i : shedule)
     {
-        result += attendance.getNextAttendance();
-        result += attendance.getNextLessons();
+        weekTime += week[std::stoi(i)];
+        weekTime += "&"s + (i == last ? time[1] : time[0]);
+        last = i;
+        weekTime += "\\\\ \\hline\n";
     }
+    aTexFile.setVariable("$schedule", std::vector<std::string>{weekTime});
+
+    aTexFile.makeFromFIle("journal.textemp");
 
     return result;
 }
@@ -111,8 +159,6 @@ post::PrintJournal::makeAttendance(const data::JournalTable& aJournal) noexcept
 
         ++cnt;
     }
-
-    attendance.reverse();
 
     return attendance;
 }

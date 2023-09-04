@@ -4,7 +4,7 @@
 #include <string>
 
 #include "database/database_structures.hpp"
-
+#include "tex_manager/tex_file.hpp"
 #include "attendance.hpp"
 
 namespace post
@@ -15,7 +15,7 @@ public:
     static std::string process(const std::string& aData) noexcept;
 
 private:
-    static std::string makeJournal(int aID) noexcept;
+    static std::string makeJournal(tex::TexFile& aTexFile, int aID) noexcept;
     static Attendance makeAttendance(
         const data::JournalTable& aJournal) noexcept;
     static std::string makeFrontPage(

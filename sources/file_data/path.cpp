@@ -216,6 +216,20 @@ file::Path::addFoldersFrom(const std::string& aPath) noexcept
     getInstance().addAllFolders(aPath);
 }
 
+void
+file::Path::addContentFrom(const std::string& aPath,
+                           FileType aFIleType,
+                           LevelType aLevelType) noexcept
+{
+
+    auto& instance = getInstance();
+    auto cont      = getContentMap(aPath, aFIleType, aLevelType);
+    for (auto& i : cont)
+    {
+        instance.mPaths[i.first] = i.second;
+    }
+}
+
 //--------------------------------------------------------------------------------
 
 std::unordered_map<std::string, std::string>

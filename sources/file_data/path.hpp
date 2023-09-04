@@ -16,6 +16,20 @@ namespace file
 class Path
 {
 public:
+    enum class FileType
+    {
+        Nun    = 0,
+        File   = 1,
+        Folder = 2,
+        All    = 3
+    };
+    enum class LevelType
+    {
+        Nun,
+        Current,
+        Recursive
+    };
+
     HOLY_TRINITY_SINGLE(Path);
 
     static boost::optional<const std::string&> getPath(
@@ -34,20 +48,11 @@ public:
     static bool clearFolder(const std::string& aName) noexcept;
 
     static void addFoldersFrom(const std::string& aPath) noexcept;
+    static void addContentFrom(
+        const std::string& aPath,
+        FileType aFIleType   = FileType::File,
+        LevelType aLevelType = LevelType::Current) noexcept;
 
-    enum class FileType
-    {
-        Nun    = 0,
-        File   = 1,
-        Folder = 2,
-        All    = 3
-    };
-    enum class LevelType
-    {
-        Nun,
-        Current,
-        Recursive
-    };
     static std::vector<std::string> getContent(
         const std::string& aPath,
         FileType aFIleType   = FileType::File,

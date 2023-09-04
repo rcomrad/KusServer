@@ -1,5 +1,9 @@
 #include "tex_table.hpp"
 
+#include <algorithm>
+
+#include "file_data/parser.hpp"
+
 std::unordered_map<tex::ColumnType, std::string> tex::TexTable::gPosition = {
     {tex::ColumnType::Nun,            "" },
     {tex::ColumnType::Left,           "l"},
@@ -10,8 +14,11 @@ std::unordered_map<tex::ColumnType, std::string> tex::TexTable::gPosition = {
     {tex::ColumnType::ParagraphCentr, "P"}
 };
 
-tex::TexTable::TexTable(const std::vector<Column>& aSettings) noexcept
-    : mSize(0), mCurColumn(1)
+tex::TexTable::TexTable(
+    const std::vector<Column>& aSettings,
+    std::unordered_map<std::string, std::vector<std::string>>*
+        aVariables) noexcept
+    : TexBase(aVariables), mSize(0), mCurColumn(1)
 {
     mData.reserve(2000);
     mData += "\\begin{tabular}{ ";
@@ -31,6 +38,58 @@ tex::TexTable::TexTable(const std::vector<Column>& aSettings) noexcept
         mSize += i.count;
     }
     mData += " }\n";
+}
+
+tex::TexTable::TexTable(
+    const std::vector<std::string>& aData,
+    std::unordered_map<std::string, std::vector<std::string>>*
+        aVariables) noexcept
+    : TexBase(aVariables), mSize(0), mCurColumn(1)
+{
+    fromRawData(aData);
+}
+
+void
+tex::TexTable::fromRawData(const std::vector<std::string>& aData) noexcept
+{
+    mData += "\\begin{tabular}{ " + aData[1] + "}\n";
+    std::replace(mData.begin(), mData.end(), 'R', 'p');
+    std::replace(mData.begin(), mData.end(), 'C', 'P');
+
+    for (int i = 2; i < aData.size(); ++i)
+    {
+        if (aData[i][0] == '\\')
+        {
+            auto parts = file::Parser::slice(aData[i], " ", "\\");
+            if (parts.size() < 2) mData += "\\\\ \\hline";
+            else mData += "\\\\ \\cline{" + parts[0] + "-" + parts[1] + "}";
+        }
+        else
+        {
+            auto parts = file::Parser::slice(aData[i], ";");
+            for (auto& j : parts)
+            {
+                if (j == "-") pushBack(" ");
+                else if (j[0] != '[') pushBack(j);
+                else
+                {
+                    auto blocks = file::Parser::slice(j, ",", "[]");
+                    mData += "\\multicolumn";
+
+                    std::replace(blocks[1].begin(), blocks[1].end(), 'R', 'p');
+                    std::replace(blocks[1].begin(), blocks[1].end(), 'C', 'P');
+
+                    // if (block.size() == 2) mData += "{" + mSize + "}";
+                    for (auto& k : blocks) pushBack("{", k, "}");
+                    mData += " ";
+                }
+                mData.push_back('&');
+            }
+            mData.pop_back();
+        }
+        mData += "\n";
+    }
+    // mData += "\\end{tabular}\n";
 }
 
 std::string

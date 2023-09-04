@@ -22,10 +22,12 @@ public:
                        const std::string& aTeacher) noexcept;
     void addFiller() noexcept;
 
-    std::string getNextAttendance() noexcept;
-    std::string getNextLessons() noexcept;
+    std::vector<std::string> getAttendance() noexcept;
+    std::vector<std::string> getLessons() noexcept;
+    std::vector<std::string> getDates() noexcept;
+    std::vector<std::string> getMonths() noexcept;
 
-    void reverse() noexcept;
+    // void reverse() noexcept;
     bool empty() const noexcept;
 
 private:

@@ -4,6 +4,14 @@
 #include <unordered_map>
 #include <vector>
 
+bool
+dom::isSpace(char c) noexcept
+{
+    // TODO:
+    //  std::isspace
+    return c == ' ' || c == '\t' || c == '\n';
+}
+
 //--------------------------------------------------------------------------------
 
 dom::Cyrilic dom::Cyrilic::global;

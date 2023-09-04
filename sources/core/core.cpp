@@ -85,6 +85,11 @@ core::Core::run() noexcept
 {
     auto& state = file::VariableStorage::getInstance();
 
+    file::Path::addContentFrom(file::Path::getPathUnsafe("resource"),
+                               file::Path::FileType::File,
+                               file::Path::LevelType::Recursive);
+    file::Path::addContentFrom(file::Path::getPathUnsafe("scripts"));
+
     // TODO: optional
     bool flag = true;
     while (true)

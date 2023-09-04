@@ -1,21 +1,31 @@
 \newgeometry{
- left=7mm,
+ left=25mm,
  top=30mm,
  }
-
-
 \thispagestyle{empty}
+
 \begin{center}
 
 %\smallskip
 %\vspace{200mm} %5mm vertical space
- {\huge МИНИСТЕРСТВО ПРОСВЕЩЕНИЯ }
-\\
-{\huge  РОССИЙСКОЙ ФЕДЕРАЦИИ }
+ {\huge ГОСУДАРСТВЕННОЕ БЮДЖЕТНОЕ }
+  \\
+\vspace{5mm} %5mm vertical space
+ {\huge НЕТИПОВОЕ }
+  \\
+\vspace{5mm} %5mm vertical space
+ {\huge ОБЩЕОБРАЗОВАТЕЛЬНОЕ УЧРЕЖДЕНИЕ }
+ \\
+\vspace{5mm} %5mm vertical space
+{\huge  
+$school
+ }
+ \\
 
 %\bigskip
 \vspace{50mm} %5mm vertical space
 {\huge  ЖУРНАЛ }
+\\
 \vspace{30mm} %5mm vertical space
 
 {\huge УЧЁТА РАБОТЫ ПЕДАГОГА }
@@ -28,12 +38,16 @@
 \\
 \vspace{2mm} %5mm vertical space
 {\huge  на 2023 - 2024 учебный год }
-
+\\
 \vspace{50mm} %5mm vertical space
-{\huge N }
+{\huge 
+$subject
+ }
 \\
 \vspace{2mm} %5mm vertical space
-{\huge T }
+{\huge 
+$teacher
+ }
 
 \end{center}
 

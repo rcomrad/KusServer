@@ -40,6 +40,10 @@ private:
     char* toLowerCyrillic(const char* aCharacter) noexcept;
     char* toUpperCyrillic(const char* aCharacter) noexcept;
 };
+
+bool
+isSpace(char c) noexcept;
+
 } // namespace dom
 
 //--------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
-#ifndef TEX_FILE_HPP
-#define TEX_FILE_HPP
+#ifndef TEX_TABLE_HPP
+#define TEX_TABLE_HPP
 
 #include <string>
 #include <unordered_map>
@@ -8,6 +8,8 @@
 
 #include "domain/holy_trinity.hpp"
 #include "domain/to_string.hpp"
+
+#include "tex_base.hpp"
 
 namespace tex
 {
@@ -30,7 +32,7 @@ enum class ColumnBorders
     Both
 };
 
-class TexTable
+class TexTable : public TexBase
 {
 public:
     struct Column
@@ -48,26 +50,40 @@ public:
         int count = 1;
     };
 
-    TexTable(const std::vector<Column>& aSettings) noexcept;
+    TexTable(const std::vector<Column>& aSettings,
+             std::unordered_map<std::string, std::vector<std::string>>*
+                 aVariables = nullptr) noexcept;
+    TexTable(const std::vector<std::string>& aData,
+             std::unordered_map<std::string, std::vector<std::string>>*
+                 aVariables = nullptr) noexcept;
     HOLY_TRINITY_NOCOPY(TexTable);
 
+    void fromRawData(const std::vector<std::string>& aData) noexcept;
     std::string get() const noexcept;
 
-    template <typename T>
-    void pushBack(T&& aData) noexcept
+    template <typename... Args>
+    void pushBack(Args&&... args) noexcept
     {
-        if (mCurColumn++ != 1) mData += "& ";
-        mData += dom::toString(std::forward<T>(aData));
-        mData += " ";
+        // if (mCurColumn++ != 1) mData += "& ";
+        // mData += dom::toString(std::forward<T>(aData));
+        // mData += " ";
+
+        // mData += aArgs[0] == '$' ? getVariable(aArgs) : aArgs;
+        // (void)(mData += (getVariable(std::forward<Args>(args)), 0), ...);
+        mData += (getVariable(std::forward<Args>(args)) + ...);
+        // mData.push_back('&');
+        //(void)(temp.emplace_back(toString(std::forward<Args>(args)), 0), ...);
     }
 
     template <typename T>
     void setWithCount(
         T&& aData,
         ColumnType aType,
-        int aSize,
+        int aSize                    = 0,
         ColumnBorders aColumnBorders = ColumnBorders::Both) noexcept
     {
+        if (aSize == 0) aSize = mSize;
+
         if (mCurColumn != 1) mData += "& ";
         mCurColumn += aSize;
 
@@ -120,4 +136,4 @@ private:
 
 }; // namespace tex
 
-#endif // !TEX_FILE_HPP
+#endif // !TEX_TABLE_HPP

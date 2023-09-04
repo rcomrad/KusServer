@@ -3,6 +3,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1,T2A]{fontenc}
 
+\usepackage{indentfirst}
+
 \usepackage{expl3}
 \usepackage{CJKutf8}
 \usepackage[english,russian]{babel}
@@ -18,5 +20,3 @@
  left=7mm,
  top=10mm,
  }
- 
-\begin{document}
