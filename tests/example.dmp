@@ -78,9 +78,9 @@ competition
 	Чуток пробный;2023-04-14 01:00:00;2023-04-14 23:00:00
 END
 
-user_competition
-	25;1
-	25;2
+competition_user
+	1;26
+	2;26
 END
 
 question
@@ -89,7 +89,7 @@ question
 	Задача 3;t3;1;1;ag.
 END
 
-competition_problem
+competition_question
 	1;1;Задача 1
 	1;2;Задача 2
 	2;3;Задача 3

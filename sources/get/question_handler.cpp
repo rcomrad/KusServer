@@ -15,28 +15,29 @@ get::QuestionHandler::process(int aQuestionID, int aUserId) noexcept
             "id=" + data::wrap(aQuestionID));
     }
 
+    auto temp = question.getAsJson({"nickname", "jury_answer"});
+    data::Answer answer;
+    {
+        auto connection = data::ConnectionManager::getUserConnection();
+        answer          = connection.val.getData<data::Answer>(
+            "user_id=" + data::wrap(aUserId) + " AND " +
+            "question_id=" + data::wrap(aQuestionID));
+    }
+    if (answer.id)
+    {
+        answer.value.pop_back();
+        temp["answer"]  = std::move(answer.value);
+        temp["verdict"] = std::move(answer.verdict);
+    }
+
     auto path = file::Path::getPath("question");
     if (path)
     {
-        auto temp   = question.getAsJson({"nickname"});
         auto legend = file::File::getAllData(path.value() + question.nickname +
                                              "/legend.txt");
         temp["legend"] = std::move(legend);
-
-        data::Answer answer;
-        {
-            auto connection = data::ConnectionManager::getUserConnection();
-            answer          = connection.val.getData<data::Answer>(
-                "user_id=" + data::wrap(aUserId) + " AND " +
-                "questionID=" + data::wrap(aQuestionID));
-        }
-        if (answer.id)
-        {
-            temp["answer"]  = std::move(answer.value);
-            temp["verdict"] = std::move(answer.value);
-        }
-
-        result["question"] = std::move(temp);
     }
+
+    result["question"] = std::move(temp);
     return result;
 }

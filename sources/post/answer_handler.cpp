@@ -30,22 +30,28 @@ post::AnswerHandler::process(post::PostRequest<data::Answer>& aReq) noexcept
     }
 
     data::Question question;
+    data::Answer oldAnswer;
     {
         auto connection = data::ConnectionManager::getUserConnection();
         question        = connection.val.getData<data::Question>(
             "id=" + data::wrap(answer.questionID));
+        oldAnswer = connection.val.getData<data::Answer>(
+            "user_id=" + data::wrap(answer.userID) + " AND " +
+            "question_id=" + data::wrap(answer.questionID));
     }
+    if (oldAnswer.id) answer.id = oldAnswer.id;
     answer.verdict = answer.value == question.juryAnswer ? 'T' : 'F';
 
-    if (file::VariableStorage::getInstance().getFlagUnsafe("answer_auto_check"))
-    {
-        // auto ansTable = connection.val.getData<data::Question>(
-        //     "_id = " + data::wrap(table[0].questionID));
-        //     auto answer = ansTable[0].juryAnswer;
+    // if
+    // (file::VariableStorage::getInstance().getFlagUnsafe("answer_auto_check"))
+    // {
+    // auto ansTable = connection.val.getData<data::Question>(
+    //     "_id = " + data::wrap(table[0].questionID));
+    //     auto answer = ansTable[0].juryAnswer;
 
-        // if (answer == table[0].value) table[0].is_correct = 'T';
-        // else table[0].is_correct = 'F';
-    }
+    // if (answer == table[0].value) table[0].is_correct = 'T';
+    // else table[0].is_correct = 'F';
+    // }
 
     // if (mProgramState.checkFlag(core::Flag::TIME_SET))
     // {
