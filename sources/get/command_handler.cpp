@@ -1,8 +1,13 @@
 #include "command_handler.hpp"
 
+#include "domain/date_and_time.hpp"
+
 #include "database/connection_manager.hpp"
 
+#include "file_data/file.hpp"
+#include "file_data/path.hpp"
 #include "file_data/variable_storage.hpp"
+#include "get/get_router.hpp"
 
 std::unordered_map<std::string, decltype(&get::CommandHandler::restart)>
     get::CommandHandler::mRouterMap = {
@@ -21,9 +26,33 @@ get::CommandHandler::process(const std::string& aType,
     return res;
 }
 
+std::vector<std::string>
+foo()
+{
+    auto words = file::File::getWords(
+        file::Path::getPathUnsafe("config", "database.psql_db"));
+
+    std::vector<std::string> result;
+    for (auto& i : words)
+    {
+        if (i[0] == "TABLE") result.emplace_back(std::move(i[1]));
+    }
+
+    return result;
+}
+
 std::string
 get::CommandHandler::restart(const std::string aValue) noexcept
 {
+    static std::vector<std::string> allTableNames = foo();
+    std::string dump;
+    for (auto& i : allTableNames)
+    {
+        dump += get::GetRouter::dumpRouter(i, false);
+    }
+    file::File::writeData("dump",
+                          dom::DateAndTime::getCurentTimeSafe() + ".dmp", dump);
+
     std::string res = "ERROR\nNo restart :( \nInvalid restart value.";
     auto& state     = file::VariableStorage::getInstance();
 

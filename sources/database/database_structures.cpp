@@ -143,32 +143,6 @@ data::FileBase::reset()
     ptrs[1] = (void*)(&num);
 }
 
-std::string data::FileExchangeBase::tableName         = {"file_exchange"};
-std::vector<data::Type> data::FileExchangeBase::types = {
-    data::Type::INT,    data::Type::STRING, data::Type::STRING,
-    data::Type::STRING, data::Type::STRING, data::Type::STRING};
-std::vector<std::string> data::FileExchangeBase::columnNames = {
-    "id", "type", "direction", "index", "name", "extension"};
-std::unordered_map<std::string, uint8_t> data::FileExchangeBase::nameToNum = {
-    {"id",        0},
-    {"type",      1},
-    {"direction", 2},
-    {"index",     3},
-    {"name",      4},
-    {"extension", 5}
-};
-
-void
-data::FileExchangeBase::reset()
-{
-    ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&type);
-    ptrs[2] = (void*)(&direction);
-    ptrs[3] = (void*)(&index);
-    ptrs[4] = (void*)(&name);
-    ptrs[5] = (void*)(&extension);
-}
-
 std::string data::GradeBase::tableName         = {"grade"};
 std::vector<data::Type> data::GradeBase::types = {
     data::Type::INT, data::Type::STRING, data::Type::INT, data::Type::BOOL};
@@ -307,6 +281,36 @@ data::MarkBase::reset()
     ptrs[2] = (void*)(&studentID);
     ptrs[3] = (void*)(&lessonID);
     ptrs[4] = (void*)(&journalTableID);
+}
+
+std::string data::MultitoolFormBase::tableName         = {"multitool_form"};
+std::vector<data::Type> data::MultitoolFormBase::types = {
+    data::Type::INT,    data::Type::STRING, data::Type::STRING,
+    data::Type::STRING, data::Type::STRING, data::Type::STRING,
+    data::Type::STRING};
+std::vector<std::string> data::MultitoolFormBase::columnNames = {
+    "id",       "module",    "user_name", "tech_name",
+    "type_val", "type_name", "type_ext"};
+std::unordered_map<std::string, uint8_t> data::MultitoolFormBase::nameToNum = {
+    {"id",        0},
+    {"module",    1},
+    {"user_name", 2},
+    {"tech_name", 3},
+    {"type_val",  4},
+    {"type_name", 5},
+    {"type_ext",  6}
+};
+
+void
+data::MultitoolFormBase::reset()
+{
+    ptrs[0] = (void*)(&id);
+    ptrs[1] = (void*)(&module);
+    ptrs[2] = (void*)(&userName);
+    ptrs[3] = (void*)(&techName);
+    ptrs[4] = (void*)(&typeVal);
+    ptrs[5] = (void*)(&typeName);
+    ptrs[6] = (void*)(&typeExt);
 }
 
 std::string data::PlanBase::tableName         = {"plan"};

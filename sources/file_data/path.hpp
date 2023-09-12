@@ -59,8 +59,8 @@ public:
         LevelType aLevelType = LevelType::Current) noexcept;
     static std::unordered_map<std::string, std::string> getContentMap(
         const std::string& aPath,
-        FileType aFIleType,
-        LevelType aLevelType) noexcept;
+        FileType aFIleType   = FileType::File,
+        LevelType aLevelType = LevelType::Current) noexcept;
 
 private:
     std::unordered_map<std::string, std::string> mPaths;

@@ -33,8 +33,26 @@ get::QuestionHandler::process(int aQuestionID, int aUserId) noexcept
     auto path = file::Path::getPath("question");
     if (path)
     {
-        auto legend = file::File::getAllData(path.value() + question.nickname +
-                                             "/legend.txt");
+        std::string legend;
+
+        std::string folder = path.value() + question.nickname;
+        auto fileData      = file::File::getLines(folder + "/legend.txt");
+        for (auto& i : fileData)
+        {
+            legend += std::move(i);
+            legend += " <br> ";
+        }
+
+        auto data = file::Path::getContentMap(folder);
+        for (auto& i : data)
+        {
+            if (i.first == "legend.txt") continue;
+
+            if (i.first.find(".gif") || i.first.find(".png") ||
+                i.first.find(".jpg"))
+                legend += " <img src=\"https://kusmirror.ru/question/" +
+                          question.nickname + "/" + i.first + "\"/> ";
+        }
         temp["legend"] = std::move(legend);
     }
 

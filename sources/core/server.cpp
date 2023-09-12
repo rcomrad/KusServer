@@ -129,7 +129,7 @@ core::Server::Server()
 
     CROW_ROUTE(app, "/api/dump/<string>")
     ([&](const std::string& aName)
-     { return get::GetRouter::dumpRouter(aName); });
+     { return get::GetRouter::dumpRouter(aName, true); });
 
     CROW_ROUTE(app, "/api/get_all_competition/<int>/<int>")
     ([&](int aUserID, int aCompetitionID)

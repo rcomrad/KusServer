@@ -39,25 +39,31 @@ public:
         return result;
     }
 
+    // TODO: better switch
     template <typename T>
-    static std::string dump() noexcept
+    static std::string dump(bool aWriteToFile) noexcept
     {
         auto connection  = data::ConnectionManager::getUserConnection();
         std::string data = getDataAsDMP<T>();
 
         std::string filePath;
+
+        if (aWriteToFile)
         {
-            auto connection = data::ConnectionManager::getUserConnection();
-            auto table      = connection.val.getData<data::File>();
-            filePath        = file::Path::getPathUnsafe(
-                "dump",
-                std::to_string(table.num++) + "-" + T::tableName + ".dmp");
-            connection.val.update(table);
+            {
+                auto connection = data::ConnectionManager::getUserConnection();
+                auto table      = connection.val.getData<data::File>();
+                filePath        = file::Path::getPathUnsafe(
+                    "dump",
+                    std::to_string(table.num++) + "-" + T::tableName + ".dmp");
+                connection.val.update(table);
+            }
+
+            std::ofstream out(filePath);
+            out << data;
         }
 
-        std::ofstream out(filePath);
-        out << data;
-        return filePath;
+        return aWriteToFile ? filePath : data;
     }
 
     template <typename T>
