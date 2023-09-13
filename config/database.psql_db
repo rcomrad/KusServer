@@ -121,9 +121,17 @@ TABLE answer
 	weight integer NOT NULL
 	value character varying(12) NOT NULL
 
-TABLE file_exchange
-	type character varying(10) NOT NULL
-	direction character varying(1) NOT NULL
-	index character varying(4) NOT NULL
-	name character varying(40) NOT NULL
-	extension character varying(5) NOT NULL
+TABLE form
+	module character varying(20) NOT NULL
+	userName character varying(50) NOT NULL
+	techName character varying(20) NOT NULL
+
+TABLE field
+	type character varying(50) NOT NULL
+	info character varying(50) NOT NULL
+	name character varying(50) NOT NULL
+	label character varying(50) NOT NULL
+
+TABLE field_form
+	field_id integer NOT NULL
+	form_id integer NOT NULL

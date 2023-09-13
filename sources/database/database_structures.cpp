@@ -127,6 +127,49 @@ data::DummyBase::reset()
     ptrs[0] = (void*)(&id);
 }
 
+std::string data::FieldBase::tableName         = {"field"};
+std::vector<data::Type> data::FieldBase::types = {
+    data::Type::INT, data::Type::STRING, data::Type::STRING, data::Type::STRING,
+    data::Type::STRING};
+std::vector<std::string> data::FieldBase::columnNames = {"id", "type", "info",
+                                                         "name", "label"};
+std::unordered_map<std::string, uint8_t> data::FieldBase::nameToNum = {
+    {"id",    0},
+    {"type",  1},
+    {"info",  2},
+    {"name",  3},
+    {"label", 4}
+};
+
+void
+data::FieldBase::reset()
+{
+    ptrs[0] = (void*)(&id);
+    ptrs[1] = (void*)(&type);
+    ptrs[2] = (void*)(&info);
+    ptrs[3] = (void*)(&name);
+    ptrs[4] = (void*)(&label);
+}
+
+std::string data::FieldFormBase::tableName         = {"field_form"};
+std::vector<data::Type> data::FieldFormBase::types = {
+    data::Type::INT, data::Type::INT, data::Type::INT};
+std::vector<std::string> data::FieldFormBase::columnNames = {"id", "field_id",
+                                                             "form_id"};
+std::unordered_map<std::string, uint8_t> data::FieldFormBase::nameToNum = {
+    {"id",       0},
+    {"field_id", 1},
+    {"form_id",  2}
+};
+
+void
+data::FieldFormBase::reset()
+{
+    ptrs[0] = (void*)(&id);
+    ptrs[1] = (void*)(&fieldID);
+    ptrs[2] = (void*)(&formID);
+}
+
 std::string data::FileBase::tableName                = {"file"};
 std::vector<data::Type> data::FileBase::types        = {data::Type::INT,
                                                         data::Type::INT};
@@ -141,6 +184,28 @@ data::FileBase::reset()
 {
     ptrs[0] = (void*)(&id);
     ptrs[1] = (void*)(&num);
+}
+
+std::string data::FormBase::tableName         = {"form"};
+std::vector<data::Type> data::FormBase::types = {
+    data::Type::INT, data::Type::STRING, data::Type::STRING,
+    data::Type::STRING};
+std::vector<std::string> data::FormBase::columnNames = {"id", "module",
+                                                        "userName", "techName"};
+std::unordered_map<std::string, uint8_t> data::FormBase::nameToNum = {
+    {"id",       0},
+    {"module",   1},
+    {"userName", 2},
+    {"techName", 3}
+};
+
+void
+data::FormBase::reset()
+{
+    ptrs[0] = (void*)(&id);
+    ptrs[1] = (void*)(&module);
+    ptrs[2] = (void*)(&userName);
+    ptrs[3] = (void*)(&techName);
 }
 
 std::string data::GradeBase::tableName         = {"grade"};
@@ -281,36 +346,6 @@ data::MarkBase::reset()
     ptrs[2] = (void*)(&studentID);
     ptrs[3] = (void*)(&lessonID);
     ptrs[4] = (void*)(&journalTableID);
-}
-
-std::string data::MultitoolFormBase::tableName         = {"multitool_form"};
-std::vector<data::Type> data::MultitoolFormBase::types = {
-    data::Type::INT,    data::Type::STRING, data::Type::STRING,
-    data::Type::STRING, data::Type::STRING, data::Type::STRING,
-    data::Type::STRING};
-std::vector<std::string> data::MultitoolFormBase::columnNames = {
-    "id",       "module",    "user_name", "tech_name",
-    "type_val", "type_name", "type_ext"};
-std::unordered_map<std::string, uint8_t> data::MultitoolFormBase::nameToNum = {
-    {"id",        0},
-    {"module",    1},
-    {"user_name", 2},
-    {"tech_name", 3},
-    {"type_val",  4},
-    {"type_name", 5},
-    {"type_ext",  6}
-};
-
-void
-data::MultitoolFormBase::reset()
-{
-    ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&module);
-    ptrs[2] = (void*)(&userName);
-    ptrs[3] = (void*)(&techName);
-    ptrs[4] = (void*)(&typeVal);
-    ptrs[5] = (void*)(&typeName);
-    ptrs[6] = (void*)(&typeExt);
 }
 
 std::string data::PlanBase::tableName         = {"plan"};

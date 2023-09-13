@@ -110,6 +110,40 @@ struct DummyBase : public BaseDataStruct<1>
 
 using Dummy = UpperDataStruct<DummyBase>;
 
+struct FieldBase : public BaseDataStruct<5>
+{
+    int id = 0;
+    std::string type;
+    std::string info;
+    std::string name;
+    std::string label;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::vector<std::string> columnNames;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
+
+    void reset();
+};
+
+using Field = UpperDataStruct<FieldBase>;
+
+struct FieldFormBase : public BaseDataStruct<3>
+{
+    int id      = 0;
+    int fieldID = 0;
+    int formID  = 0;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::vector<std::string> columnNames;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
+
+    void reset();
+};
+
+using FieldForm = UpperDataStruct<FieldFormBase>;
+
 struct FileBase : public BaseDataStruct<2>
 {
     int id  = 0;
@@ -124,6 +158,23 @@ struct FileBase : public BaseDataStruct<2>
 };
 
 using File = UpperDataStruct<FileBase>;
+
+struct FormBase : public BaseDataStruct<4>
+{
+    int id = 0;
+    std::string module;
+    std::string userName;
+    std::string techName;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::vector<std::string> columnNames;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
+
+    void reset();
+};
+
+using Form = UpperDataStruct<FormBase>;
 
 struct GradeBase : public BaseDataStruct<4>
 {
@@ -231,26 +282,6 @@ struct MarkBase : public BaseDataStruct<5>
 };
 
 using Mark = UpperDataStruct<MarkBase>;
-
-struct MultitoolFormBase : public BaseDataStruct<7>
-{
-    int id = 0;
-    std::string module;
-    std::string userName;
-    std::string techName;
-    std::string typeVal;
-    std::string typeName;
-    std::string typeExt;
-
-    static std::string tableName;
-    static std::vector<data::Type> types;
-    static std::vector<std::string> columnNames;
-    static std::unordered_map<std::string, uint8_t> nameToNum;
-
-    void reset();
-};
-
-using MultitoolForm = UpperDataStruct<MultitoolFormBase>;
 
 struct PlanBase : public BaseDataStruct<4>
 {

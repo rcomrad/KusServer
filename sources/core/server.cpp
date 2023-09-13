@@ -179,6 +179,13 @@ core::Server::Server()
                 return res;
             });
 
+    CROW_ROUTE(app, "/api/multitool")
+        .methods("POST"_method)(
+            [&](const crow::request& req)
+            {
+                return "print/gr.gif";
+            });
+
     //---------------------------------------------------------------------
 
     CROW_ROUTE(app, "/api/login")
