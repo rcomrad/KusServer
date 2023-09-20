@@ -1,4 +1,4 @@
-#include "post_router.hpp"
+#include "../sources/post/post_router.hpp"
 
 #include "answer_handler.hpp"
 #include "journal_handler.hpp"

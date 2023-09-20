@@ -12,6 +12,9 @@ set(
     log.cpp
     log.hpp 
 
+    mail.cpp
+    mail.hpp
+
     metaprogramming.hpp
 
     pair.hpp

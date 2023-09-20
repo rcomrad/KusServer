@@ -10,18 +10,9 @@ namespace post
 struct PostRouter
 {
 
-    static std::unordered_map<
-        std::string,
-        decltype(&post::PostHandler::postSubrouter<post::PostHandler,
-                                                   data::Dummy>)>
-        mProcessRouter;
-    static std::unordered_map<std::string,
-                              decltype(&post::PostHandler::drop<data::Dummy>)>
-        mDropRouter;
-    static std::unordered_map<
-        std::string,
-        decltype(&post::PostHandler::rawDataHandler<data::Dummy>)>
-        mRawDataRouter;
+    static std::unordered_map<std::string, decltype(&post::PostHandler::postSubrouter<post::PostHandler, data::Dummy>)> mProcessRouter;
+    static std::unordered_map<std::string, decltype(&post::PostHandler::drop<data::Dummy>)> mDropRouter;
+    static std::unordered_map<std::string, decltype(&post::PostHandler::rawDataHandler<data::Dummy>)> mRawDataRouter;
 
     template <typename... Args>
     static auto processRouter(const std::string& aName, Args&&... args)

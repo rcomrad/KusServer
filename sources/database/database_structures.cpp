@@ -550,9 +550,11 @@ std::string data::UserBase::tableName         = {"user"};
 std::vector<data::Type> data::UserBase::types = {
     data::Type::INT,    data::Type::STRING, data::Type::STRING,
     data::Type::STRING, data::Type::STRING, data::Type::INT,
+    data::Type::INT,    data::Type::STRING, data::Type::STRING,
     data::Type::INT};
 std::vector<std::string> data::UserBase::columnNames = {
-    "id", "login", "password", "name", "surname", "school_id", "role_id"};
+    "id",        "login",   "password", "name", "surname",
+    "school_id", "role_id", "email",    "key",  "status"};
 std::unordered_map<std::string, uint8_t> data::UserBase::nameToNum = {
     {"id",        0},
     {"login",     1},
@@ -560,7 +562,10 @@ std::unordered_map<std::string, uint8_t> data::UserBase::nameToNum = {
     {"name",      3},
     {"surname",   4},
     {"school_id", 5},
-    {"role_id",   6}
+    {"role_id",   6},
+    {"email",     7},
+    {"key",       8},
+    {"status",    9}
 };
 
 void
@@ -573,4 +578,7 @@ data::UserBase::reset()
     ptrs[4] = (void*)(&surname);
     ptrs[5] = (void*)(&schoolID);
     ptrs[6] = (void*)(&roleID);
+    ptrs[7] = (void*)(&email);
+    ptrs[8] = (void*)(&key);
+    ptrs[9] = (void*)(&status);
 }

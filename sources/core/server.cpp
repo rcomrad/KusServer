@@ -180,11 +180,8 @@ core::Server::Server()
             });
 
     CROW_ROUTE(app, "/api/multitool")
-        .methods("POST"_method)(
-            [&](const crow::request& req)
-            {
-                return "print/gr.gif";
-            });
+        .methods("POST"_method)([&](const crow::request& req)
+                                { return "print/gr.gif"; });
 
     //---------------------------------------------------------------------
 
@@ -196,6 +193,20 @@ core::Server::Server()
                 res = post::UserHandler::autorisation(req);
                 return res;
             });
+
+    CROW_ROUTE(app, "/api/registration")
+        .methods("POST"_method)(
+            [&](const crow::request& req)
+            { return post::UserHandler::registration(req); });
+
+    CROW_ROUTE(app, "/api/confirm/<string>")
+    (
+        [&](const std::string& aUrl)
+        {
+            ;
+            return post::UserHandler::confirm(aUrl) ? "REGISTRATION COMPLETE :3"
+                                                    : "ERROR!";
+        });
 
     app.port(18080).multithreaded().run();
 }

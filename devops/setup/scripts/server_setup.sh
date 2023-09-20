@@ -29,6 +29,7 @@ sudo -H -u $2 ./bootstrap-vcpkg.sh
 sudo -H -u $2 ./vcpkg install boost:x64-linux
 sudo -H -u $2 ./vcpkg install crow:x64-linux
 sudo -H -u $2 ./vcpkg install libpqxx:x64-linux
+sudo -H -u $2 ./vcpkg install mailio:x64-linux
 
 cd ../server/bin
 sudo -H -u $2 printf "0 postgres postgres $1 public\n1 journal_db $2 $1 journal\n" > database.pass

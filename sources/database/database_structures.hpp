@@ -439,7 +439,7 @@ struct ThemeBase : public BaseDataStruct<4>
 
 using Theme = UpperDataStruct<ThemeBase>;
 
-struct UserBase : public BaseDataStruct<7>
+struct UserBase : public BaseDataStruct<10>
 {
     int id = 0;
     std::string login;
@@ -448,6 +448,9 @@ struct UserBase : public BaseDataStruct<7>
     std::string surname;
     int schoolID = 0;
     int roleID   = 0;
+    std::string email;
+    std::string key;
+    int status = 0;
 
     static std::string tableName;
     static std::vector<data::Type> types;

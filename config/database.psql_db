@@ -12,6 +12,9 @@ TABLE user
 	surname character varying(255) NOT NULL
 	school_id integer NOT NULL
 	role_id integer NOT NULL
+	email character varying(255) NOT NULL
+	key character varying(255) NOT NULL
+	status integer NOT NULL
 
 TABLE role
 	name character varying(20) NOT NULL

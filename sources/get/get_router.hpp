@@ -10,14 +10,9 @@ namespace get
 struct GetRouter
 {
 
-    static std::unordered_map<std::string,
-                              decltype(&get::GetHandler::process<data::Dummy>)>
-        mBasicRouter;
-    static std::unordered_map<std::string,
-                              decltype(&get::GetHandler::dump<data::Dummy>)>
-        mDumpRouter;
-    static std::unordered_map<std::string, std::vector<std::string>>
-        mColumnNamesRouter;
+    static std::unordered_map<std::string, decltype(&get::GetHandler::process<data::Dummy>)> mBasicRouter;
+    static std::unordered_map<std::string, decltype(&get::GetHandler::dump<data::Dummy>)> mDumpRouter;
+    static std::unordered_map<std::string, std::vector<std::string>> mColumnNamesRouter;
 
     template <typename... Args>
     static auto basicRouter(const std::string& aName, Args&&... args)
@@ -37,8 +32,7 @@ struct GetRouter
         return result;
     }
 
-    static std::vector<std::string>& columnNamesRouter(
-        const std::string& aName);
+    static std::vector<std::string>& columnNamesRouter(const std::string& aName);
 };
 
 }; // namespace get

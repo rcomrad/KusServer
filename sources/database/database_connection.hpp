@@ -120,7 +120,11 @@ public:
               typename = dom::enableIfDerivedOf<data::BaseDataDummy, T>>
     int insert(T& aData) noexcept
     {
-        aData.id = mDatabase.insert(getTableName<T>(), aData.getAsInsert())[0];
+        auto temp = mDatabase.insert(getTableName<T>(), aData.getAsInsert());
+        if (temp.size() > 1)
+        {
+            aData.id = temp[0];
+        }
         return aData.id;
     }
 
