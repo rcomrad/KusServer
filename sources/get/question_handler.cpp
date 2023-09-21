@@ -48,10 +48,17 @@ get::QuestionHandler::process(int aQuestionID, int aUserId) noexcept
         {
             if (i.first == "legend.txt") continue;
 
-            if (i.first.find(".gif") || i.first.find(".png") ||
-                i.first.find(".jpg"))
+            if (i.first.find(".gif") != -1 || i.first.find(".png") != -1 ||
+                i.first.find(".jpg") != -1)
+            {
                 legend += " <img src=\"https://kusmirror.ru/question/" +
-                          question.nickname + "/" + i.first + "\"/> ";
+                          question.nickname + "/" + i.first + "\"/> <br>";
+            }
+            else
+            {
+                legend += " <a href=\"https://kusmirror.ru/question/" +
+                          question.nickname + "/" + i.first + "\"/>Файлик</a> <br>";
+            }
         }
         temp["legend"] = std::move(legend);
     }

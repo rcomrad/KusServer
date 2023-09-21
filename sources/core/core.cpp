@@ -18,6 +18,41 @@
 
 //--------------------------------------------------------------------------------
 
+void
+loadQuestions()
+{
+    auto connection = data::ConnectionManager::getUserConnection();
+    // connection.val.drop("question", "id > 0");
+
+    auto hasQ = file::Path::getContentMap(file::Path::getPathUnsafe("question"),
+                                          file::Path::FileType::Folder);
+    std::map<std::string, std::string> q;
+    q.insert(hasQ.begin(), hasQ.end());
+
+    auto ans = file::File::getWordsMap(
+        file::Path::getPathUnsafe("question", "ans.txt"));
+
+    for (auto& i : q)
+    {
+        data::Question q = connection.val.getData<data::Question>(
+            "nickname=\'" + i.first + "\'");
+
+        q.name       = i.first;
+        q.nickname   = i.first;
+        q.type       = 1;
+        q.weight     = 1;
+        q.juryAnswer = "1";
+
+        auto it = ans.find(i.first);
+        if (it != ans.end())
+        {
+            q.juryAnswer = it->second;
+        }
+
+        connection.val.write(q);
+    }
+}
+
 core::Core::Core() noexcept
 {
     code::CodeGenerator cg;
@@ -28,6 +63,8 @@ core::Core::Core() noexcept
     if (file::VariableStorage::getInstance().getFlagUnsafe(
             "submission_auto_check"))
         mApps["tester"] = std::move(std::thread(&Core::testerThread, this));
+
+    loadQuestions();
 }
 
 void
