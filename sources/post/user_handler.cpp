@@ -2,6 +2,7 @@
 
 #include <sstream>
 
+#include "domain/date_and_time.hpp"
 #include "domain/mail.hpp"
 
 #include "database/connection_manager.hpp"
@@ -136,9 +137,16 @@ post::UserHandler::registration(const crow::request& aReq,
             fiil(newUser);
             newUser.status = -1;
 
-            if (setRole(newUser) && send(newUser))
+            auto url = send(newUser.email);
+            if (setRole(newUser) && !url.empty())
             {
-                resp = {connection.val.write(newUser)};
+                crow::json::wvalue temp;
+                temp["id"] = connection.val.write(newUser);
+                resp       = std::move(temp);
+
+                mmConformMut.lock();
+                mConformationUrls[url] = newUser.id;
+                mmConformMut.unlock();
             }
             else
             {
@@ -194,7 +202,7 @@ post::UserHandler::fiil(data::User& aUser) noexcept
 }
 
 std::unordered_map<std::string, std::set<std::string>>
-foo()
+foo2()
 {
     std::unordered_map<std::string, std::set<std::string>> result;
     auto data = file::File::getLines(
@@ -212,7 +220,7 @@ bool
 post::UserHandler::setRole(data::User& aUser) noexcept
 {
     bool result       = false;
-    static auto roles = foo();
+    static auto roles = foo2();
     auto it           = roles.find(aUser.key);
     if (it != roles.end())
     {
@@ -222,21 +230,21 @@ post::UserHandler::setRole(data::User& aUser) noexcept
     return result;
 }
 
-bool
-post::UserHandler::send(const data::User& aUser) noexcept
+std::string
+post::UserHandler::send(const std::string& aEmail) noexcept
 {
     static auto pass =
         file::File::getWords(file::Path::getPathUnsafe("config", "mail.pass"));
     static dom::Mail mail(pass[0][0], pass[0][1]);
 
-    std::string url = "agsdfsdfsdfsa";
+    static auto curSiteUrl = file::File::getWords(
+        file::Path::getPathUnsafe("config", "url.pass"))[0][0];
 
-    bool result =
-        mail.send(aUser.email, "Ссылка для подтверждения kussystem", url);
+    std::string url = dom::DateAndTime::getCurentTimeSafe();
+    for (int i = 0; i < 10; ++i) url += 'a' + rand() % 26;
 
-    mmConformMut.lock();
-    mConformationUrls[url] = aUser.id;
-    mmConformMut.unlock();
+    mail.send(aEmail, "Ссылка для подтверждения kussystem",
+              "https://" + curSiteUrl + "/api/confirm/" + url);
 
-    return result;
+    return url;
 }

@@ -121,7 +121,7 @@ public:
     int insert(T& aData) noexcept
     {
         auto temp = mDatabase.insert(getTableName<T>(), aData.getAsInsert());
-        if (temp.size() > 1)
+        if (!temp.empty())
         {
             aData.id = temp[0];
         }

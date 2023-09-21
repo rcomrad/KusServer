@@ -26,7 +26,7 @@ public:
 private:
     static void fiil(data::User& aUser) noexcept;
     static bool setRole(data::User& aUser) noexcept;
-    static bool send(const data::User& aUser) noexcept;
+    static std::string send(const std::string& aEmail) noexcept;
 
     static std::mutex mRegMut;
     static std::mutex mmConformMut;
