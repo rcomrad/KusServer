@@ -7,6 +7,7 @@
 #include "get/get_handler.hpp"
 #include "get/get_router.hpp"
 #include "get/question_handler.hpp"
+#include "multitool/multitool_router.hpp"
 #include "post/post_router.hpp"
 #include "post/print_journal.hpp"
 #include "post/submit_handler.hpp"
@@ -181,7 +182,7 @@ core::Server::Server()
 
     CROW_ROUTE(app, "/api/multitool")
         .methods("POST"_method)([&](const crow::request& req)
-                                { return "print/gr.gif"; });
+                                { return mult::MultitoolRouter::route(req); });
 
     //---------------------------------------------------------------------
 
