@@ -444,13 +444,13 @@ struct UserBase : public BaseDataStruct<10>
     int id = 0;
     std::string login;
     std::string password;
+    std::string email;
     std::string name;
     std::string surname;
     int schoolID = 0;
-    int roleID   = 0;
-    std::string email;
     std::string key;
     int status = 0;
+    int roleID = 0;
 
     static std::string tableName;
     static std::vector<data::Type> types;
@@ -461,6 +461,22 @@ struct UserBase : public BaseDataStruct<10>
 };
 
 using User = UpperDataStruct<UserBase>;
+
+struct UserRegistrationBase : public BaseDataStruct<3>
+{
+    int id     = 0;
+    int userID = 0;
+    std::string link;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::vector<std::string> columnNames;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
+
+    void reset();
+};
+
+using UserRegistration = UpperDataStruct<UserRegistrationBase>;
 
 }; // namespace data
 

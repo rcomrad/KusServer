@@ -15,20 +15,10 @@
 #include "get/get_handler.hpp"
 
 std::mutex post::UserHandler::mRegMut;
-std::mutex post::UserHandler::mmConformMut;
-std::unordered_map<std::string, int> post::UserHandler::mConformationUrls;
 
 crow::json::wvalue
 post::UserHandler::process(post::PostRequest<data::User>& aReq) noexcept
 {
-    // //TODO: move somevere
-    //     int tt;
-    //     for (auto& i : request.manyToMany)
-    //     {
-    //         transmitToMTMHandler(i.first, tt, request.other.count("add"),
-    //                              i.second);
-    //     }
-
     auto it = aReq.leftovers.find("role");
     if (it != aReq.leftovers.end())
     {
@@ -65,9 +55,7 @@ post::UserHandler::rawDataHandler(data::RawData& aData) noexcept
                 roles.insert(j);
             }
 
-            // TODO: remove insert
-            aData.value[i].insert(
-                aData.value[i].begin() + 5,
+            aData.value[i].emplace_back(
                 data::wrap(core::Role::getInstance().getRoleID(roles)));
         }
     }
@@ -85,14 +73,22 @@ post::UserHandler::autorisation(const crow::request& aReq) noexcept
         // data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
         data::User user = parseRequest<data::User>(x).data;
 
-        std::string cond = "login = \'" + user.login + "\' AND " +
-                           "password = \'" + user.password + "\'";
+        std::string cond = "login = " + data::wrap(user.login) + " AND " +
+                           "password = " + data::wrap(user.password);
         {
             auto connection = data::ConnectionManager::getUserConnection();
             user            = connection.val.getData<data::User>(cond);
         }
 
-        if (user.id && user.status > 0)
+        if (!user.id)
+        {
+            resp = crow::response(401); // no user
+        }
+        else if (user.status <= 0)
+        {
+            resp = crow::response(403); // need conformation
+        }
+        else
         {
             crow::json::wvalue uJson;
             uJson["user"] = user.getAsJson({"password", "role_id"});
@@ -111,10 +107,6 @@ post::UserHandler::autorisation(const crow::request& aReq) noexcept
 
             resp = std::move(uJson);
         }
-        else
-        {
-            resp = crow::response(401);
-        }
     }
     // resp = crow::response(401);
     return resp;
@@ -124,70 +116,134 @@ crow::response
 post::UserHandler::registration(const crow::request& aReq,
                                 bool aNoConfirmation) noexcept
 {
-    auto body = crow::json::load(aReq.body);
     auto resp = crow::response(400);
+    auto body = crow::json::load(aReq.body);
+
     if (body)
     {
         data::User newUser = parseRequest<data::User>(body).data;
-        std::string cond   = "login = \'" + newUser.login + "\'";
 
         mRegMut.lock();
-        auto connection        = data::ConnectionManager::getUserConnection();
-        data::User existedUser = connection.val.getData<data::User>(cond);
 
-        if (!existedUser.id)
+        auto connection = data::ConnectionManager::getUserConnection();
+
+        std::string loginCond = "login = " + data::wrap(newUser.login);
+        data::User sameLogin  = connection.val.getData<data::User>(loginCond);
+
+        std::string emailCond = "email = " + data::wrap(newUser.email);
+        data::User sameEmail  = connection.val.getData<data::User>(emailCond);
+
+        if (sameLogin.id)
         {
-            fiil(newUser);
-            newUser.status = -1;
-
-            auto url = send(newUser.email);
-            if (setRole(newUser) && !url.empty())
-            {
-                crow::json::wvalue temp;
-                temp["id"] = connection.val.write(newUser);
-                resp       = std::move(temp);
-
-                mmConformMut.lock();
-                mConformationUrls[url] = newUser.id;
-                mmConformMut.unlock();
-            }
-            else
-            {
-                resp = crow::response(401);
-            }
+            resp = {"Username already in use!"};
+        }
+        else if (sameEmail.id)
+        {
+            resp = {"Email already in use!"};
+        }
+        else if (!applyKey(newUser))
+        {
+            resp = {"Bad key!"};
         }
         else
         {
-            resp = crow::response(401);
+            fiil(newUser);
+            newUser.status = -1;
+            connection.val.write(newUser);
+
+            auto link = sendComfLink(newUser);
+            if (link.has_value())
+            {
+                crow::json::wvalue uJson;
+                uJson["user"] = newUser.getAsJson();
+                uJson["link"] = link.value();
+                resp          = std::move(uJson);
+
+                data::UserRegistration reg;
+                reg.userID = newUser.id;
+                reg.link   = link.value();
+                connection.val.write(reg);
+            }
+            else
+            {
+                // TODO: remove drop
+                connection.val.drop(newUser);
+                resp = {"Bad email address!"};
+            }
         }
 
         mRegMut.unlock();
     }
-    // resp = crow::response(401);
+
     return resp;
 }
 
-bool
-post::UserHandler::confirm(const std::string& aUrl) noexcept
+crow::response
+post::UserHandler::confirmation(const std::string& aUrl) noexcept
 {
-    bool result = false;
-    mmConformMut.lock();
+    auto resp = crow::response(400);
 
-    auto it = mConformationUrls.find(aUrl);
-    if (it != mConformationUrls.end())
+    auto connection = data::ConnectionManager::getUserConnection();
+    auto userReg    = connection.val.getData<data::UserRegistration>(
+        "link = " + data::wrap(aUrl));
+
+    if (userReg.id)
     {
-        auto connection = data::ConnectionManager::getUserConnection();
-        auto user =
-            connection.val.getData<data::User>("id=" + data::wrap(it->second));
-        user.status = 1;
-        connection.val.write(user);
+        connection.val.drop(userReg);
+        auto user = connection.val.getData<data::User>(
+            "id = " + data::wrap(userReg.userID));
 
-        mConformationUrls.erase(it);
-        result = true;
+        if (user.id)
+        {
+            if (user.status <= 0)
+            {
+                user.status = 1;
+                connection.val.write(user);
+                resp = {"Success"};
+            }
+            else
+            {
+                resp = {"Status alredy greater than zero!"};
+            }
+        }
+        else
+        {
+            resp = {"No such user found!"};
+        }
     }
+    else
+    {
+        std::string id;
+        for (auto c : aUrl)
+        {
+            if (!std::isdigit(c)) break;
+            if (id.size() > 7) break;
+            id.push_back(c);
+        }
+        if (!id.empty())
+        {
+            auto user = connection.val.getData<data::User>("id = " + id);
 
-    mmConformMut.unlock();
-    return result;
+            if (user.id == 0)
+            {
+                resp = {"Bad link, no such user found!"};
+            }
+            else if (user.status > 0)
+            {
+                resp = {"User already confirmed."};
+            }
+            else
+            {
+                resp = {"Bad link!"};
+            }
+        }
+        else
+        {
+            resp = {"Bad link, no user ID!"};
+        }
+    }
+  
+    return resp;
 }
 
 void
@@ -205,7 +261,7 @@ post::UserHandler::fiil(data::User& aUser) noexcept
 }
 
 std::unordered_map<std::string, std::set<std::string>>
-foo2()
+post::UserHandler::getKeyMap() noexcept
 {
     std::unordered_map<std::string, std::set<std::string>> result;
     auto data = file::File::getLines("config", "key_role.conf");
@@ -219,33 +275,49 @@ foo2()
 }
 
 bool
-post::UserHandler::setRole(data::User& aUser) noexcept
+post::UserHandler::applyKey(data::User& aUser) noexcept
 {
-    bool result       = false;
-    static auto roles = foo2();
-    auto it           = roles.find(aUser.key);
-    if (it != roles.end())
+    bool result = true;
+
+    if (!aUser.key.empty())
     {
-        aUser.roleID = core::Role::getInstance().getRoleID(it->second);
-        result       = true;
+        static auto roles = getKeyMap();
+
+        auto it = roles.find(aUser.key);
+        if (it != roles.end())
+        {
+            aUser.roleID = core::Role::getInstance().getRoleID(it->second);
+        }
+        else
+        {
+            result = false;
+        }
     }
+
     return result;
 }
 
-std::string
-post::UserHandler::send(const std::string& aEmail) noexcept
+std::optional<std::string>
+post::UserHandler::sendComfLink(const data::User& aUser) noexcept
 {
     static auto pass =
         file::File::getWords(file::Path::getPathUnsafe("config", "mail.pass"));
     static dom::Mail mail(pass[0][0], pass[0][1]);
 
+    // to erase whitespaces
     static auto curSiteUrl = file::File::getWords("config", "url.pass")[0][0];
 
-    std::string url = dom::DateAndTime::getCurentTimeSafe();
-    for (int i = 0; i < 10; ++i) url += 'a' + rand() % 26;
+    std::string link = dom::toString(aUser.id) + "=" +
+                       dom::DateAndTime::getCurentTimeSafe() + "=";
+    for (int i = 0; i < 10; ++i) link += 'a' + rand() % 26;
 
-    mail.send(aEmail, "Ссылка для подтверждения kussystem",
-              "https://" + curSiteUrl + "/api/confirm/" + url);
+    std::optional<std::string> result;
+    if (mail.send(aUser.email,
+                  "Ссылка подтверждения для акаунта на сайте kussystem",
+                  "https://" + curSiteUrl + "/api/confirm/" + link))
+    {
+        result = link;
+    }
 
-    return url;
+    return result;
 }

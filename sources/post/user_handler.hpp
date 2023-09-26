@@ -2,6 +2,7 @@
 #define POST_USER_HANDLER_HPP
 
 #include <mutex>
+#include <optional>
 #include <string>
 #include <unordered_map>
 
@@ -21,16 +22,19 @@ public:
     static crow::response registration(const crow::request& aReq,
                                        bool aNoConfirmation = false) noexcept;
 
-    static bool confirm(const std::string& aUrl) noexcept;
+    static crow::response confirmation(const std::string& aUrl) noexcept;
 
 private:
-    static void fiil(data::User& aUser) noexcept;
-    static bool setRole(data::User& aUser) noexcept;
-    static std::string send(const std::string& aEmail) noexcept;
-
     static std::mutex mRegMut;
-    static std::mutex mmConformMut;
-    static std::unordered_map<std::string, int> mConformationUrls;
+
+    static void fiil(data::User& aUser) noexcept;
+
+    static std::unordered_map<std::string, std::set<std::string>>
+    getKeyMap() noexcept;
+    static bool applyKey(data::User& aUser) noexcept;
+
+    static std::optional<std::string> sendComfLink(
+        const data::User& aUser) noexcept;
 };
 } // namespace post
 

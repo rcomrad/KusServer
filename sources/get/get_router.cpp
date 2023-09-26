@@ -30,7 +30,8 @@ std::unordered_map<std::string, decltype(&get::GetHandler::process<data::Dummy>)
     {"subject",              &get::GetHandler::process<data::Subject>            },
     {"submission",           &get::GetHandler::process<data::Submission>         },
     {"theme",                &get::GetHandler::process<data::Theme>              },
-    {"user",                 &get::UserHandler::process                          }
+    {"user",                 &get::UserHandler::process                          },
+    {"user_registration",    &get::GetHandler::process<data::UserRegistration>   }
 };
 
 std::unordered_map<std::string, decltype(&get::GetHandler::dump<data::Dummy>)> get::GetRouter::mDumpRouter = {
@@ -59,7 +60,8 @@ std::unordered_map<std::string, decltype(&get::GetHandler::dump<data::Dummy>)> g
     {"subject",              &get::GetHandler::dump<data::Subject>            },
     {"submission",           &get::GetHandler::dump<data::Submission>         },
     {"theme",                &get::GetHandler::dump<data::Theme>              },
-    {"user",                 &get::GetHandler::dump<data::User>               }
+    {"user",                 &get::GetHandler::dump<data::User>               },
+    {"user_registration",    &get::GetHandler::dump<data::UserRegistration>   }
 };
 
 std::unordered_map<std::string, std::vector<std::string>> get::GetRouter::mColumnNamesRouter = {
@@ -88,7 +90,8 @@ std::unordered_map<std::string, std::vector<std::string>> get::GetRouter::mColum
     {"subject",              data::Subject::columnNames            },
     {"submission",           data::Submission::columnNames         },
     {"theme",                data::Theme::columnNames              },
-    {"user",                 data::User::columnNames               }
+    {"user",                 data::User::columnNames               },
+    {"user_registration",    data::UserRegistration::columnNames   }
 };
 
 std::vector<std::string>&

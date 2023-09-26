@@ -8,13 +8,17 @@ TABLE school
 TABLE user
 	login character varying(255) NOT NULL
 	password character varying(255) NOT NULL
+	email character varying(255) NOT NULL
 	name character varying(255) NOT NULL
 	surname character varying(255) NOT NULL
 	school_id integer NOT NULL
-	role_id integer NOT NULL
-	email character varying(255) NOT NULL
 	key character varying(255) NOT NULL
 	status integer NOT NULL
+	role_id integer NOT NULL
+
+TABLE user_registration
+	user_id integer NOT NULL
+	link character varying(255) NOT NULL
 
 TABLE role
 	name character varying(20) NOT NULL

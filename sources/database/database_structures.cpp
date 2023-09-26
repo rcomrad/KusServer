@@ -549,23 +549,23 @@ data::ThemeBase::reset()
 std::string data::UserBase::tableName         = {"user"};
 std::vector<data::Type> data::UserBase::types = {
     data::Type::INT,    data::Type::STRING, data::Type::STRING,
-    data::Type::STRING, data::Type::STRING, data::Type::INT,
-    data::Type::INT,    data::Type::STRING, data::Type::STRING,
+    data::Type::STRING, data::Type::STRING, data::Type::STRING,
+    data::Type::INT,    data::Type::STRING, data::Type::INT,
     data::Type::INT};
 std::vector<std::string> data::UserBase::columnNames = {
-    "id",        "login",   "password", "name", "surname",
-    "school_id", "role_id", "email",    "key",  "status"};
+    "id",      "login",     "password", "email",  "name",
+    "surname", "school_id", "key",      "status", "role_id"};
 std::unordered_map<std::string, uint8_t> data::UserBase::nameToNum = {
     {"id",        0},
     {"login",     1},
     {"password",  2},
-    {"name",      3},
-    {"surname",   4},
-    {"school_id", 5},
-    {"role_id",   6},
-    {"email",     7},
-    {"key",       8},
-    {"status",    9}
+    {"email",     3},
+    {"name",      4},
+    {"surname",   5},
+    {"school_id", 6},
+    {"key",       7},
+    {"status",    8},
+    {"role_id",   9}
 };
 
 void
@@ -574,11 +574,31 @@ data::UserBase::reset()
     ptrs[0] = (void*)(&id);
     ptrs[1] = (void*)(&login);
     ptrs[2] = (void*)(&password);
-    ptrs[3] = (void*)(&name);
-    ptrs[4] = (void*)(&surname);
-    ptrs[5] = (void*)(&schoolID);
-    ptrs[6] = (void*)(&roleID);
-    ptrs[7] = (void*)(&email);
-    ptrs[8] = (void*)(&key);
-    ptrs[9] = (void*)(&status);
+    ptrs[3] = (void*)(&email);
+    ptrs[4] = (void*)(&name);
+    ptrs[5] = (void*)(&surname);
+    ptrs[6] = (void*)(&schoolID);
+    ptrs[7] = (void*)(&key);
+    ptrs[8] = (void*)(&status);
+    ptrs[9] = (void*)(&roleID);
+}
+
+std::string data::UserRegistrationBase::tableName = {"user_registration"};
+std::vector<data::Type> data::UserRegistrationBase::types = {
+    data::Type::INT, data::Type::INT, data::Type::STRING};
+std::vector<std::string> data::UserRegistrationBase::columnNames = {
+    "id", "user_id", "link"};
+std::unordered_map<std::string, uint8_t> data::UserRegistrationBase::nameToNum =
+    {
+        {"id",      0},
+        {"user_id", 1},
+        {"link",    2}
+};
+
+void
+data::UserRegistrationBase::reset()
+{
+    ptrs[0] = (void*)(&id);
+    ptrs[1] = (void*)(&userID);
+    ptrs[2] = (void*)(&link);
 }

@@ -137,13 +137,15 @@ core::Server::Server()
             return core::DumpManager::dumpAsString(
                 file::Parser::slice(aName, ",", "*"));
         });
-    // CROW_ROUTE(app, "/api/dump_as_file/<string>")
-    // (
-    //     [&](const std::string& aName) {
-
-    //         return core::DumpManager::dumpAsFile(
-    //             file::Parser::slice(aName, ","));
-    //     });
+    CROW_ROUTE(app, "/api/dump_as_file/<string>")
+    (
+        [&](const std::string& aName)
+        {
+            auto path = core::DumpManager::dumpAsFile(
+                file::Parser::slice(aName, ",", "*"));
+            if (path.has_value()) return path.value();
+            else return "Can't create dump!"s;
+        });
 
     CROW_ROUTE(app, "/api/get_all_competition/<int>/<int>")
     ([&](int aUserID, int aCompetitionID)
@@ -214,13 +216,8 @@ core::Server::Server()
             { return post::UserHandler::registration(req); });
 
     CROW_ROUTE(app, "/api/confirm/<string>")
-    (
-        [&](const std::string& aUrl)
-        {
-            ;
-            return post::UserHandler::confirm(aUrl) ? "REGISTRATION COMPLETE :3"
-                                                    : "ERROR!";
-        });
+    ([&](const std::string& aUrl)
+     { return post::UserHandler::confirmation(aUrl); });
 
     app.port(18080).multithreaded().run();
 }

@@ -7,7 +7,174 @@
 	},
 	"item": [
 		{
-			"name": "Registrate user",
+			"name": "Clear system",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:18080/api/command/restart/empty",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"command",
+						"restart",
+						"empty"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "False log in reg user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Reg user isn't in use\", function () {\r",
+							"  pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"reg\",\r\n    \"password\": \"123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/login",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign up bad email",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Bad email rejected\", () => {\r",
+							"    pm.expect(pm.response.text()).to.equal(\"Bad email address!\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"reg\",\r\n    \"password\": \"123\",\r\n    \"email\": \"bad\",\r\n    \"key\": \"bobr\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/registration",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign up bad key",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Bad key rejected\", () => {\r",
+							"    pm.expect(pm.response.text()).to.equal(\"Bad key!\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"reg\",\r\n    \"password\": \"123\",\r\n    \"email\": \"oa1oa@mail.ru\",\r\n    \"key\": \"bad key\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/registration",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign up reg user",
 			"event": [
 				{
 					"listen": "test",
@@ -49,13 +216,103 @@
 			"response": []
 		},
 		{
-			"name": "False log in reg user",
+			"name": "Sign up login in use",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							""
+							"pm.test(\"Used login rejected\", () => {\r",
+							"    pm.expect(pm.response.text()).to.equal(\"Username already in use!\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"reg\",\r\n    \"password\": \"123\",\r\n    \"email\": \"comrade_1997@mail.ru\",\r\n    \"key\": \"bobr\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/registration",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign up email in use",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Used email rejected\", () => {\r",
+							"    pm.expect(pm.response.text()).to.equal(\"Email already in use!\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"reg2\",\r\n    \"password\": \"123\",\r\n    \"email\": \"oa1oa@mail.ru\",\r\n    \"key\": \"bobr\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/registration",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "False log in unconfirmed user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Server is waiting for confirmation email from the user\", function () {\r",
+							"    pm.response.to.have.status(403);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -119,7 +376,7 @@
 					}
 				},
 				"url": {
-					"raw": "127.0.0.1:18080/api/confirm/2023-9-21_10-48-43phqghumeay",
+					"raw": "127.0.0.1:18080/api/confirm/2=2023-9-26_21-56-18=lnlfdxfirc",
 					"host": [
 						"127",
 						"0",
@@ -130,7 +387,7 @@
 					"path": [
 						"api",
 						"confirm",
-						"2023-9-21_10-48-43phqghumeay"
+						"2=2023-9-26_21-56-18=lnlfdxfirc"
 					]
 				}
 			},
