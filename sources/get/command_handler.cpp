@@ -1,13 +1,7 @@
 #include "command_handler.hpp"
 
-#include "domain/date_and_time.hpp"
-
-#include "database/connection_manager.hpp"
-
-#include "file_data/file.hpp"
-#include "file_data/path.hpp"
+#include "core/dump_manager.hpp"
 #include "file_data/variable_storage.hpp"
-#include "get/get_router.hpp"
 
 std::unordered_map<std::string, decltype(&get::CommandHandler::restart)>
     get::CommandHandler::mRouterMap = {
@@ -26,51 +20,45 @@ get::CommandHandler::process(const std::string& aType,
     return res;
 }
 
-std::vector<std::string>
-foo()
-{
-    auto words = file::File::getWords(
-        file::Path::getPathUnsafe("config", "database.psql_db"));
-
-    std::vector<std::string> result;
-    for (auto& i : words)
-    {
-        if (i[0] == "TABLE") result.emplace_back(std::move(i[1]));
-    }
-
-    return result;
-}
-
 std::string
 get::CommandHandler::restart(const std::string aValue) noexcept
 {
-    static std::vector<std::string> allTableNames = foo();
-    std::string dump;
-    for (auto& i : allTableNames)
-    {
-        dump += get::GetRouter::dumpRouter(i, false);
-    }
-    file::File::writeData("dump",
-                          dom::DateAndTime::getCurentTimeSafe() + ".dmp", dump);
-
     std::string res = "ERROR\nNo restart :( \nInvalid restart value.";
+    int resValue    = 0;
     auto& state     = file::VariableStorage::getInstance();
 
     if (aValue == "full")
     {
-        state.setVariable("restart", 7);
-        res = "OK\nFull restart!";
+        resValue = 7;
+        res      = "OK\nFull restart!";
     }
     else if (aValue == "empty")
     {
-        state.setVariable("restart", 1);
-        res = "OK\nEmpty restart!";
+        resValue = 1;
+        res      = "OK\nEmpty restart!";
     }
     else if (aValue == "tester")
     {
-        state.setVariable("restart", 4);
-        res = "OK\nTester restart!";
+        resValue = 4;
+        res      = "OK\nTester restart!";
     }
+
+    if (resValue)
+    {
+        auto dumpPath = core::DumpManager::dumpAsFile();
+        if (dumpPath.has_value())
+        {
+            res += "\n\nDump address: " + dumpPath.value();
+            state.setVariable("restart", resValue);
+        }
+        else
+        {
+            res = "ERROR\nCan't create dump!";
+        }
+    }
+
+    while (state.getIntUnsafe("restart"))
+        ;
 
     return res;
 }

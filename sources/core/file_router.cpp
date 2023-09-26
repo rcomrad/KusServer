@@ -26,7 +26,7 @@ core::FileRouter::process(const std::string& aFileName) noexcept
 data::RawDataArray
 core::FileRouter::dmpParser(const std::string& aFileName) noexcept
 {
-    auto words = file::File::getWords(aFileName, false,
+    auto words = file::File::getWords(aFileName, file::Critical::No,
                                       &core::FileRouter::isDMPSeparator);
     data::RawDataArray res;
     for (size_t i = 0; i < words.size(); ++i)
@@ -70,7 +70,7 @@ core::FileRouter::dataParser(const std::string& aFileName) noexcept
 data::RawDataArray
 core::FileRouter::csvParser(const std::string& aFileName) noexcept
 {
-    auto words = file::File::getWords(aFileName, false,
+    auto words = file::File::getWords(aFileName, file::Critical::No,
                                       &core::FileRouter::isCSVSeparator);
     data::RawDataArray res;
     auto& curArray = res["data"];

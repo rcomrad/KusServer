@@ -17,18 +17,18 @@ struct GetRouter
     template <typename... Args>
     static auto basicRouter(const std::string& aName, Args&&... args)
     {
-        decltype(mBasicRouter.begin()->second(args...)) result;
+        decltype(mBasicRouter.begin()->second(std::forward<Args>(args)...)) result;
         auto it = mBasicRouter.find(aName);
-        if (it != mBasicRouter.end()) result = it->second(args...);
+        if (it != mBasicRouter.end()) result = it->second(std::forward<Args>(args)...);
         return result;
     }
 
     template <typename... Args>
     static auto dumpRouter(const std::string& aName, Args&&... args)
     {
-        decltype(mDumpRouter.begin()->second(args...)) result;
+        decltype(mDumpRouter.begin()->second(std::forward<Args>(args)...)) result;
         auto it = mDumpRouter.find(aName);
-        if (it != mDumpRouter.end()) result = it->second(args...);
+        if (it != mDumpRouter.end()) result = it->second(std::forward<Args>(args)...);
         return result;
     }
 

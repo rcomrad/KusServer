@@ -3,17 +3,16 @@
 #include <filesystem>
 #include <fstream>
 
-#include "domain/log.hpp"
-
 #include "path.hpp"
 
 std::string
-file::File::getAllData(const std::string& aFileName, bool aIsCritical) noexcept
+file::File::getAllData(const std::string& aFileName,
+                       file::Critical aIsCritical) noexcept
 {
     std::ifstream ios(aFileName);
     if (!ios.is_open())
     {
-        if (aIsCritical)
+        if (aIsCritical == Critical::Yes)
         {
             dom::writeError("No such file (", aFileName, ")");
         }
@@ -37,8 +36,20 @@ file::File::getAllData(const std::string& aFileName, bool aIsCritical) noexcept
     return result;
 }
 
+std::string
+file::File::getAllData(const std::string& aFolderName,
+                       const std::string& aFileName,
+                       file::Critical aIsCritical) noexcept
+{
+    return pathUnpack(
+        static_cast<std::string (*)(const std::string&, file::Critical)>(
+            &file::File::getAllData),
+        aFolderName, aFileName, aIsCritical);
+}
+
 std::vector<std::string>
-file::File::getLines(const std::string& aFileName, bool aIsCritical) noexcept
+file::File::getLines(const std::string& aFileName,
+                     file::Critical aIsCritical) noexcept
 {
     std::string temp = getAllData(aFileName, aIsCritical);
     std::vector<std::string> result;
@@ -60,9 +71,20 @@ file::File::getLines(const std::string& aFileName, bool aIsCritical) noexcept
     return result;
 }
 
+std::vector<std::string>
+file::File::getLines(const std::string& aFolderName,
+                     const std::string& aFileName,
+                     file::Critical aIsCritical) noexcept
+{
+    return pathUnpack(
+        static_cast<std::vector<std::string> (*)(
+            const std::string&, file::Critical)>(&file::File::getLines),
+        aFolderName, aFileName, aIsCritical);
+}
+
 std::vector<std::vector<std::string>>
 file::File::getWords(const std::string& aFileName,
-                     bool aIsCritical,
+                     file::Critical aIsCritical,
                      std::function<bool(char)> funk) noexcept
 {
     auto lines = getLines(aFileName, aIsCritical);
@@ -83,10 +105,23 @@ file::File::getWords(const std::string& aFileName,
     return result;
 }
 
+std::vector<std::vector<std::string>>
+file::File::getWords(const std::string& aFolderName,
+                     const std::string& aFileName,
+                     file::Critical aIsCritical,
+                     std::function<bool(char)> funk) noexcept
+{
+    return pathUnpack(
+        static_cast<std::vector<std::vector<std::string>> (*)(
+            const std::string&, file::Critical, std::function<bool(char)>)>(
+            &file::File::getWords),
+        aFolderName, aFileName, aIsCritical, funk);
+}
+
 // TODO: merge with getWords
 std::unordered_map<std::string, std::string>
 file::File::getWordsMap(const std::string& aFileName,
-                        bool aIsCritical,
+                        file::Critical aIsCritical,
                         std::function<bool(char)> funk) noexcept
 {
     std::unordered_map<std::string, std::string> result;
@@ -100,9 +135,22 @@ file::File::getWordsMap(const std::string& aFileName,
     return result;
 }
 
+std::unordered_map<std::string, std::string>
+file::File::getWordsMap(const std::string& aFolderName,
+                        const std::string& aFileName,
+                        file::Critical aIsCritical,
+                        std::function<bool(char)> funk) noexcept
+{
+    return pathUnpack(
+        static_cast<std::unordered_map<std::string, std::string> (*)(
+            const std::string&, file::Critical, std::function<bool(char)>)>(
+            &file::File::getWordsMap),
+        aFolderName, aFileName, aIsCritical, funk);
+}
+
 std::unordered_set<std::string>
 file::File::getWordsSet(const std::string& aFileName,
-                        bool aIsCritical,
+                        file::Critical aIsCritical,
                         std::function<bool(char)> funk) noexcept
 {
     std::unordered_set<std::string> result;
@@ -115,6 +163,19 @@ file::File::getWordsSet(const std::string& aFileName,
         }
     }
     return result;
+}
+
+std::unordered_set<std::string>
+file::File::getWordsSet(const std::string& aFolderName,
+                        const std::string& aFileName,
+                        file::Critical aIsCritical,
+                        std::function<bool(char)> funk) noexcept
+{
+    return pathUnpack(
+        static_cast<std::unordered_set<std::string> (*)(
+            const std::string&, file::Critical, std::function<bool(char)>)>(
+            &file::File::getWordsSet),
+        aFolderName, aFileName, aIsCritical, funk);
 }
 
 bool
@@ -143,7 +204,7 @@ file::File::writeData(const std::string& aFolderName,
 {
     std::optional<std::string> result;
 
-    auto path = Path::openFolder(aFolderName);
+    auto path = Path::touchFolder(aFolderName);
     if (path.has_value())
     {
         result = path.value() + aFileName;

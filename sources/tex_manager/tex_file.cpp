@@ -11,7 +11,7 @@
 tex::TexFile::TexFile() noexcept
 {
     mData += file::File::getAllData(file::Path::getPathUnsafe("header.textemp"),
-                                    true);
+                                    file::Critical::Yes);
 }
 
 std::string

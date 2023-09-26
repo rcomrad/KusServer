@@ -43,7 +43,7 @@ public:
     static std::string getPathUnsafe(const std::string& aFolder,
                                      const std::string& aName) noexcept;
 
-    static std::optional<std::string> openFolder(
+    static std::optional<std::string> touchFolder(
         const std::string& aName) noexcept;
     static bool clearFolder(const std::string& aName) noexcept;
 
@@ -98,6 +98,20 @@ private:
                 result.emplace_back(path + (entry.is_directory() ? "/" : ""));
             }
         }
+        return result;
+    }
+
+    template <typename... Args>
+    static std::string getPathUnsafeTempl(Args&&... args) noexcept
+    {
+        std::string result;
+
+        auto temp = getPath(std::forward<Args>(args)..., true);
+        if (temp.has_value())
+        {
+            result = temp.value();
+        }
+
         return result;
     }
 };

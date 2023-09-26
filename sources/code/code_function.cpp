@@ -124,7 +124,7 @@ code::CodeFunction::generateRouterBody() const noexcept
 {
     std::string execExpr;
     if (mIsFunctor) execExpr = "()";
-    if (mIsVariadic) execExpr = "(args...)";
+    if (mIsVariadic) execExpr = "(std::forward<Args>(args)...)";
 
     return "decltype(" + mMapName + ".begin()->second" + execExpr +
            ") result;\n"

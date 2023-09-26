@@ -15,8 +15,7 @@ core::TokenHandler::TokenHandler() noexcept
     mDistribution = std::move(
         std::uniform_int_distribution<uint32_t>(0, mAlphabet.size() - 1));
 
-    auto urls =
-        file::File::getWords(file::Path::getPathUnsafe("config", "url.conf"));
+    auto urls = file::File::getWords("config", "url.conf");
     for (auto& i : urls)
     {
         mURLs[i[0]];

@@ -2,6 +2,7 @@
 
 #include "core/file_router.hpp"
 #include "crow/middlewares/cors.h"
+#include "file_data/parser.hpp"
 #include "get/command_handler.hpp"
 #include "get/competition_handler.hpp"
 #include "get/get_handler.hpp"
@@ -13,6 +14,7 @@
 #include "post/submit_handler.hpp"
 #include "post/user_handler.hpp"
 
+#include "dump_manager.hpp"
 #include "result_generator.hpp"
 #include "token_handler.hpp"
 
@@ -129,8 +131,18 @@ core::Server::Server()
      { return get::GetHandler::multiplelGet(aRequest, aCondition); });
 
     CROW_ROUTE(app, "/api/dump/<string>")
-    ([&](const std::string& aName)
-     { return get::GetRouter::dumpRouter(aName, true); });
+    (
+        [&](const std::string& aName) {
+            return core::DumpManager::dumpAsString(
+                file::Parser::slice(aName, ","));
+        });
+    // CROW_ROUTE(app, "/api/dump_as_file/<string>")
+    // (
+    //     [&](const std::string& aName) {
+
+    //         return core::DumpManager::dumpAsFile(
+    //             file::Parser::slice(aName, ","));
+    //     });
 
     CROW_ROUTE(app, "/api/get_all_competition/<int>/<int>")
     ([&](int aUserID, int aCompetitionID)

@@ -117,34 +117,18 @@ file::Path::getPath(const std::string& aFolder,
 std::string
 file::Path::getPathUnsafe(const std::string& aFolder) noexcept
 {
-    std::string result;
-
-    auto temp = getPath(aFolder, true);
-    if (temp.has_value())
-    {
-        result = temp.value();
-    }
-
-    return result;
+    return getPathUnsafeTempl(aFolder);
 }
 
 std::string
 file::Path::getPathUnsafe(const std::string& aFolder,
                           const std::string& aName) noexcept
 {
-    std::string result;
-
-    auto temp = getPath(aFolder, aName, true);
-    if (temp.has_value())
-    {
-        result = temp.value();
-    }
-
-    return result;
+    return getPathUnsafeTempl(aFolder, aName);
 }
 
 std::optional<std::string>
-file::Path::openFolder(const std::string& aName) noexcept
+file::Path::touchFolder(const std::string& aName) noexcept
 {
     std::optional<std::string> result;
 
@@ -183,7 +167,7 @@ file::Path::clearFolder(const std::string& aName) noexcept
     auto p = getPath(aName);
     if (!p.has_value())
     {
-        auto p2 = openFolder(aName);
+        auto p2 = touchFolder(aName);
         if (p2.has_value())
         {
             temp = p2.value();

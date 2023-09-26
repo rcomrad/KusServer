@@ -44,8 +44,8 @@ post::Attendance::setMark(int aStudentId,
 void
 post::Attendance::newPage(uint8_t aMounth) noexcept
 {
-    static auto monthNums = file::File::getWordsMap(
-        file::Path::getPathUnsafe("resource", "month.txt"), true);
+    static auto monthNums =
+        file::File::getWordsMap("resource", "month.txt", file::Critical::Yes);
 
     curMounth = aMounth;
 

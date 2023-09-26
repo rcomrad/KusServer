@@ -20,8 +20,8 @@ data::DatabaseConnection::generateConnectionTypeSettings() noexcept
 {
     std::unordered_map<ConnectionType, data::DBSettings> result;
 
-    auto words = file::File::getWords(
-        file::Path::getPathUnsafe("config", "database.pass"), true);
+    auto words =
+        file::File::getWords("config", "database.pass", file::Critical::Yes);
     for (auto& i : words)
     {
         result[data::ConnectionType(std::stoi(i[0]))] =
@@ -67,7 +67,7 @@ data::DatabaseConnection::complexSelect(const std::string& aRequest) noexcept
 
 int
 data::DatabaseConnection::drop(const std::string& aTableName,
-                                   const std::string& aCondition) noexcept
+                               const std::string& aCondition) noexcept
 {
     int res = -1;
     if (!aCondition.empty())

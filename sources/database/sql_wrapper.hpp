@@ -5,6 +5,7 @@
 #include <utility>
 
 #include "domain/metaprogramming.hpp"
+#include "domain/to_string.hpp"
 
 using namespace std::literals;
 
@@ -14,32 +15,24 @@ namespace data
 class SQLWrapper
 {
 public:
-    SQLWrapper(int num);
+    template <typename T, typename = dom::enableIf<dom::isNotString<T>>>
+    static std::string convert(T&& arg) noexcept
+    {
+        return dom::toString(std::forward<T>(arg));
+    }
 
     template <typename S, typename = dom::enableIf<dom::isString<S>>>
-    SQLWrapper(S&& str)
+    static auto convert(S&& str) noexcept
     {
-        value = "\'"s + std::forward<S>(str) + "\'"s;
+        return "\'" + dom::toString(std::forward<S>(str)) + "\'";
     }
-    SQLWrapper(const char* str);
-    SQLWrapper(bool b);
-
-    operator std::string&&();
-
-private:
-    std::string value;
 };
 
 template <typename T>
-std::string
-wrap(T arg, char delim = '\0')
+auto
+wrap(T arg) noexcept
 {
-    auto res = std::string(SQLWrapper(arg));
-    if (delim != '\0')
-    {
-        res.push_back(delim);
-    }
-    return res;
+    return SQLWrapper::convert(arg);
 }
 
 } // namespace data

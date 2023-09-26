@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "file.hpp"
 #include "variable.hpp"
 
 namespace file
@@ -21,7 +22,12 @@ public:
     static std::optional<Variable> makeVariable(
         const std::string& aStr) noexcept;
     static std::vector<Variable> getVariablesFromFile(
-        const std::string aFilename, bool aIsCritical = false) noexcept;
+        const std::string aFilename,
+        file::Critical aIsCritical = file::Critical::No) noexcept;
+    static std::vector<Variable> getVariablesFromFile(
+        const std::string& aFolderName,
+        const std::string aFilename,
+        file::Critical aIsCritical = file::Critical::No) noexcept;
 
     static std::vector<std::string> slice(
         const std::string& aStr,

@@ -23,8 +23,8 @@ code::CodeGenerator::getTableData() noexcept
         {"timestamp", "std::string"}
     };
 
-    auto words = file::File::getWords(
-        file::Path::getPathUnsafe("config", "database.psql_db"), true);
+    auto words =
+        file::File::getWords("config", "database.psql_db", file::Critical::Yes);
     std::string last = "";
     for (auto& i : words)
     {

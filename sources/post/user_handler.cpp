@@ -205,8 +205,7 @@ std::unordered_map<std::string, std::set<std::string>>
 foo2()
 {
     std::unordered_map<std::string, std::set<std::string>> result;
-    auto data = file::File::getLines(
-        file::Path::getPathUnsafe("config", "key_role.conf"));
+    auto data = file::File::getLines("config", "key_role.conf");
     for (int i = 0; i < data.size(); i += 2)
     {
         auto roles      = file::Parser::slice(data[i + 1], " ");
@@ -237,8 +236,7 @@ post::UserHandler::send(const std::string& aEmail) noexcept
         file::File::getWords(file::Path::getPathUnsafe("config", "mail.pass"));
     static dom::Mail mail(pass[0][0], pass[0][1]);
 
-    static auto curSiteUrl = file::File::getWords(
-        file::Path::getPathUnsafe("config", "url.pass"))[0][0];
+    static auto curSiteUrl = file::File::getWords("config", "url.pass")[0][0];
 
     std::string url = dom::DateAndTime::getCurentTimeSafe();
     for (int i = 0; i < 10; ++i) url += 'a' + rand() % 26;

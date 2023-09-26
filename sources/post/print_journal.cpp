@@ -94,8 +94,7 @@ post::PrintJournal::makeJournal(tex::TexFile& aTexFile, int aID) noexcept
 
     aTexFile.setVariable("$group", std::vector<std::string>{group.name});
 
-    static auto week =
-        file::File::getLines(file::Path::getPathUnsafe("week.txt"));
+    static auto week = file::File::getLines("week.txt");
 
     auto shedule = file::Parser::slice(journal.schedule, " ");
 
@@ -177,8 +176,8 @@ post::PrintJournal::makeFrontPage(const data::JournalTable& aJournal) noexcept
     auto subject = connection.val.getData<data::Subject>(
         "id=" + data::wrap(aJournal.subjectID));
 
-    static auto front = file::File::getAllData(
-        file::Path::getPathUnsafe("resource", "front.tex"), true);
+    static auto front =
+        file::File::getAllData("resource", "front.tex", file::Critical::Yes);
     std::string result = front;
 
     auto numN    = result.find('N');

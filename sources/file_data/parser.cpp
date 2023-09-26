@@ -25,7 +25,7 @@ file::Parser::makeVariable(const std::string& aStr) noexcept
 
 std::vector<file::Variable>
 file::Parser::getVariablesFromFile(const std::string aFilename,
-                                   bool aIsCritical) noexcept
+                                   file::Critical aIsCritical) noexcept
 {
     std::vector<Variable> result;
 
@@ -46,6 +46,15 @@ file::Parser::getVariablesFromFile(const std::string aFilename,
     }
 
     return result;
+}
+
+std::vector<file::Variable>
+file::Parser::getVariablesFromFile(const std::string& aFolderName,
+                                   const std::string aFilename,
+                                   file::Critical aIsCritical) noexcept
+{
+    return file::Parser::getVariablesFromFile(
+        file::Path::getPathUnsafe(aFolderName, aFilename), aIsCritical);
 }
 
 std::vector<std::string>

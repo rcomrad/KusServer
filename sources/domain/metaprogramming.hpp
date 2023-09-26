@@ -19,6 +19,10 @@ using isSameWeak = typename std::is_same<std::decay_t<T1>, std::decay_t<T2>>;
 template <typename T, typename... Args>
 using isOneOf = typename std::disjunction<isSameWeak<T, Args>...>;
 
+template <typename T, typename... Args>
+using isNotOneOf =
+    typename std::negation<std::disjunction<isSameWeak<T, Args>...>>;
+
 template <typename Base, typename Derived>
 using isDerivedOf =
     typename std::is_base_of<std::decay_t<Base>, std::decay_t<Derived>>;
@@ -38,6 +42,9 @@ using isSTDString = isOneOf<T, std::string>;
 
 template <class T>
 using isString = isOneOf<T, std::string, char*, const char*>;
+
+template <class T>
+using isNotString = isNotOneOf<T, std::string, char*, const char*>;
 
 } // namespace dom
 

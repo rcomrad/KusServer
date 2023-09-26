@@ -2,10 +2,7 @@
 
 cmake_minimum_required(VERSION 3.21.3)
 
-if(NOT DEFINED VCPKG_ROOT)
-    set(VCPKG_ROOT "D:/vcpkg")
-endif()
-
+include(${CMAKE_CURRENT_SOURCE_DIR}/vcpkg_path.cmake)
 set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
 
 project(KusServer)

@@ -29,8 +29,7 @@ loadQuestions()
     std::map<std::string, std::string> q;
     q.insert(hasQ.begin(), hasQ.end());
 
-    auto ans = file::File::getWordsMap(
-        file::Path::getPathUnsafe("question", "ans.txt"));
+    auto ans = file::File::getWordsMap("question"s, "ans.txt"s);
 
     for (auto& i : q)
     {
@@ -179,7 +178,7 @@ core::Core::createDatabaseFromFile(std::string aFileName) noexcept
     auto connection = data::ConnectionManager::getUserConnection();
 
     std::vector<data::ColumnSetting> colums;
-    auto lines = file::File::getWords(aFileName, true);
+    auto lines = file::File::getWords(aFileName, file::Critical::Yes);
     lines.emplace_back(std::vector<std::string>{"TABLE", "NUN"});
     std::string name;
     for (auto i : lines)

@@ -10,6 +10,8 @@
 #include <unordered_set>
 #include <vector>
 
+#include "domain/to_string.hpp"
+
 #include "crow.h"
 #include "sql_wrapper.hpp"
 
@@ -148,7 +150,7 @@ struct UpperDataStruct : public T
         std::string result;
         for (size_t i = 0; i < T::types.size(); ++i)
         {
-            result += toString(T::types[i], T::ptrs[i]);
+            result += toString<dom::ToString>(T::types[i], T::ptrs[i]);
             result.push_back(';');
         }
         return result;
@@ -238,21 +240,22 @@ struct UpperDataStruct : public T
     // }
 
 protected:
+    template <typename T = data::SQLWrapper>
     static std::string toString(data::Type aType, void* aPtr) noexcept
     {
         std::string result;
         switch (aType)
         {
             case data::Type::INT:
-                if (*((int*)aPtr) != 0) result = wrap(*((int*)aPtr));
+                if (*((int*)aPtr) != 0) result = T::convert(*((int*)aPtr));
                 break;
             case data::Type::BOOL:
                 if (*((char*)aPtr) != 0)
-                    result = wrap(bool((*((char*)aPtr)) + 1));
+                    result = T::convert(bool((*((char*)aPtr)) + 1));
                 break;
             case data::Type::STRING:
                 if (!((std::string*)aPtr)->empty())
-                    result = wrap(*((std::string*)aPtr));
+                    result = T::convert(*((std::string*)aPtr));
                 break;
         }
         return result;

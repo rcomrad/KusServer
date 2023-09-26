@@ -26,7 +26,7 @@ cd ../../../..
 sudo -H -u $2 git clone https://github.com/Microsoft/vcpkg.git
 cd ./vcpkg
 sudo -H -u $2 ./bootstrap-vcpkg.sh
-sudo -H -u $2 ./vcpkg install boost:x64-linux
+sudo -H -u $2 ./vcpkg install boost-filesystem:x64-linux
 sudo -H -u $2 ./vcpkg install crow:x64-linux
 sudo -H -u $2 ./vcpkg install libpqxx:x64-linux
 sudo -H -u $2 ./vcpkg install mailio:x64-linux

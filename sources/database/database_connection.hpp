@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "domain/log.hpp"
 #include "domain/metaprogramming.hpp"
 
 #include "postgresql.hpp"
@@ -124,6 +125,10 @@ public:
         if (!temp.empty())
         {
             aData.id = temp[0];
+        }
+        else
+        {
+            dom::writeError("Insert", T::geName(), "element failed");
         }
         return aData.id;
     }

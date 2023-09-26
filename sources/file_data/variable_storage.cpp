@@ -24,7 +24,7 @@ void
 file::VariableStorage::reloadSettings() noexcept
 {
     auto settings = file::Parser::getVariablesFromFile(
-        file::Path::getPathUnsafe("config", "main_settings.conf"), true);
+        "config", "main_settings.conf", file::Critical::Yes);
     for (auto& var : settings)
     {
         if (var.name == "additional_path")

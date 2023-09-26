@@ -12,5 +12,6 @@
 **/path.conf
 **.dmprar
 **.out
+vcpkg_path.cmake
 
 git update-index --assume-unchanged ./.vscode/*

@@ -11,7 +11,7 @@ KusServer uses vcpkg to manage libraries for cmake by specifing toolchain file i
 
 KusServer requires the following libraries:
 
-	boost
+	boost-filesystem
 	libpqxx
 	crow
 
@@ -79,24 +79,20 @@ KusServer uses variables to store the user settings of the server instance.
 To configure a variable, you must write it to the main_settings.conf file in the bin directory.
 KasServer supports the following settings:
 
-
 	# Sets the number of database connections used by the server
-	database_connection_count 3
+	database_connection_count = 3
 	# Sets the number of threads for submission testing (programming problems)
-	tester_thread_count 1
+	tester_thread_count = 1
 
 	# Force the server to execute the restart command at startup.
 	# This type of command can reconfigure the database, add or delete data.
-	restart_on_start nun
-
+	restart_on_start = nun
 	
 	# Set the flag for submission online testing (programming problems)
 	submission_auto_check off
-	# Set the flag for simple answers online testing
-	answer_auto_check on
 
 	# Set the flag to implement authorization
-	authorisation off
+	authorisation = off
 
 # Testing
 

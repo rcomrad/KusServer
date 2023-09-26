@@ -5,35 +5,47 @@
 
 #include <string>
 
+#include "metaprogramming.hpp"
+
 //--------------------------------------------------------------------------------
 
 namespace dom
 {
 
-const std::string&
-toString(const std::string& aStr) noexcept;
-std::string&
-toString(std::string& aStr) noexcept;
-std::string&&
-toString(std::string&& aStr) noexcept;
+class ToString
+{
+public:
+    // static std::string convert(int aData) noexcept;
+    // static std::string convert(size_t aData) noexcept;
+    // static std::string convert(long long aData) noexcept;
 
-std::string
-toString(const char* c) noexcept;
+    // static std::string convert(float aData) noexcept;
+    // static std::string convert(double aData) noexcept;
 
-std::string
-toString(int aData) noexcept;
-std::string
-toString(size_t aData) noexcept;
-std::string
-toString(long long aData) noexcept;
+    static std::string convert(bool b) noexcept;
+    static std::string convert(const char* str) noexcept;
 
-std::string
-toString(float aData) noexcept;
-std::string
-toString(double aData) noexcept;
+    template <typename T,
+              typename = dom::enableIf<
+                  dom::isNotOneOf<T, bool, std::string, char*, const char*>>>
+    static std::string convert(T&& aData) noexcept
+    {
+        return std::to_string(aData);
+    }
 
-std::string
-toString(bool aData) noexcept;
+    template <typename S, typename = dom::enableIf<dom::isSTDString<S>>>
+    static auto convert(S&& str) noexcept
+    {
+        return std::forward<S>(str);
+    }
+};
+
+template <typename T>
+auto
+toString(T arg) noexcept
+{
+    return ToString::convert(arg);
+}
 
 } // namespace dom
 
