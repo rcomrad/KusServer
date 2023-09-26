@@ -64,7 +64,10 @@ post::UserHandler::rawDataHandler(data::RawData& aData) noexcept
             {
                 roles.insert(j);
             }
-            aData.value[i].emplace_back(
+
+            // TODO: remove insert
+            aData.value[i].insert(
+                aData.value[i].begin() + 5,
                 data::wrap(core::Role::getInstance().getRoleID(roles)));
         }
     }

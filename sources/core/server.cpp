@@ -132,9 +132,10 @@ core::Server::Server()
 
     CROW_ROUTE(app, "/api/dump/<string>")
     (
-        [&](const std::string& aName) {
+        [&](const std::string& aName)
+        {
             return core::DumpManager::dumpAsString(
-                file::Parser::slice(aName, ","));
+                file::Parser::slice(aName, ",", "*"));
         });
     // CROW_ROUTE(app, "/api/dump_as_file/<string>")
     // (
