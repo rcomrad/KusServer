@@ -19,7 +19,7 @@ public:
     static std::string dumpAsString(
         const std::vector<std::string>& aTableNames = {}) noexcept;
 
-    static void getTable(const std::string& aTableName) noexcept;
+    static std::optional<std::string> makeSaveFile() noexcept;
 
 private:
     static std::vector<std::string> getDatabaseTableNames() noexcept;

@@ -4,6 +4,7 @@
 #include "domain/log.hpp"
 
 #include "file_data/file.hpp"
+#include "file_data/variable_storage.hpp"
 #include "get/get_router.hpp"
 
 std::optional<std::string>
@@ -46,6 +47,19 @@ core::DumpManager::getDatabaseTableNames() noexcept
     for (auto& i : words)
     {
         if (i[0] == "TABLE") result.emplace_back(std::move(i[1]));
+    }
+
+    return result;
+}
+
+std::optional<std::string>
+core::DumpManager::makeSaveFile() noexcept
+{
+    std::optional<std::string> result;
+
+    if (!file::VariableStorage::getInstance().getFlag("bad_db_flag"))
+    {
+        result = core::DumpManager::dumpAsFile();
     }
 
     return result;

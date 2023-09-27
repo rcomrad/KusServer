@@ -1,5 +1,7 @@
 #include "token_handler.hpp"
 
+#include "domain/date_and_time.hpp"
+
 #include "file_data/file.hpp"
 #include "file_data/path.hpp"
 #include "file_data/variable_storage.hpp"
@@ -9,17 +11,14 @@ core::TokenHandler::TokenHandler() noexcept
     mAlphabet = "0123456789"
                 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 "abcdefghijklmnopqrstuvwxyz"
-                "!\"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~";
+                "!\"#$%&\'()*+,-./:;<>?@[\\]^_`{|}~";
 
     mRandGenerator.seed(0);
     mDistribution = std::move(
         std::uniform_int_distribution<uint32_t>(0, mAlphabet.size() - 1));
 
-    auto urls = file::File::getWords("config", "url.conf");
-    for (auto& i : urls)
-    {
-        mURLs[i[0]];
-    }
+    mTokens.resize(4000);
+    mTokenIterator = mTokens.begin() + 1;
 
     mIsActive =
         file::VariableStorage::getInstance().getFlagUnsafe("authorisation");
@@ -33,51 +32,80 @@ core::TokenHandler::getInstance() noexcept
 }
 
 std::string
-core::TokenHandler::generate(const data::User& aUser) noexcept
+core::TokenHandler::generate(const data::User& aUser,
+                             const std::string& aIP) noexcept
 {
-    std::string result = std::to_string(aUser.roleID);
+    mTokenGenerationMutex.lock();
 
-    // mMutex.lock();
-    // while (true)
-    // {
-    //     result.clear();
-    //     while (result.size() < 20)
-    //     {
-    //         int indx = mDistribution(mRandGenerator);
-    //         result.push_back(mAlphabet[indx]);
-    //     }
-    //     if (mTokens.find(result) == mTokens.end()) break;
-    // }
+    ++mTokenIterator;
+    if (mTokenIterator == mTokens.end())
+    {
+        mTokenIterator = mTokens.begin() + 1;
+        for (auto& i : mTokens)
+        {
+            i.inUse = false;
+        }
+    }
+    auto user = *mTokenIterator;
 
-    // mTokens[result];
+    mTokenGenerationMutex.unlock();
 
-    // mMutex.unlock();
+    user.inUse      = true;
+    user.ip         = aIP;
+    user.id         = aUser.id;
+    user.time       = boost::posix_time::second_clock::local_time();
+    user.falseLogin = 0;
 
-    return result;
+    user.password.clear();
+    while (user.password.size() < 20)
+    {
+        int indx = mDistribution(mRandGenerator);
+        user.password.push_back(mAlphabet[indx]);
+    }
+
+    user.password += "=" + dom::toString(mTokenIterator - mTokens.begin());
+
+    return user.password;
 }
 
 bool
 core::TokenHandler::check(const std::string& aToken,
-                          const std::string& aURL) noexcept
+                          const std::string& aURL,
+                          const std::string& aIP) noexcept
 {
-    // const std::lock_guard<std::mutex> lock(mMutex);
     bool result = !mIsActive;
 
-    // mMutex.lock();
-    // mMutex.unlock();
+    int num = 0;
+    for (int i = aToken.size() - 1; std::isdigit(aToken[i]); --i)
+    {
+        num *= 10;
+        num += aToken[i] - '0';
+    }
 
-    int tole_id = std::stoi(aToken);
-    if (mURLs[aURL] & tole_id) result = true;
+    if (num > 0 && num < mTokens.size())
+    {
+        if (mTokens[num].inUse && mTokens[num].ip == aIP)
+        {
+            if (dom::DateAndTime::curentTimeAssert(mTokens[num].time,
+                                                   {24, 0, 0}))
+            {
+                result = true;
+            }
+            else
+            {
+                mTokens[num].inUse = false;
+            }
+        }
+        else
+        {
+            if (++mTokens[num].falseLogin > 10)
+            {
+                // mTokens[num].inUse = false;
+            }
+        }
+    }
 
     return result;
-}
-
-void
-core::TokenHandler::clear() noexcept
-{
-    // mMutex.lock();
-    // mTokens.clear();
-    // mMutex.unlock();
 }
 
 bool

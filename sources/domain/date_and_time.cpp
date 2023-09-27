@@ -56,3 +56,14 @@ dom::DateAndTime::getDateStr(const boost::gregorian::date& aDate) noexcept
            std::to_string(month) + "-"s + (day < 10 ? "0"s : ""s) +
            std::to_string(day);
 }
+
+bool
+dom::DateAndTime::curentTimeAssert(
+    const boost::posix_time::ptime& aTime,
+    const boost::posix_time::time_duration& aDuration) noexcept
+{
+    boost::posix_time::ptime timeLocal =
+        boost::posix_time::second_clock::local_time();
+
+    return (aTime - timeLocal) < aDuration;
+}

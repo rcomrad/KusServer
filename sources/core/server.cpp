@@ -23,11 +23,11 @@ core::TokenMiddleware::before_handle(crow::request& req,
                                      crow::response& res,
                                      context& ctx)
 {
-    auto& handler = core::TokenHandler::getInstance();
+    static auto& handler = core::TokenHandler::getInstance();
     if (req.headers.find("token") != req.headers.end())
-    {
+    {      
         auto token = req.get_header_value("token");
-        if (handler.check(token, req.raw_url))
+        if (handler.check(token, req.raw_url, req.remote_ip_address))
         {
             res.code = 403;
             res.end();

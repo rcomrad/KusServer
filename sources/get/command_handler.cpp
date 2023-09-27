@@ -45,7 +45,7 @@ get::CommandHandler::restart(const std::string aValue) noexcept
 
     if (resValue)
     {
-        auto dumpPath = core::DumpManager::dumpAsFile();
+        auto dumpPath = core::DumpManager::makeSaveFile();
         if (dumpPath.has_value())
         {
             res += "\n\nDump address: " + dumpPath.value();

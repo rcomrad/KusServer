@@ -6,7 +6,7 @@
 
 core::Role::Role() noexcept
 {
-    if (!file::VariableStorage::getInstance().getFlag("new_db_sitch"))
+    if (!file::VariableStorage::getInstance().getFlag("bad_db_flag"))
     {
         reset();
     }

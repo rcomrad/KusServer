@@ -240,22 +240,23 @@ struct UpperDataStruct : public T
     // }
 
 protected:
-    template <typename T = data::SQLWrapper>
+    template <typename StrClass = data::SQLWrapper>
     static std::string toString(data::Type aType, void* aPtr) noexcept
     {
         std::string result;
         switch (aType)
         {
             case data::Type::INT:
-                if (*((int*)aPtr) != 0) result = T::convert(*((int*)aPtr));
+                if (*((int*)aPtr) != 0)
+                    result = StrClass::convert(*((int*)aPtr));
                 break;
             case data::Type::BOOL:
                 if (*((char*)aPtr) != 0)
-                    result = T::convert(bool((*((char*)aPtr)) + 1));
+                    result = StrClass::convert(bool((*((char*)aPtr)) + 1));
                 break;
             case data::Type::STRING:
                 if (!((std::string*)aPtr)->empty())
-                    result = T::convert(*((std::string*)aPtr));
+                    result = StrClass::convert(*((std::string*)aPtr));
                 break;
         }
         return result;

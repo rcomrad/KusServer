@@ -44,5 +44,8 @@ free -m
 df -h
 top
 
+echo $0
+zsh --version
+bash --version
 
 sudo apt-get install texlive texinfo  texlive-fonts-recommended texlive-lang-cyrillic texlive-latex-extra latex-cjk-all -y

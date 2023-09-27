@@ -95,7 +95,8 @@ post::UserHandler::autorisation(const crow::request& aReq) noexcept
 
             auto& tokenHandler = core::TokenHandler::getInstance();
             if (tokenHandler.isActive())
-                uJson["user"]["token"] = tokenHandler.generate(user);
+                uJson["user"]["token"] =
+                    tokenHandler.generate(user, aReq.remote_ip_address);
 
             auto roles = core::Role::getInstance().getRoles(user.roleID);
             crow::json::wvalue::list roleList;
@@ -242,7 +243,7 @@ post::UserHandler::confirmation(const std::string& aUrl) noexcept
             resp = {"Bad link, no user ID!"};
         }
     }
-  
+
     return resp;
 }
 
@@ -264,7 +265,7 @@ std::unordered_map<std::string, std::set<std::string>>
 post::UserHandler::getKeyMap() noexcept
 {
     std::unordered_map<std::string, std::set<std::string>> result;
-    auto data = file::File::getLines("config", "key_role.conf");
+    auto data = file::File::getLines("config", "key_role.pass");
     for (int i = 0; i < data.size(); i += 2)
     {
         auto roles      = file::Parser::slice(data[i + 1], " ");

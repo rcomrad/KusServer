@@ -31,9 +31,15 @@ sudo -H -u $2 ./vcpkg install crow:x64-linux
 sudo -H -u $2 ./vcpkg install libpqxx:x64-linux
 sudo -H -u $2 ./vcpkg install mailio:x64-linux
 
-cd ../server/bin
+cd ../server
+sudo -H -u $2 printf "set(VCPKG_ROOT \"/home/$2/vcpkg/\")" > vcpkg_path.cmake
+
+cd ./config
 sudo -H -u $2 printf "0 postgres postgres $1 public\n1 journal_db $2 $1 journal\n" > database.pass
-sudo -H -u $2 printf "default /home/$2/data/" > paths.path
+sudo -H -u $2 printf "default /home/$2/data/" > path.conf
+sudo -H -u $2 printf "$4" > url.pass
+#sudo -H -u $2 printf " " > key_role.pass
+#sudo -H -u $2 printf " " > mail.pass
 
 cd ../devops/setup/scripts
 sudo cp ../data/pg_hba.conf /etc/postgresql/12/main/pg_hba.conf
