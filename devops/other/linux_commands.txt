@@ -1,0 +1,63 @@
+ls -a
+ls -s
+la
+la -s
+
+# ssh check
+sudo nano /etc/ssh/sshd_config
+chmod 600 ./id_rsa 
+chmod 400 ./id_rsa  #only read
+
+# nginx
+sudo systemctl status nginx
+sudo nginx -s reload
+sudo certbot install --cert-name kusmirror.ru
+
+# postgres
+sudo psql -U journal_user -h localhost -d journal_db 
+sudo psql -U postgres -h localhost -d postgres 
+sudo -u postgres psql -c "CREATE USER journal_user;"
+sudo -u postgres psql -c "ALTER USER journal_user password '$1';"
+ 
+# service
+/etc/systemd/system/
+sudo chmod 640 /etc/systemd/system/crowthing.service
+
+sudo systemctl start KusManager
+sudo systemctl restart KusManager
+sudo systemctl stop KusManager
+sudo systemctl status KusManager
+sudo systemctl daemon-reload
+
+sudo journalctl -u KusManager
+sudo journalctl -u KusManager --since "2023-03-30 15:34:40"
+scp root@194.87.206.68:/home/root/logs D:/logs
+
+# proceses
+sudo ps axu
+sudo netstat -ntlp
+sudo kill -9
+ps -efj
+
+# memory
+swapon --show
+swapon -s
+free -m
+df -h
+top
+
+# console
+echo $0
+zsh --version
+bash --version
+omz update
+
+sudo apt-get install texlive texinfo  texlive-fonts-recommended texlive-lang-cyrillic texlive-latex-extra latex-cjk-all -y
+
+# git
+ssh-keygen
+cat id_rsa.pub
+git remote -v
+git remote set-url origin git@github.com:rcomrad/KusServer.git
+git config --global user.email "comrade_1997@mail.ru"
+git config --global user.name "rcomrad"

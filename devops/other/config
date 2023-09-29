@@ -1,0 +1,4 @@
+Host kussystem kussystem.ru
+    HostName kussystem.ru
+    IdentityFile ~/.ssh/server # private key for realname
+    User rcomrad
