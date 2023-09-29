@@ -2,6 +2,7 @@ ls -a
 ls -s
 la
 la -s
+ll
 
 # ssh check
 sudo nano /etc/ssh/sshd_config
