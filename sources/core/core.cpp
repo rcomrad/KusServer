@@ -12,7 +12,7 @@
 #include "post/plan_handler.hpp"
 #include "post/user_handler.hpp"
 #include "tester/tester.hpp"
-
+#include "get/command_handler.hpp"
 #include "server.hpp"
 #include "submission_queue.hpp"
 
@@ -63,7 +63,16 @@ core::Core::Core() noexcept
             "submission_auto_check"))
         mApps["tester"] = std::move(std::thread(&Core::testerThread, this));
 
-    loadQuestions();
+    if (!file::VariableStorage::getInstance().getFlagUnsafe("bad_db_flag")) 
+    {
+        loadQuestions();
+    }
+
+    auto restartState = file::VariableStorage::getInstance().getWord("restart_on_start");
+    if (restartState.has_value())
+    {
+        get::CommandHandler::process(restartState.value());
+    }
 }
 
 void
