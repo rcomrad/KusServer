@@ -4,7 +4,7 @@
 
 #include "file_data/parser.hpp"
 #include "post/post_handler.hpp"
-
+#include "file_data/file.hpp"
 // TODO: crow::multipart::message
 std::string
 mult::MailSender::process(const crow::request& aReq) noexcept
@@ -20,7 +20,9 @@ mult::MailSender::process(const crow::request& aReq) noexcept
     auto address =
         file::Parser::slice(msg.get_part_by_name("address").body, ";");
 
-        
+    auto words = file::File::getWords(post::PostHandler::uploadFile(msg, "data"),FileType::String);
+
+
 
     dom::Mail mail(login, password);
     for (auto& a : address)

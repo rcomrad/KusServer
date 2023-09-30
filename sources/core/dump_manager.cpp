@@ -61,6 +61,10 @@ core::DumpManager::makeSaveFile() noexcept
     {
         result = core::DumpManager::dumpAsFile();
     }
+    else
+    {
+        result = "NUN";
+    }
 
     return result;
 }

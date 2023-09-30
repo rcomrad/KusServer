@@ -129,15 +129,16 @@ post::PostHandler::uploadFromFileRequest(const std::string& aType,
 // TODO: use file.hpp
 std::string
 post::PostHandler::uploadFile(crow::multipart::message& aMsg,
-                              const std::string& aFilenameKey,
-                              const std::string& aFileKey) noexcept
+                              const std::string& aFileKey,
+                              const std::string& aFilenameKey) noexcept
 {
     dom::writeInfo("File upload func");
 
     auto pathPrefix = file::Path::getPathUnsafe("upload");
     // dom::writeInfo("File prefix:", pathPrefix);
 
-    auto fileName = aMsg.get_part_by_name(aFilenameKey).body;
+    std::string fileName;
+    if (!aFilenameKey.empty())  fileName= aMsg.get_part_by_name(aFilenameKey).body;
     dom::writeInfo("File name:", fileName);
     auto file = aMsg.get_part_by_name(aFileKey).body;
     dom::writeInfo("File data:", file);

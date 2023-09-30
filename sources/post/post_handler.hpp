@@ -139,8 +139,8 @@ public:
 
     static std::string uploadFile(
         crow::multipart::message& aMsg,
-        const std::string& aFilenameKey = "filename",
-        const std::string& aFileKey     = "file") noexcept;
+        const std::string& aFileKey     = "file",
+        const std::string& aFilenameKey = "filename") noexcept;
 
 protected:
     template <typename T>

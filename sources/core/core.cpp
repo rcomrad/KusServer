@@ -73,7 +73,8 @@ core::Core::Core() noexcept
         file::VariableStorage::getInstance().getWord("restart_on_start");
     if (restartState.has_value())
     {
-        get::CommandHandler::process("restart", restartState.value());
+        mApps["database_remake"] =  
+            std::move(std::thread(&get::CommandHandler::process,"restart", restartState.value()));
     }
 }
 
@@ -144,8 +145,14 @@ core::Core::run() noexcept
         auto num = state.getIntUnsafe("restart");
         if (num)
         {
-            if (num & 1) remakeDatabase();
-            if (num & 2) populate();
+            if (num & 1) 
+            {
+                remakeDatabase();
+            }
+            if (num & 2) 
+            {
+                populate();
+            }
             if (num & 4)
             {
                 SubmissionQueue::getInstance().reload();
