@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ff6f571f-4f48-4185-8bb0-ffd8db8ca753",
+		"_postman_id": "916b24f8-bc54-4ae1-98c0-18b3bfbd8fc5",
 		"name": "KusJournalTester",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "25083981"
@@ -4119,6 +4119,68 @@
 					"path": [
 						"api",
 						"submit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send mail",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "techName",
+							"value": "mail",
+							"type": "text"
+						},
+						{
+							"key": "login",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "address",
+							"value": "oa1oa@mail.ru;comrade_1997@mail.ru",
+							"type": "text"
+						},
+						{
+							"key": "theme",
+							"value": "Тестовая рассылка",
+							"type": "text"
+						},
+						{
+							"key": "text\n",
+							"type": "file",
+							"src": "letter.txt"
+						},
+						{
+							"key": "data",
+							"type": "file",
+							"src": "letter_data.txt"
+						}
+					]
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/multitool",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"multitool"
 					]
 				}
 			},

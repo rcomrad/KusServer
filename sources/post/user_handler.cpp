@@ -301,9 +301,7 @@ post::UserHandler::applyKey(data::User& aUser) noexcept
 std::optional<std::string>
 post::UserHandler::sendComfLink(const data::User& aUser) noexcept
 {
-    static auto pass =
-        file::File::getWords(file::Path::getPathUnsafe("config", "mail.pass"));
-    static dom::Mail mail(pass[0][0], pass[0][1]);
+    static dom::Mail mail;
 
     // to erase whitespaces
     static auto curSiteUrl = file::File::getWords("config", "url.pass")[0][0];

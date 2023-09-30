@@ -22,10 +22,10 @@ namespace file
 {
 
 // To avoid an implicit conversion from const char* to bool
-enum class Critical
+enum class FileType
 {
-    Yes,
-    No
+    File,
+    String
 };
 
 class File
@@ -34,47 +34,47 @@ public:
     File() noexcept = delete;
 
     static std::string getAllData(const std::string& aFileName,
-                                  Critical aIsCritical = Critical::No) noexcept;
+                                  FileType aFileType = FileType::File) noexcept;
     static std::string getAllData(const std::string& aFolderName,
                                   const std::string& aFileName,
-                                  Critical aIsCritical = Critical::No) noexcept;
+                                  FileType aFileType = FileType::File) noexcept;
 
     static std::vector<std::string> getLines(
         const std::string& aFileName,
-        Critical aIsCritical = Critical::No) noexcept;
+        FileType aFileType = FileType::File) noexcept;
     static std::vector<std::string> getLines(
         const std::string& aFolderName,
         const std::string& aFileName,
-        Critical aIsCritical = Critical::No) noexcept;
+        FileType aFileType = FileType::File) noexcept;
 
     static std::vector<std::vector<std::string>> getWords(
         const std::string& aFileName,
-        Critical aIsCritical           = Critical::No,
+        FileType aFileType           = FileType::File,
         std::function<bool(char)> funk = &file::File::isSeparator) noexcept;
     static std::vector<std::vector<std::string>> getWords(
         const std::string& aFolderName,
         const std::string& aFileName,
-        Critical aIsCritical           = Critical::No,
+        FileType aFileType           = FileType::File,
         std::function<bool(char)> funk = &file::File::isSeparator) noexcept;
 
     static std::unordered_map<std::string, std::string> getWordsMap(
         const std::string& aFileName,
-        Critical aIsCritical           = Critical::No,
+        FileType aFileType           = FileType::File,
         std::function<bool(char)> funk = &file::File::isSeparator) noexcept;
     static std::unordered_map<std::string, std::string> getWordsMap(
         const std::string& aFolderName,
         const std::string& aFileName,
-        Critical aIsCritical           = Critical::No,
+        FileType aFileType           = FileType::File,
         std::function<bool(char)> funk = &file::File::isSeparator) noexcept;
 
     static std::unordered_set<std::string> getWordsSet(
         const std::string& aFileName,
-        Critical aIsCritical           = Critical::No,
+        FileType aFileType           = FileType::File,
         std::function<bool(char)> funk = &file::File::isSeparator) noexcept;
     static std::unordered_set<std::string> getWordsSet(
         const std::string& aFolderName,
         const std::string& aFileName,
-        Critical aIsCritical           = Critical::No,
+        FileType aFileType           = FileType::File,
         std::function<bool(char)> funk = &file::File::isSeparator) noexcept;
 
     static bool writeData(const std::string& aFileName,
@@ -101,7 +101,7 @@ private:
         }
         else
         {
-            dom::writeError("No such file ( Folder:", aFolderName,
+            dom::writeError("File such file ( Folder:", aFolderName,
                             ", Name:", aFileName, ")");
         }
         return result;

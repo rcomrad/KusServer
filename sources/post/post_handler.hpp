@@ -38,33 +38,6 @@ class PostHandler
 {
 
 public:
-    // template <typename HandlerType, typename TableType>
-    // static crow::json::wvalue basicPost(const crow::request& aReq) noexcept
-    // {
-    //     auto body    = crow::json::load(aReq.body);
-    //     auto request = parseRequest<TableType>(body);
-
-    //     crow::json::wvalue res;
-    //     res = HandlerType::process(request);
-
-    //     if (request.type != ManyToMany::NUN)
-    //     {
-    //         manyToMany(request.data.id, request.data.geName(), request.type,
-    //                    request.leftovers);
-    //     }
-
-    //     return res;
-    // }
-
-    // template <typename T>
-    // static crow::json::wvalue process(PostRequest<T>& aReq) noexcept
-    // {
-    //     int res;
-    //     auto connection = data::ConnectionManager::getUserConnection();
-    //     res             = connection.val.write(aReq.data);
-    //     return {res};
-    // }
-
     template <typename HandlerType, typename TableType>
     static crow::json::wvalue postSubrouter(const crow::request& aReq) noexcept
     {
@@ -91,118 +64,6 @@ public:
         res             = connection.val.write(aReq.data);
         return {res};
     }
-
-    // template <typename T>
-    // static crow::json::wvalue process(data::DataArray<T>& aTable) noexcept
-    // {
-    //     std::vector<char> tableFlag(T::types.size(), -1);
-    //     for (size_t i = 3; i < T::types.size(); ++i)
-    //     {
-    //         std::string temp = T::names[j];
-    //         temp.resize(T::names[1].size() - 3);
-    //         temp += "_id"s;
-    //         tableFlag[i] = temp == T::names[1] ? 1 : ;
-    //     }
-
-    //     for (auto& i : aTable)
-    //     {
-    //     }
-
-    //     auto connection = data::ConnectionManager::getUserConnection();
-    //     res             = connection.val.insert(request.data);
-
-    //     return {res};
-    // }
-
-    // template <typename T>
-    // static void manyToManyTransmiter(const PostRequest<T>& aReq) noexcept
-    // {
-    //     for (auto& i : aReq.manyToMany)
-    //     {
-    //         transmitToMTMHandler(i.first, aReq.data.id,
-    //         aReq.other.count("add"),
-    //                              i.second, T::tableName);
-    //     }
-    // }
-
-    // template <typename T>
-    // static crow::json::wvalue manyToMany(const PostRequest<T>& aReq) noexcept
-    // {
-    //     for (auto& other : aReq.leftovers)
-    //     {
-    //         data::RawData aData;
-    //         // header;
-    //         auto& value = aData.value;
-    //     }
-
-    //     auto it = T::nameToNum.find(aTableName + "_id"s);
-    //     crow::json::wvalue res;
-
-    //     data::DataArray<T> table;
-    //     if (request.type == PostRequest::ManyToMany::REPLACE)
-    //     {
-    //         auto connection = data::ConnectionManager::getUserConnection();
-    //         connection.val.drop(request.data);
-    //         table = connection.val.getDataArray(request.data);
-    //     }
-
-    //     int l = it->second;
-    //     int r = l == 1 ? 2 : 1;
-
-    //     for (auto i : aIDForInsert)
-    //     {
-    //         table.emplace_back();
-    //         *(int*)table.back()[l] = aID;
-    //         *(int*)table.back()[r] = i;
-    //     }
-
-    //     res = connection.val.insert<T>(table);
-
-    //     return res;
-    // }
-
-    // template <typename T>
-    // static crow::json::wvalue manyToMany(int aID,
-    //                                      bool aIsAdding,
-    //                                      std::vector<int> aIDForInsert,
-    //                                      const std::string& aTableName)
-    //                                      noexcept
-    // {
-    //     auto connection = data::ConnectionManager::getUserConnection();
-    //     data::DataArray<T> table;
-    //     table.reserve(16);
-
-    //     auto it = T::nameToNum.find(aTableName + "_id");
-    //     crow::json::wvalue res;
-    //     if (it == T::nameToNum.end())
-    //     {
-    //         res = {"404"};
-    //     }
-    //     else
-    //     {
-    //         int l = it->second;
-    //         int r = l == 1 ? 2 : 1;
-
-    //         if (!aIsAdding)
-    //         {
-    //             table.emplace_back();
-    //             *(int*)table.back()[l] = aID;
-    //             connection.val.drop<T>(table);
-    //             table.pop_back();
-    //         }
-
-    //         for (auto i : aIDForInsert)
-    //         {
-    //             table.emplace_back();
-    //             *(int*)table.back()[l] = aID;
-    //             *(int*)table.back()[r] = i;
-    //         }
-
-    //         res = connection.val.insert<T>(table);
-    //     }
-
-    //     return {res};
-    // }
 
     template <typename T>
     static crow::json::wvalue drop(const crow::request& aReq) noexcept
@@ -276,6 +137,11 @@ public:
 
     //--------------------------------------------------------------------------------
 
+    static std::string uploadFile(
+        crow::multipart::message& aMsg,
+        const std::string& aFilenameKey = "filename",
+        const std::string& aFileKey     = "file") noexcept;
+
 protected:
     template <typename T>
     static auto parseRequest(const crow::json::rvalue& aReq) noexcept
@@ -309,17 +175,6 @@ protected:
         }
         return result;
     }
-
-    static std::string uploadFile(crow::multipart::message& aMsg,
-                                  std::string aPathPrefix = "") noexcept;
-
-    // private:
-    //     static void transmitToMTMHandler(const std::string aTableName,
-    //                                      int aID,
-    //                                      bool aIsAdding,
-    //                                      std::vector<int> aIDForInsert,
-    //                                      const std::string aTrueNam)
-    //                                      noexcept;
 
 private:
     static crow::json::wvalue manyToMany(

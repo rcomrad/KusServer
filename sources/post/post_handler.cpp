@@ -1,5 +1,7 @@
 #include "post_handler.hpp"
 
+#include "domain/date_and_time.hpp"
+
 #include "database/connection_manager.hpp"
 
 #include "core/file_router.hpp"
@@ -127,42 +129,25 @@ post::PostHandler::uploadFromFileRequest(const std::string& aType,
 // TODO: use file.hpp
 std::string
 post::PostHandler::uploadFile(crow::multipart::message& aMsg,
-                              std::string aPathPrefix) noexcept
+                              const std::string& aFilenameKey,
+                              const std::string& aFileKey) noexcept
 {
     dom::writeInfo("File upload func");
 
-    if (aPathPrefix.empty()) aPathPrefix = file::Path::getPathUnsafe("upload");
-    dom::writeInfo("File prefix:", aPathPrefix);
+    auto pathPrefix = file::Path::getPathUnsafe("upload");
+    // dom::writeInfo("File prefix:", pathPrefix);
 
-    // TODO: filename
-    auto fileName = aMsg.get_part_by_name("filename").body;
+    auto fileName = aMsg.get_part_by_name(aFilenameKey).body;
     dom::writeInfo("File name:", fileName);
-    auto file = aMsg.get_part_by_name("file").body;
+    auto file = aMsg.get_part_by_name(aFileKey).body;
     dom::writeInfo("File data:", file);
 
-    std::string filePath;
-    {
-        auto connection = data::ConnectionManager::getUserConnection();
-        auto table      = connection.val.getData<data::File>();
-        filePath = aPathPrefix + std::to_string(table.num++) + "-" + fileName;
-        connection.val.update<data::File>(table);
-    }
-
+    std::string filePath =
+        pathPrefix + dom::DateAndTime::getCurentTimeSafe() + "-" + fileName;
     file::File::writeData(filePath, file);
 
     return filePath;
 }
-
-// void
-// post::PostHandler::transmitToMTMHandler(const std::string aTableName,
-//                                         int aID,
-//                                         bool aIsAdding,
-//                                         std::vector<int> aIDForInsert,
-//                                         const std::string aTrueNam) noexcept
-// {
-//     PostRouter::manyToManyRouter(aTableName, aID, aIsAdding, aIDForInsert,
-//                                  aTrueNam);
-// }
 
 void
 post::PostHandler::setRawData(std::vector<std::vector<std::string>>& aData,

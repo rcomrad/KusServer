@@ -7,51 +7,55 @@
 
 std::string
 file::File::getAllData(const std::string& aFileName,
-                       file::Critical aIsCritical) noexcept
+                       file::FileType aFileType) noexcept
 {
-    std::ifstream ios(aFileName);
-    if (!ios.is_open())
+    std::string result;
+
+    if (aFileType == FileType::File)
     {
-        if (aIsCritical == Critical::Yes)
+        std::ifstream ios(aFileName);
+        if (!ios.is_open())
         {
+
             dom::writeError("No such file (", aFileName, ")");
         }
         else
         {
-            dom::writeWarning("No such file (", aFileName, ")");
+            dom::writeInfo("Extracting file (", aFileName, ")");
+        }
+
+        std::string line;
+        while (std::getline(ios, line, '\0'))
+        {
+            if (line.empty()) continue;
+            result += line;
         }
     }
     else
     {
-        dom::writeInfo("Extracting file (", aFileName, ")");
+        // TODO: no copy
+        result = aFileName;
     }
 
-    std::string result;
-    std::string line;
-    while (std::getline(ios, line, '\0'))
-    {
-        if (line.empty()) continue;
-        result += line;
-    }
     return result;
 }
 
 std::string
 file::File::getAllData(const std::string& aFolderName,
                        const std::string& aFileName,
-                       file::Critical aIsCritical) noexcept
+                       file::FileType aFileType) noexcept
 {
     return pathUnpack(
-        static_cast<std::string (*)(const std::string&, file::Critical)>(
+        static_cast<std::string (*)(const std::string&, file::FileType)>(
             &file::File::getAllData),
-        aFolderName, aFileName, aIsCritical);
+        aFolderName, aFileName, aFileType);
 }
 
 std::vector<std::string>
 file::File::getLines(const std::string& aFileName,
-                     file::Critical aIsCritical) noexcept
+                     file::FileType aFileType) noexcept
 {
-    std::string temp = getAllData(aFileName, aIsCritical);
+    std::string temp = getAllData(aFileName, aFileType);
     std::vector<std::string> result;
     int last = -1;
     for (int i = 0; i < temp.size() + 1; ++i)
@@ -74,20 +78,20 @@ file::File::getLines(const std::string& aFileName,
 std::vector<std::string>
 file::File::getLines(const std::string& aFolderName,
                      const std::string& aFileName,
-                     file::Critical aIsCritical) noexcept
+                     file::FileType aFileType) noexcept
 {
     return pathUnpack(
         static_cast<std::vector<std::string> (*)(
-            const std::string&, file::Critical)>(&file::File::getLines),
-        aFolderName, aFileName, aIsCritical);
+            const std::string&, file::FileType)>(&file::File::getLines),
+        aFolderName, aFileName, aFileType);
 }
 
 std::vector<std::vector<std::string>>
 file::File::getWords(const std::string& aFileName,
-                     file::Critical aIsCritical,
+                     file::FileType aFileType,
                      std::function<bool(char)> funk) noexcept
 {
-    auto lines = getLines(aFileName, aIsCritical);
+    auto lines = getLines(aFileName, aFileType);
     std::vector<std::vector<std::string>> result;
     for (auto& line : lines)
     {
@@ -108,24 +112,24 @@ file::File::getWords(const std::string& aFileName,
 std::vector<std::vector<std::string>>
 file::File::getWords(const std::string& aFolderName,
                      const std::string& aFileName,
-                     file::Critical aIsCritical,
+                     file::FileType aFileType,
                      std::function<bool(char)> funk) noexcept
 {
     return pathUnpack(
         static_cast<std::vector<std::vector<std::string>> (*)(
-            const std::string&, file::Critical, std::function<bool(char)>)>(
+            const std::string&, file::FileType, std::function<bool(char)>)>(
             &file::File::getWords),
-        aFolderName, aFileName, aIsCritical, funk);
+        aFolderName, aFileName, aFileType, funk);
 }
 
 // TODO: merge with getWords
 std::unordered_map<std::string, std::string>
 file::File::getWordsMap(const std::string& aFileName,
-                        file::Critical aIsCritical,
+                        file::FileType aFileType,
                         std::function<bool(char)> funk) noexcept
 {
     std::unordered_map<std::string, std::string> result;
-    auto words = getWords(aFileName, aIsCritical, funk);
+    auto words = getWords(aFileName, aFileType, funk);
 
     for (auto& i : words)
     {
@@ -138,23 +142,23 @@ file::File::getWordsMap(const std::string& aFileName,
 std::unordered_map<std::string, std::string>
 file::File::getWordsMap(const std::string& aFolderName,
                         const std::string& aFileName,
-                        file::Critical aIsCritical,
+                        file::FileType aFileType,
                         std::function<bool(char)> funk) noexcept
 {
     return pathUnpack(
         static_cast<std::unordered_map<std::string, std::string> (*)(
-            const std::string&, file::Critical, std::function<bool(char)>)>(
+            const std::string&, file::FileType, std::function<bool(char)>)>(
             &file::File::getWordsMap),
-        aFolderName, aFileName, aIsCritical, funk);
+        aFolderName, aFileName, aFileType, funk);
 }
 
 std::unordered_set<std::string>
 file::File::getWordsSet(const std::string& aFileName,
-                        file::Critical aIsCritical,
+                        file::FileType aFileType,
                         std::function<bool(char)> funk) noexcept
 {
     std::unordered_set<std::string> result;
-    auto words = getWords(aFileName, aIsCritical, funk);
+    auto words = getWords(aFileName, aFileType, funk);
     for (auto&& i : words)
     {
         for (auto&& j : i)
@@ -168,14 +172,14 @@ file::File::getWordsSet(const std::string& aFileName,
 std::unordered_set<std::string>
 file::File::getWordsSet(const std::string& aFolderName,
                         const std::string& aFileName,
-                        file::Critical aIsCritical,
+                        file::FileType aFileType,
                         std::function<bool(char)> funk) noexcept
 {
     return pathUnpack(
         static_cast<std::unordered_set<std::string> (*)(
-            const std::string&, file::Critical, std::function<bool(char)>)>(
+            const std::string&, file::FileType, std::function<bool(char)>)>(
             &file::File::getWordsSet),
-        aFolderName, aFileName, aIsCritical, funk);
+        aFolderName, aFileName, aFileType, funk);
 }
 
 bool

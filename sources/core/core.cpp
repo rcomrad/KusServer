@@ -8,11 +8,12 @@
 #include "file_data/file.hpp"
 #include "file_data/path.hpp"
 #include "file_data/variable_storage.hpp"
+#include "get/command_handler.hpp"
 #include "post/journal_handler.hpp"
 #include "post/plan_handler.hpp"
 #include "post/user_handler.hpp"
 #include "tester/tester.hpp"
-#include "get/command_handler.hpp"
+
 #include "server.hpp"
 #include "submission_queue.hpp"
 
@@ -63,15 +64,16 @@ core::Core::Core() noexcept
             "submission_auto_check"))
         mApps["tester"] = std::move(std::thread(&Core::testerThread, this));
 
-    if (!file::VariableStorage::getInstance().getFlagUnsafe("bad_db_flag")) 
+    if (!file::VariableStorage::getInstance().getFlagUnsafe("bad_db_flag"))
     {
         loadQuestions();
     }
 
-    auto restartState = file::VariableStorage::getInstance().getWord("restart_on_start");
+    auto restartState =
+        file::VariableStorage::getInstance().getWord("restart_on_start");
     if (restartState.has_value())
     {
-        get::CommandHandler::process(restartState.value());
+        get::CommandHandler::process("restart", restartState.value());
     }
 }
 
@@ -187,7 +189,7 @@ core::Core::createDatabaseFromFile(std::string aFileName) noexcept
     auto connection = data::ConnectionManager::getUserConnection();
 
     std::vector<data::ColumnSetting> colums;
-    auto lines = file::File::getWords(aFileName, file::Critical::Yes);
+    auto lines = file::File::getWords(aFileName);
     lines.emplace_back(std::vector<std::string>{"TABLE", "NUN"});
     std::string name;
     for (auto i : lines)

@@ -20,8 +20,7 @@ data::DatabaseConnection::generateConnectionTypeSettings() noexcept
 {
     std::unordered_map<ConnectionType, data::DBSettings> result;
 
-    auto words =
-        file::File::getWords("config", "database.pass", file::Critical::Yes);
+    auto words = file::File::getWords("config", "database.pass");
     for (auto& i : words)
     {
         result[data::ConnectionType(std::stoi(i[0]))] =

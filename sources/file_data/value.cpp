@@ -18,7 +18,8 @@ file::Value::operator bool() const noexcept
 {
     bool result     = false;
     auto normalised = Parser::normalize(str, Parser::Type::Lower);
-    if (normalised == "on" || normalised == "yes" || normalised == "true") result = true;
+    if (normalised == "on" || normalised == "yes" || normalised == "true")
+        result = true;
     return result;
 }
 
@@ -76,9 +77,8 @@ file::Value::getType() const noexcept
 
         characters.insert(i);
     }
-    if (normalised == "yes" || normalised == "no" || 
-        normalised == "on" || normalised == "off" ||
-        normalised == "true" || normalised == "false")
+    if (normalised == "yes" || normalised == "no" || normalised == "on" ||
+        normalised == "off" || normalised == "true" || normalised == "false")
     {
         result = Value::Type::Bool;
     }

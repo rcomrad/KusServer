@@ -10,8 +10,8 @@
 
 tex::TexFile::TexFile() noexcept
 {
-    mData += file::File::getAllData(file::Path::getPathUnsafe("header.textemp"),
-                                    file::Critical::Yes);
+    mData +=
+        file::File::getAllData(file::Path::getPathUnsafe("header.textemp"));
 }
 
 std::string

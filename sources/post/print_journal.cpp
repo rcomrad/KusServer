@@ -177,7 +177,7 @@ post::PrintJournal::makeFrontPage(const data::JournalTable& aJournal) noexcept
         "id=" + data::wrap(aJournal.subjectID));
 
     static auto front =
-        file::File::getAllData("resource", "front.tex", file::Critical::Yes);
+        file::File::getAllData("resource", "front.tex");
     std::string result = front;
 
     auto numN    = result.find('N');

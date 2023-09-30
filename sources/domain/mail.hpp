@@ -13,7 +13,8 @@ namespace dom
 class Mail
 {
 public:
-    Mail(const std::string& aLogin, const std::string& aPassword) noexcept;
+    Mail(const std::string& aLogin    = "",
+         const std::string& aPassword = "") noexcept;
 
     bool send(const std::string& aEmailName,
               const std::string& aTheme,

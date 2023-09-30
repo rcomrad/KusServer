@@ -24,12 +24,11 @@ file::Parser::makeVariable(const std::string& aStr) noexcept
 }
 
 std::vector<file::Variable>
-file::Parser::getVariablesFromFile(const std::string aFilename,
-                                   file::Critical aIsCritical) noexcept
+file::Parser::getVariablesFromFile(const std::string aFilename) noexcept
 {
     std::vector<Variable> result;
 
-    auto lines = file::File::getLines(aFilename, aIsCritical);
+    auto lines = file::File::getLines(aFilename);
     for (auto& str : lines)
     {
         auto temp = file::Parser::makeVariable(str);
@@ -50,11 +49,10 @@ file::Parser::getVariablesFromFile(const std::string aFilename,
 
 std::vector<file::Variable>
 file::Parser::getVariablesFromFile(const std::string& aFolderName,
-                                   const std::string aFilename,
-                                   file::Critical aIsCritical) noexcept
+                                   const std::string aFilename) noexcept
 {
     return file::Parser::getVariablesFromFile(
-        file::Path::getPathUnsafe(aFolderName, aFilename), aIsCritical);
+        file::Path::getPathUnsafe(aFolderName, aFilename));
 }
 
 std::vector<std::string>

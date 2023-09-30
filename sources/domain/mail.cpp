@@ -6,10 +6,19 @@
 
 #include "domain/log.hpp"
 
+#include "file_data/file.hpp"
+
 dom::Mail::Mail(const std::string& aLogin,
                 const std::string& aPassword) noexcept
     : mLogin(aLogin), mPassword(aPassword)
 {
+    static auto pass = file::File::getWords("config", "mail.pass");
+
+    if (aLogin.empty())
+    {
+        mLogin    = pass[0][0];
+        mPassword = pass[0][1];
+    }
 }
 
 bool
