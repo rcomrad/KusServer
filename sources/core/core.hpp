@@ -3,6 +3,7 @@
 
 //--------------------------------------------------------------------------------
 
+#include <atomic>
 #include <map>
 #include <string>
 #include <thread>
@@ -15,8 +16,7 @@ namespace core
 class Core
 {
 public:
-    Core() noexcept;
-    ~Core() = default;
+    static Core& getInstance() noexcept;
 
     Core(const Core& other) noexcept            = default;
     Core& operator=(const Core& other) noexcept = default;
@@ -28,10 +28,15 @@ public:
 
     // static data::DBSettings mDBS;
     // static void databaseSettingsInit() noexcept;
-    void remakeDatabase();
-    void populate();
+    void remakeDatabase() noexcept;
+    void populate() noexcept;
+
+    void kill() noexcept;
 
 private:
+    Core() noexcept;
+    ~Core() = default;
+
     std::map<std::string, std::thread> mApps;
 
     void serverThread() noexcept;
@@ -40,6 +45,8 @@ private:
     // void populateDatabaseFromFile(std::string aFileName) noexcept;
     void createEnvironment() noexcept;
     // void deleteEnvironment() noexcept;
+
+    std::atomic<bool> mKillFlag;
 };
 } // namespace core
 

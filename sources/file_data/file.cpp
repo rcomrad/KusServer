@@ -182,6 +182,40 @@ file::File::getWordsSet(const std::string& aFolderName,
         aFolderName, aFileName, aFileType, funk);
 }
 
+std::vector<std::unordered_map<std::string, std::string>>
+file::File::getTable(const std::string& aFileName,
+                     file::FileType aFileType,
+                     std::function<bool(char)> funk) noexcept
+{
+    std::vector<std::unordered_map<std::string, std::string>> result;
+
+    auto words = getWords(aFileName, aFileType, funk);
+    for (int i = 1; i < words.size(); ++i)
+    {
+        auto& temp = result.emplace_back();
+        for (int j = 0; j < words[i].size(); ++j)
+        {
+            temp[words[0][j]] = std::move(words[i][j]);
+        }
+    }
+
+    return result;
+}
+
+std::vector<std::unordered_map<std::string, std::string>>
+file::File::getTable(const std::string& aFolderName,
+                     const std::string& aFileName,
+                     file::FileType aFileType,
+                     std::function<bool(char)> funk) noexcept
+{
+    return pathUnpack(
+        static_cast<
+            std::vector<std::unordered_map<std::string, std::string>> (*)(
+                const std::string&, file::FileType, std::function<bool(char)>)>(
+            &file::File::getTable),
+        aFolderName, aFileName, aFileType, funk);
+}
+
 bool
 file::File::writeData(const std::string& aFileName,
                       const std::string& aData) noexcept

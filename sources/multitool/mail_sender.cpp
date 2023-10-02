@@ -2,9 +2,9 @@
 
 #include "domain/mail.hpp"
 
+#include "file_data/file.hpp"
 #include "file_data/parser.hpp"
 #include "post/post_handler.hpp"
-#include "file_data/file.hpp"
 // TODO: crow::multipart::message
 std::string
 mult::MailSender::process(const crow::request& aReq) noexcept
@@ -20,14 +20,22 @@ mult::MailSender::process(const crow::request& aReq) noexcept
     auto address =
         file::Parser::slice(msg.get_part_by_name("address").body, ";");
 
-    auto words = file::File::getWords(post::PostHandler::uploadFile(msg, "data"),FileType::String);
-
-
+    auto table = file::File::getTable(msg.get_part_by_name("data").body,
+                                      file::FileType::String);
 
     dom::Mail mail(login, password);
-    for (auto& a : address)
+    for (auto& row : table)
     {
-        mail.send(a, theme, text);
+        std::string copy = text;
+        for (auto& el : row)
+        {
+            int num;
+            while ((num = copy.find(el.first)) != std::string::npos)
+            {
+                copy.replace(num, el.second.size(), el.second);
+            }
+        }
+        mail.send(row["$mail$"], theme, copy);
     }
 
     return "mail";

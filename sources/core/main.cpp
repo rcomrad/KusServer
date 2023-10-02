@@ -9,8 +9,7 @@ main(int argc, char* argv[])
 {
     std::cout << "LAMPA\n";
 
-    core::Core app;
-    app.run();
+    core::Core::getInstance().run();
 
     return 0;
 }

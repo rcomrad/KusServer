@@ -82,11 +82,13 @@ post::UserHandler::autorisation(const crow::request& aReq) noexcept
 
         if (!user.id)
         {
-            resp = crow::response(401); // no user
+            resp      = {"Wrong username or password!"};
+            resp.code = 409;
         }
         else if (user.status <= 0)
         {
-            resp = crow::response(403); // need conformation
+            resp      = {"Need account confirmation."};
+            resp.code = 409;
         }
         else
         {
@@ -94,9 +96,8 @@ post::UserHandler::autorisation(const crow::request& aReq) noexcept
             uJson["user"] = user.getAsJson({"password", "role_id"});
 
             auto& tokenHandler = core::TokenHandler::getInstance();
-            if (tokenHandler.isActive())
-                uJson["user"]["token"] =
-                    tokenHandler.generate(user, aReq.remote_ip_address);
+            uJson["user"]["token"] =
+                tokenHandler.generate(user, aReq.remote_ip_address);
 
             auto roles = core::Role::getInstance().getRoles(user.roleID);
             crow::json::wvalue::list roleList;
@@ -122,6 +123,8 @@ post::UserHandler::registration(const crow::request& aReq,
 
     if (body)
     {
+        bool allGoodFlag = false;
+
         data::User newUser = parseRequest<data::User>(body).data;
 
         mRegMut.lock();
@@ -136,7 +139,14 @@ post::UserHandler::registration(const crow::request& aReq,
 
         if (sameLogin.id)
         {
+            // crow::json::wvalue uJson;
+            // uJson["code"] = 406;
+            // uJson["resp"] = "Username already in use!";
+            // resp          = std::move(uJson);
+            // resp.code     = crow::response::code;
+
             resp = {"Username already in use!"};
+            // resp.set_header("text", "Username already in use!");
         }
         else if (sameEmail.id)
         {
@@ -159,6 +169,7 @@ post::UserHandler::registration(const crow::request& aReq,
                 uJson["user"] = newUser.getAsJson();
                 uJson["link"] = link.value();
                 resp          = std::move(uJson);
+                allGoodFlag   = true;
 
                 data::UserRegistration reg;
                 reg.userID = newUser.id;
@@ -174,6 +185,8 @@ post::UserHandler::registration(const crow::request& aReq,
         }
 
         mRegMut.unlock();
+
+        if (!allGoodFlag) resp.code = 409;
     }
 
     return resp;

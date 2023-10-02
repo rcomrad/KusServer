@@ -24,22 +24,10 @@ core::TokenMiddleware::before_handle(crow::request& req,
                                      context& ctx)
 {
     static auto& handler = core::TokenHandler::getInstance();
-    if (req.headers.find("token") != req.headers.end())
+    if (!handler.process(req))
     {
-        auto token = req.get_header_value("token");
-        if (handler.check(token, req.raw_url, req.remote_ip_address))
-        {
-            res.code = 403;
-            res.end();
-        }
-    }
-    else
-    {
-        if (req.raw_url != "/api/login" && handler.isActive())
-        {
-            res.code = 403;
-            res.end();
-        }
+        res.code = 403;
+        res.end();
     }
 }
 

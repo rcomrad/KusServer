@@ -1,11 +1,15 @@
 #include "command_handler.hpp"
 
+#include "core/core.hpp"
 #include "core/dump_manager.hpp"
+#include "core/token_handler.hpp"
 #include "file_data/variable_storage.hpp"
 
 std::unordered_map<std::string, decltype(&get::CommandHandler::restart)>
     get::CommandHandler::mRouterMap = {
-        {"restart", &get::CommandHandler::restart},
+        {"restart", &get::CommandHandler::restart     },
+        {"token",   &get::CommandHandler::tokenHandler},
+        {"kill",    &get::CommandHandler::kill        },
  // {"check",   &get::CommandHandler::check  },
   // {"time",    &get::CommandHandler::time   }
 };
@@ -61,4 +65,23 @@ get::CommandHandler::restart(const std::string aValue) noexcept
         ;
 
     return res;
+}
+
+std::string
+get::CommandHandler::tokenHandler(const std::string aValue) noexcept
+{
+    std::string res = "ERROR\nWrong token command.";
+    if (core::TokenHandler::getInstance().executeCommand(aValue))
+    {
+        res = "Token command applyed.";
+    }
+
+    return res;
+}
+
+std::string
+get::CommandHandler::kill(const std::string aValue) noexcept
+{
+    core::Core::getInstance().kill();
+    return "";
 }

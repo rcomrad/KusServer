@@ -1,8 +1,12 @@
 #include "token_handler.hpp"
 
+#include <unordered_set>
+
 #include "domain/date_and_time.hpp"
 
+#include "core/role.hpp"
 #include "file_data/file.hpp"
+#include "file_data/parser.hpp"
 #include "file_data/path.hpp"
 #include "file_data/variable_storage.hpp"
 
@@ -17,11 +21,41 @@ core::TokenHandler::TokenHandler() noexcept
     mDistribution = std::move(
         std::uniform_int_distribution<uint32_t>(0, mAlphabet.size() - 1));
 
-    mTokens.resize(4000);
-    mTokenIterator = mTokens.begin() + 1;
+    mTokenIterator = 1;
 
-    mIsActive =
-        file::VariableStorage::getInstance().getFlagUnsafe("authorisation");
+    auto size = file::VariableStorage::getInstance().getInt("token_size");
+    if (size.has_value() && size.value() > 1)
+    {
+        mTokenSize = size.value();
+    }
+    else
+    {
+        mTokenSize = 100;
+    }
+    mTokens = std::make_unique<User[]>(mTokenSize);
+
+    std::vector<int> lifespan = {24, 0, 0};
+    auto lifespanInput =
+        file::VariableStorage::getInstance().getWord("token_lifespan");
+    if (lifespanInput.has_value())
+    {
+        auto temp = file::Parser::slice(lifespanInput.value(), ":");
+        if (temp.size() == 3)
+        {
+            lifespan.clear();
+            for (auto& i : temp)
+            {
+                lifespan.emplace_back(std::stoi(i));
+            }
+        }
+    }
+    mTokenLifespan = {lifespan[0], lifespan[1], lifespan[2]};
+
+    auto com = file::VariableStorage::getInstance().getWord("authentication");
+    if (com.has_value())
+    {
+        executeCommand(com.value());
+    }
 }
 
 core::TokenHandler&
@@ -35,37 +69,98 @@ std::string
 core::TokenHandler::generate(const data::User& aUser,
                              const std::string& aIP) noexcept
 {
-    mTokenGenerationMutex.lock();
-
-    ++mTokenIterator;
-    if (mTokenIterator == mTokens.end())
+    std::string result;
+    if (mIsActive)
     {
-        mTokenIterator = mTokens.begin() + 1;
-        for (auto& i : mTokens)
+        mTokenGenerationMutex.lock();
+
+        ++mTokenIterator;
+        if (mTokenIterator == mTokenSize)
         {
-            i.inUse = false;
+            mTokenIterator = 1;
         }
+
+        auto& user = mTokens[mTokenIterator];
+        const std::lock_guard<std::mutex> lock(user.userMutex);
+
+        mTokenGenerationMutex.unlock();
+
+        user.inUse      = true;
+        user.ip         = aIP;
+        user.id         = aUser.id;
+        user.time       = boost::posix_time::second_clock::local_time();
+        user.falseLogin = 0;
+        user.role       = aUser.roleID;
+
+        user.password.clear();
+        while (user.password.size() < 20)
+        {
+            int indx = mDistribution(mRandGenerator);
+            user.password.push_back(mAlphabet[indx]);
+        }
+
+        result = user.password += "=" + dom::toString(mTokenIterator);
     }
-    auto user = *mTokenIterator;
-
-    mTokenGenerationMutex.unlock();
-
-    user.inUse      = true;
-    user.ip         = aIP;
-    user.id         = aUser.id;
-    user.time       = boost::posix_time::second_clock::local_time();
-    user.falseLogin = 0;
-
-    user.password.clear();
-    while (user.password.size() < 20)
+    else
     {
-        int indx = mDistribution(mRandGenerator);
-        user.password.push_back(mAlphabet[indx]);
+        result = "NUN";
     }
 
-    user.password += "=" + dom::toString(mTokenIterator - mTokens.begin());
+    return result;
+}
 
-    return user.password;
+bool
+core::TokenHandler::process(crow::request& req) noexcept
+{
+    bool result = false;
+
+    static std::unordered_set<std::string> withoutAuthentication = {
+        "/api/login", "/api/registration"};
+
+    auto it = req.headers.find("token");
+    if (it != req.headers.end())
+    {
+        auto token = it->second;
+        result     = mAuthorizationSetter
+                         ? apply(token, req.raw_url)
+                         : check(token, req.raw_url, req.remote_ip_address);
+    }
+    else if (withoutAuthentication.count(req.raw_url) || !mIsActive)
+    {
+        result = true;
+    }
+
+    return result;
+}
+
+bool
+core::TokenHandler::executeCommand(const std::string& aCommand) noexcept
+{
+    bool result = true;
+    if (aCommand == "turn_off")
+    {
+        mIsActive            = false;
+        mAuthorizationSetter = false;
+    }
+    else if (aCommand == "turn_on")
+    {
+        mIsActive            = true;
+        mAuthorizationSetter = false;
+    }
+    else if (aCommand == "memory")
+    {
+        mIsActive            = false;
+        mAuthorizationSetter = true;
+    }
+    else if (aCommand == "print")
+    {
+        printAutorisation();
+    }
+    else
+    {
+        result = false;
+    }
+    return result;
 }
 
 bool
@@ -75,33 +170,37 @@ core::TokenHandler::check(const std::string& aToken,
 {
     bool result = !mIsActive;
 
-    int num = 0;
-    for (int i = aToken.size() - 1; std::isdigit(aToken[i]); --i)
+    if (mIsActive)
     {
-        num *= 10;
-        num += aToken[i] - '0';
-    }
-
-    if (num > 0 && num < mTokens.size())
-    {
-        if (mTokens[num].inUse && mTokens[num].ip == aIP)
+        int num = 0;
+        for (int i = aToken.size() - 1; std::isdigit(aToken[i]); --i)
         {
-            if (dom::DateAndTime::curentTimeAssert(mTokens[num].time,
-                                                   {24, 0, 0}))
-            {
-                result = true;
-            }
-            else
-            {
-                mTokens[num].inUse = false;
-            }
+            num *= 10;
+            num += aToken[i] - '0';
         }
-        else
+
+        if (num > 0 && num < mTokenSize)
         {
-            if (++mTokens[num].falseLogin > 10)
+            const std::lock_guard<std::mutex> lock(mTokens[num].userMutex);
+            if (mTokens[num].inUse && mTokens[num].ip == aIP)
             {
-                // mTokens[num].inUse = false;
+                if (dom::DateAndTime::curentTimeAssert(mTokens[num].time,
+                                                       mTokenLifespan))
+                {
+                    result = true;
+                }
+                else
+                {
+                    mTokens[num].inUse = false;
+                }
             }
+            // else
+            // {
+            //     if (++mTokens[num].falseLogin > 10)
+            //     {
+            //         mTokens[num].inUse = false;
+            //     }
+            // }
         }
     }
 
@@ -109,7 +208,29 @@ core::TokenHandler::check(const std::string& aToken,
 }
 
 bool
-core::TokenHandler::isActive() noexcept
+core::TokenHandler::apply(const std::string& aToken,
+                          const std::string& aURL) noexcept
 {
-    return mIsActive;
+    auto roles = file::Parser::slice(aToken, ",");
+    roles.emplace_back("admin");
+    std::set<std::string> roleSet(roles.begin(), roles.end());
+    mAutorisation[aURL] |= core::Role::getInstance().getRoleID(roleSet);
+    return true;
 }
+
+void
+core::TokenHandler::printAutorisation() const noexcept
+{
+    std::string data;
+    for (auto& i : mAutorisation)
+    {
+        data += i.first + " " + dom::toString(i.second) + "\n";
+    }
+    file::File::writeData("config", "url.conf", data);
+}
+
+// bool
+// core::TokenHandler::isActive() noexcept
+// {
+//     return mIsActive;
+// }

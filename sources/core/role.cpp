@@ -6,7 +6,8 @@
 
 core::Role::Role() noexcept
 {
-    if (!file::VariableStorage::getInstance().getFlag("bad_db_flag"))
+    auto flag = file::VariableStorage::getInstance().getFlag("bad_db_flag");
+    if (!flag.has_value() || flag.has_value() && !flag.value())
     {
         reset();
     }

@@ -138,10 +138,11 @@ post::PostHandler::uploadFile(crow::multipart::message& aMsg,
     // dom::writeInfo("File prefix:", pathPrefix);
 
     std::string fileName;
-    if (!aFilenameKey.empty())  fileName= aMsg.get_part_by_name(aFilenameKey).body;
-    dom::writeInfo("File name:", fileName);
+    if (!aFilenameKey.empty())
+        fileName = aMsg.get_part_by_name(aFilenameKey).body;
+    // dom::writeInfo("File name:", fileName);
     auto file = aMsg.get_part_by_name(aFileKey).body;
-    dom::writeInfo("File data:", file);
+    // dom::writeInfo("File data:", file);
 
     std::string filePath =
         pathPrefix + dom::DateAndTime::getCurentTimeSafe() + "-" + fileName;

@@ -49,32 +49,42 @@ public:
 
     static std::vector<std::vector<std::string>> getWords(
         const std::string& aFileName,
-        FileType aFileType           = FileType::File,
+        FileType aFileType             = FileType::File,
         std::function<bool(char)> funk = &file::File::isSeparator) noexcept;
     static std::vector<std::vector<std::string>> getWords(
         const std::string& aFolderName,
         const std::string& aFileName,
-        FileType aFileType           = FileType::File,
+        FileType aFileType             = FileType::File,
         std::function<bool(char)> funk = &file::File::isSeparator) noexcept;
 
     static std::unordered_map<std::string, std::string> getWordsMap(
         const std::string& aFileName,
-        FileType aFileType           = FileType::File,
+        FileType aFileType             = FileType::File,
         std::function<bool(char)> funk = &file::File::isSeparator) noexcept;
     static std::unordered_map<std::string, std::string> getWordsMap(
         const std::string& aFolderName,
         const std::string& aFileName,
-        FileType aFileType           = FileType::File,
+        FileType aFileType             = FileType::File,
         std::function<bool(char)> funk = &file::File::isSeparator) noexcept;
 
     static std::unordered_set<std::string> getWordsSet(
         const std::string& aFileName,
-        FileType aFileType           = FileType::File,
+        FileType aFileType             = FileType::File,
         std::function<bool(char)> funk = &file::File::isSeparator) noexcept;
     static std::unordered_set<std::string> getWordsSet(
         const std::string& aFolderName,
         const std::string& aFileName,
-        FileType aFileType           = FileType::File,
+        FileType aFileType             = FileType::File,
+        std::function<bool(char)> funk = &file::File::isSeparator) noexcept;
+
+    static std::vector<std::unordered_map<std::string, std::string>> getTable(
+        const std::string& aFileName,
+        FileType aFileType             = FileType::File,
+        std::function<bool(char)> funk = &file::File::isSeparator) noexcept;
+    static std::vector<std::unordered_map<std::string, std::string>> getTable(
+        const std::string& aFolderName,
+        const std::string& aFileName,
+        FileType aFileType             = FileType::File,
         std::function<bool(char)> funk = &file::File::isSeparator) noexcept;
 
     static bool writeData(const std::string& aFileName,
@@ -101,7 +111,7 @@ private:
         }
         else
         {
-            dom::writeError("File such file ( Folder:", aFolderName,
+            dom::writeError("Can't find such file ( Folder:", aFolderName,
                             ", Name:", aFileName, ")");
         }
         return result;

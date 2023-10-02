@@ -20,6 +20,8 @@ public:
 
 private:
     static std::string restart(const std::string aValue) noexcept;
+    static std::string tokenHandler(const std::string aValue) noexcept;
+    static std::string kill(const std::string aValue) noexcept;
     // static std::string check(const std::string aValue) noexcept;
     // static std::string time(const std::string aValue) noexcept;
     static std::string dump(const std::string aValue) noexcept;

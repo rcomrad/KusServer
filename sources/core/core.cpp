@@ -53,7 +53,14 @@ loadQuestions()
     }
 }
 
-core::Core::Core() noexcept
+core::Core&
+core::Core::getInstance() noexcept
+{
+    static Core instance;
+    return instance;
+}
+
+core::Core::Core() noexcept : mKillFlag(false)
 {
     code::CodeGenerator cg;
     cg.makeAll();
@@ -73,13 +80,13 @@ core::Core::Core() noexcept
         file::VariableStorage::getInstance().getWord("restart_on_start");
     if (restartState.has_value())
     {
-        mApps["database_remake"] =  
-            std::move(std::thread(&get::CommandHandler::process,"restart", restartState.value()));
+        mApps["database_remake"] = std::move(std::thread(
+            &get::CommandHandler::process, "restart", restartState.value()));
     }
 }
 
 void
-core::Core::remakeDatabase()
+core::Core::remakeDatabase() noexcept
 {
     createEnvironment();
     createDatabaseFromFile(
@@ -92,7 +99,7 @@ core::Core::remakeDatabase()
 }
 
 void
-core::Core::populate()
+core::Core::populate() noexcept
 {
     post::PostHandler::uploadFromFile(
         {
@@ -129,6 +136,12 @@ core::Core::populate()
 }
 
 void
+core::Core::kill() noexcept
+{
+    mKillFlag = true;
+}
+
+void
 core::Core::run() noexcept
 {
     auto& state = file::VariableStorage::getInstance();
@@ -140,16 +153,16 @@ core::Core::run() noexcept
 
     // TODO: optional
     bool flag = true;
-    while (true)
+    while (!mKillFlag)
     {
         auto num = state.getIntUnsafe("restart");
         if (num)
         {
-            if (num & 1) 
+            if (num & 1)
             {
                 remakeDatabase();
             }
-            if (num & 2) 
+            if (num & 2)
             {
                 populate();
             }
