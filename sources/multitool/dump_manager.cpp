@@ -6,9 +6,29 @@
 #include "file_data/file.hpp"
 #include "file_data/variable_storage.hpp"
 #include "get/get_router.hpp"
+#include "post/post_handler.hpp"
+
+std::string
+mult::DumpManager::process(const crow::request& aReq) noexcept
+{
+    crow::multipart::message msg(aReq);
+
+    // TODO: don't save in file
+    std::string file = msg.get_part_by_name("file").body;
+    auto path        = file::File::writeData(
+        "bin", dom::DateAndTime::getCurentTimeSafe() + ".dmp", file);
+
+    post::PostHandler::uploadFromFile(
+        {
+            {"type", "nun"}
+    },
+        path.value());
+
+    return "1";
+}
 
 std::optional<std::string>
-core::DumpManager::dumpAsFile(
+mult::DumpManager::dumpAsFile(
     const std::vector<std::string>& aTableNames) noexcept
 {
     auto data = dumpAsString(aTableNames);
@@ -20,7 +40,7 @@ core::DumpManager::dumpAsFile(
 }
 
 std::string
-core::DumpManager::dumpAsString(
+mult::DumpManager::dumpAsString(
     const std::vector<std::string>& aTableNames) noexcept
 {
     static std::vector<std::string> databaseTables = getDatabaseTableNames();
@@ -39,7 +59,7 @@ core::DumpManager::dumpAsString(
 }
 
 std::vector<std::string>
-core::DumpManager::getDatabaseTableNames() noexcept
+mult::DumpManager::getDatabaseTableNames() noexcept
 {
     std::vector<std::string> result;
 
@@ -53,13 +73,13 @@ core::DumpManager::getDatabaseTableNames() noexcept
 }
 
 std::optional<std::string>
-core::DumpManager::makeSaveFile() noexcept
+mult::DumpManager::makeSaveFile() noexcept
 {
     std::optional<std::string> result;
 
     if (!file::VariableStorage::getInstance().getFlag("bad_db_flag"))
     {
-        result = core::DumpManager::dumpAsFile();
+        result = mult::DumpManager::dumpAsFile();
     }
     else
     {

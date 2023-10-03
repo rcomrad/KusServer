@@ -37,6 +37,8 @@ public:
     std::unordered_set<std::string> getRoleName(
         const crow::request& aReq) noexcept;
 
+    bool checkAuthorizationStatus() noexcept;
+
 private:
     struct User
     {

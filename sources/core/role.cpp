@@ -82,6 +82,7 @@ core::Role::resetFormRoleIDs() const noexcept
     {
         // TODO: use functions
         auto roles = file::Parser::slice(i.roleStr, ","s);
+        roles.emplace_back("admin");
         std::unordered_set<std::string> s(roles.begin(), roles.end());
         i.roleID = getRoleIDNonstatic(s);
     }

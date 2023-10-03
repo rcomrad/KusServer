@@ -4,9 +4,6 @@ set(
     core.cpp
     core.hpp 
 
-    dump_manager.cpp
-    dump_manager.hpp
-
     file_router.cpp
     file_router.hpp
 

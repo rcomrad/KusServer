@@ -1,9 +1,6 @@
 set(
     GET_SOURCES
 
-    command_handler.cpp
-    command_handler.hpp
-
     competition_handler.cpp
     competition_handler.hpp
 

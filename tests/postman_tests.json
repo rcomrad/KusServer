@@ -4265,6 +4265,78 @@
 			"response": []
 		},
 		{
+			"name": "Clear system",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:18080/api/command/restart/empty",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"command",
+						"restart",
+						"empty"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send dump",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "techName",
+							"value": "dump",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "example.dmp"
+						}
+					]
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/multitool",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"multitool"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Full system clear",
 			"event": [
 				{

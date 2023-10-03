@@ -8,7 +8,7 @@
 #include "file_data/file.hpp"
 #include "file_data/path.hpp"
 #include "file_data/variable_storage.hpp"
-#include "get/command_handler.hpp"
+#include "multitool/command_handler.hpp"
 #include "post/journal_handler.hpp"
 #include "post/plan_handler.hpp"
 #include "post/user_handler.hpp"
@@ -18,40 +18,6 @@
 #include "submission_queue.hpp"
 
 //--------------------------------------------------------------------------------
-
-void
-loadQuestions()
-{
-    auto connection = data::ConnectionManager::getUserConnection();
-    // connection.val.drop("question", "id > 0");
-
-    auto hasQ = file::Path::getContentMap(file::Path::getPathUnsafe("question"),
-                                          file::Path::FileType::Folder);
-    std::map<std::string, std::string> q;
-    q.insert(hasQ.begin(), hasQ.end());
-
-    auto ans = file::File::getWordsMap("question"s, "ans.txt"s);
-
-    for (auto& i : q)
-    {
-        data::Question q = connection.val.getData<data::Question>(
-            "nickname=\'" + i.first + "\'");
-
-        q.name       = i.first;
-        q.nickname   = i.first;
-        q.type       = 1;
-        q.weight     = 1;
-        q.juryAnswer = "1";
-
-        auto it = ans.find(i.first);
-        if (it != ans.end())
-        {
-            q.juryAnswer = it->second;
-        }
-
-        connection.val.write(q);
-    }
-}
 
 core::Core&
 core::Core::getInstance() noexcept
@@ -71,17 +37,15 @@ core::Core::Core() noexcept : mKillFlag(false)
             "submission_auto_check"))
         mApps["tester"] = std::move(std::thread(&Core::testerThread, this));
 
-    if (!file::VariableStorage::getInstance().getFlagUnsafe("bad_db_flag"))
-    {
-        loadQuestions();
-    }
-
     auto restartState =
         file::VariableStorage::getInstance().getWord("restart_on_start");
     if (restartState.has_value())
     {
-        mApps["database_remake"] = std::move(std::thread(
-            &get::CommandHandler::process, "restart", restartState.value()));
+        mApps["database_remake"] =
+            std::move(std::thread(static_cast<std::string (*)(
+                                      const std::string&, const std::string&)>(
+                                      &mult::CommandHandler::process),
+                                  "restart", restartState.value()));
     }
 }
 
@@ -116,7 +80,7 @@ core::Core::populate() noexcept
     post::PostHandler::uploadFromFile(
         {
             {"type",       "plan"                  },
-            {"name",       "Информатике"},
+            {"name",       "Информатика"},
             {"subject_id", "1"                     }
     },
         "../tests/plan_test.csv");

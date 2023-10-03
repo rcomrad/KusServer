@@ -2,6 +2,8 @@
 
 #include "core/token_handler.hpp"
 
+#include "command_handler.hpp"
+#include "dump_manager.hpp"
 #include "mail_sender.hpp"
 
 std::unordered_map<std::string, mult::MultitoolRouter::Rote>
@@ -10,7 +12,11 @@ std::unordered_map<std::string, mult::MultitoolRouter::Rote>
 std::string
 mult::MultitoolRouter::route(const crow::request& aReq)
 {
+    static bool noAuthorization =
+        !core::TokenHandler::getInstance().checkAuthorizationStatus();
+
     crow::multipart::message msg(aReq);
+    // TODO: check if no name
     std::string techName = msg.get_part_by_name("techName").body;
 
     std::string result;
@@ -18,7 +24,7 @@ mult::MultitoolRouter::route(const crow::request& aReq)
     if (it != mMultitoolRouter.end())
     {
         auto role = core::TokenHandler::getInstance().getRoleID(aReq);
-        if (role & it->second.roles)
+        if (noAuthorization || role & it->second.roles)
         {
             result = it->second.func(aReq);
         }
@@ -39,7 +45,9 @@ std::unordered_map<std::string, mult::MultitoolRouter::Rote>
 mult::MultitoolRouter::generateMultitoolRouter() noexcept
 {
     std::unordered_map<std::string, Rote> result = {
-        {"mail", {&mult::MailSender::process, 0}},
+        {"mail",    {&mult::MailSender::process, 0}    },
+        {"dump",    {&mult::DumpManager::process, 0}   },
+        {"command", {&mult::CommandHandler::process, 0}},
     };
 
     auto connection = data::ConnectionManager::getUserConnection();

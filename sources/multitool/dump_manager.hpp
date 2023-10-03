@@ -3,17 +3,20 @@
 
 //--------------------------------------------------------------------------------
 
+#include <crow.h>
 #include <optional>
 #include <string>
 #include <vector>
 
 //--------------------------------------------------------------------------------
 
-namespace core
+namespace mult
 {
 class DumpManager
 {
 public:
+    static std::string process(const crow::request& aReq) noexcept;
+
     static std::optional<std::string> dumpAsFile(
         const std::vector<std::string>& aTableNames = {}) noexcept;
     static std::string dumpAsString(
@@ -24,7 +27,7 @@ public:
 private:
     static std::vector<std::string> getDatabaseTableNames() noexcept;
 };
-} // namespace core
+} // namespace mult
 
 //--------------------------------------------------------------------------------
 

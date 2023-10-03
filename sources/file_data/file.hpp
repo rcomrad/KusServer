@@ -33,6 +33,7 @@ class File
 public:
     File() noexcept = delete;
 
+    // TODO: add tamplate (factory, for file read and string read)
     static std::string getAllData(const std::string& aFileName,
                                   FileType aFileType = FileType::File) noexcept;
     static std::string getAllData(const std::string& aFolderName,

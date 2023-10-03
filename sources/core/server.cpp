@@ -3,18 +3,18 @@
 #include "core/file_router.hpp"
 #include "crow/middlewares/cors.h"
 #include "file_data/parser.hpp"
-#include "get/command_handler.hpp"
 #include "get/competition_handler.hpp"
 #include "get/get_handler.hpp"
 #include "get/get_router.hpp"
 #include "get/question_handler.hpp"
+#include "multitool/command_handler.hpp"
 #include "multitool/multitool_router.hpp"
 #include "post/post_router.hpp"
 #include "post/print_journal.hpp"
 #include "post/submit_handler.hpp"
 #include "post/user_handler.hpp"
 
-#include "dump_manager.hpp"
+#include "multitool/dump_manager.hpp"
 #include "result_generator.hpp"
 #include "token_handler.hpp"
 
@@ -88,7 +88,7 @@ core::Server::Server()
 
     CROW_ROUTE(app, "/api/command/<string>/<string>")
     ([](const std::string& aType, const std::string& aValue)
-     { return get::CommandHandler::process(aType, aValue); });
+     { return mult::CommandHandler::process(aType, aValue); });
 
     // CROW_ROUTE(app, "/api/multitool/<string>")
     //     .methods("POST"_method)(
@@ -122,14 +122,14 @@ core::Server::Server()
     (
         [&](const std::string& aName)
         {
-            return core::DumpManager::dumpAsString(
+            return mult::DumpManager::dumpAsString(
                 file::Parser::slice(aName, ",", "*"));
         });
     CROW_ROUTE(app, "/api/dump_as_file/<string>")
     (
         [&](const std::string& aName)
         {
-            auto path = core::DumpManager::dumpAsFile(
+            auto path = mult::DumpManager::dumpAsFile(
                 file::Parser::slice(aName, ",", "*"));
             if (path.has_value()) return path.value();
             else return "Can't create dump!"s;

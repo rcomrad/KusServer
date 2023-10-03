@@ -11,6 +11,7 @@
 #include "file_data/variable_storage.hpp"
 
 core::TokenHandler::TokenHandler() noexcept
+    : mIsActive(true), mAuthorizationSetter(false)
 {
     mAlphabet = "0123456789"
                 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -185,6 +186,12 @@ std::unordered_set<std::string>
 core::TokenHandler::getRoleName(const crow::request& aReq) noexcept
 {
     return core::Role::getRoles(getRoleID(aReq));
+}
+
+bool
+core::TokenHandler::checkAuthorizationStatus() noexcept
+{
+    return mIsActive;
 }
 
 bool

@@ -10,11 +10,12 @@
 
 //--------------------------------------------------------------------------------
 
-namespace get
+namespace mult
 {
 class CommandHandler
 {
 public:
+    static std::string process(const crow::request& aReq) noexcept;
     static std::string process(const std::string& aType,
                                const std::string& aValue) noexcept;
 
@@ -23,12 +24,16 @@ private:
     static std::string tokenHandler(const std::string aValue) noexcept;
     static std::string kill(const std::string aValue) noexcept;
     static std::string dump(const std::string aValue) noexcept;
+    static std::string question(const std::string aValue) noexcept;
+
+    static std::string loadQuestions() noexcept;
+    static std::string retestQuestions() noexcept;
 
     static std::unordered_map<std::string,
-                              decltype(&get::CommandHandler::restart)>
+                              decltype(&mult::CommandHandler::restart)>
         mRouterMap;
 };
-} // namespace get
+} // namespace mult
 
 //--------------------------------------------------------------------------------
 
