@@ -2,6 +2,7 @@
 
 #include "database/connection_manager.hpp"
 
+#include "file_data/parser.hpp"
 #include "file_data/variable_storage.hpp"
 
 core::Role::Role() noexcept
@@ -10,6 +11,7 @@ core::Role::Role() noexcept
     if (!flag.has_value() || flag.has_value() && !flag.value())
     {
         reset();
+        resetFormRoleIDs();
     }
 }
 
@@ -21,28 +23,32 @@ core::Role::getInstance() noexcept
 }
 
 int
-core::Role::getRoleID(const std::set<std::string>& aRoleNames) noexcept
+core::Role::getRoleID(
+    const std::unordered_set<std::string>& aRoleNames) noexcept
 {
-    int result = 0;
-    for (auto& i : aRoleNames)
-    {
-        result |= mRoleToInt[i];
-    }
-    return result;
+    return getInstance().getRoleIDNonstatic(aRoleNames);
 }
 
-std::set<std::string>
+int
+core::Role::getRoleID(const std::vector<std::string>& aRoleNames) noexcept
+{
+    std::unordered_set<std::string> s(aRoleNames.begin(), aRoleNames.end());
+    return getRoleID(s);
+}
+
+int
+core::Role::getRoleID(const std::string& aRoleNames,
+                      const std::string& aDelimiter) noexcept
+{
+    auto roles = file::Parser::slice(
+        aRoleNames, (aDelimiter.size() == 0) ? " \t\n,;"s : aDelimiter);
+    return getRoleID(roles);
+}
+
+std::unordered_set<std::string>
 core::Role::getRoles(int aRoleID) noexcept
 {
-    std::set<std::string> result;
-    for (int i = 0; i < mIntToRole.size(); ++i, aRoleID >>= 1)
-    {
-        if (aRoleID & 1)
-        {
-            result.insert(mIntToRole[i]);
-        }
-    }
-    return result;
+    return getInstance().getRolesNonstatic(aRoleID);
 }
 
 void
@@ -65,4 +71,49 @@ core::Role::reset() noexcept
     {
         mRoleToInt[mIntToRole[i]] = 1 << i;
     }
+}
+
+void
+core::Role::resetFormRoleIDs() const noexcept
+{
+    auto connection = data::ConnectionManager::getUserConnection();
+    auto forms      = connection.val.getDataArray<data::Form>();
+    for (auto& i : forms)
+    {
+        // TODO: use functions
+        auto roles = file::Parser::slice(i.roleStr, ","s);
+        std::unordered_set<std::string> s(roles.begin(), roles.end());
+        i.roleID = getRoleIDNonstatic(s);
+    }
+    connection.val.write(forms);
+}
+
+int
+core::Role::getRoleIDNonstatic(
+    const std::unordered_set<std::string>& aRoleNames) const noexcept
+{
+    int result = 0;
+    for (auto& i : aRoleNames)
+    {
+        auto it = mRoleToInt.find(i);
+        if (it != mRoleToInt.end())
+        {
+            result |= it->second;
+        }
+    }
+    return result;
+}
+
+std::unordered_set<std::string>
+core::Role::getRolesNonstatic(int aRoleID) const noexcept
+{
+    std::unordered_set<std::string> result;
+    for (int i = 0; i < mIntToRole.size(); ++i, aRoleID >>= 1)
+    {
+        if (aRoleID & 1)
+        {
+            result.insert(mIntToRole[i]);
+        }
+    }
+    return result;
 }

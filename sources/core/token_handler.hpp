@@ -3,14 +3,17 @@
 
 //--------------------------------------------------------------------------------
 
+#include <memory>
 #include <mutex>
 #include <random>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include <memory>
 
 #include "database/database_structures.hpp"
+
+#include "boost/optional.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -24,11 +27,15 @@ public:
     std::string generate(const data::User& aUser,
                          const std::string& aIP) noexcept;
 
-    bool process(crow::request& req) noexcept;
+    bool process(const crow::request& aReq) noexcept;
 
     // bool isActive() noexcept;
 
     bool executeCommand(const std::string& aCommand) noexcept;
+
+    int getRoleID(const crow::request& aReq) noexcept;
+    std::unordered_set<std::string> getRoleName(
+        const crow::request& aReq) noexcept;
 
 private:
     struct User
@@ -73,6 +80,10 @@ private:
     bool mAuthorizationSetter;
     // std::unordered_map<std::string, User> mURLs;
     // int mNum;
+
+    boost::optional<User&> getUserByToken(const std::string& aToken) noexcept;
+    boost::optional<const std::string&> getTokenFromReq(
+        const crow::request& aReq) noexcept;
 };
 
 } // namespace core

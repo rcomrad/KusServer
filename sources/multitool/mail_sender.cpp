@@ -23,20 +23,58 @@ mult::MailSender::process(const crow::request& aReq) noexcept
     auto table = file::File::getTable(msg.get_part_by_name("data").body,
                                       file::FileType::String);
 
+    auto letter = sliseText(text, *table.begin());
+
     dom::Mail mail(login, password);
     for (auto& row : table)
     {
-        std::string copy = text;
-        for (auto& el : row)
+        std::string copy;
+        for (auto& l : letter)
         {
-            int num;
-            while ((num = copy.find(el.first)) != std::string::npos)
-            {
-                copy.replace(num, el.second.size(), el.second);
-            }
+            copy += l.second + row[l.first];
         }
         mail.send(row["$mail$"], theme, copy);
     }
 
     return "mail";
+}
+
+std::vector<std::pair<std::string, std::string>>
+mult::MailSender::sliseText(
+    const std::string& aText,
+    const std::unordered_map<std::string, std::string>& aKeys) noexcept
+{
+    std::vector<std::pair<std::string, std::string>> result;
+
+    int last = 0;
+    std::unordered_map<std::string, int> count;
+    for (int indx = 0; indx < aText.size(); ++indx)
+    {
+        for (auto& i : aKeys)
+        {
+            int& num = count[i.first];
+            if (aText[indx] == i.first[num])
+            {
+                ++num;
+            }
+            else
+            {
+                num = 0;
+            }
+
+            if (num == i.first.size())
+            {
+                num = 0;
+                count.clear();
+                result.emplace_back(
+                    i.first,
+                    aText.substr(last, (indx - last) - i.first.size() + 1));
+                last = indx + 1;
+            }
+        }
+    }
+
+    result.emplace_back(""s, aText.substr(last, aText.size()));
+
+    return result;
 }

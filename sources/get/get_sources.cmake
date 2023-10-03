@@ -27,7 +27,4 @@ set(
 
     user_handler.cpp
     user_handler.hpp
-
-    user_question.cpp
-    user_question.hpp
 )

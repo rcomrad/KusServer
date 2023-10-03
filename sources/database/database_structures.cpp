@@ -188,15 +188,17 @@ data::FileBase::reset()
 
 std::string data::FormBase::tableName         = {"form"};
 std::vector<data::Type> data::FormBase::types = {
-    data::Type::INT, data::Type::STRING, data::Type::STRING,
-    data::Type::STRING};
-std::vector<std::string> data::FormBase::columnNames = {"id", "module",
-                                                        "userName", "techName"};
+    data::Type::INT,    data::Type::STRING, data::Type::STRING,
+    data::Type::STRING, data::Type::STRING, data::Type::INT};
+std::vector<std::string> data::FormBase::columnNames = {
+    "id", "module", "userName", "techName", "role_str", "role_id"};
 std::unordered_map<std::string, uint8_t> data::FormBase::nameToNum = {
     {"id",       0},
     {"module",   1},
     {"userName", 2},
-    {"techName", 3}
+    {"techName", 3},
+    {"role_str", 4},
+    {"role_id",  5}
 };
 
 void
@@ -206,6 +208,8 @@ data::FormBase::reset()
     ptrs[1] = (void*)(&module);
     ptrs[2] = (void*)(&userName);
     ptrs[3] = (void*)(&techName);
+    ptrs[4] = (void*)(&roleStr);
+    ptrs[5] = (void*)(&roleID);
 }
 
 std::string data::GradeBase::tableName         = {"grade"};

@@ -450,7 +450,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "token",
+						"value": "admin",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "127.0.0.1:18080/api/command/restart/empty",
 					"host": [
@@ -607,7 +613,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "token",
+						"value": "add_user",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "127.0.0.1:18080/api/get/all/user",
 					"host": [
@@ -681,7 +693,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "token",
+						"value": "add_user",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n    \"login\": \"test1\",\r\n    \"password\": \"abba\",\r\n    \"name\": \"Абба\",\r\n    \"surname\": \"Агамовна\",\r\n    \"role\": \r\n    [\r\n        \"teacher\",\r\n        \"grade_head\",\r\n        \"add_user\",\r\n        \"add_plan\"\r\n    ],\r\n    \"school_id\": 1\r\n}",
@@ -794,7 +812,7 @@
 					}
 				},
 				"url": {
-					"raw": "127.0.0.1:18080/api/post/user",
+					"raw": "127.0.0.1:18080/api/post/user?token=add_user",
 					"host": [
 						"127",
 						"0",
@@ -806,6 +824,12 @@
 						"api",
 						"post",
 						"user"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "add_user"
+						}
 					]
 				}
 			},
@@ -893,7 +917,7 @@
 					}
 				},
 				"url": {
-					"raw": "127.0.0.1:18080/api/post/user",
+					"raw": "127.0.0.1:18080/api/post/user?token=add_user",
 					"host": [
 						"127",
 						"0",
@@ -905,6 +929,12 @@
 						"api",
 						"post",
 						"user"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "add_user"
+						}
 					]
 				}
 			},
@@ -992,7 +1022,7 @@
 					}
 				},
 				"url": {
-					"raw": "127.0.0.1:18080/api/post/user",
+					"raw": "127.0.0.1:18080/api/post/user?token=add_user",
 					"host": [
 						"127",
 						"0",
@@ -1004,6 +1034,12 @@
 						"api",
 						"post",
 						"user"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "add_user"
+						}
 					]
 				}
 			},
@@ -1087,7 +1123,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "token",
+						"value": "add_plan",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "127.0.0.1:18080/api/get/all/plan",
 					"host": [
@@ -1128,7 +1170,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "token",
+						"value": "add_plan",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "127.0.0.1:18080/api/get/all/theme",
 					"host": [
@@ -1152,7 +1200,13 @@
 			"name": "Create plan",
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "token",
+						"value": "add_plan",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -1228,7 +1282,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "token",
+						"value": "add_plan",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "127.0.0.1:18080/api/get/by_id/plan/1",
 					"host": [
@@ -1566,7 +1626,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "token",
+						"value": "add_plan",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "127.0.0.1:18080/api/get/all/theme",
 					"host": [
@@ -1590,7 +1656,13 @@
 			"name": "Change plan",
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "token",
+						"value": "add_plan",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"GAGA\"\r\n}"
@@ -1640,7 +1712,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "token",
+						"value": "add_plan",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "127.0.0.1:18080/api/get/by_id/plan/1",
 					"host": [
@@ -4158,7 +4236,7 @@
 							"type": "text"
 						},
 						{
-							"key": "text\n",
+							"key": "text",
 							"type": "file",
 							"src": "letter.txt"
 						},

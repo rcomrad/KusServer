@@ -14,10 +14,6 @@ namespace get
 class QuestionHandler : public GetHandler
 {
 public:
-    // static crow::json::wvalue process(
-    //     const std::vector<int>& aColumn,
-    //     data::SmartConnection& aConnection) noexcept;
-
     static crow::json::wvalue process(int aQuestionID, int aUserId) noexcept;
 };
 } // namespace get

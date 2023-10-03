@@ -110,22 +110,22 @@ core::TokenHandler::generate(const data::User& aUser,
 }
 
 bool
-core::TokenHandler::process(crow::request& req) noexcept
+core::TokenHandler::process(const crow::request& aReq) noexcept
 {
     bool result = false;
 
     static std::unordered_set<std::string> withoutAuthentication = {
         "/api/login", "/api/registration"};
 
-    auto it = req.headers.find("token");
-    if (it != req.headers.end())
+    auto tokenOpt = getTokenFromReq(aReq);
+    if (tokenOpt.has_value())
     {
-        auto token = it->second;
-        result     = mAuthorizationSetter
-                         ? apply(token, req.raw_url)
-                         : check(token, req.raw_url, req.remote_ip_address);
+        auto& token = tokenOpt.value();
+        result      = mAuthorizationSetter
+                          ? apply(token, aReq.raw_url)
+                          : check(token, aReq.raw_url, aReq.remote_ip_address);
     }
-    else if (withoutAuthentication.count(req.raw_url) || !mIsActive)
+    else if (withoutAuthentication.count(aReq.raw_url) || !mIsActive)
     {
         result = true;
     }
@@ -163,6 +163,30 @@ core::TokenHandler::executeCommand(const std::string& aCommand) noexcept
     return result;
 }
 
+int
+core::TokenHandler::getRoleID(const crow::request& aReq) noexcept
+{
+    int result = 0;
+
+    auto tokenOpt = getTokenFromReq(aReq);
+    if (tokenOpt.has_value())
+    {
+        auto userOpt = getUserByToken(tokenOpt.value());
+        if (userOpt.has_value())
+        {
+            result = userOpt.value().role;
+        }
+    }
+
+    return result;
+}
+
+std::unordered_set<std::string>
+core::TokenHandler::getRoleName(const crow::request& aReq) noexcept
+{
+    return core::Role::getRoles(getRoleID(aReq));
+}
+
 bool
 core::TokenHandler::check(const std::string& aToken,
                           const std::string& aURL,
@@ -172,26 +196,22 @@ core::TokenHandler::check(const std::string& aToken,
 
     if (mIsActive)
     {
-        int num = 0;
-        for (int i = aToken.size() - 1; std::isdigit(aToken[i]); --i)
+        auto userOpt = getUserByToken(aToken);
+        if (userOpt.has_value())
         {
-            num *= 10;
-            num += aToken[i] - '0';
-        }
+            auto& user = userOpt.value();
 
-        if (num > 0 && num < mTokenSize)
-        {
-            const std::lock_guard<std::mutex> lock(mTokens[num].userMutex);
-            if (mTokens[num].inUse && mTokens[num].ip == aIP)
+            const std::lock_guard<std::mutex> lock(user.userMutex);
+            if (user.inUse && user.ip == aIP)
             {
-                if (dom::DateAndTime::curentTimeAssert(mTokens[num].time,
+                if (dom::DateAndTime::curentTimeAssert(user.time,
                                                        mTokenLifespan))
                 {
                     result = true;
                 }
                 else
                 {
-                    mTokens[num].inUse = false;
+                    user.inUse = false;
                 }
             }
             // else
@@ -213,7 +233,7 @@ core::TokenHandler::apply(const std::string& aToken,
 {
     auto roles = file::Parser::slice(aToken, ",");
     roles.emplace_back("admin");
-    std::set<std::string> roleSet(roles.begin(), roles.end());
+    std::unordered_set<std::string> roleSet(roles.begin(), roles.end());
     mAutorisation[aURL] |= core::Role::getInstance().getRoleID(roleSet);
     return true;
 }
@@ -227,6 +247,38 @@ core::TokenHandler::printAutorisation() const noexcept
         data += i.first + " " + dom::toString(i.second) + "\n";
     }
     file::File::writeData("config", "url.conf", data);
+}
+
+boost::optional<core::TokenHandler::User&>
+core::TokenHandler::getUserByToken(const std::string& aToken) noexcept
+{
+    boost::optional<User&> result;
+
+    int num = 0;
+    for (int i = aToken.size() - 1; std::isdigit(aToken[i]); --i)
+    {
+        num *= 10;
+        num += aToken[i] - '0';
+    }
+
+    if (num > 0 && num < mTokenSize)
+    {
+        result = mTokens[num];
+    }
+
+    return result;
+}
+
+boost::optional<const std::string&>
+core::TokenHandler::getTokenFromReq(const crow::request& aReq) noexcept
+{
+    boost::optional<const std::string&> result;
+    auto it = aReq.headers.find("token");
+    if (it != aReq.headers.end())
+    {
+        result = it->second;
+    }
+    return result;
 }
 
 // bool

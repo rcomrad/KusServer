@@ -22,13 +22,13 @@ post::UserHandler::process(post::PostRequest<data::User>& aReq) noexcept
     auto it = aReq.leftovers.find("role");
     if (it != aReq.leftovers.end())
     {
-        std::set<std::string> roles;
+        std::unordered_set<std::string> roles;
         for (auto& i : it->second)
         {
             roles.insert(i.s());
         }
 
-        aReq.data.roleID = core::Role::getInstance().getRoleID(roles);
+        aReq.data.roleID = core::Role::getRoleID(roles);
     }
     aReq.leftovers.erase("role");
 
@@ -49,14 +49,8 @@ post::UserHandler::rawDataHandler(data::RawData& aData) noexcept
     {
         if (aData.additionalInfo.size() && aData.additionalInfo[i].size())
         {
-            std::set<std::string> roles;
-            for (auto& j : aData.additionalInfo[i])
-            {
-                roles.insert(j);
-            }
-
             aData.value[i].emplace_back(
-                data::wrap(core::Role::getInstance().getRoleID(roles)));
+                data::wrap(core::Role::getRoleID(aData.additionalInfo[i])));
         }
     }
 
@@ -274,15 +268,15 @@ post::UserHandler::fiil(data::User& aUser) noexcept
     if (aUser.status == 0) aUser.status = 10;
 }
 
-std::unordered_map<std::string, std::set<std::string>>
+std::unordered_map<std::string, std::unordered_set<std::string>>
 post::UserHandler::getKeyMap() noexcept
 {
-    std::unordered_map<std::string, std::set<std::string>> result;
+    std::unordered_map<std::string, std::unordered_set<std::string>> result;
     auto data = file::File::getLines("config", "key_role.pass");
     for (int i = 0; i < data.size(); i += 2)
     {
         auto roles      = file::Parser::slice(data[i + 1], " ");
-        result[data[i]] = std::set<std::string>(roles.begin(), roles.end());
+        result[data[i]] = std::unordered_set<std::string>(roles.begin(), roles.end());
     }
     result["NUN"] = {""};
     return result;
@@ -300,7 +294,7 @@ post::UserHandler::applyKey(data::User& aUser) noexcept
         auto it = roles.find(aUser.key);
         if (it != roles.end())
         {
-            aUser.roleID = core::Role::getInstance().getRoleID(it->second);
+            aUser.roleID = core::Role::getRoleID(it->second);
         }
         else
         {

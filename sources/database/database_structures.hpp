@@ -159,12 +159,14 @@ struct FileBase : public BaseDataStruct<2>
 
 using File = UpperDataStruct<FileBase>;
 
-struct FormBase : public BaseDataStruct<4>
+struct FormBase : public BaseDataStruct<6>
 {
     int id = 0;
     std::string module;
     std::string userName;
     std::string techName;
+    std::string roleStr;
+    int roleID = 0;
 
     static std::string tableName;
     static std::vector<data::Type> types;

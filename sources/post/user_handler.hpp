@@ -29,7 +29,7 @@ private:
 
     static void fiil(data::User& aUser) noexcept;
 
-    static std::unordered_map<std::string, std::set<std::string>>
+    static std::unordered_map<std::string, std::unordered_set<std::string>>
     getKeyMap() noexcept;
     static bool applyKey(data::User& aUser) noexcept;
 

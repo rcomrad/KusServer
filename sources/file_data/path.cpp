@@ -41,6 +41,7 @@ file::Path::reset() noexcept
         std::filesystem::current_path().parent_path().string() + "/";
     std::replace(mPaths["main"].begin(), mPaths["main"].end(), '\\', '/');
     addAllFolders(mPaths["main"]);
+    mPaths["data"] = mPaths["main"];
 
     auto pathFile = mPaths["config"] + "path.conf";
     auto paths    = file::Parser::getVariablesFromFile(pathFile);
@@ -139,7 +140,7 @@ file::Path::touchFolder(const std::string& aName) noexcept
     {
         dom::writeWarning("No such path (", aName, ")");
 
-        std::string path = ins.mPaths["main"] + aName + "/";
+        std::string path = ins.mPaths["data"] + aName + "/";
         if (std::filesystem::create_directories(path))
         {
             result = ins.mPaths[aName] = path;
