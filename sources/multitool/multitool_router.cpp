@@ -1,5 +1,7 @@
 #include "multitool_router.hpp"
 
+#include "domain/log.hpp"
+
 #include "core/token_handler.hpp"
 
 #include "command_handler.hpp"
@@ -9,9 +11,13 @@
 std::unordered_map<std::string, mult::MultitoolRouter::Rote>
     mult::MultitoolRouter::mMultitoolRouter = generateMultitoolRouter();
 
-std::string
+crow::response
 mult::MultitoolRouter::route(const crow::request& aReq)
 {
+
+    dom::writeInfo("in-");
+    crow::response result;
+
     static bool noAuthorization =
         !core::TokenHandler::getInstance().checkAuthorizationStatus();
 
@@ -19,23 +25,26 @@ mult::MultitoolRouter::route(const crow::request& aReq)
     // TODO: check if no name
     std::string techName = msg.get_part_by_name("techName").body;
 
-    std::string result;
     auto it = mMultitoolRouter.find(techName);
     if (it != mMultitoolRouter.end())
     {
         auto role = core::TokenHandler::getInstance().getRoleID(aReq);
         if (noAuthorization || role & it->second.roles)
         {
-            result = it->second.func(aReq);
+            crow::json::wvalue json;
+            json["html"] = it->second.func(aReq);
+            result       = std::move(json);
         }
         else
         {
-            result = "403";
+            result      = {"Access denied!"};
+            result.code = 403;
         }
     }
     else
     {
-        result = "409";
+        result      = {"No such tool!"};
+        result.code = 409;
     }
 
     return result;

@@ -21,7 +21,7 @@ plink.exe -batch -ssh %user_name%@%ip% -pw %user_password% "git clone -b autocom
 call rsa.bat
 
 plink.exe -batch -ssh %user_name%@%ip% -pw %user_password% "echo -e '%user_password%\n' | (sudo -S chmod +x ./server/devops/setup/scripts/server_setup.sh)"
-plink.exe -batch -ssh %user_name%@%ip% -pw %user_password% "echo -e '%user_password%\n' | (cd server/devops/setup/scripts; sudo -S ./server_setup.sh %user_password% %user_name% %data_url% %domain% %domain_mail%)"
+plink.exe -batch -ssh %user_name%@%ip% -pw %user_password% "echo -e '%user_password%\n' | (cd server/devops/setup/scripts; sudo -S ./server_setup.sh %user_password% %user_name% %data_url% %domain% %domain_mail% %mail_login% %mail_password%)"
 
 @REM ssh -o StrictHostKeyChecking=accept-new %user_name%@%ip% -i %key_dir%%ip% "echo -e '%user_password%\n' | (sudo -S chmod +x ./server/devops/server_start.sh)"
 @REM ssh -o StrictHostKeyChecking=accept-new %user_name%@%ip% -i %key_dir%%ip% "echo -e '%user_password%\n' | (cd server/devops; sudo -S ./server_start.sh %user_password%)"

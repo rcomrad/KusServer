@@ -21,4 +21,7 @@ set(
 
     to_string.cpp
     to_string.hpp
+
+    url_wrapper.cpp
+    url_wrapper.hpp
 )

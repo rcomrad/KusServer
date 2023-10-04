@@ -47,7 +47,7 @@ teacher grade_head
 teach23	123	NUN	Августина	Аникина	1	NUN	10
 teacher
 all24	123	NUN	Серафима	Смирнова	1	NUN	10
-submitor teacher add_user add_grade add_journal add_plan
+submitor teacher add_user add_grade add_journal add_plan admin
 rcomrad	123	NUN	Александр	Федоров	1	NUN	10
 teacher
 submitor	123	NUN	Tester	Testerovich	1	NUN	10

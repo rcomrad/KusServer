@@ -26,8 +26,8 @@ field
 	TEXTAREA;.;Логин почты;login
 	TEXTAREA;.;Пароль почты;password
 	TEXTAREA;.;Тема;theme
-	FILE;.txt;Письмо;text
-	FILE;.txt;Данные;data
+	TEXTAREA;.;Письмо;text
+	FILE;.csv;Данные;data
 	FILE;.dmp;Файл дампа;dump
 	TEXTAREA;.;Команды;command
 END
@@ -38,6 +38,7 @@ field_form
 	3;1
 	4;1
 	5;1
+	7;1
 	6;2
 	7;2
 END

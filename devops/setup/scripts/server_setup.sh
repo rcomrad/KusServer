@@ -39,7 +39,7 @@ sudo -H -u $2 printf "0 postgres postgres $1 public\n1 journal_db $2 $1 journal\
 sudo -H -u $2 printf "default /home/$2/data/" > path.conf
 sudo -H -u $2 printf "$4" > url.pass
 #sudo -H -u $2 printf " " > key_role.pass
-#sudo -H -u $2 printf " " > mail.pass
+sudo -H -u $2 printf "$6  $7" > mail.pass
 
 cd ../devops/setup/scripts
 sudo cp ../data/pg_hba.conf /etc/postgresql/12/main/pg_hba.conf

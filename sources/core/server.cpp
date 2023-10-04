@@ -8,13 +8,13 @@
 #include "get/get_router.hpp"
 #include "get/question_handler.hpp"
 #include "multitool/command_handler.hpp"
+#include "multitool/dump_manager.hpp"
 #include "multitool/multitool_router.hpp"
 #include "post/post_router.hpp"
 #include "post/print_journal.hpp"
 #include "post/submit_handler.hpp"
 #include "post/user_handler.hpp"
 
-#include "multitool/dump_manager.hpp"
 #include "result_generator.hpp"
 #include "token_handler.hpp"
 

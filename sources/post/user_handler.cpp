@@ -4,6 +4,7 @@
 
 #include "domain/date_and_time.hpp"
 #include "domain/mail.hpp"
+#include "domain/url_wrapper.hpp"
 
 #include "database/connection_manager.hpp"
 
@@ -275,8 +276,9 @@ post::UserHandler::getKeyMap() noexcept
     auto data = file::File::getLines("config", "key_role.pass");
     for (int i = 0; i < data.size(); i += 2)
     {
-        auto roles      = file::Parser::slice(data[i + 1], " ");
-        result[data[i]] = std::unordered_set<std::string>(roles.begin(), roles.end());
+        auto roles = file::Parser::slice(data[i + 1], " ");
+        result[data[i]] =
+            std::unordered_set<std::string>(roles.begin(), roles.end());
     }
     result["NUN"] = {""};
     return result;
@@ -320,7 +322,7 @@ post::UserHandler::sendComfLink(const data::User& aUser) noexcept
     std::optional<std::string> result;
     if (mail.send(aUser.email,
                   "Ссылка подтверждения для акаунта на сайте kussystem",
-                  "https://" + curSiteUrl + "/api/confirm/" + link))
+                  dom::UrlWrapper::toSite("api/confirm/" + link)))
     {
         result = link;
     }

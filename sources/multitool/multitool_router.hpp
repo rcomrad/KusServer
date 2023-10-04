@@ -13,7 +13,7 @@ namespace mult
 class MultitoolRouter
 {
 public:
-    static std::string route(const crow::request& aReq);
+    static crow::response route(const crow::request& aReq);
 
 private:
     struct Rote

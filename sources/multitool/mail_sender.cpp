@@ -1,31 +1,73 @@
 #include "mail_sender.hpp"
 
+#include <thread>
+
+#include "domain/date_and_time.hpp"
 #include "domain/mail.hpp"
+#include "domain/url_wrapper.hpp"
 
 #include "file_data/file.hpp"
 #include "file_data/parser.hpp"
+#include "file_data/path.hpp"
 #include "post/post_handler.hpp"
 // TODO: crow::multipart::message
+
+const std::string&
+foo(const crow::multipart::message& aMsg, std::string aStr)
+{
+    static std::string s = "";
+    auto& parts          = aMsg.part_map;
+    auto it              = parts.find(aStr);
+    if (it != parts.end())
+    {
+        return it->second.body;
+    }
+    return s;
+}
+
 std::string
 mult::MailSender::process(const crow::request& aReq) noexcept
 {
+    dom::writeInfo("in0");
     crow::multipart::message msg(aReq);
 
-    std::string login    = msg.get_part_by_name("login").body;
-    std::string password = msg.get_part_by_name("password").body;
+    Letter letter;
+    letter.theme    = foo(msg, "theme");
+    letter.text     = foo(msg, "text");
+    letter.login    = foo(msg, "login");
+    letter.password = foo(msg, "password");
+    letter.data     = foo(msg, "data");
 
-    std::string theme = msg.get_part_by_name("theme").body;
-    std::string text  = msg.get_part_by_name("text").body;
+    std::string fileName =
+        "mail_report_" + dom::DateAndTime::getCurentTimeSafe() + ".txt";
+    dom::writeInfo(fileName);
+    bool flag = foo(msg, "command") == "отправить";
+    std::thread t(threadSender, letter,
+                  file::Path::touchFolder("print").value() + fileName, flag);
+    t.detach();
 
-    auto address =
-        file::Parser::slice(msg.get_part_by_name("address").body, ";");
+    return dom::UrlWrapper::toHTMLHref("print/" + fileName);
+}
 
-    auto table = file::File::getTable(msg.get_part_by_name("data").body,
-                                      file::FileType::String);
+void
+mult::MailSender::threadSender(const Letter& aLetter,
+                               const std::string& aFileName,
+                               bool aRealSend) noexcept
+{
+    dom::writeInfo("in");
+    std::ofstream out(aFileName);
 
-    auto letter = sliseText(text, *table.begin());
+    auto table  = file::File::getTable(aLetter.data, file::FileType::String);
+    auto letter = sliseText(aLetter.text, *table.begin());
+    dom::writeInfo(letter);
+    if (!aRealSend)
+    {
+        out << "Включён тестовый режим.\nОтправка писем не производится\n";
+        out << "\n-------------------------------------------------\n";
+        out << std::endl;
+    }
 
-    dom::Mail mail(login, password);
+    dom::Mail mail(aLetter.login, aLetter.password);
     for (auto& row : table)
     {
         std::string copy;
@@ -33,10 +75,31 @@ mult::MailSender::process(const crow::request& aReq) noexcept
         {
             copy += l.second + row[l.first];
         }
-        mail.send(row["$mail$"], theme, copy);
-    }
 
-    return "mail";
+        if (aRealSend)
+        {
+            if (mail.send(row["$mail$"], aLetter.theme, copy))
+            {
+                out << "Отправка по адресу " + row["$mail$"] +
+                           " прошла успешко.";
+            }
+            else
+            {
+                out << "--> Ошибка отправки  по адресу " + row["$mail$"] + "!";
+            }
+        }
+        else
+        {
+            out << "Адрес: " + row["$mail$"] + "\n";
+            out << "Тема: " + aLetter.theme + "\n\n";
+            out << "Текст письма:\n " + copy + "\n";
+            out << "\n-------------------------------------------------\n\n";
+        }
+        out << std::endl;
+    }
+    out << "Рассылка писем завершена в " + dom::DateAndTime::getCurentTime() +
+               ".";
+    out << std::endl;
 }
 
 std::vector<std::pair<std::string, std::string>>

@@ -1,11 +1,21 @@
 #include "question_handler.hpp"
 
+#include <mutex>
+#include <unordered_map>
+
+#include "domain/url_wrapper.hpp"
+
 #include "file_data/file.hpp"
 #include "file_data/path.hpp"
 
 crow::json::wvalue
 get::QuestionHandler::process(int aQuestionID, int aUserId) noexcept
 {
+
+    // TODO: task map
+    //  static std::unordered_map<std::string, std::string> mLegends;
+    //  static std::mutex legendMutex;
+
     crow::json::wvalue result;
 
     data::Question question;
@@ -51,13 +61,13 @@ get::QuestionHandler::process(int aQuestionID, int aUserId) noexcept
             if (i.first.find(".gif") != -1 || i.first.find(".png") != -1 ||
                 i.first.find(".jpg") != -1)
             {
-                legend += " <img src=\"https://kusmirror.ru/question/" +
-                          question.nickname + "/" + i.first + "\"/> <br>";
+                legend += dom::UrlWrapper::toHTMLSrc(
+                    "question/" + question.nickname + "/" + i.first);
             }
             else
             {
-                legend += " <a href=\"https://kusmirror.ru/question/" +
-                          question.nickname + "/" + i.first + "\"/>Файлик</a> <br>";
+                legend += dom::UrlWrapper::toHTMLHref(
+                    "question/" + question.nickname + "/" + i.first);
             }
         }
         temp["legend"] = std::move(legend);
