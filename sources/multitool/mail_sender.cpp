@@ -10,38 +10,26 @@
 #include "file_data/parser.hpp"
 #include "file_data/path.hpp"
 #include "post/post_handler.hpp"
-// TODO: crow::multipart::message
 
-const std::string&
-foo(const crow::multipart::message& aMsg, std::string aStr)
-{
-    static std::string s = "";
-    auto& parts          = aMsg.part_map;
-    auto it              = parts.find(aStr);
-    if (it != parts.end())
-    {
-        return it->second.body;
-    }
-    return s;
-}
+#include "crow_helper.hpp"
+// TODO: crow::multipart::message
 
 std::string
 mult::MailSender::process(const crow::request& aReq) noexcept
 {
-    dom::writeInfo("in0");
     crow::multipart::message msg(aReq);
 
     Letter letter;
-    letter.theme    = foo(msg, "theme");
-    letter.text     = foo(msg, "text");
-    letter.login    = foo(msg, "login");
-    letter.password = foo(msg, "password");
-    letter.data     = foo(msg, "data");
+    letter.theme    = CrowHelper::getPart(msg, "theme");
+    letter.text     = CrowHelper::getPart(msg, "text");
+    letter.login    = CrowHelper::getPart(msg, "login");
+    letter.password = CrowHelper::getPart(msg, "password");
+    letter.data     = CrowHelper::getPart(msg, "data");
 
     std::string fileName =
         "mail_report_" + dom::DateAndTime::getCurentTimeSafe() + ".txt";
-    dom::writeInfo(fileName);
-    bool flag = foo(msg, "command") == "отправить";
+
+    bool flag = CrowHelper::getPart(msg, "command") == "отправить";
     std::thread t(threadSender, letter,
                   file::Path::touchFolder("print").value() + fileName, flag);
     t.detach();
@@ -54,12 +42,12 @@ mult::MailSender::threadSender(const Letter& aLetter,
                                const std::string& aFileName,
                                bool aRealSend) noexcept
 {
-    dom::writeInfo("in");
     std::ofstream out(aFileName);
 
     auto table  = file::File::getTable(aLetter.data, file::FileType::String);
     auto letter = sliseText(aLetter.text, *table.begin());
-    dom::writeInfo(letter);
+
+
     if (!aRealSend)
     {
         out << "Включён тестовый режим.\nОтправка писем не производится\n";

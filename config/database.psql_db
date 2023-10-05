@@ -126,7 +126,7 @@ TABLE answer
 	time character varying(20) NOT NULL
 	verdict character varying(1) NOT NULL
 	weight integer NOT NULL
-	value character varying(12) NOT NULL
+	value character varying(50) NOT NULL
 
 TABLE form
 	module character varying(20) NOT NULL

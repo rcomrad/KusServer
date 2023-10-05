@@ -13,7 +13,7 @@ dom::UrlWrapper::UrlWrapper() noexcept
     }
     else
     {
-        dom::writeError("Can't read site url!");
+        dom::writeError("Can't read site url!"s);
     }
 }
 

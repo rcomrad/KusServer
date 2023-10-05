@@ -8,6 +8,7 @@
 #include "file_data/path.hpp"
 #include "file_data/variable_storage.hpp"
 
+#include "crow_helper.hpp"
 #include "dump_manager.hpp"
 
 std::unordered_map<std::string, decltype(&mult::CommandHandler::restart)>
@@ -23,7 +24,12 @@ std::unordered_map<std::string, decltype(&mult::CommandHandler::restart)>
 std::string
 mult::CommandHandler::process(const crow::request& aReq) noexcept
 {
-    return "-1";
+    crow::multipart::message msg(aReq);
+
+    auto command = CrowHelper::getPart(msg, "command");
+    auto value   = CrowHelper::getPart(msg, "value");
+
+    return process(command, value);
 }
 
 std::string

@@ -14,8 +14,6 @@ std::unordered_map<std::string, mult::MultitoolRouter::Rote>
 crow::response
 mult::MultitoolRouter::route(const crow::request& aReq)
 {
-
-    dom::writeInfo("in-");
     crow::response result;
 
     static bool noAuthorization =

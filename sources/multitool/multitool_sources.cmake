@@ -3,6 +3,9 @@ set(
 
     command_handler.cpp
     command_handler.hpp
+
+    crow_helper.cpp
+    crow_helper.hpp
     
     dump_manager.cpp
     dump_manager.hpp

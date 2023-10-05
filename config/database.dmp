@@ -29,7 +29,8 @@ field
 	TEXTAREA;.;Письмо;text
 	FILE;.csv;Данные;data
 	FILE;.dmp;Файл дампа;dump
-	TEXTAREA;.;Команды;command
+	TEXTAREA;.;Команда;command
+	TEXTAREA;.;Значение;value
 END
 
 field_form
@@ -41,4 +42,6 @@ field_form
 	7;1
 	6;2
 	7;2
+	7;3
+	8;3
 END

@@ -18,16 +18,16 @@ post::AnswerHandler::process(post::PostRequest<data::Answer>& aReq) noexcept
     // submition.back().userID =
     // std::stoi(msg.get_part_by_name("user_id").body);
 
-    if (answer.value.size() < ANSWER_FNAME_SIZE)
-    {
-        answer.value.push_back('.');
-    }
-    else
-    {
-        // TODO: optional
-        answer.value =
-            file::File::writeData("answer", "x.ans", answer.value).value();
-    }
+    // if (answer.value.size() < ANSWER_FNAME_SIZE)
+    // {
+    //     answer.value.push_back('.');
+    // }
+    // else
+    // {
+    //     // TODO: optional
+    //     answer.value =
+    //         file::File::writeData("answer", "x.ans", answer.value).value();
+    // }
 
     data::Question question;
     data::Answer oldAnswer;
