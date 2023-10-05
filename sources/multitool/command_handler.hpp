@@ -25,6 +25,7 @@ private:
     static std::string kill(const std::string aValue) noexcept;
     static std::string dump(const std::string aValue) noexcept;
     static std::string question(const std::string aValue) noexcept;
+    static std::string results(const std::string aValue) noexcept;
 
     static std::string loadQuestions() noexcept;
     static std::string retestQuestions() noexcept;

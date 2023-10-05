@@ -10,6 +10,7 @@
 
 #include "crow_helper.hpp"
 #include "dump_manager.hpp"
+#include "domain/url_wrapper.hpp"
 
 std::unordered_map<std::string, decltype(&mult::CommandHandler::restart)>
     mult::CommandHandler::mRouterMap = {
@@ -17,6 +18,7 @@ std::unordered_map<std::string, decltype(&mult::CommandHandler::restart)>
         {"token",    &mult::CommandHandler::tokenHandler},
         {"kill",     &mult::CommandHandler::kill        },
         {"question", &mult::CommandHandler::question    },
+        {"results",  &mult::CommandHandler::results     },
  // {"check",   &mult::CommandHandler::check  },
   // {"time",    &mult::CommandHandler::time   }
 };
@@ -147,6 +149,7 @@ mult::CommandHandler::loadQuestions() noexcept
         if (it != ans.end())
         {
             q.juryAnswer = it->second;
+            q.juryAnswer.push_back('.');
         }
 
         connection.val.write(q);
@@ -175,4 +178,45 @@ mult::CommandHandler::retestQuestions() noexcept
     connection.val.write(answers);
 
     return "?";
+}
+
+std::string
+mult::CommandHandler::results(const std::string aValue) noexcept
+{
+    std::string results;
+
+    auto connection = data::ConnectionManager::getUserConnection();
+    auto com_question = connection.val.getDataArray<data::CompetitionQuestion>("competition_id = " + aValue);
+    std::vector<data::Question> questions;
+    for(auto& i : com_question)
+    {
+        questions.emplace_back(connection.val.getData<data::Question>
+            ("id = " + data::wrap(i.questionID)));
+    }
+
+    auto users = connection.val.getDataArray<data::User>();
+    
+    for(auto& u : users)
+    {
+        results += u.login + " ; ";
+        for(auto& q : questions)
+        {
+            auto answer = connection.val.getData<data::Answer>(
+                "user_id = " + data::wrap(u.id) + " AND "
+                "question_id = " + data::wrap(q.id));
+            if (answer.id)
+            {
+                results += answer.verdict + ";";
+            }
+            else
+            {
+                results += " ;";
+            }
+        }
+        results += "\n";
+    }
+
+    file::File::writeData("print", "results.txt", results);
+
+    return dom::UrlWrapper::toSite("print/results.txt");
 }

@@ -23,14 +23,14 @@ form
 END
 
 field
-	TEXTAREA;.;Логин почты;login
-	TEXTAREA;.;Пароль почты;password
-	TEXTAREA;.;Тема;theme
-	TEXTAREA;.;Письмо;text
+	INPUT;.;Логин почты;login
+	INPUT;.;Пароль почты;password
+	INPUT;.;Тема;theme
+	BIG_TEXTAREA;.;Письмо;text
 	FILE;.txt;Данные;data
 	FILE;.dmp;Файл дампа;dump
-	TEXTAREA;.;Команда;command
-	TEXTAREA;.;Значение;value
+	INPUT;.;Команда;command
+	INPUT;.;Значение;value
 END
 
 field_form
