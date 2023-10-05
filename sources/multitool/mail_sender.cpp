@@ -38,15 +38,14 @@ mult::MailSender::process(const crow::request& aReq) noexcept
 }
 
 void
-mult::MailSender::threadSender(const Letter& aLetter,
-                               const std::string& aFileName,
+mult::MailSender::threadSender(Letter aLetter,
+                               std::string aFileName,
                                bool aRealSend) noexcept
 {
     std::ofstream out(aFileName);
 
     auto table  = file::File::getTable(aLetter.data, file::FileType::String);
     auto letter = sliseText(aLetter.text, *table.begin());
-
 
     if (!aRealSend)
     {
@@ -85,9 +84,13 @@ mult::MailSender::threadSender(const Letter& aLetter,
         }
         out << std::endl;
     }
-    out << "Рассылка писем завершена в " + dom::DateAndTime::getCurentTime() +
-               ".";
-    out << std::endl;
+
+    if (aRealSend)
+    {
+        out << "Рассылка писем завершена в " +
+                   dom::DateAndTime::getCurentTime() + "."
+            << std::endl;
+    }
 }
 
 std::vector<std::pair<std::string, std::string>>

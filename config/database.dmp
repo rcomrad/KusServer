@@ -27,7 +27,7 @@ field
 	TEXTAREA;.;Пароль почты;password
 	TEXTAREA;.;Тема;theme
 	TEXTAREA;.;Письмо;text
-	FILE;.csv;Данные;data
+	FILE;.txt;Данные;data
 	FILE;.dmp;Файл дампа;dump
 	TEXTAREA;.;Команда;command
 	TEXTAREA;.;Значение;value

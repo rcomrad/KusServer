@@ -25,8 +25,8 @@ private:
         std::string data;
     };
 
-    static void threadSender(const Letter& aLetter,
-                             const std::string& aFileName,
+    static void threadSender(Letter aLetter,
+                             std::string aFileName,
                              bool aRealSend) noexcept;
 
     static std::vector<std::pair<std::string, std::string>> sliseText(
