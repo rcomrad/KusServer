@@ -26,6 +26,12 @@ mult::MailSender::process(const crow::request& aReq) noexcept
     letter.password = CrowHelper::getPart(msg, "password");
     letter.data     = CrowHelper::getPart(msg, "data");
 
+    auto name = dom::DateAndTime::getCurentTimeSafe();
+    file::File::writeData(name + ".xlsx", letter.data);
+        system(
+        (file::Path::getPathUnsafe("to_csv.sh") + " "s + name + ".xlsx " + name + ".csv" ).c_str());
+    letter.data = file::File::getAllData(name + ".csv");
+
     std::string fileName =
         "mail_report_" + dom::DateAndTime::getCurentTimeSafe() + ".txt";
 
@@ -50,6 +56,12 @@ mult::MailSender::threadSender(Letter aLetter,
     if (!aRealSend)
     {
         out << "Включён тестовый режим.\nОтправка писем не производится\n";
+        out << "\n-------------------------------------------------\n";
+        out << std::endl;
+    }
+    else
+    {
+        out << "Старт рассылки\n";
         out << "\n-------------------------------------------------\n";
         out << std::endl;
     }
@@ -98,6 +110,7 @@ mult::MailSender::sliseText(
     const std::string& aText,
     const std::unordered_map<std::string, std::string>& aKeys) noexcept
 {
+    dom::writeInfo("Start parsing letter");
     std::vector<std::pair<std::string, std::string>> result;
 
     int last = 0;
@@ -129,6 +142,8 @@ mult::MailSender::sliseText(
     }
 
     result.emplace_back(""s, aText.substr(last, aText.size()));
+
+    dom::writeInfo("Finished parsing letter");
 
     return result;
 }

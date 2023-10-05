@@ -7,7 +7,7 @@ sudo chmod 600 /swapfile
 sudo mkswap /swapfile
 sudo swapon /swapfile
 
-sudo -S apt install gcc g++ make curl zip unzip tar pkg-config autoconf postgresql net-tools cmake build-essential -y
+sudo -S apt install gcc g++ make curl zip unzip tar pkg-config autoconf postgresql net-tools cmake build-essential gnumeric -y
 sudo -S apt install texlive texinfo texlive-fonts-recommended texlive-latex-extra texlive-lang-cyrillic latex-cjk-all -y
 
 # pascal compiler and python

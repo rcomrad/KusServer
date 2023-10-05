@@ -105,6 +105,7 @@ file::File::getWords(const std::string& aFileName,
             result.back().emplace_back(line.substr(from, indx - from));
             indx += 1;
         }
+        if (result.back().empty()) result.pop_back();
     }
     return result;
 }

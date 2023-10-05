@@ -23,6 +23,8 @@ public:
 private:
     std::string mLogin;
     std::string mPassword;
+    std::string mSmtp;
+    int mPort;
 };
 
 } // namespace dom
