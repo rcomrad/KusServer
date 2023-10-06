@@ -311,6 +311,7 @@ std::optional<std::string>
 post::UserHandler::sendComfLink(const data::User& aUser) noexcept
 {
     static dom::Mail mail;
+    mail.useDefaultMail();
 
     // to erase whitespaces
     static auto curSiteUrl = file::File::getWords("config", "url.pass")[0][0];

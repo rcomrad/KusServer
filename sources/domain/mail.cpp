@@ -12,27 +12,35 @@ dom::Mail::Mail(const std::string& aLogin,
                 const std::string& aPassword) noexcept
     : mLogin(aLogin), mPassword(aPassword)
 {
-    static auto pass = file::File::getWords("config", "mail.pass");
-
-    if (aLogin.empty())
-    {
-       // mLogin    = pass[0][0];
-      //  mPassword = pass[0][1];
-    }
-
     if (aLogin.find("adtspb") != std::string::npos)
     {
         mSmtp = "smtp.yandex.com";
         mPort = 465;
+        mMetchod=mailio::smtps::auth_method_t::LOGIN;
     }
     else
     {
         mSmtp = "mail.academtalant.ru";
         mPort = 587;
+        mMetchod=mailio::smtps::auth_method_t::START_TLS;
     }
 
     dom::writeInfo(mSmtp, mPort);
 }
+
+void
+dom::Mail::useDefaultMail() noexcept
+{
+    static auto pass = file::File::getWords("config", "mail.pass");
+ mLogin    = pass[0][0];
+        mPassword = pass[0][1];
+
+
+        mSmtp = "smtp.yandex.com";
+        mPort = 465;
+        mMetchod=mailio::smtps::auth_method_t::LOGIN;
+}
+
 
 bool
 dom::Mail::send(const std::string& aEmailName,
@@ -60,7 +68,7 @@ dom::Mail::send(const std::string& aEmailName,
 
         mailio::smtps conn(mSmtp, mPort);
         conn.authenticate(mLogin, mPassword,
-                          mailio::smtps::auth_method_t::START_TLS);
+                          mMetchod);
         conn.submit(msg);
     }
     catch (mailio::smtp_error& exc)

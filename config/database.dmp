@@ -27,7 +27,7 @@ field
 	INPUT;.;Пароль почты;password
 	INPUT;.;Тема;theme
 	BIG_TEXTAREA;.;Письмо;text
-	FILE;.txt;Данные;data
+	FILE;.xlsx;Данные;data
 	FILE;.dmp;Файл дампа;dump
 	INPUT;.;Команда;command
 	INPUT;.;Значение;value

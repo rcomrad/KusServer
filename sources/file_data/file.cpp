@@ -34,6 +34,7 @@ file::File::getAllData(const std::string& aFileName,
     else
     {
         // TODO: no copy
+        dom::writeInfo("Parsing string", aFileName);
         result = aFileName;
     }
 
@@ -72,6 +73,7 @@ file::File::getLines(const std::string& aFileName,
             last = i;
         }
     }
+    dom::writeInfo("Lines parsing finished");
     return result;
 }
 
@@ -107,6 +109,7 @@ file::File::getWords(const std::string& aFileName,
         }
         if (result.back().empty()) result.pop_back();
     }
+    dom::writeInfo("Words parsing finished");
     return result;
 }
 
@@ -191,6 +194,17 @@ file::File::getTable(const std::string& aFileName,
     std::vector<std::unordered_map<std::string, std::string>> result;
 
     auto words = getWords(aFileName, aFileType, funk);
+
+    // for (auto& i : words)
+    // {
+    //     std::string gg ;
+    //     for (auto& j : i)
+    //     {
+    //         gg += j + "| ";
+    //     }
+    //     dom::writeInfo(gg);
+    // }
+
     for (int i = 1; i < words.size(); ++i)
     {
         auto& temp = result.emplace_back();

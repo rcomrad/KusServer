@@ -26,21 +26,50 @@ mult::MailSender::process(const crow::request& aReq) noexcept
     letter.password = CrowHelper::getPart(msg, "password");
     letter.data     = CrowHelper::getPart(msg, "data");
 
-    auto name = dom::DateAndTime::getCurentTimeSafe();
-    file::File::writeData(name + ".xlsx", letter.data);
-        system(
-        (file::Path::getPathUnsafe("to_csv.sh") + " "s + name + ".xlsx " + name + ".csv" ).c_str());
-    letter.data = file::File::getAllData(name + ".csv");
+    std::string result;
+    if (letter.theme .empty())
+    {
+        result = "укажите тему письма";
+    }
+    else if (letter.login .empty())
+    {
+        result = "укажите логин почты для отправки писем";
+    }
+    else if (letter.password .empty())
+    {
+        result = "укажите пароль почты для отправки писем";
+    }
+    else if (letter.text .empty())
+    {
+        result = "укажите текст письма";
+    }
+    else if (letter.data .empty())
+    {
+        result = "прикрепите файл с данными и адресами для рассылки";
+    }
+    else
+    {
+        auto name = dom::DateAndTime::getCurentTimeSafe();
+        file::File::writeData(name + ".xlsx", letter.data);
+            system(
+            (file::Path::getPathUnsafe("to_csv.sh") + " "s + name + ".xlsx " + name + ".csv" ).c_str());
+        letter.data = file::File::getAllData(name + ".csv");
 
-    std::string fileName =
-        "mail_report_" + dom::DateAndTime::getCurentTimeSafe() + ".txt";
+        std::string fileName =
+            "mail_report_" + dom::DateAndTime::getCurentTimeSafe() + ".txt";
 
-    bool flag = CrowHelper::getPart(msg, "command") == "отправить";
-    std::thread t(threadSender, letter,
-                  file::Path::touchFolder("print").value() + fileName, flag);
-    t.detach();
+        bool flag = CrowHelper::getPart(msg, "command") == "отправить";
+        std::thread t(threadSender, letter,
+                    file::Path::touchFolder("print").value() + fileName, flag);
+        t.detach();
 
-    return dom::UrlWrapper::toHTMLHref("print/" + fileName);
+        result = "отправка начатa. нажмите колесиком мыши на " + 
+        dom::UrlWrapper::toHTMLHref("print/" + fileName) + "чтобы открыть отчет в новой вкладке. \n" +
+        "<br> Cохраните открытый в новой вкладке отчет чтобы он стал удобочитаемый\n" +
+        "(щелкнуть правой кнопкой мыши -> сохранить как)";
+    }
+
+    return result;
 }
 
 void
@@ -50,7 +79,9 @@ mult::MailSender::threadSender(Letter aLetter,
 {
     std::ofstream out(aFileName);
 
-    auto table  = file::File::getTable(aLetter.data, file::FileType::String);
+    auto table  = file::File::getTable(aLetter.data, file::FileType::String, [](char c){
+        return c == ';' || c == ',' || c == '\0';;
+    });
     auto letter = sliseText(aLetter.text, *table.begin());
 
     if (!aRealSend)
@@ -66,36 +97,49 @@ mult::MailSender::threadSender(Letter aLetter,
         out << std::endl;
     }
 
+    dom::writeInfo("Start sending");
     dom::Mail mail(aLetter.login, aLetter.password);
     for (auto& row : table)
     {
+        auto temp = row.find("$mail$");
+        if (temp == row.end())
+        {
+            out << "--> отсутствует адрес электронной почты!";
+            continue;
+        }
+        auto addr = temp->second;
+
+        // dom::writeInfo("Sending to:", row["$mail$"]);
         std::string copy;
         for (auto& l : letter)
         {
             copy += l.second + row[l.first];
         }
 
+        // dom::writeInfo("Theme is:", aLetter.theme);
+        // dom::writeInfo("Text is:", copy);
         if (aRealSend)
         {
-            if (mail.send(row["$mail$"], aLetter.theme, copy))
+            if (mail.send(addr, aLetter.theme, copy))
             {
-                out << "Отправка по адресу " + row["$mail$"] +
+                out << "Отправка по адресу " + addr +
                            " прошла успешко.";
             }
             else
             {
-                out << "--> Ошибка отправки  по адресу " + row["$mail$"] + "!";
+                out << "--> Ошибка отправки  по адресу " + addr + "!";
             }
         }
         else
         {
-            out << "Адрес: " + row["$mail$"] + "\n";
+            out << "Адрес: " + addr + "\n";
             out << "Тема: " + aLetter.theme + "\n\n";
             out << "Текст письма:\n " + copy + "\n";
             out << "\n-------------------------------------------------\n\n";
         }
         out << std::endl;
     }
+    dom::writeInfo("Finish sending");
 
     if (aRealSend)
     {
