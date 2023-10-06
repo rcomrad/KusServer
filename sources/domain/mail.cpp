@@ -14,15 +14,15 @@ dom::Mail::Mail(const std::string& aLogin,
 {
     if (aLogin.find("adtspb") != std::string::npos)
     {
-        mSmtp = "smtp.yandex.com";
-        mPort = 465;
-        mMetchod=mailio::smtps::auth_method_t::LOGIN;
+        mSmtp    = "smtp.yandex.com";
+        mPort    = 465;
+        mMetchod = mailio::smtps::auth_method_t::LOGIN;
     }
     else
     {
-        mSmtp = "mail.academtalant.ru";
-        mPort = 587;
-        mMetchod=mailio::smtps::auth_method_t::START_TLS;
+        mSmtp    = "mail.academtalant.ru";
+        mPort    = 587;
+        mMetchod = mailio::smtps::auth_method_t::START_TLS;
     }
 
     dom::writeInfo(mSmtp, mPort);
@@ -32,15 +32,13 @@ void
 dom::Mail::useDefaultMail() noexcept
 {
     static auto pass = file::File::getWords("config", "mail.pass");
- mLogin    = pass[0][0];
-        mPassword = pass[0][1];
+    mLogin           = pass[0][0];
+    mPassword        = pass[0][1];
 
-
-        mSmtp = "smtp.yandex.com";
-        mPort = 465;
-        mMetchod=mailio::smtps::auth_method_t::LOGIN;
+    mSmtp    = "smtp.yandex.com";
+    mPort    = 465;
+    mMetchod = mailio::smtps::auth_method_t::LOGIN;
 }
-
 
 bool
 dom::Mail::send(const std::string& aEmailName,
@@ -67,8 +65,7 @@ dom::Mail::send(const std::string& aEmailName,
         msg.content(aText);
 
         mailio::smtps conn(mSmtp, mPort);
-        conn.authenticate(mLogin, mPassword,
-                          mMetchod);
+        conn.authenticate(mLogin, mPassword, mMetchod);
         conn.submit(msg);
     }
     catch (mailio::smtp_error& exc)

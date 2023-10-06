@@ -27,32 +27,35 @@ mult::MailSender::process(const crow::request& aReq) noexcept
     letter.data     = CrowHelper::getPart(msg, "data");
 
     std::string result;
-    if (letter.theme .empty())
+    if (letter.theme.empty())
     {
-        result = "укажите тему письма";
+        result = "Укажите тему для отправляемых писем.";
     }
-    else if (letter.login .empty())
+    else if (letter.login.empty())
     {
-        result = "укажите логин почты для отправки писем";
+        result =
+            "Укажите логин почты с которой будет происходить рассылка писем.";
     }
-    else if (letter.password .empty())
+    else if (letter.password.empty())
     {
-        result = "укажите пароль почты для отправки писем";
+        result =
+            "Укажите пароль почты с которой будет происходить рассылка писем.";
     }
-    else if (letter.text .empty())
+    else if (letter.text.empty())
     {
-        result = "укажите текст письма";
+        result = "Укажите текст письма для рассылки.";
     }
-    else if (letter.data .empty())
+    else if (letter.data.empty())
     {
-        result = "прикрепите файл с данными и адресами для рассылки";
+        result = "Прикрепите файл с адресантами рассылки и их данными.";
     }
     else
     {
         auto name = dom::DateAndTime::getCurentTimeSafe();
         file::File::writeData(name + ".xlsx", letter.data);
-            system(
-            (file::Path::getPathUnsafe("to_csv.sh") + " "s + name + ".xlsx " + name + ".csv" ).c_str());
+        system((file::Path::getPathUnsafe("to_csv.sh") + " "s + name +
+                ".xlsx " + name + ".csv")
+                   .c_str());
         letter.data = file::File::getAllData(name + ".csv");
 
         std::string fileName =
@@ -60,13 +63,35 @@ mult::MailSender::process(const crow::request& aReq) noexcept
 
         bool flag = CrowHelper::getPart(msg, "command") == "отправить";
         std::thread t(threadSender, letter,
-                    file::Path::touchFolder("print").value() + fileName, flag);
+                      file::Path::touchFolder("print").value() + fileName,
+                      flag);
         t.detach();
 
-        result = "отправка начатa. нажмите колесиком мыши на " + 
-        dom::UrlWrapper::toHTMLHref("print/" + fileName) + "чтобы открыть отчет в новой вкладке. \n" +
-        "<br> Cохраните открытый в новой вкладке отчет чтобы он стал удобочитаемый\n" +
-        "(щелкнуть правой кнопкой мыши -> сохранить как)";
+        if (flag)
+        {
+            result = "Производится рассылка писем. <br>"
+                     "Чтобы увидеть отчёт по рассылке, <br>"
+                     "нажмите колесиком мыши на " +
+                     dom::UrlWrapper::toHTMLHref("print/" + fileName) +
+                     ".<br>"
+                     "Файл откроется в новой вкладке.<br>"
+                     " Сохраните открытый в новой вкладке отчет чтобы он "
+                     "стал удобочитаемый<br>"
+                     "(щелкнуть правой кнопкой мыши -> сохранить как).";
+        }
+        else
+        {
+            result =
+                "Включён тестовый режим рассылке (письма не отправляются). <br>"
+                "Чтобы увидеть отчёт по рассылке, <br>"
+                "нажмите колесиком мыши на " +
+                dom::UrlWrapper::toHTMLHref("print/" + fileName) +
+                ".<br>"
+                "Файл откроется в новой вкладке.<br>"
+                " Сохраните открытый в новой вкладке отчет чтобы он "
+                "стал удобочитаемый<br>"
+                "(щелкнуть правой кнопкой мыши -> сохранить как).";
+        }
     }
 
     return result;
@@ -79,9 +104,13 @@ mult::MailSender::threadSender(Letter aLetter,
 {
     std::ofstream out(aFileName);
 
-    auto table  = file::File::getTable(aLetter.data, file::FileType::String, [](char c){
-        return c == ';' || c == ',' || c == '\0';;
-    });
+    auto table =
+        file::File::getTable(aLetter.data, file::FileType::String,
+                             [](char c)
+                             {
+                                 return c == ';' || c == ',' || c == '\0';
+                                 ;
+                             });
     auto letter = sliseText(aLetter.text, *table.begin());
 
     if (!aRealSend)
@@ -122,12 +151,11 @@ mult::MailSender::threadSender(Letter aLetter,
         {
             if (mail.send(addr, aLetter.theme, copy))
             {
-                out << "Отправка по адресу " + addr +
-                           " прошла успешко.";
+                out << "Отправка по адресу " + addr + " прошла успешно.";
             }
             else
             {
-                out << "--> Ошибка отправки  по адресу " + addr + "!";
+                out << "-->ERROR: Ошибка отправки  по адресу " + addr + "!";
             }
         }
         else
