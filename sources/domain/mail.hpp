@@ -30,6 +30,9 @@ private:
     std::string mSmtp;
     int mPort;
     mailio::smtps::auth_method_t mMetchod;
+
+    void adtSmtp() noexcept;
+    void academtalantTls() noexcept;
 };
 
 } // namespace dom

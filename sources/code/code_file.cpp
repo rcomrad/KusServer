@@ -56,7 +56,7 @@ void
 code::CodeFile::generateCPP(const std::string& aPath) const noexcept
 {
     std::ofstream CodeFile(aPath + ".cpp");
-    CodeFile << "#include \"" << aPath + ".hpp\"\n\n";
+    CodeFile << "#include \"" << mFileName + ".hpp\"\n\n";
     for (auto& i : mCppHeaders)
     {
         CodeFile << i << "\n";

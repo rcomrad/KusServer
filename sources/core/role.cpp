@@ -7,10 +7,11 @@
 
 core::Role::Role() noexcept
 {
+    // reset();
     auto flag = file::VariableStorage::getInstance().getFlag("bad_db_flag");
     if (!flag.has_value() || flag.has_value() && !flag.value())
     {
-        reset();
+        loadRoles();
         resetFormRoleIDs();
     }
 }
@@ -21,6 +22,17 @@ core::Role::getInstance() noexcept
     static Role instance;
     return instance;
 }
+
+// void
+// core::Role::reset() noexcept
+// {
+//     auto flag = file::VariableStorage::getInstance().getFlag("bad_db_flag");
+//     if (!flag.has_value() || flag.has_value() && !flag.value())
+//     {
+//         loadRoles();
+//         resetFormRoleIDs();
+//     }
+// }
 
 int
 core::Role::getRoleID(
@@ -52,7 +64,7 @@ core::Role::getRoles(int aRoleID) noexcept
 }
 
 void
-core::Role::reset() noexcept
+core::Role::loadRoles() noexcept
 {
     mRoleToInt.clear();
     mIntToRole.clear();
@@ -109,11 +121,14 @@ std::unordered_set<std::string>
 core::Role::getRolesNonstatic(int aRoleID) const noexcept
 {
     std::unordered_set<std::string> result;
-    for (int i = 0; i < mIntToRole.size(); ++i, aRoleID >>= 1)
+    if (aRoleID > 0)
     {
-        if (aRoleID & 1)
+        for (int i = 0; i < mIntToRole.size(); ++i, aRoleID >>= 1)
         {
-            result.insert(mIntToRole[i]);
+            if (aRoleID & 1)
+            {
+                result.insert(mIntToRole[i]);
+            }
         }
     }
     return result;

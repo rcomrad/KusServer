@@ -3,6 +3,7 @@
 #include "domain/date_and_time.hpp"
 
 #include "database/connection_manager.hpp"
+#include "database/safe_sql_wrapper.hpp"
 
 #include "core/file_router.hpp"
 #include "file_data/file.hpp"
@@ -21,7 +22,7 @@ post::PostHandler::manyToMany(
 {
     crow::json::wvalue res;
 
-    std::string id = data::wrap(aID);
+    std::string id = data::safeWrap(aID);
 
     for (auto& other : aLeftovers)
     {

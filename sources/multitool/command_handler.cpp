@@ -1,5 +1,7 @@
 #include "command_handler.hpp"
 
+#include "domain/url_wrapper.hpp"
+
 #include "database/connection_manager.hpp"
 
 #include "core/core.hpp"
@@ -10,7 +12,6 @@
 
 #include "crow_helper.hpp"
 #include "dump_manager.hpp"
-#include "domain/url_wrapper.hpp"
 
 std::unordered_map<std::string, decltype(&mult::CommandHandler::restart)>
     mult::CommandHandler::mRouterMap = {
@@ -141,7 +142,7 @@ mult::CommandHandler::loadQuestions() noexcept
 
         q.name       = i.first;
         q.nickname   = i.first;
-        q.type       = 1;
+        q.type       = "simpl";
         q.weight     = 1;
         q.juryAnswer = "1";
 
@@ -185,25 +186,28 @@ mult::CommandHandler::results(const std::string aValue) noexcept
 {
     std::string results;
 
-    auto connection = data::ConnectionManager::getUserConnection();
-    auto com_question = connection.val.getDataArray<data::CompetitionQuestion>("competition_id = " + aValue);
+    auto connection   = data::ConnectionManager::getUserConnection();
+    auto com_question = connection.val.getDataArray<data::CompetitionQuestion>(
+        "competition_id = " + aValue);
     std::vector<data::Question> questions;
-    for(auto& i : com_question)
+    for (auto& i : com_question)
     {
-        questions.emplace_back(connection.val.getData<data::Question>
-            ("id = " + data::wrap(i.questionID)));
+        questions.emplace_back(connection.val.getData<data::Question>(
+            "id = " + data::wrap(i.questionID)));
     }
 
     auto users = connection.val.getDataArray<data::User>();
-    
-    for(auto& u : users)
+
+    for (auto& u : users)
     {
         results += u.login + " ; ";
-        for(auto& q : questions)
+        for (auto& q : questions)
         {
             auto answer = connection.val.getData<data::Answer>(
-                "user_id = " + data::wrap(u.id) + " AND "
-                "question_id = " + data::wrap(q.id));
+                "user_id = " + data::wrap(u.id) +
+                " AND "
+                "question_id = " +
+                data::wrap(q.id));
             if (answer.id)
             {
                 results += answer.verdict + ";";

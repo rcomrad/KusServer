@@ -86,6 +86,8 @@ private:
     boost::optional<User&> getUserByToken(const std::string& aToken) noexcept;
     boost::optional<const std::string&> getTokenFromReq(
         const crow::request& aReq) noexcept;
+
+    static std::string urlDedaction(const std::string& aUrl) noexcept;
 };
 
 } // namespace core

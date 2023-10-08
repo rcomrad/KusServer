@@ -17,9 +17,9 @@ file
 END
 
 form
-	form;Автоматическая рассылка;mail;mail;-1
-	form;Загрузка базы данных;dump;admin;-1
-	form;Выполнить команду;command;admin;-1
+	form;Автоматическая рассылка;mail;mailer;3
+	form;Загрузка базы данных;dump;admin;1
+	form;Выполнить команду;command;admin;1
 END
 
 field

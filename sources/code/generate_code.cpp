@@ -185,6 +185,7 @@ code::CodeGenerator::makeGetRouter() noexcept
 
     file.addHeaderToCpp("get_handler", false);
     file.addHeaderToCpp("user_handler", false);
+    file.addHeaderToCpp("form_handler", false);
     file.addHeaderToCpp("question_handler", false);
 
     auto& temp = file.makeClass();
@@ -192,7 +193,8 @@ code::CodeGenerator::makeGetRouter() noexcept
     addRouter(temp, "basicRouter",
               {
                   {"default", "get::GetHandler::process" },
-                  {"user",    "get::UserHandler::process"}
+                  {"user",    "get::UserHandler::process"},
+                  {"form",    "get::FormHandler::process"}
     });
 
     addRouter(temp, "dumpRouter",

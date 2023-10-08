@@ -3,6 +3,7 @@
 #include <mutex>
 #include <unordered_map>
 
+#include "domain/log.hpp"
 #include "domain/url_wrapper.hpp"
 
 #include "file_data/file.hpp"
@@ -11,21 +12,8 @@
 crow::json::wvalue
 get::QuestionHandler::process(int aQuestionID, int aUserId) noexcept
 {
+    crow::json::wvalue temp = getInstance().getQuestion(aQuestionID);
 
-    // TODO: task map
-    //  static std::unordered_map<std::string, std::string> mLegends;
-    //  static std::mutex legendMutex;
-
-    crow::json::wvalue result;
-
-    data::Question question;
-    {
-        auto connection = data::ConnectionManager::getUserConnection();
-        question        = connection.val.getData<data::Question>(
-            "id=" + data::wrap(aQuestionID));
-    }
-
-    auto temp = question.getAsJson({"nickname", "jury_answer"});
     data::Answer answer;
     {
         auto connection = data::ConnectionManager::getUserConnection();
@@ -36,9 +24,59 @@ get::QuestionHandler::process(int aQuestionID, int aUserId) noexcept
     if (answer.id)
     {
         answer.value.pop_back();
-        temp["answer"]  = std::move(answer.value);
-        temp["verdict"] = std::move(answer.verdict);
+        temp["answer"] = std::move(answer.value);
+        // result["verdict"] = std::move(answer.verdict);
     }
+
+    crow::json::wvalue result;
+    result["question"] = std::move(temp);
+    return result;
+}
+
+get::QuestionHandler::QuestionHandler() noexcept
+{
+    auto connection = data::ConnectionManager::getUserConnection();
+    auto questions  = connection.val.getDataArray<data::Question>();
+    for (auto& i : questions)
+    {
+        mQuestions[i.id] = loadQuestion(i.id);
+    }
+}
+
+get::QuestionHandler&
+get::QuestionHandler::getInstance() noexcept
+{
+    static QuestionHandler instance;
+    return instance;
+}
+
+crow::json::wvalue
+get::QuestionHandler::getQuestion(int aQuestionID) const noexcept
+{
+    crow::json::wvalue result;
+    auto it = mQuestions.find(aQuestionID);
+    if (it != mQuestions.end())
+    {
+        result = crow::json::wvalue(it->second);
+    }
+    else
+    {
+        dom::writeInfo("Loading question #", aQuestionID);
+        result = loadQuestion(aQuestionID);
+    }
+    return result;
+}
+
+crow::json::wvalue
+get::QuestionHandler::loadQuestion(int aQuestionID) const noexcept
+{
+    data::Question question;
+    {
+        auto connection = data::ConnectionManager::getUserConnection();
+        question        = connection.val.getData<data::Question>(
+            "id=" + data::wrap(aQuestionID));
+    }
+    auto result = question.getAsJson({"nickname", "jury_answer"});
 
     auto path = file::Path::getPath("question");
     if (path)
@@ -70,9 +108,8 @@ get::QuestionHandler::process(int aQuestionID, int aUserId) noexcept
                     "question/" + question.nickname + "/" + i.first);
             }
         }
-        temp["legend"] = std::move(legend);
+        result["legend"] = std::move(legend);
     }
 
-    result["question"] = std::move(temp);
     return result;
 }

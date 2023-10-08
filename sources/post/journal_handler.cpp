@@ -12,6 +12,8 @@
 
 #include "file_data/file.hpp"
 
+#include "database/safe_sql_wrapper.hpp"
+
 crow::json::wvalue
 post::JournalHandler::process(
     post::PostRequest<data::JournalTable>& aReq) noexcept
@@ -25,7 +27,7 @@ post::JournalHandler::process(
         if (!temp.empty())
         {
             journal = connection.val.getData<data::JournalTable>(
-                "id=" + data::wrap(journal.id));
+                "id=" + data::safeWrap(journal.id));
         }
     }
 
@@ -72,12 +74,12 @@ post::JournalHandler::makeSchedule(data::JournalTable& aJournal) noexcept
         if (i >= '1' && i <= '7') schedule.emplace_back(i - '1');
 
     data::User methodist = connection.val.getData<data::User>(
-        "id = " + data::wrap(aJournal.methodistID));
+        "id = " + data::safeWrap(aJournal.methodistID));
 
     int methodistSchool = -1;
     if (methodist.id) methodistSchool = methodist.schoolID;
     data::School school = connection.val.getData<data::School>(
-        "id = " + data::wrap(methodistSchool));
+        "id = " + data::safeWrap(methodistSchool));
 
     int schoolID  = -1;
     uint16_t year = 1991;
@@ -94,7 +96,7 @@ post::JournalHandler::makeSchedule(data::JournalTable& aJournal) noexcept
 
     data::DataArray<data::Holiday> holidays =
         connection.val.getDataArray<data::Holiday>("school_id = " +
-                                                   data::wrap(schoolID));
+                                                   data::safeWrap(schoolID));
 
     boost::gregorian::date startDate{year, month, day};
     boost::gregorian::date date = startDate;
@@ -122,8 +124,8 @@ post::JournalHandler::makeSchedule(data::JournalTable& aJournal) noexcept
     }
 
     data::DataArray<data::Theme> themes =
-        connection.val.getDataArray<data::Theme>("plan_id = " +
-                                                 data::wrap(aJournal.planID));
+        connection.val.getDataArray<data::Theme>(
+            "plan_id = " + data::safeWrap(aJournal.planID));
     data::DataArray<data::Lesson> lessons;
     for (int i = 0; i < themes.size();)
     {

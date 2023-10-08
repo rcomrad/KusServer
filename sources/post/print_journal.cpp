@@ -6,6 +6,7 @@
 #include "domain/date_and_time.hpp"
 
 #include "database/connection_manager.hpp"
+#include "database/safe_sql_wrapper.hpp"
 
 #include "file_data/file.hpp"
 #include "file_data/parser.hpp"
@@ -65,16 +66,16 @@ post::PrintJournal::makeJournal(tex::TexFile& aTexFile, int aID) noexcept
     data::School school;
     {
         auto connection = data::ConnectionManager::getUserConnection();
-        journal =
-            connection.val.getData<data::JournalTable>("id=" + data::wrap(aID));
+        journal         = connection.val.getData<data::JournalTable>(
+            "id=" + data::safeWrap(aID));
         teacher = connection.val.getData<data::User>(
-            "id=" + data::wrap(journal.teacherID));
+            "id=" + data::safeWrap(journal.teacherID));
         subject = connection.val.getData<data::Subject>(
-            "id=" + data::wrap(journal.subjectID));
+            "id=" + data::safeWrap(journal.subjectID));
         group = connection.val.getData<data::Grade>(
-            "id=" + data::wrap(journal.gradeID));
+            "id=" + data::safeWrap(journal.gradeID));
         school = connection.val.getData<data::School>(
-            "id=" + data::wrap(teacher.schoolID));
+            "id=" + data::safeWrap(teacher.schoolID));
     }
 
     auto attendance = makeAttendance(journal);
@@ -122,9 +123,9 @@ post::PrintJournal::makeAttendance(const data::JournalTable& aJournal) noexcept
 
     auto connection = data::ConnectionManager::getUserConnection();
     auto lessons    = connection.val.getDataArray<data::Lesson>(
-        "journal_table_id=" + data::wrap(aJournal.id));
+        "journal_table_id=" + data::safeWrap(aJournal.id));
     auto teacher = connection.val.getData<data::User>(
-        "id=" + data::wrap(aJournal.teacherID));
+        "id=" + data::safeWrap(aJournal.teacherID));
 
     auto last = dom::DateAndTime::getDate(lessons[0].dateVal);
     int cnt   = 0;
@@ -144,15 +145,15 @@ post::PrintJournal::makeAttendance(const data::JournalTable& aJournal) noexcept
             cnt = 0;
         }
 
-        auto theme =
-            connection.val.getData<data::Theme>("id=" + data::wrap(l.themeID));
+        auto theme = connection.val.getData<data::Theme>(
+            "id=" + data::safeWrap(l.themeID));
 
         attendance.emplaceLesson(cur.day().as_number(), theme.name,
                                  teacher.surname);
         last = cur;
 
-        auto marks = connection.val.getDataArray<data::Mark>("lesson_id=" +
-                                                             data::wrap(l.id));
+        auto marks = connection.val.getDataArray<data::Mark>(
+            "lesson_id=" + data::safeWrap(l.id));
         for (auto& m : marks)
         {
             attendance.setMark(m.studentID, cnt, m.markValue);
@@ -169,15 +170,14 @@ post::PrintJournal::makeFrontPage(const data::JournalTable& aJournal) noexcept
 {
     auto connection = data::ConnectionManager::getUserConnection();
     auto teacher    = connection.val.getData<data::User>(
-        "id=" + data::wrap(aJournal.teacherID));
+        "id=" + data::safeWrap(aJournal.teacherID));
     // auto plan =
     //     connection.val.getData<data::Plan>("id=" +
     //     data::wrap(aJournal.planID));
     auto subject = connection.val.getData<data::Subject>(
-        "id=" + data::wrap(aJournal.subjectID));
+        "id=" + data::safeWrap(aJournal.subjectID));
 
-    static auto front =
-        file::File::getAllData("resource", "front.tex");
+    static auto front  = file::File::getAllData("resource", "front.tex");
     std::string result = front;
 
     auto numN    = result.find('N');

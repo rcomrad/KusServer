@@ -328,7 +328,7 @@ struct QuestionBase : public BaseDataStruct<6>
     int id = 0;
     std::string name;
     std::string nickname;
-    int type   = 0;
+    std::string type;
     int weight = 0;
     std::string juryAnswer;
 

@@ -26,9 +26,11 @@ public:
 
     static std::unordered_set<std::string> getRoles(int aRoleID) noexcept;
 
+    // void reset() noexcept;
+
 private:
     Role() noexcept;
-    void reset() noexcept;
+    void loadRoles() noexcept;
     void resetFormRoleIDs() const noexcept;
 
     int getRoleIDNonstatic(

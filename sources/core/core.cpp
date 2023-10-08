@@ -14,6 +14,7 @@
 #include "post/user_handler.hpp"
 #include "tester/tester.hpp"
 
+#include "role.hpp"
 #include "server.hpp"
 #include "submission_queue.hpp"
 
@@ -31,6 +32,8 @@ core::Core::Core() noexcept : mKillFlag(false)
     code::CodeGenerator cg;
     cg.makeAll();
     cg.generate();
+
+    core::Role::getInstance();
 
     mApps["server"] = std::move(std::thread(&Core::serverThread, this));
     if (file::VariableStorage::getInstance().getFlagUnsafe(

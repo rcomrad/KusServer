@@ -3,6 +3,8 @@
 #include <fstream>
 #include <string>
 
+#include "database/safe_sql_wrapper.hpp"
+
 crow::json::wvalue
 post::PlanHandler::rawDataHandler(data::RawData& aData) noexcept
 {

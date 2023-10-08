@@ -406,8 +406,8 @@ data::ProblemBase::reset()
 
 std::string data::QuestionBase::tableName         = {"question"};
 std::vector<data::Type> data::QuestionBase::types = {
-    data::Type::INT, data::Type::STRING, data::Type::STRING,
-    data::Type::INT, data::Type::INT,    data::Type::STRING};
+    data::Type::INT,    data::Type::STRING, data::Type::STRING,
+    data::Type::STRING, data::Type::INT,    data::Type::STRING};
 std::vector<std::string> data::QuestionBase::columnNames = {
     "id", "name", "nickname", "type", "weight", "jury_answer"};
 std::unordered_map<std::string, uint8_t> data::QuestionBase::nameToNum = {

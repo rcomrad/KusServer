@@ -2,6 +2,8 @@
 
 #include "domain/date_and_time.hpp"
 
+#include "database/safe_sql_wrapper.hpp"
+
 #include "file_data/file.hpp"
 #include "file_data/variable_storage.hpp"
 
@@ -34,10 +36,10 @@ post::AnswerHandler::process(post::PostRequest<data::Answer>& aReq) noexcept
     {
         auto connection = data::ConnectionManager::getUserConnection();
         question        = connection.val.getData<data::Question>(
-            "id=" + data::wrap(answer.questionID));
+            "id=" + data::safeWrap(answer.questionID));
         oldAnswer = connection.val.getData<data::Answer>(
-            "user_id=" + data::wrap(answer.userID) + " AND " +
-            "question_id=" + data::wrap(answer.questionID));
+            "user_id=" + data::safeWrap(answer.userID) + " AND " +
+            "question_id=" + data::safeWrap(answer.questionID));
     }
     if (oldAnswer.id) answer.id = oldAnswer.id;
     answer.verdict = answer.value == question.juryAnswer ? 'T' : 'F';

@@ -24,6 +24,6 @@ set(
 
     row.hpp
 
-    sql_wrapper.cpp
+    safe_sql_wrapper.hpp
     sql_wrapper.hpp
 )

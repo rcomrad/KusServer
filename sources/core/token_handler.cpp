@@ -57,6 +57,15 @@ core::TokenHandler::TokenHandler() noexcept
     {
         executeCommand(com.value());
     }
+
+    auto urlsRoles =
+        file::File::getWords("config", "url.conf", file::FileType::File,
+                             [](char c) { return c == ' ' || c == '\0'; });
+
+    for (auto& i : urlsRoles)
+    {
+        mAutorisation[i[0]] = std::stoi(i[1]);
+    }
 }
 
 core::TokenHandler&
@@ -71,41 +80,41 @@ core::TokenHandler::generate(const data::User& aUser,
                              const std::string& aIP) noexcept
 {
     std::string result;
-    if (mIsActive)
+    // if (mIsActive)
+    // {
+    mTokenGenerationMutex.lock();
+
+    ++mTokenIterator;
+    if (mTokenIterator == mTokenSize)
     {
-        mTokenGenerationMutex.lock();
-
-        ++mTokenIterator;
-        if (mTokenIterator == mTokenSize)
-        {
-            mTokenIterator = 1;
-        }
-
-        auto& user = mTokens[mTokenIterator];
-        const std::lock_guard<std::mutex> lock(user.userMutex);
-
-        mTokenGenerationMutex.unlock();
-
-        user.inUse      = true;
-        user.ip         = aIP;
-        user.id         = aUser.id;
-        user.time       = boost::posix_time::second_clock::local_time();
-        user.falseLogin = 0;
-        user.role       = aUser.roleID;
-
-        user.password.clear();
-        while (user.password.size() < 20)
-        {
-            int indx = mDistribution(mRandGenerator);
-            user.password.push_back(mAlphabet[indx]);
-        }
-
-        result = user.password += "=" + dom::toString(mTokenIterator);
+        mTokenIterator = 1;
     }
-    else
+
+    auto& user = mTokens[mTokenIterator];
+    const std::lock_guard<std::mutex> lock(user.userMutex);
+
+    mTokenGenerationMutex.unlock();
+
+    user.inUse      = true;
+    user.ip         = aIP;
+    user.id         = aUser.id;
+    user.time       = boost::posix_time::second_clock::local_time();
+    user.falseLogin = 0;
+    user.role       = aUser.roleID;
+
+    user.password.clear();
+    while (user.password.size() < 20)
     {
-        result = "NUN";
+        int indx = mDistribution(mRandGenerator);
+        user.password.push_back(mAlphabet[indx]);
     }
+
+    result = user.password += "=" + dom::toString(mTokenIterator);
+    // }
+    // else
+    // {
+    //     result = "NUN";
+    // }
 
     return result;
 }
@@ -117,14 +126,15 @@ core::TokenHandler::process(const crow::request& aReq) noexcept
 
     static std::unordered_set<std::string> withoutAuthentication = {
         "/api/login", "/api/registration"};
-
+ auto usrl    = urlDedaction(aReq.raw_url);
     auto tokenOpt = getTokenFromReq(aReq);
     if (tokenOpt.has_value())
     {
+        auto url    = urlDedaction(aReq.raw_url);
         auto& token = tokenOpt.value();
         result      = mAuthorizationSetter
-                          ? apply(token, aReq.raw_url)
-                          : check(token, aReq.raw_url, aReq.remote_ip_address);
+                          ? apply(token, url)
+                          : check(token, url, aReq.remote_ip_address);
     }
     else if (withoutAuthentication.count(aReq.raw_url) || !mIsActive)
     {
@@ -209,18 +219,21 @@ core::TokenHandler::check(const std::string& aToken,
             auto& user = userOpt.value();
 
             const std::lock_guard<std::mutex> lock(user.userMutex);
-            if (user.inUse && user.ip == aIP)
+
+            if (!dom::DateAndTime::curentTimeAssert(user.time, mTokenLifespan))
             {
-                if (dom::DateAndTime::curentTimeAssert(user.time,
-                                                       mTokenLifespan))
+                user.inUse = false;
+            }
+
+            if (user.inUse) // && user.ip == aIP)
+            {
+                auto it = mAutorisation.find(aURL);
+                if (it != mAutorisation.end() && it->second & user.role)
                 {
                     result = true;
                 }
-                else
-                {
-                    user.inUse = false;
-                }
             }
+
             // else
             // {
             //     if (++mTokens[num].falseLogin > 10)
@@ -238,10 +251,18 @@ bool
 core::TokenHandler::apply(const std::string& aToken,
                           const std::string& aURL) noexcept
 {
-    auto roles = file::Parser::slice(aToken, ",");
-    roles.emplace_back("admin");
-    std::unordered_set<std::string> roleSet(roles.begin(), roles.end());
-    mAutorisation[aURL] |= core::Role::getInstance().getRoleID(roleSet);
+    auto userOpt = getUserByToken(aToken);
+    if (userOpt.has_value())
+    {
+        mAutorisation[aURL] |= userOpt.value().role;
+    }
+    else
+    {
+        auto roles = file::Parser::slice(aToken, ",");
+        roles.emplace_back("admin");
+        std::unordered_set<std::string> roleSet(roles.begin(), roles.end());
+        mAutorisation[aURL] |= core::Role::getInstance().getRoleID(roleSet);
+    }
     return true;
 }
 
@@ -284,6 +305,27 @@ core::TokenHandler::getTokenFromReq(const crow::request& aReq) noexcept
     if (it != aReq.headers.end())
     {
         result = it->second;
+    }
+    return result;
+}
+
+std::string
+core::TokenHandler::urlDedaction(const std::string& aUrl) noexcept
+{
+    std::string result = aUrl;
+    while (true)
+    {
+        auto num = result.rfind("/");
+        if (num == std::string::npos) break;
+        else
+        {
+            if (std::isdigit(result[num + 1]) ||
+                result.find("=", num) != std::string::npos)
+            {
+                result.resize(num);
+            }
+            else break;
+        }
     }
     return result;
 }

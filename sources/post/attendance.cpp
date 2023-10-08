@@ -9,16 +9,18 @@
 #include "file_data/path.hpp"
 #include "tex_manager/tex_table.hpp"
 
+#include "database/safe_sql_wrapper.hpp"
+
 post::Attendance::Attendance(int aID, int aSize) noexcept : size(aSize)
 {
     auto connection    = data::ConnectionManager::getUserConnection();
     auto grade_student = connection.val.getDataArray<data::GradeStudent>(
-        "grade_id=" + data::wrap(aID));
+        "grade_id=" + data::safeWrap(aID));
 
     for (auto& i : grade_student)
     {
-        auto student =
-            connection.val.getData<data::User>("id=" + data::wrap(i.studentID));
+        auto student = connection.val.getData<data::User>(
+            "id=" + data::safeWrap(i.studentID));
         // names[student.id]               = student.surname + " " +
         // student.name; orderedNames[names[student.id]] = student.id;
         orderedNames[student.surname + " " + student.name] = student.id;

@@ -3,6 +3,7 @@
 #include "get_handler.hpp"
 #include "question_handler.hpp"
 #include "user_handler.hpp"
+#include "form_handler.hpp"
 
 std::unordered_map<std::string, decltype(&get::GetHandler::process<data::Dummy>)> get::GetRouter::mBasicRouter = {
     {"answer",               &get::GetHandler::process<data::Answer>             },
@@ -14,7 +15,7 @@ std::unordered_map<std::string, decltype(&get::GetHandler::process<data::Dummy>)
     {"field",                &get::GetHandler::process<data::Field>              },
     {"field_form",           &get::GetHandler::process<data::FieldForm>          },
     {"file",                 &get::GetHandler::process<data::File>               },
-    {"form",                 &get::GetHandler::process<data::Form>               },
+    {"form",                 &get::FormHandler::process                          },
     {"grade",                &get::GetHandler::process<data::Grade>              },
     {"grade_student",        &get::GetHandler::process<data::GradeStudent>       },
     {"holiday",              &get::GetHandler::process<data::Holiday>            },

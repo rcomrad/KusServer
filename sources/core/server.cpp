@@ -48,15 +48,10 @@ core::Server::Server()
     // clang-format off
     cors
       .global()
-        .headers("*")
+        .headers("X-Custom-Header", "Upgrade-Insecure-Requests")
         .methods("POST"_method, "GET"_method)
         .origin("*")
-      .prefix("/cors")
-        .origin("*")
-        .headers("*")
-        .methods("POST"_method, "GET"_method)
-        .origin("*")
-      .prefix("/nocors")
+      .prefix("/")
         .ignore();
     // clang-format on
 

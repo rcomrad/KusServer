@@ -3,6 +3,7 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 
 #include "database/connection_manager.hpp"
+#include "database/safe_sql_wrapper.hpp"
 
 #include "core/submission_queue.hpp"
 #include "file_data/path.hpp"

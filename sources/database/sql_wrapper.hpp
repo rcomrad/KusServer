@@ -9,6 +9,9 @@
 
 using namespace std::literals;
 
+#undef SQLWrapper
+#undef wrap
+
 namespace data
 {
 

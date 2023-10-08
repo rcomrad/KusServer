@@ -111,7 +111,7 @@ TABLE submission
 TABLE question
 	name character varying(50) NOT NULL
 	nickname character varying(20) NOT NULL
-	type smallint NOT NULL
+	type character varying(5) NOT NULL
 	weight integer NOT NULL
 	jury_answer character varying(12) NOT NULL
 

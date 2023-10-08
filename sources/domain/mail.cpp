@@ -14,15 +14,11 @@ dom::Mail::Mail(const std::string& aLogin,
 {
     if (aLogin.find("adtspb") != std::string::npos)
     {
-        mSmtp    = "smtp.yandex.com";
-        mPort    = 465;
-        mMetchod = mailio::smtps::auth_method_t::LOGIN;
+        adtSmtp();
     }
     else
     {
-        mSmtp    = "mail.academtalant.ru";
-        mPort    = 587;
-        mMetchod = mailio::smtps::auth_method_t::START_TLS;
+        academtalantTls();
     }
 
     dom::writeInfo(mSmtp, mPort);
@@ -35,9 +31,23 @@ dom::Mail::useDefaultMail() noexcept
     mLogin           = pass[0][0];
     mPassword        = pass[0][1];
 
+    adtSmtp();
+}
+
+void
+dom::Mail::adtSmtp() noexcept
+{
     mSmtp    = "smtp.yandex.com";
     mPort    = 465;
     mMetchod = mailio::smtps::auth_method_t::LOGIN;
+}
+
+void
+dom::Mail::academtalantTls() noexcept
+{
+    mSmtp    = "mail.academtalant.ru";
+    mPort    = 587;
+    mMetchod = mailio::smtps::auth_method_t::START_TLS;
 }
 
 bool

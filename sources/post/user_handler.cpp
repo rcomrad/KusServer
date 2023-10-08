@@ -7,6 +7,7 @@
 #include "domain/url_wrapper.hpp"
 
 #include "database/connection_manager.hpp"
+#include "database/safe_sql_wrapper.hpp"
 
 #include "core/role.hpp"
 #include "core/token_handler.hpp"
@@ -51,7 +52,7 @@ post::UserHandler::rawDataHandler(data::RawData& aData) noexcept
         if (aData.additionalInfo.size() && aData.additionalInfo[i].size())
         {
             aData.value[i].emplace_back(
-                data::wrap(core::Role::getRoleID(aData.additionalInfo[i])));
+                data::safeWrap(core::Role::getRoleID(aData.additionalInfo[i])));
         }
     }
 
@@ -68,8 +69,8 @@ post::UserHandler::autorisation(const crow::request& aReq) noexcept
         // data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
         data::User user = parseRequest<data::User>(x).data;
 
-        std::string cond = "login = " + data::wrap(user.login) + " AND " +
-                           "password = " + data::wrap(user.password);
+        std::string cond = "login = " + data::safeWrap(user.login) + " AND " +
+                           "password = " + data::safeWrap(user.password);
         {
             auto connection = data::ConnectionManager::getUserConnection();
             user            = connection.val.getData<data::User>(cond);
@@ -126,10 +127,10 @@ post::UserHandler::registration(const crow::request& aReq,
 
         auto connection = data::ConnectionManager::getUserConnection();
 
-        std::string loginCond = "login = " + data::wrap(newUser.login);
+        std::string loginCond = "login = " + data::safeWrap(newUser.login);
         data::User sameLogin  = connection.val.getData<data::User>(loginCond);
 
-        std::string emailCond = "email = " + data::wrap(newUser.email);
+        std::string emailCond = "email = " + data::safeWrap(newUser.email);
         data::User sameEmail  = connection.val.getData<data::User>(emailCond);
 
         if (sameLogin.id)
@@ -194,13 +195,13 @@ post::UserHandler::confirmation(const std::string& aUrl) noexcept
 
     auto connection = data::ConnectionManager::getUserConnection();
     auto userReg    = connection.val.getData<data::UserRegistration>(
-        "link = " + data::wrap(aUrl));
+        "link = " + data::safeWrap(aUrl));
 
     if (userReg.id)
     {
         connection.val.drop(userReg);
         auto user = connection.val.getData<data::User>(
-            "id = " + data::wrap(userReg.userID));
+            "id = " + data::safeWrap(userReg.userID));
 
         if (user.id)
         {
