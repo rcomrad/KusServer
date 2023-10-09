@@ -57,6 +57,8 @@ mult::MailSender::process(const crow::request& aReq) noexcept
                 ".xlsx " + name + ".csv")
                    .c_str());
         letter.data = file::File::getAllData(name + ".csv");
+        // letter.data =
+        //     file::File::getAllData(letter.data, file::FileType::String);
 
         std::string fileName =
             "mail_report_" + dom::DateAndTime::getCurentTimeSafe() + ".txt";
@@ -149,7 +151,21 @@ mult::MailSender::threadSender(Letter aLetter,
         // dom::writeInfo("Text is:", copy);
         if (aRealSend)
         {
-            if (mail.send(addr, aLetter.theme, copy))
+            bool success = false;
+            for (int i = 0; i < 2; ++i)
+            {
+                success = mail.send(addr, aLetter.theme, copy);
+                if (success || i == 1) break;
+
+                out << "Однаминутный перерыв на чай начался в " +
+                           dom::DateAndTime::getCurentTime() + "."
+                    << std::endl;
+                std::this_thread::sleep_for(60000ms);
+                out << "Однаминутный перерыв на чай завершился в " +
+                           dom::DateAndTime::getCurentTime() + "."
+                    << std::endl;
+            }
+            if (success)
             {
                 out << "Отправка по адресу " + addr + " прошла успешно.";
             }
