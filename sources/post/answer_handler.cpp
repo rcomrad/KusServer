@@ -42,6 +42,17 @@ post::AnswerHandler::process(post::PostRequest<data::Answer>& aReq) noexcept
             "question_id=" + data::safeWrap(answer.questionID));
     }
     if (oldAnswer.id) answer.id = oldAnswer.id;
+    if (answer.value.size() > 40) answer.value.resize(40);
+
+    for (auto i : answer.value)
+    {
+        if (i == '-' || i == ';')
+        {
+            answer.value.clear();
+            break;
+        }
+    }
+
     answer.verdict = answer.value == question.juryAnswer ? 'T' : 'F';
 
     // if

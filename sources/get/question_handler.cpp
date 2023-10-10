@@ -23,7 +23,7 @@ get::QuestionHandler::process(int aQuestionID, int aUserId) noexcept
     }
     if (answer.id)
     {
-        answer.value.pop_back();
+        // answer.value.pop_back();
         temp["answer"] = std::move(answer.value);
         // result["verdict"] = std::move(answer.verdict);
     }
@@ -94,10 +94,10 @@ get::QuestionHandler::loadQuestion(int aQuestionID) const noexcept
         auto data = file::Path::getContentMap(folder);
         for (auto& i : data)
         {
-            if (i.first == "legend.txt") continue;
+            if (i.first == "legend.txt" || i.first == "data.txt") continue;
 
             if (i.first.find(".gif") != -1 || i.first.find(".png") != -1 ||
-                i.first.find(".jpg") != -1)
+                i.first.find(".PNG") != -1 || i.first.find(".jpg") != -1)
             {
                 legend += dom::UrlWrapper::toHTMLSrc(
                     "question/" + question.nickname + "/" + i.first);
@@ -108,7 +108,19 @@ get::QuestionHandler::loadQuestion(int aQuestionID) const noexcept
                     "question/" + question.nickname + "/" + i.first);
             }
         }
+
         result["legend"] = std::move(legend);
+
+        // if (question.type == "table")
+        // {
+        //     auto rows = file::File::getLines(folder + "/rows.txt");
+        //     crow::json::wvalue::list rowList;
+        //     for (auto&& i : rows)
+        //     {
+        //         rowList.emplace_back(std::move(i));
+        //     }
+        //     result["inputDescription"] = std::move(rowList);
+        // }
     }
 
     return result;

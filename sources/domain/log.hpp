@@ -67,8 +67,9 @@ private:
         (void)(temp.emplace_back(toString(std::forward<Args>(args)), 0), ...);
         for (int i = 0; i < temp.size() - 1; ++i)
         {
-            if (temp[i].back() != '(' && temp[i + 1].front() != ')' &&
-                temp[i].back() != '\'' && temp[i + 1].front() != '\'')
+            if (!temp[i + 1].empty() && temp[i].back() != '(' &&
+                temp[i + 1].front() != ')' && temp[i].back() != '\'' &&
+                temp[i + 1].front() != '\'')
             {
                 temp[i] += ' ';
             }

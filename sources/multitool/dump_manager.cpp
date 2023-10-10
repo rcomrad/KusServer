@@ -77,7 +77,8 @@ mult::DumpManager::makeSaveFile() noexcept
 {
     std::optional<std::string> result;
 
-    if (!file::VariableStorage::getInstance().getFlag("bad_db_flag"))
+    auto flag = file::VariableStorage::getInstance().getFlag("bad_db_flag");
+    if (flag.has_value() && !flag.value())
     {
         result = mult::DumpManager::dumpAsFile();
     }

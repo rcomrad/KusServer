@@ -554,37 +554,39 @@ std::string data::UserBase::tableName         = {"user"};
 std::vector<data::Type> data::UserBase::types = {
     data::Type::INT,    data::Type::STRING, data::Type::STRING,
     data::Type::STRING, data::Type::STRING, data::Type::STRING,
-    data::Type::INT,    data::Type::STRING, data::Type::INT,
-    data::Type::INT};
+    data::Type::STRING, data::Type::INT,    data::Type::STRING,
+    data::Type::INT,    data::Type::INT};
 std::vector<std::string> data::UserBase::columnNames = {
-    "id",      "login",     "password", "email",  "name",
+    "id",      "login",     "password", "email",  "last_login", "name",
     "surname", "school_id", "key",      "status", "role_id"};
 std::unordered_map<std::string, uint8_t> data::UserBase::nameToNum = {
-    {"id",        0},
-    {"login",     1},
-    {"password",  2},
-    {"email",     3},
-    {"name",      4},
-    {"surname",   5},
-    {"school_id", 6},
-    {"key",       7},
-    {"status",    8},
-    {"role_id",   9}
+    {"id",         0 },
+    {"login",      1 },
+    {"password",   2 },
+    {"email",      3 },
+    {"last_login", 4 },
+    {"name",       5 },
+    {"surname",    6 },
+    {"school_id",  7 },
+    {"key",        8 },
+    {"status",     9 },
+    {"role_id",    10}
 };
 
 void
 data::UserBase::reset()
 {
-    ptrs[0] = (void*)(&id);
-    ptrs[1] = (void*)(&login);
-    ptrs[2] = (void*)(&password);
-    ptrs[3] = (void*)(&email);
-    ptrs[4] = (void*)(&name);
-    ptrs[5] = (void*)(&surname);
-    ptrs[6] = (void*)(&schoolID);
-    ptrs[7] = (void*)(&key);
-    ptrs[8] = (void*)(&status);
-    ptrs[9] = (void*)(&roleID);
+    ptrs[0]  = (void*)(&id);
+    ptrs[1]  = (void*)(&login);
+    ptrs[2]  = (void*)(&password);
+    ptrs[3]  = (void*)(&email);
+    ptrs[4]  = (void*)(&lastLogin);
+    ptrs[5]  = (void*)(&name);
+    ptrs[6]  = (void*)(&surname);
+    ptrs[7]  = (void*)(&schoolID);
+    ptrs[8]  = (void*)(&key);
+    ptrs[9]  = (void*)(&status);
+    ptrs[10] = (void*)(&roleID);
 }
 
 std::string data::UserRegistrationBase::tableName = {"user_registration"};

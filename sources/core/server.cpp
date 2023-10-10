@@ -114,21 +114,11 @@ core::Server::Server()
      { return get::GetHandler::multiplelGet(aRequest, aCondition); });
 
     CROW_ROUTE(app, "/api/dump/<string>")
-    (
-        [&](const std::string& aName)
-        {
-            return mult::DumpManager::dumpAsString(
-                file::Parser::slice(aName, ",", "*"));
-        });
+    ([&](const std::string& aName)
+     { return mult::CommandHandler::process("dump", aName); });
     CROW_ROUTE(app, "/api/dump_as_file/<string>")
-    (
-        [&](const std::string& aName)
-        {
-            auto path = mult::DumpManager::dumpAsFile(
-                file::Parser::slice(aName, ",", "*"));
-            if (path.has_value()) return path.value();
-            else return "Can't create dump!"s;
-        });
+    ([&](const std::string& aName)
+     { return mult::CommandHandler::process("dump_as_file", aName); });
 
     CROW_ROUTE(app, "/api/get_all_competition/<int>/<int>")
     ([&](int aUserID, int aCompetitionID)

@@ -9,6 +9,7 @@ TABLE user
 	login character varying(255) NOT NULL
 	password character varying(255) NOT NULL
 	email character varying(255) NOT NULL
+	last_login character varying(20) NOT NULL
 	name character varying(255) NOT NULL
 	surname character varying(255) NOT NULL
 	school_id integer NOT NULL
@@ -78,7 +79,7 @@ TABLE holiday
 	date_val date NOT NULL
 
 TABLE competition
-	name character varying(50) NOT NULL
+	name character varying(100) NOT NULL
 	start_time timestamp NOT NULL
 	end_time timestamp NOT NULL
 
@@ -109,11 +110,11 @@ TABLE submission
 	source_name character varying(100) NOT NULL
 
 TABLE question
-	name character varying(50) NOT NULL
+	name character varying(20) NOT NULL
 	nickname character varying(20) NOT NULL
 	type character varying(5) NOT NULL
 	weight integer NOT NULL
-	jury_answer character varying(12) NOT NULL
+	jury_answer character varying(40) NOT NULL
 
 TABLE competition_question
 	competition_id integer NOT NULL
@@ -126,7 +127,7 @@ TABLE answer
 	time character varying(20) NOT NULL
 	verdict character varying(1) NOT NULL
 	weight integer NOT NULL
-	value character varying(50) NOT NULL
+	value character varying(40) NOT NULL
 
 TABLE form
 	module character varying(20) NOT NULL

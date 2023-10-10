@@ -79,15 +79,21 @@ post::UserHandler::autorisation(const crow::request& aReq) noexcept
         if (!user.id)
         {
             resp      = {"Wrong username or password!"};
-            resp.code = 409;
+            resp.code = 403;
         }
         else if (user.status <= 0)
         {
             resp      = {"Need account confirmation."};
-            resp.code = 409;
+            resp.code = 403;
         }
         else
         {
+            user.lastLogin = dom::DateAndTime::getCurentTimeSafe();
+            {
+                auto connection = data::ConnectionManager::getUserConnection();
+                connection.val.write(user);
+            }
+
             crow::json::wvalue uJson;
             uJson["user"] = user.getAsJson({"password", "role_id"});
 

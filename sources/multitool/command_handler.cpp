@@ -7,6 +7,7 @@
 #include "core/core.hpp"
 #include "core/token_handler.hpp"
 #include "file_data/file.hpp"
+#include "file_data/parser.hpp"
 #include "file_data/path.hpp"
 #include "file_data/variable_storage.hpp"
 
@@ -15,11 +16,13 @@
 
 std::unordered_map<std::string, decltype(&mult::CommandHandler::restart)>
     mult::CommandHandler::mRouterMap = {
-        {"restart",  &mult::CommandHandler::restart     },
-        {"token",    &mult::CommandHandler::tokenHandler},
-        {"kill",     &mult::CommandHandler::kill        },
-        {"question", &mult::CommandHandler::question    },
-        {"results",  &mult::CommandHandler::results     },
+        {"restart",      &mult::CommandHandler::restart     },
+        {"token",        &mult::CommandHandler::tokenHandler},
+        {"kill",         &mult::CommandHandler::kill        },
+        {"question",     &mult::CommandHandler::question    },
+        {"results",      &mult::CommandHandler::results     },
+        {"dump",         &mult::CommandHandler::dumpAsString},
+        {"dump_as_file", &mult::CommandHandler::dumpAsFile  },
  // {"check",   &mult::CommandHandler::check  },
   // {"time",    &mult::CommandHandler::time   }
 };
@@ -223,4 +226,20 @@ mult::CommandHandler::results(const std::string aValue) noexcept
     file::File::writeData("print", "results.txt", results);
 
     return dom::UrlWrapper::toSite("print/results.txt");
+}
+
+std::string
+mult::CommandHandler::dumpAsString(const std::string aValue) noexcept
+{
+    return mult::DumpManager::dumpAsString(
+        file::Parser::slice(aValue, ",", "*"));
+}
+
+std::string
+mult::CommandHandler::dumpAsFile(const std::string aValue) noexcept
+{
+    auto path =
+        mult::DumpManager::dumpAsFile(file::Parser::slice(aValue, ",", "*"));
+    if (path.has_value()) return path.value();
+    else return "Can't create dump!"s;
 }

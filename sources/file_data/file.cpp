@@ -137,6 +137,7 @@ file::File::getWordsMap(const std::string& aFileName,
 
     for (auto& i : words)
     {
+        if (i.size() < 2) continue;
         result[i[0]] = i[1];
     }
 

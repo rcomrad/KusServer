@@ -27,6 +27,9 @@ private:
     static std::string question(const std::string aValue) noexcept;
     static std::string results(const std::string aValue) noexcept;
 
+    static std::string dumpAsString(const std::string aValue) noexcept;
+    static std::string dumpAsFile(const std::string aValue) noexcept;
+
     static std::string loadQuestions() noexcept;
     static std::string retestQuestions() noexcept;
 

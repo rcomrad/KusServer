@@ -441,12 +441,13 @@ struct ThemeBase : public BaseDataStruct<4>
 
 using Theme = UpperDataStruct<ThemeBase>;
 
-struct UserBase : public BaseDataStruct<10>
+struct UserBase : public BaseDataStruct<11>
 {
     int id = 0;
     std::string login;
     std::string password;
     std::string email;
+    std::string lastLogin;
     std::string name;
     std::string surname;
     int schoolID = 0;
