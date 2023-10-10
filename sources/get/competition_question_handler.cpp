@@ -1,53 +1,37 @@
-#include "competition_handler.hpp"
+#include "competition_question_handler.hpp"
 
 #include "domain/date_and_time.hpp"
 
+#include "file_data/file.hpp"
 #include "file_data/path.hpp"
 // std::string get::CompetitionHandler::mProblemPath =
 //     dom::Path::getInstance().getPath("problem").value();
 
-std::unordered_map<int, boost::posix_time::ptime>
-foo()
+boost::posix_time::ptime
+foott()
 {
-    std::unordered_map<int, boost::posix_time::ptime> result;
-    auto connection = data::ConnectionManager::getUserConnection();
-    auto comp       = connection.val.getDataArray<data::Competition>();
+    auto time = file::File::getAllData("data", "time.txt");
+    return dom::DateAndTime::getTime(time);
+}
 
-    for (auto& i : comp)
+crow::json::wvalue
+get::CompetitionQuestionHandler::process(
+    const std::unordered_set<int>& aColumn,
+    data::SmartConnection& aConnection) noexcept
+{
+    static auto time = foott();
+
+    crow::json::wvalue result;
+    if (dom::DateAndTime::getRawCurentTime() > time)
     {
-        result[i.id] = dom::DateAndTime::getTime(i.startTime);
+        auto table     = aConnection.val.getNextDataArray<data::Form>(aColumn);
+        auto tableList = table.getAsJList();
+        result["competition_question"] = std::move(tableList);
     }
-
-    return result;
-}
-
-crow::json::wvalue
-get::CompetitionHandler::process(int aUserID, int aCompetitionID) noexcept
-{
-    crow::json::wvalue result;
-
-    return result;
-}
-
-crow::json::wvalue
-get::CompetitionHandler::process(const std::unordered_set<int>& aColumn,
-                                 data::SmartConnection& aConnection) noexcept
-{
-    crow::json::wvalue result;
-
-    static auto comp = foo();
-
-    auto table = aConnection.val.getNextDataArray<data::Competition>(aColumn);
-    if (table.size() > 0)
+    else
     {
-        auto it = comp.find(table[0].id);
-        if (aColumn.size() == 4 ||
-            it != comp.end() &&
-                dom::DateAndTime::getRawCurentTime() > it->second)
-        {
-            auto tableList        = table.getAsJList();
-            result["competition"] = std::move(tableList);
-        }
+        result["error"]                = dom::DateAndTime::getCurentTimeSafe();
+        result["competition_question"] = "error";
     }
 
     return result;

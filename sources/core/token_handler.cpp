@@ -125,20 +125,28 @@ core::TokenHandler::process(const crow::request& aReq) noexcept
     bool result = false;
 
     static std::unordered_set<std::string> withoutAuthentication = {
-        "/api/login", "/api/registration"};
- auto usrl    = urlDedaction(aReq.raw_url);
+        "/api/login",
+        "/api/registration",
+        "/api/get/if/competition",
+        "/api/get_question",
+        "/api/post/answer",
+        "/api/get/if/competition",
+        "/api/get/if/competition_user[competition_id[]]",
+        "/api/get/if/competition_question[question_id[id,name]]",
+    };
+    auto url      = urlDedaction(aReq.raw_url);
     auto tokenOpt = getTokenFromReq(aReq);
-    if (tokenOpt.has_value())
+
+    if (withoutAuthentication.count(url) || !mIsActive)
     {
-        auto url    = urlDedaction(aReq.raw_url);
+        result = true;
+    }
+    else if (tokenOpt.has_value())
+    {
         auto& token = tokenOpt.value();
         result      = mAuthorizationSetter
                           ? apply(token, url)
                           : check(token, url, aReq.remote_ip_address);
-    }
-    else if (withoutAuthentication.count(aReq.raw_url) || !mIsActive)
-    {
-        result = true;
     }
 
     return result;

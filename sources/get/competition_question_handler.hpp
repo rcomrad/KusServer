@@ -1,5 +1,5 @@
-#ifndef GET_COMPETITION_HANDLER_HPP
-#define GET_COMPETITION_HANDLER_HPP
+#ifndef GET_COMPETITION_QUESTION_HANDLER_HPP
+#define GET_COMPETITION_QUESTION_HANDLER_HPP
 
 //--------------------------------------------------------------------------------
 
@@ -11,11 +11,9 @@
 
 namespace get
 {
-class CompetitionHandler : public GetHandler
+class CompetitionQuestionHandler : public GetHandler
 {
 public:
-    static crow::json::wvalue process(int aUserID, int aCompetitionID) noexcept;
-
     static crow::json::wvalue process(
         const std::unordered_set<int>& aColumn,
         data::SmartConnection& aConnection) noexcept;
@@ -31,4 +29,4 @@ public:
 
 //--------------------------------------------------------------------------------
 
-#endif // !GET_COMPETITION_HANDLER_HPP
+#endif // !GET_COMPETITION_QUESTION_HANDLER_HPP

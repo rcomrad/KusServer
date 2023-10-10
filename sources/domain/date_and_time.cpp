@@ -6,6 +6,12 @@
 
 #include "domain/metaprogramming.hpp"
 
+boost::posix_time::ptime
+dom::DateAndTime::getRawCurentTime() noexcept
+{
+    return boost::posix_time::second_clock::local_time();
+}
+
 std::string
 dom::DateAndTime::getCurentTime() noexcept
 {
@@ -43,6 +49,25 @@ dom::DateAndTime::getDate(const std::string& aDate) noexcept
     boost::gregorian::date date{year, month, day};
 
     return date;
+}
+
+boost::posix_time::ptime
+dom::DateAndTime::getTime(const std::string& aTime) noexcept
+{
+    // 2023-04-03 12:00:00
+
+    uint16_t year  = uint16_t(std::stoi(aTime.substr(0, 4)));
+    uint16_t month = uint8_t(std::stoi(aTime.substr(5, 2)));
+    uint16_t day   = uint8_t(std::stoi(aTime.substr(8, 2)));
+    boost::gregorian::date date{year, month, day};
+
+    uint16_t hour    = uint16_t(std::stoi(aTime.substr(11, 2)));
+    uint16_t minutes = uint8_t(std::stoi(aTime.substr(14, 2)));
+    uint16_t seconds = uint8_t(std::stoi(aTime.substr(17, 2)));
+    boost::posix_time::time_duration time{hour, minutes, seconds};
+
+    boost::posix_time::ptime result{date, time};
+    return result;
 }
 
 std::string

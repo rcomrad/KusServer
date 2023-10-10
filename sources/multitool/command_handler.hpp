@@ -30,6 +30,8 @@ private:
     static std::string dumpAsString(const std::string aValue) noexcept;
     static std::string dumpAsFile(const std::string aValue) noexcept;
 
+    static std::string userComp(const std::string aValue) noexcept;
+
     static std::string loadQuestions() noexcept;
     static std::string retestQuestions() noexcept;
 

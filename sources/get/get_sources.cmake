@@ -4,6 +4,9 @@ set(
     competition_handler.cpp
     competition_handler.hpp
 
+    competition_question_handler.cpp
+    competition_question_handler.hpp
+
     form_handler.hpp
     form_handler.cpp
 

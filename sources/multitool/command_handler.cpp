@@ -23,6 +23,7 @@ std::unordered_map<std::string, decltype(&mult::CommandHandler::restart)>
         {"results",      &mult::CommandHandler::results     },
         {"dump",         &mult::CommandHandler::dumpAsString},
         {"dump_as_file", &mult::CommandHandler::dumpAsFile  },
+        {"user=comp",    &mult::CommandHandler::userComp    },
  // {"check",   &mult::CommandHandler::check  },
   // {"time",    &mult::CommandHandler::time   }
 };
@@ -226,6 +227,32 @@ mult::CommandHandler::results(const std::string aValue) noexcept
     file::File::writeData("print", "results.txt", results);
 
     return dom::UrlWrapper::toSite("print/results.txt");
+}
+
+std::string
+mult::CommandHandler::userComp(const std::string aValue) noexcept
+{
+    auto data      = file::Parser::slice(aValue, "=");
+    auto& userPref = data[0];
+    int compId     = std::stoi(data[1]);
+
+    auto connection = data::ConnectionManager::getUserConnection();
+    auto users      = connection.val.getDataArray<data::User>();
+
+    data::DataArray<data::CompetitionUser> arr;
+    for (auto& u : users)
+    {
+        if (u.login.find(userPref) != std::string::npos)
+        {
+            data::CompetitionUser c;
+            c.competitionID = compId;
+            c.userID        = u.id;
+            arr.emplace_back(std::move(c));
+        }
+    }
+    connection.val.write(arr);
+
+    return "sus";
 }
 
 std::string
