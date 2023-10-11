@@ -13,8 +13,5 @@ set(
     value.cpp
     value.hpp
 
-    variable_storage.cpp
-    variable_storage.hpp
-
     variable.hpp
 )

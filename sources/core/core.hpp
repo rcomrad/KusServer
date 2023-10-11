@@ -3,11 +3,12 @@
 
 //--------------------------------------------------------------------------------
 
-#include <atomic>
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <thread>
 #include <vector>
+
+#include "domain/holy_trinity.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -16,37 +17,21 @@ namespace core
 class Core
 {
 public:
+    HOLY_TRINITY_SINGLE(Core);
     static Core& getInstance() noexcept;
 
-    Core(const Core& other) noexcept            = default;
-    Core& operator=(const Core& other) noexcept = default;
-
-    Core(Core&& other) noexcept            = default;
-    Core& operator=(Core&& other) noexcept = default;
-
     void run() noexcept;
-
-    // static data::DBSettings mDBS;
-    // static void databaseSettingsInit() noexcept;
-    void remakeDatabase() noexcept;
-    void populate() noexcept;
-
     void kill() noexcept;
 
 private:
     Core() noexcept;
-    ~Core() = default;
 
-    std::map<std::string, std::thread> mApps;
+    bool mKillFlag;
+
+    std::unordered_map<std::string, std::thread> mApps;
 
     void serverThread() noexcept;
     void testerThread() noexcept;
-    void createDatabaseFromFile(std::string aFileName) noexcept;
-    // void populateDatabaseFromFile(std::string aFileName) noexcept;
-    void createEnvironment() noexcept;
-    // void deleteEnvironment() noexcept;
-
-    std::atomic<bool> mKillFlag;
 };
 } // namespace core
 

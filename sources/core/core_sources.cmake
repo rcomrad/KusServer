@@ -9,18 +9,18 @@ set(
 
     main.cpp
 
+    populate.cpp
+    populate.hpp
+
     result_generator.cpp
     result_generator.hpp
 
     role.cpp
     role.hpp
 
-    server.cpp
-    server.hpp
-
     submission_queue.cpp
     submission_queue.hpp
-
-    token_handler.cpp
-    token_handler.hpp
+    
+    variable_storage.cpp
+    variable_storage.hpp
 )
