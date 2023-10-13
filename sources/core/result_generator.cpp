@@ -1,77 +1,115 @@
 #include "result_generator.hpp"
-
+#include "file_data/file.hpp"
 #include <fstream>
 #include <string>
 #include <unordered_map>
-
+#include "domain/cyrillic.hpp"
 #include "database/connection_manager.hpp"
+#include "domain/date_and_time.hpp"
 
-void
+std::wstring foox2(const std::string& aStr)
+{
+    // std::string ansStr = file::Parser::slice(answer.value, "", " \t\n.,;");
+    auto wStr = dom::Cyrilic::global.toWString(aStr);
+    dom::Cyrilic::global.standardProcedure(wStr);
+    return wStr;
+}
+
+int equal(const std::string& aStr1,const std::string& aStr2)
+{
+    int result = 1;
+    if (foox2(aStr1) != foox2(aStr2))
+    {
+        result = -1;
+    }
+    return result;
+}
+int partly(const std::string& aStr1,const std::string& aStr2)
+{
+    int result = 0;
+    auto s1 = foox2(aStr1);
+    auto s2 = foox2(aStr2);
+    for(int i = 0; i < s1.size(); ++i)
+    {
+        if (s1[i] == s2[i]) ++result;
+    }
+    return result;
+}
+#include <set>
+std::string
 core::ResultGenerator::generate(int aCompetitionID) noexcept
 {
-    // auto connection = data::ConnectionManager::getUserConnection();
-    // // auto competition =
-    // //     connection.val.getData<data::Competition>("id=" + aCompetitionName);
+std::set<int> qr = {1,32,33,34,35,36,39,40,41,44,45,56,58,60};
 
-    // auto problems = connection.val.getTable<data::CompetitionProblem>(
-    //     "competition_id=" + data::wrap(aCompetitionID));
-    // auto users = connection.val.getTable<data::User_competition>(
-    //     "competition_id=" + data::wrap(aCompetitionID));
+    auto connection = data::ConnectionManager::getUserConnection();
+    // auto competition =
+    //     connection.val.getData<data::Competition>("id=" + aCompetitionName);
 
-    // std::unordered_map<std::string, std::map<int, int>> resultTable;
-
-    // for (auto& i : users)
+    auto questionIDs = connection.val.getDataArray<data::CompetitionQuestion>(
+        "competition_id=" + data::wrap(aCompetitionID));
+        std::string cond;
+        for(auto& i : questionIDs) cond += "id=" + std::to_string(i.questionID) + 
+        " OR ";
+        cond.resize(cond.size() - 4);
+        auto questions = connection.val.getDataArray<data::Question>(
+        cond);
+        
+    // data::DataArray<data::Question> questions;
+    // for(auto& i : questionIDs)
     // {
-    //     auto user =
-    //         connection.val.getData<data::User>("id=" + data::wrap(i.userID));
-    //     if (user.id == 0) continue;
-
-    //     if (user[0].login == "rostizm2008@gmail.com")
-    //     {
-    //         int yy = 0;
-    //         yy++;
-    //     }
-    //     for (auto& j : problems)
-    //     {
-    //         auto submissions = connection.val.getTable<data::Submission>(
-    //             "user_id=" + data::wrap(i.userID) +
-    //             " AND "
-    //             "problem_id=" +
-    //             data::wrap(j.id));
-
-    //         bool flag = false;
-    //         for (auto& k : submissions)
-    //         {
-    //             resultTable[user[0].login][j.problem_id]--;
-    //             flag = k.verdict == "OK";
-    //         }
-    //         if (flag) resultTable[user[0].login][j.problem_id] *= -1;
-    //     }
+    //     questions.emplace_back();
+    //     auto qq = connection.val.getDataArray<data::Question>();
+    //     //  "id=" + data::wrap(i.questionID))
+    //     questions.emplace_back(std::move(qq));
     // }
+    auto users = connection.val.getDataArray<data::CompetitionUser>(
+        "competition_id=" + data::wrap(aCompetitionID));
 
-    // std::ofstream resultFile("result.out");
-    // for (auto& i : resultTable)
-    // {
-    //     resultFile << i.first;
-    //     int task    = 0;
-    //     int penalty = 0;
-    //     for (auto& j : problems)
-    //     {
-    //         resultFile << '\t';
-    //         if (i.second[j.problem_id] > 0)
-    //             resultFile << '+' << i.second[j.problem_id];
-    //         else if (i.second[j.problem_id] < 0)
-    //             resultFile << i.second[j.problem_id];
-    //         else resultFile << '*';
+    std::unordered_map<std::string, std::vector<int>> resultTable;
+    for (auto& u : users)
+    {
+        auto user =
+            connection.val.getData<data::User>("id=" + data::wrap(u.userID));
 
-    //         if (i.second[j.problem_id] > 0)
-    //         {
-    //             penalty += i.second[j.problem_id];
-    //             task++;
-    //         }
-    //     }
+        resultTable[user.login].resize(questions.size());
+        for (int i = 0; i < questions.size(); ++i)
+        {
+            auto answer = connection.val.getData<data::Answer>(
+                "user_id=" + data::wrap(user.id) +
+                " AND "
+                "question_id=" +
+                data::wrap(questions[i].id));
+            if (answer.id)
+            {
+if (qr.count(questions[i].id))
+{
+     resultTable[user.login][i] = partly(answer.value, questions[i].juryAnswer);
+}
+else
+{
+     resultTable[user.login][i]  = equal(answer.value, questions[i].juryAnswer);
+}
+            }
+        }
+    }
 
-    //     resultFile << '\t' << task << "\t" << penalty;
-    //     resultFile << '\n';
-    // }
+    std::string data;
+    for (auto& i : resultTable)
+    {
+        data += i.first + " = ";
+        for (auto& j : i.second)
+        {
+            data += std::to_string(j) + " " ;
+        }
+
+        int sum = 0;
+        for(auto j : i.second)
+        {
+            sum += j > 0 ? j : 0;
+        }
+         data += " = " + std::to_string(sum) + "\n";
+    }
+    return file::File::writeData("print", "results_" + std::to_string(aCompetitionID)
+     + "_" + dom::DateAndTime::getCurentTimeSafe() + ".txt", data).value();
+    // return std::to_string(resultTable.begin()->second[10]);
 }

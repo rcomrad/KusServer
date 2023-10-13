@@ -30,7 +30,7 @@ get::CompetitionQuestionHandler::process(
     }
     else
     {
-        result["error"]                = dom::DateAndTime::getCurentTimeSafe();
+        result["error"]                = dom::DateAndTime::getCurentTime();
         result["competition_question"] = "error";
     }
 

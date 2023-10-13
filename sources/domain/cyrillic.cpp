@@ -142,10 +142,10 @@ dom::Cyrilic::destroyBadCharacters(std::wstring& aStr) noexcept
         {
             i = L'а';
         }
-        else if (i == L'b')
-        {
-            i = L'в';
-        }
+        // else if (i == L'b')
+        // {
+        //     i = L'в';
+        // }
         else if (i == L',')
         {
             i = L' ';
