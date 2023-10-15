@@ -11,3 +11,16 @@ serv::RequestUnpacker::getToken(const crow::request& aReq) noexcept
     }
     return result;
 }
+
+boost::optional<const std::string&>
+serv::RequestUnpacker::getPart(const crow::multipart::message& aMsg,
+                               std::string aStr) noexcept
+{
+    boost::optional<const std::string&> result;
+    auto it = aMsg.part_map.find(aStr);
+    if (it != aMsg.part_map.end())
+    {
+        result = it->second.body;
+    }
+    return result;
+}

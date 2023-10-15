@@ -4,6 +4,7 @@
 
 #include "file_data/file.hpp"
 #include "file_data/path.hpp"
+#include "multitool/dump_manager.hpp"
 #include "post/journal_handler.hpp"
 #include "post/plan_handler.hpp"
 #include "post/user_handler.hpp"
@@ -11,29 +12,46 @@
 #include "variable_storage.hpp"
 
 // TODO: to commands
+//--------------------------------------------------------------------------------
+
+core::Populate core::Populate::mInstance;
+
+core::Populate ::Populate() noexcept
+    : ModuleBase("clear", file::Value::Type::Int)
+{
+}
 
 //--------------------------------------------------------------------------------
 
-void
-core::Populate::checkForCommands() noexcept
+std::string
+core::Populate::doAction() noexcept
 {
     static auto& state = VariableStorage::touchInt("clear");
-    if (state)
-    {
-        VariableStorage::beginLock();
 
+    auto dumpPath = mult::DumpManager::makeSaveFile();
+    std::string res;
+    if (dumpPath.has_value())
+    {
+        res = "No restart.";
         if (state & 1)
         {
             remakeDatabase();
+            res = "OK\nEmpty restart!";
         }
         if (state & 2)
         {
             populate();
+            res = "OK\nFull restart!";
         }
 
-        VariableStorage::setVariable("clear", 0);
-        VariableStorage::endLock();
+        res += "\n\nDump address: " + dumpPath.value();
     }
+    else
+    {
+        res = "ERROR\nCan't create dump!";
+    }
+
+    return res;
 }
 
 void

@@ -3,10 +3,22 @@
 #include "domain/date_and_time.hpp"
 #include "domain/log.hpp"
 
+#include "core/variable_storage.hpp"
 #include "file_data/file.hpp"
-#include "file_data/variable_storage.hpp"
+#include "file_data/parser.hpp"
 #include "get/get_router.hpp"
 #include "post/post_handler.hpp"
+
+//--------------------------------------------------------------------------------
+
+mult::DumpManager mult::DumpManager::mInstance;
+
+mult::DumpManager::DumpManager() noexcept
+    : ModuleBase("dump", file::Value::Type::String)
+{
+}
+
+//--------------------------------------------------------------------------------
 
 std::string
 mult::DumpManager::process(const crow::request& aReq) noexcept
@@ -28,16 +40,67 @@ mult::DumpManager::process(const crow::request& aReq) noexcept
 }
 
 std::optional<std::string>
-mult::DumpManager::dumpAsFile(
-    const std::vector<std::string>& aTableNames) noexcept
+mult::DumpManager::makeSaveFile() noexcept
 {
-    auto data = dumpAsString(aTableNames);
-    auto path = file::File::writeData(
-        "dump", dom::DateAndTime::getCurentTimeSafe() + ".dmp", data);
+    std::optional<std::string> result;
 
-    if (!path.has_value()) dom::writeError("Can't create file in dump folder");
-    return path;
+    auto flag = core::VariableStorage::touchFlag("bad_db_flag");
+    if (flag)
+    {
+        result = mult::DumpManager::dumpAsFile();
+    }
+    else
+    {
+        result = "NUN";
+    }
+
+    return result;
 }
+
+std::string
+mult::DumpManager::makeDump(const std::string& aCommand,
+                            const std::string& aArgs) noexcept
+{
+    return privateProcess(aCommand, aArgs);
+}
+
+//--------------------------------------------------------------------------------
+
+std::string
+mult::DumpManager::doAction() noexcept
+{
+    static auto& command = core::VariableStorage::touchWord("dump");
+    static auto& args    = core::VariableStorage::touchWord("args");
+    return privateProcess(command, args);
+}
+
+std::string
+mult::DumpManager::privateProcess(const std::string& aCommand,
+                                  const std::string& aArgs) noexcept
+{
+    auto processedArgs = file::Parser::slice(aArgs, ",", "*");
+
+    std::string result = "ERROR: wrong dump type!";
+    if (aCommand == "dump")
+    {
+        result = dumpAsString(processedArgs);
+    }
+    else if (aCommand == "dump_as_string")
+    {
+        auto path = mult::DumpManager::dumpAsFile(processedArgs);
+        if (path.has_value()) result = path.value();
+        else result = "Can't create dump!"s;
+    }
+    else if (aCommand == "dump_as_html")
+    {
+        // TODO:
+        result = "HTML dump doesn't ready!";
+    }
+
+    return result;
+}
+
+//--------------------------------------------------------------------------------
 
 std::string
 mult::DumpManager::dumpAsString(
@@ -58,6 +121,20 @@ mult::DumpManager::dumpAsString(
     return result;
 }
 
+std::optional<std::string>
+mult::DumpManager::dumpAsFile(
+    const std::vector<std::string>& aTableNames) noexcept
+{
+    auto data = dumpAsString(aTableNames);
+    auto path = file::File::writeData(
+        "dump", dom::DateAndTime::getCurentTimeSafe() + ".dmp", data);
+
+    if (!path.has_value()) dom::writeError("Can't create file in dump folder");
+    return path;
+}
+
+//--------------------------------------------------------------------------------
+
 std::vector<std::string>
 mult::DumpManager::getDatabaseTableNames() noexcept
 {
@@ -67,24 +144,6 @@ mult::DumpManager::getDatabaseTableNames() noexcept
     for (auto& i : words)
     {
         if (i[0] == "TABLE") result.emplace_back(std::move(i[1]));
-    }
-
-    return result;
-}
-
-std::optional<std::string>
-mult::DumpManager::makeSaveFile() noexcept
-{
-    std::optional<std::string> result;
-
-    auto flag = file::VariableStorage::getInstance().getFlag("bad_db_flag");
-    if (flag.has_value() && !flag.value())
-    {
-        result = mult::DumpManager::dumpAsFile();
-    }
-    else
-    {
-        result = "NUN";
     }
 
     return result;

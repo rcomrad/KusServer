@@ -5,20 +5,23 @@
 #include "domain/date_and_time.hpp"
 
 #include "core/role.hpp"
+#include "core/variable_storage.hpp"
 #include "file_data/file.hpp"
 #include "file_data/parser.hpp"
 #include "file_data/path.hpp"
 
 #include "pass_generator.hpp"
 #include "request_unpacker.hpp"
-#include "variable_storage.hpp"
 
 //--------------------------------------------------------------------------------
 
 serv::TokenHandler::TokenHandler() noexcept
-    : mIsActive(core::VariableStorage::touchFlag("token_isActive")),
-      mAuthorizationMemorise(
-          core::VariableStorage::touchFlag("token_isMemory")),
+    : ModuleBase("token", file::Value::Type::String),
+      //   mIsActive(core::VariableStorage::touchFlag("token_isActive")),
+      //   mAuthorizationMemorise(
+      //       core::VariableStorage::touchFlag("token_isMemory")),
+      mIsActive(false),
+      mAuthorizationMemorise(false),
       mTokenIterator(1)
 {
     auto size = core::VariableStorage::touchInt("token_size", 100);
@@ -61,22 +64,11 @@ serv::TokenHandler::generate(const data::User& aUser,
     return instance.generate(aUser, aIP);
 }
 
-boost::optional<const serv::UserData const*>
+serv::UserDataPtr
 serv::TokenHandler::process(const crow::request& aReq) noexcept
 {
     static TokenHandler& instance = getInstance();
     return instance.processNonstatic(aReq);
-}
-
-void
-serv::TokenHandler::printAutorisation() const noexcept
-{
-    std::string data;
-    for (auto& i : mAutorisation)
-    {
-        data += i.first + " " + dom::toString(i.second) + "\n";
-    }
-    file::File::writeData("config", "url.conf", data);
 }
 
 std::string
@@ -108,7 +100,7 @@ serv::TokenHandler::generateNonstatic(const data::User& aUser,
 serv::UserDataPtr
 serv::TokenHandler::processNonstatic(const crow::request& aReq) noexcept
 {
-    bool result = !mIsActive;
+    serv::UserDataPtr result;
 
     static std::unordered_set<std::string> withoutAuthentication = {
         "/api/login", "/api/registration",
@@ -124,7 +116,7 @@ serv::TokenHandler::processNonstatic(const crow::request& aReq) noexcept
 
     if (withoutAuthentication.count(url))
     {
-        result = true;
+        result = &mTokens[0];
     }
     else if (tokenOpt.has_value())
     {
@@ -139,65 +131,80 @@ serv::TokenHandler::processNonstatic(const crow::request& aReq) noexcept
 
 //--------------------------------------------------------------------------------
 
-bool
-serv::TokenHandler::executeCommand(const std::string& aCommand) noexcept
+std::string
+serv::TokenHandler::doAction() noexcept
 {
-    bool result = true;
-    if (aCommand == "turn_off")
+    static auto& command =
+        core::VariableStorage::touchWord("token", "turn_off");
+
+    std::string res = "No token command applied.";
+    if (command == "turn_off")
     {
-        mIsActive            = false;
-        mAuthorizationSetter = false;
+        res                    = "Tokens turned OFF!";
+        mIsActive              = false;
+        mAuthorizationMemorise = false;
     }
-    else if (aCommand == "turn_on")
+    else if (command == "turn_on")
     {
-        mIsActive            = true;
-        mAuthorizationSetter = false;
+        res                    = "Tokens turned ON!";
+        mIsActive              = true;
+        mAuthorizationMemorise = false;
     }
-    else if (aCommand == "memory")
+    else if (command == "memory")
     {
-        mIsActive            = false;
-        mAuthorizationSetter = true;
+        res                    = "Start url-role memorization.";
+        mIsActive              = false;
+        mAuthorizationMemorise = true;
     }
-    else if (aCommand == "print")
+    else if (command == "print")
     {
+        res = "Print url-role data.";
         printAutorisation();
     }
-    else
+
+    return res;
+}
+
+void
+serv::TokenHandler::printAutorisation() const noexcept
+{
+    std::string data;
+    for (auto& i : mAutorisation)
     {
-        result = false;
+        data += i.first + " " + dom::toString(i.second) + "\n";
     }
-    return result;
+    file::File::writeData("config", "url.conf", data);
 }
 
-int
-serv::TokenHandler::getRoleID(const crow::request& aReq) noexcept
-{
-    int result = 0;
+// int
+// serv::TokenHandler::getRoleID(const crow::request& aReq) noexcept
+// {
+//     int result = 0;
 
-    auto tokenOpt = getTokenFromReq(aReq);
-    if (tokenOpt.has_value())
-    {
-        auto userOpt = getUserByToken(tokenOpt.value());
-        if (userOpt.has_value())
-        {
-            result = userOpt.value().role;
-        }
-    }
+//     auto tokenOpt = getTokenFromReq(aReq);
+//     if (tokenOpt.has_value())
+//     {
+//         auto userOpt = getUserByToken(tokenOpt.value());
+//         if (userOpt.has_value())
+//         {
+//             result = userOpt.value().role;
+//         }
+//     }
 
-    return result;
-}
+//     return result;
+// }
 
-std::unordered_set<std::string>
-serv::TokenHandler::getRoleName(const crow::request& aReq) noexcept
-{
-    return core::Role::getRoles(getRoleID(aReq));
-}
+// std::unordered_set<std::string>
+// serv::TokenHandler::getRoleName(const crow::request& aReq) noexcept
+// {
+//     return core::Role::getRoles(getRoleID(aReq));
+// }
 
-bool
-serv::TokenHandler::checkAuthorizationStatus() noexcept
-{
-    return mIsActive;
-}
+// bool
+// serv::TokenHandler::checkAuthorizationStatus() noexcept
+// {
+//     return mIsActive;
+// }
 
 //--------------------------------------------------------------------------------
 

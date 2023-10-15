@@ -2,7 +2,7 @@
 
 #include "domain/log.hpp"
 
-#include "core/token_handler.hpp"
+// #include "core/token_handler.hpp"
 
 #include "command_handler.hpp"
 #include "dump_manager.hpp"

@@ -4,9 +4,6 @@ set(
     command_handler.cpp
     command_handler.hpp
 
-    crow_helper.cpp
-    crow_helper.hpp
-    
     dump_manager.cpp
     dump_manager.hpp
 
@@ -18,4 +15,13 @@ set(
 
     multitool_router.cpp
     multitool_router.hpp
+
+    participant_manager.cpp
+    participant_manager.hpp
+
+    question_manager.cpp
+    question_manager.hpp
+
+    results_manager.cpp
+    results_manager.hpp
 )

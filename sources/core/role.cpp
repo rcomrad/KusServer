@@ -3,13 +3,14 @@
 #include "database/connection_manager.hpp"
 
 #include "file_data/parser.hpp"
-#include "file_data/variable_storage.hpp"
+
+#include "variable_storage.hpp"
 
 core::Role::Role() noexcept
 {
     // reset();
-    auto flag = file::VariableStorage::getInstance().getFlag("bad_db_flag");
-    if (!flag.has_value() || flag.has_value() && !flag.value())
+    auto flag = VariableStorage::touchFlag("bad_db_flag");
+    if (!flag)
     {
         loadRoles();
         resetFormRoleIDs();

@@ -12,6 +12,7 @@
 #include "database/database_structures.hpp"
 
 #include "boost/optional.hpp"
+#include "core/module_base.hpp"
 
 #include "user_data.hpp"
 
@@ -20,9 +21,9 @@
 namespace serv
 {
 
-using UserDataPtr = boost::optional<const UserData const*>;
+using UserDataPtr = boost::optional<const UserData*>;
 
-class TokenHandler
+class TokenHandler : public core::ModuleBase
 {
     //--------------------------------------------------------------------------------
 
@@ -33,7 +34,8 @@ public:
                                 const std::string& aIP) noexcept;
     static UserDataPtr process(const crow::request& aReq) noexcept;
 
-    void printAutorisation() const noexcept;
+protected:
+    std::string doAction() noexcept override;
 
 private:
     std::string generateNonstatic(const data::User& aUser,
@@ -46,14 +48,17 @@ private:
     TokenHandler() noexcept;
     static TokenHandler& getInstance() noexcept;
 
-    bool& mIsActive;
-    bool& mAuthorizationMemorise;
+    bool mIsActive;
+    bool mAuthorizationMemorise;
 
     std::mutex mTokenGenerationMutex;
     boost::posix_time::time_duration mTokenLifespan;
     int mTokenIterator;
     std::vector<UserData> mTokens;
     std::unordered_map<std::string, int> mAutorisation;
+
+    bool processCommandsStatic() noexcept;
+    void printAutorisation() const noexcept;
 
     UserDataPtr check(const std::string& aToken,
                       const std::string& aURL,

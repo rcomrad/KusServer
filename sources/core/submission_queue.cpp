@@ -2,12 +2,11 @@
 
 #include "database/connection_manager.hpp"
 
-#include "file_data/variable_storage.hpp"
+#include "variable_storage.hpp"
 
 core::SubmissionQueue::SubmissionQueue()
 {
-    mIsActive = file::VariableStorage::getInstance().getFlagUnsafe(
-        "submission_auto_check");
+    mIsActive = VariableStorage::touchFlag("submission_auto_check");
 }
 
 core::SubmissionQueue&

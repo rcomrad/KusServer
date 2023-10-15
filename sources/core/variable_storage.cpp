@@ -116,13 +116,15 @@ core::VariableStorage::touchWord(const std::string& aName,
 //--------------------------------------------------------------------------------
 
 void
-core::VariableStorage::setVariable(const std::string& aName,
-                                   bool aValue) noexcept
+core::VariableStorage::setVariable(
+    const std::string& aName,
+    bool aValue,
+    std::chrono::milliseconds aSleepValue) noexcept
 {
     static VariableStorage& instance = getInstance();
     if (instance.mMutexFlag == false)
     {
-        instance.beginLock();
+        instance.beginLock(aSleepValue);
         instance.mFlags[aName] = aValue;
         instance.endLock();
     }
@@ -133,13 +135,15 @@ core::VariableStorage::setVariable(const std::string& aName,
 }
 
 void
-core::VariableStorage::setVariable(const std::string& aName,
-                                   int aValue) noexcept
+core::VariableStorage::setVariable(
+    const std::string& aName,
+    int aValue,
+    std::chrono::milliseconds aSleepValue) noexcept
 {
     static VariableStorage& instance = getInstance();
     if (instance.mMutexFlag == false)
     {
-        instance.beginLock();
+        instance.beginLock(aSleepValue);
         instance.mInts[aName] = aValue;
         instance.endLock();
     }
@@ -149,21 +153,23 @@ core::VariableStorage::setVariable(const std::string& aName,
     }
 }
 
-void
-core::VariableStorage::setVariable(const std::string& aName,
-                                   const std::string& aValue) noexcept
-{
-    static VariableStorage& instance = getInstance();
-    if (instance.mMutexFlag == false)
-    {
-        instance.beginLock();
-        instance.mWords[aName] = aValue;
-        instance.endLock();
-    }
-    else
-    {
-        instance.mWords[aName] = aValue;
-    }
-}
+// void
+// core::VariableStorage::setVariable(
+//     const std::string& aName,
+//     const std::string& aValue,
+//     std::chrono::milliseconds aSleepValue) noexcept
+// {
+//     static VariableStorage& instance = getInstance();
+//     if (instance.mMutexFlag == false)
+//     {
+//         instance.beginLock(aSleepValue);
+//         instance.mWords[aName] = aValue;
+//         instance.endLock();
+//     }
+//     else
+//     {
+//         instance.mWords[aName] = aValue;
+//     }
+// }
 
 //--------------------------------------------------------------------------------

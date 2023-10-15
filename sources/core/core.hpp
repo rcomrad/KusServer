@@ -21,7 +21,6 @@ public:
     static Core& getInstance() noexcept;
 
     void run() noexcept;
-    void kill() noexcept;
 
 private:
     Core() noexcept;

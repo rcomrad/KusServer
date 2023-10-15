@@ -15,6 +15,9 @@ struct RequestUnpacker
 {
     static boost::optional<const std::string&> getToken(
         const crow::request& aReq) noexcept;
+
+    static boost::optional<const std::string&> getPart(
+        const crow::multipart::message& aMsg, std::string aStr) noexcept;
 };
 
 } // namespace serv

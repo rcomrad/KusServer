@@ -11,18 +11,13 @@ struct Middleware
     Middleware() = default;
     struct context
     {
-        const UserData const* mUser;
+        const UserData* mUser;
     };
 
     void before_handle(crow::request& req, crow::response& res, context& ctx);
     void after_handle(crow::request& req, crow::response& res, context& ctx);
 };
 
-class Server
-{
-public:
-    Server();
-};
 } // namespace serv
 
 #endif // !MIDDLEWARE_HPP

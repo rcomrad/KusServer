@@ -5,7 +5,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "file_data/variable_storage.hpp"
+#include "core/variable_storage.hpp"
 
 dom::Log::Log() noexcept
 {
@@ -38,12 +38,10 @@ dom::Log::reloadSettings() noexcept
         {"error",   PrintStatus::Error  }
     };
 
-    auto& storage = file::VariableStorage::getInstance();
-
-    auto status = storage.getWord("log_type");
-    if (status.has_value())
+    auto statusType = core::VariableStorage::touchWord("log_type");
+    if (!statusType.empty())
     {
-        auto it = statusMap.find(status.get());
+        auto it = statusMap.find(statusType);
         if (it != statusMap.end())
         {
             mStatus = it->second;
@@ -51,7 +49,7 @@ dom::Log::reloadSettings() noexcept
         }
         else
         {
-            writeError("No such log setting (", status.get(), ")");
+            writeError("No such log setting (", statusType, ")");
         }
     }
     else
@@ -59,18 +57,17 @@ dom::Log::reloadSettings() noexcept
         writeWarning("No log setting, default setting applied (info)");
     }
 
-    auto buffer = storage.getWord("log_buffer");
-    if (buffer.has_value())
+    auto buffer = core::VariableStorage::touchWord("log_buffer");
+    if (!buffer.empty())
     {
-        auto bufferName = buffer.get();
-        if (bufferName == "cout")
+        if (buffer == "cout")
         {
             mIsFileOutput = false;
             mStreams      = &std::cout;
 
             writeInfo("Log buffer changed to stdout");
         }
-        else if (bufferName == "cerr")
+        else if (buffer == "cerr")
         {
             mIsFileOutput = false;
             mStreams      = &std::cerr;
@@ -80,9 +77,9 @@ dom::Log::reloadSettings() noexcept
         else
         {
             mIsFileOutput = true;
-            mStreams      = new std::ofstream(bufferName);
+            mStreams      = new std::ofstream(buffer);
 
-            writeInfo("Log buffer changed to ", bufferName, " file");
+            writeInfo("Log buffer changed to ", buffer, " file");
         }
     }
     else

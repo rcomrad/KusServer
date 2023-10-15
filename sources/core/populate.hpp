@@ -5,16 +5,21 @@
 
 #include <string>
 
+#include "module_base.hpp"
+
 //--------------------------------------------------------------------------------
 
 namespace core
 {
-class Populate
+class Populate : public ModuleBase
 {
-public:
-    static void checkForCommands() noexcept;
+protected:
+    std::string doAction() noexcept override;
 
 private:
+    static Populate mInstance;
+    Populate() noexcept;
+
     static void remakeDatabase() noexcept;
     static void populate() noexcept;
 

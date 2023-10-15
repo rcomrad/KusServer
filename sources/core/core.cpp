@@ -11,6 +11,7 @@
 #include "server/server.hpp"
 #include "tester/tester.hpp"
 
+#include "module_base.hpp"
 #include "populate.hpp"
 #include "role.hpp"
 #include "submission_queue.hpp"
@@ -57,16 +58,12 @@ core::Core::run() noexcept
     if (VariableStorage::touchFlag("submission_auto_check"))
         mApps["tester"] = std::move(std::thread(&Core::testerThread, this));
 
+    auto& killCommand = VariableStorage::touchWord("kill");
     while (!mKillFlag)
     {
-        Populate::checkForCommands();
+        ModuleBase::process();
+        if (!killCommand.empty()) mKillFlag = true;
     }
-}
-
-void
-core::Core::kill() noexcept
-{
-    mKillFlag = true;
 }
 
 //--------------------------------------------------------------------------------
@@ -84,14 +81,13 @@ void
 core::Core::testerThread() noexcept
 {
     auto& sub = SubmissionQueue::getInstance();
-    while (true)
+    while (!mKillFlag)
     {
         if (!sub.isEmpty())
         {
             dom::writeInfo("start_checking");
             test::Tester tester(
-                file::VariableStorage::getInstance().getIntUnsafe(
-                    "tester_thread_count"));
+                VariableStorage::touchInt("tester_thread_count"));
             tester.run(sub.get());
             dom::writeInfo("end_checking");
         }

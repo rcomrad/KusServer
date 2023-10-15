@@ -5,12 +5,15 @@
 
 #include <boost/optional.hpp>
 
+#include <chrono>
 #include <mutex>
 #include <optional>
 #include <string>
 #include <unordered_map>
 
 #include "domain/holy_trinity.hpp"
+
+using namespace std::chrono_literals;
 
 //--------------------------------------------------------------------------------
 
@@ -34,10 +37,33 @@ public:
         const std::string& aName,
         const std::string& aDefaultValue = "") noexcept;
 
-    static void setVariable(const std::string& aName, bool aValue) noexcept;
-    static void setVariable(const std::string& aName, int aValue) noexcept;
-    static void setVariable(const std::string& aName,
-                            const std::string& aValue) noexcept;
+    static void setVariable(
+        const std::string& aName,
+        bool aValue,
+        std::chrono::milliseconds aSleepValue = 200ms) noexcept;
+    static void setVariable(
+        const std::string& aName,
+        int aValue,
+        std::chrono::milliseconds aSleepValue = 200ms) noexcept;
+
+    template <typename S, typename = dom::enableIf<dom::isString<S>>>
+    static void setVariable(
+        const std::string& aName,
+        S&& aValue,
+        std::chrono::milliseconds aSleepValue = 200ms) noexcept
+    {
+        static VariableStorage& instance = getInstance();
+        if (instance.mMutexFlag == false)
+        {
+            instance.beginLock(aSleepValue);
+            instance.mWords[aName] = std::forward<S>(aValue);
+            instance.endLock();
+        }
+        else
+        {
+            instance.mWords[aName] = std::forward<S>(aValue);
+        }
+    }
 
 private:
     bool mMutexFlag;
