@@ -16,7 +16,7 @@ namespace core
 class ResultGenerator
 {
 public:
-    static void generate(int aCompetitionID) noexcept;
+    static std::string generate(int aCompetitionID) noexcept;
 
 private:
 };

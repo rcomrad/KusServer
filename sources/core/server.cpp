@@ -77,8 +77,7 @@ core::Server::Server()
     (
         [](int aCompetitionID)
         {
-            core::ResultGenerator::generate(aCompetitionID);
-            return "4";
+            return core::ResultGenerator::generate(aCompetitionID);
         });
 
     CROW_ROUTE(app, "/api/command/<string>/<string>")
