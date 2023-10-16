@@ -22,11 +22,11 @@ post::SubmitHandler::process(const crow::request& aReq) noexcept
     submition.userID    = std::stoi(msg.get_part_by_name("user_id").body);
     submition.problemID = std::stoi(msg.get_part_by_name("problem_id").body);
 
-    submition.dateVal = getCurentTime();
-    submition.verdict = "NUN";
-    submition.test    = -1;
-    submition.sourceName =
-        uploadFile(msg, file::Path::getPathUnsafe("submition"));
+    submition.dateVal    = getCurentTime();
+    submition.verdict    = "NUN";
+    submition.test       = -1;
+    submition.sourceName = uploadFile(msg);
+    // uploadFile(msg, file::Path::getPathUnsafe("submition"));
 
     {
         auto connection = data::ConnectionManager::getUserConnection();

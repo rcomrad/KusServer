@@ -12,6 +12,7 @@
 #include <unordered_map>
 
 #include "domain/holy_trinity.hpp"
+#include "domain/metaprogramming.hpp"
 
 using namespace std::chrono_literals;
 

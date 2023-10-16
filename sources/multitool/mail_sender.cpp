@@ -10,8 +10,7 @@
 #include "file_data/parser.hpp"
 #include "file_data/path.hpp"
 #include "post/post_handler.hpp"
-
-#include "crow_helper.hpp"
+#include "server/request_unpacker.hpp"
 // TODO: crow::multipart::message
 
 std::string
@@ -20,11 +19,11 @@ mult::MailSender::process(const crow::request& aReq) noexcept
     crow::multipart::message msg(aReq);
 
     Letter letter;
-    letter.theme    = CrowHelper::getPart(msg, "theme");
-    letter.text     = CrowHelper::getPart(msg, "text");
-    letter.login    = CrowHelper::getPart(msg, "login");
-    letter.password = CrowHelper::getPart(msg, "password");
-    letter.data     = CrowHelper::getPart(msg, "data");
+    letter.theme    = serv::RequestUnpacker::getPartUnsafe(msg, "theme");
+    letter.text     = serv::RequestUnpacker::getPartUnsafe(msg, "text");
+    letter.login    = serv::RequestUnpacker::getPartUnsafe(msg, "login");
+    letter.password = serv::RequestUnpacker::getPartUnsafe(msg, "password");
+    letter.data     = serv::RequestUnpacker::getPartUnsafe(msg, "data");
 
     std::string result;
     if (letter.theme.empty())
@@ -63,7 +62,8 @@ mult::MailSender::process(const crow::request& aReq) noexcept
         std::string fileName =
             "mail_report_" + dom::DateAndTime::getCurentTimeSafe() + ".txt";
 
-        bool flag = CrowHelper::getPart(msg, "command") == "отправить";
+        bool flag =
+            serv::RequestUnpacker::getPartUnsafe(msg, "command") == "отправить";
         std::thread t(threadSender, letter,
                       file::Path::touchFolder("print").value() + fileName,
                       flag);

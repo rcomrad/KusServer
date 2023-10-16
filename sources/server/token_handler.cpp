@@ -15,6 +15,8 @@
 
 //--------------------------------------------------------------------------------
 
+serv::TokenHandler& serv::TokenHandler::mInstance = getInstance();
+
 serv::TokenHandler::TokenHandler() noexcept
     : ModuleBase("token", file::Value::Type::String),
       //   mIsActive(core::VariableStorage::touchFlag("token_isActive")),
@@ -45,6 +47,10 @@ serv::TokenHandler::TokenHandler() noexcept
     {
         mAutorisation[i[0]] = std::stoi(i[1]);
     }
+
+    mTokens[0].id    = 0;
+    mTokens[0].role  = 0;
+    mTokens[0].inUse = true;
 }
 
 serv::TokenHandler&
@@ -61,7 +67,7 @@ serv::TokenHandler::generate(const data::User& aUser,
                              const std::string& aIP) noexcept
 {
     static TokenHandler& instance = getInstance();
-    return instance.generate(aUser, aIP);
+    return instance.generateNonstatic(aUser, aIP);
 }
 
 serv::UserDataPtr
@@ -124,6 +130,11 @@ serv::TokenHandler::processNonstatic(const crow::request& aReq) noexcept
         result      = mAuthorizationMemorise
                           ? apply(token, url)
                           : check(token, url, aReq.remote_ip_address);
+    }
+    // TODO: remove
+    else if (!mIsActive)
+    {
+        result = &mTokens[0];
     }
 
     return result;
@@ -243,6 +254,10 @@ serv::TokenHandler::check(const std::string& aToken,
             //     }
             // }
         }
+    }
+    else
+    {
+        result = &mTokens[0];
     }
 
     return result;

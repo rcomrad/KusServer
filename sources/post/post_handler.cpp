@@ -127,6 +127,8 @@ post::PostHandler::uploadFromFileRequest(const std::string& aType,
 
 //--------------------------------------------------------------------------------
 
+#include "server/request_unpacker.hpp"
+
 // TODO: use file.hpp
 std::string
 post::PostHandler::uploadFile(crow::multipart::message& aMsg,
@@ -140,9 +142,9 @@ post::PostHandler::uploadFile(crow::multipart::message& aMsg,
 
     std::string fileName;
     if (!aFilenameKey.empty())
-        fileName = aMsg.get_part_by_name(aFilenameKey).body;
+        fileName = serv::RequestUnpacker::getPartUnsafe(aMsg, aFilenameKey);
     // dom::writeInfo("File name:", fileName);
-    auto file = aMsg.get_part_by_name(aFileKey).body;
+    auto file = serv::RequestUnpacker::getPartUnsafe(aMsg, aFileKey);
     // dom::writeInfo("File data:", file);
 
     std::string filePath =

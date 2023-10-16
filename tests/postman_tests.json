@@ -21,7 +21,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "token",
+						"value": "admin",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "127.0.0.1:18080/api/command/restart/empty",
 					"host": [
@@ -49,7 +55,7 @@
 					"script": {
 						"exec": [
 							"pm.test(\"Reg user isn't in use\", function () {\r",
-							"  pm.response.to.have.status(401);\r",
+							"  pm.response.to.have.status(403);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -647,7 +653,7 @@
 					"script": {
 						"exec": [
 							"pm.test(\"User table is empty\", function () {\r",
-							"    pm.response.to.have.status(401);\r",
+							"    pm.response.to.have.status(403);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -747,10 +753,10 @@
 							"            \"school_id\": 1,\r",
 							"            \"key\": \"NUN\",\r",
 							"            \"role\": [\r",
-							"                \"add_plan\",\r",
-							"                \"add_user\",\r",
+							"                \"teacher\",\r",
 							"                \"grade_head\",\r",
-							"                \"teacher\"\r",
+							"                \"add_plan\",\r",
+							"                \"add_user\"\r",
 							"            ]\r",
 							"        }\r",
 							"    };\r",
@@ -1065,8 +1071,8 @@
 							"            \"school_id\": 1,\r",
 							"            \"key\": \"NUN\",\r",
 							"            \"role\": [\r",
-							"                \"grade_head\",\r",
-							"                \"teacher\"\r",
+							"                \"teacher\",\r",
+							"                \"grade_head\"\r",
 							"            ]\r",
 							"        }\r",
 							"    };\r",
@@ -4030,7 +4036,7 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "/D:/projects/VSCode/KusServer/tests/source.cpp"
+							"src": "VSCode/KusServer/tests/source.cpp"
 						},
 						{
 							"key": "user_id",
@@ -4226,19 +4232,14 @@
 							"type": "text"
 						},
 						{
-							"key": "address",
-							"value": "oa1oa@mail.ru;comrade_1997@mail.ru",
-							"type": "text"
-						},
-						{
 							"key": "theme",
 							"value": "Тестовая рассылка",
 							"type": "text"
 						},
 						{
 							"key": "text",
-							"type": "file",
-							"src": "letter.txt"
+							"value": "Проверяю связь!\n\nПишу Вам, имя($животное$) по поваду Ваших баллов. Ваши баллы: $баллы. \nВам присвоено животное: $животное$!\n\nP.S. $mail$имя$животное$$баллы\n\nСпасибо\nС уважением, тестирующая система kussystem.ru.\n",
+							"type": "text"
 						},
 						{
 							"key": "data",
@@ -4259,6 +4260,89 @@
 					"path": [
 						"api",
 						"multitool"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get forms",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "127.0.0.1:18080/api/get/all/form[id,(field_form[field_id[]]),*]",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"get",
+						"all",
+						"form[id,(field_form[field_id[]]),*]"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get questions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "submitor",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "127.0.0.1:18080/api/get_question/1/1",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "18080",
+					"path": [
+						"api",
+						"get_question",
+						"1",
+						"1"
 					]
 				}
 			},

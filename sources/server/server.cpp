@@ -16,14 +16,13 @@
 #include "post/submit_handler.hpp"
 #include "post/user_handler.hpp"
 
-#include "middleware.hpp"
+crow::App<crow::CORSHandler, serv::Middleware> serv::Server::mApp;
 
-serv::Server::Server()
+serv::Server::Server() noexcept
 {
-    crow::App<crow::CORSHandler, serv::Middleware> app;
-    // crow::App<TokenHandler> app;
-    auto& cors = app.get_middleware<crow::CORSHandler>();
-    app.loglevel(crow::LogLevel::Debug);
+    // crow::App<TokenHandler> mApp;
+    auto& cors = mApp.get_middleware<crow::CORSHandler>();
+    mApp.loglevel(crow::LogLevel::Debug);
 
     // clang-format off
     cors
@@ -37,10 +36,10 @@ serv::Server::Server()
 
     //--------------------------------------------------------
 
-    CROW_ROUTE(app, "/api/test")
+    CROW_ROUTE(mApp, "/api/test")
     ([]() { return "All fine!"; });
 
-    CROW_ROUTE(app, "/api/exload")
+    CROW_ROUTE(mApp, "/api/exload")
     (
         []()
         {
@@ -53,19 +52,19 @@ serv::Server::Server()
             return "Exfinished";
         });
 
-    // CROW_ROUTE(app, "/api/get_results/<int>")
+    // CROW_ROUTE(mApp, "/api/get_results/<int>")
     // (
-    //     [&app](int aCompetitionID)
+    //     [&mApp](int aCompetitionID)
     //     {
     //         core::ResultGenerator::generate(aCompetitionID);
     //         return "4";
     //     });
 
-    CROW_ROUTE(app, "/api/command/<string>/<string>")
+    CROW_ROUTE(mApp, "/api/command/<string>/<string>")
     ([](const std::string& aType, const std::string& aValue)
      { return mult::CommandHandler::process(aType, aValue); });
 
-    // CROW_ROUTE(app, "/api/multitool/<string>")
+    // CROW_ROUTE(mApp, "/api/multitool/<string>")
     //     .methods("POST"_method)(
     //         [&](const crow::request& req, const std::string& aArg)
     //         {
@@ -76,41 +75,41 @@ serv::Server::Server()
 
     //---------------------------------------------------------------------
 
-    CROW_ROUTE(app, "/api/print_journal/<string>")
+    CROW_ROUTE(mApp, "/api/print_journal/<string>")
     ([](const std::string& aIDs) { return post::PrintJournal::process(aIDs); });
 
     //---------------------------------------------------------------------
 
-    CROW_ROUTE(app, "/api/get/all/<string>")
+    CROW_ROUTE(mApp, "/api/get/all/<string>")
     ([&](const std::string& aRequest)
      { return get::GetHandler::multiplelGet(aRequest, ""); });
 
-    CROW_ROUTE(app, "/api/get/by_id/<string>/<string>")
+    CROW_ROUTE(mApp, "/api/get/by_id/<string>/<string>")
     ([&](const std::string& aRequest, const std::string& aID)
      { return get::GetHandler::singlGet(aRequest, "id = " + aID); });
 
-    CROW_ROUTE(app, "/api/get/if/<string>/<string>")
+    CROW_ROUTE(mApp, "/api/get/if/<string>/<string>")
     ([&](const std::string& aRequest, std::string aCondition)
      { return get::GetHandler::multiplelGet(aRequest, aCondition); });
 
-    CROW_ROUTE(app, "/api/dump/<string>")
+    CROW_ROUTE(mApp, "/api/dump/<string>")
     ([&](const std::string& aName)
      { return mult::CommandHandler::process("dump", aName); });
-    CROW_ROUTE(app, "/api/dump_as_file/<string>")
+    CROW_ROUTE(mApp, "/api/dump_as_file/<string>")
     ([&](const std::string& aName)
      { return mult::CommandHandler::process("dump_as_file", aName); });
 
-    CROW_ROUTE(app, "/api/get_all_competition/<int>/<int>")
+    CROW_ROUTE(mApp, "/api/get_all_competition/<int>/<int>")
     ([&](int aUserID, int aCompetitionID)
      { return get::CompetitionHandler::process(aUserID, aCompetitionID); });
 
-    CROW_ROUTE(app, "/api/get_question/<int>/<int>")
+    CROW_ROUTE(mApp, "/api/get_question/<int>/<int>")
     ([&](int aQuestionID, int aUserID)
      { return get::QuestionHandler::process(aQuestionID, aUserID); });
 
     //---------------------------------------------------------------------
 
-    CROW_ROUTE(app, "/api/drop/<string>")
+    CROW_ROUTE(mApp, "/api/drop/<string>")
         .methods("POST"_method)(
             [&](const crow::request& req, const std::string& aTableName)
             {
@@ -121,7 +120,7 @@ serv::Server::Server()
 
     //---------------------------------------------------------------------
 
-    CROW_ROUTE(app, "/api/post/<string>")
+    CROW_ROUTE(mApp, "/api/post/<string>")
         .methods("POST"_method)(
             [&](const crow::request& req, const std::string& aTableName)
             {
@@ -130,7 +129,7 @@ serv::Server::Server()
                 return res;
             });
 
-    CROW_ROUTE(app, "/api/upload/<string>")
+    CROW_ROUTE(mApp, "/api/upload/<string>")
         .methods("POST"_method)(
             [&](const crow::request& req, const std::string& aType)
             {
@@ -139,7 +138,7 @@ serv::Server::Server()
                 return res;
             });
 
-    CROW_ROUTE(app, "/api/submit")
+    CROW_ROUTE(mApp, "/api/submit")
         .methods("POST"_method)(
             [&](const crow::request& req)
             {
@@ -148,13 +147,13 @@ serv::Server::Server()
                 return res;
             });
 
-    CROW_ROUTE(app, "/api/multitool")
+    CROW_ROUTE(mApp, "/api/multitool")
         .methods("POST"_method)([&](const crow::request& req)
                                 { return mult::MultitoolRouter::route(req); });
 
     //---------------------------------------------------------------------
 
-    CROW_ROUTE(app, "/api/login")
+    CROW_ROUTE(mApp, "/api/login")
         .methods("POST"_method)(
             [&](const crow::request& req)
             {
@@ -163,14 +162,20 @@ serv::Server::Server()
                 return res;
             });
 
-    CROW_ROUTE(app, "/api/registration")
+    CROW_ROUTE(mApp, "/api/registration")
         .methods("POST"_method)(
             [&](const crow::request& req)
             { return post::UserHandler::registration(req); });
 
-    CROW_ROUTE(app, "/api/confirm/<string>")
+    CROW_ROUTE(mApp, "/api/confirm/<string>")
     ([&](const std::string& aUrl)
      { return post::UserHandler::confirmation(aUrl); });
 
-    app.port(18080).multithreaded().run();
+    mApp.port(18080).multithreaded().run();
+}
+
+const serv::Middleware::context&
+serv::Server::getContext(const crow::request& aReq) noexcept
+{
+    return mApp.get_context<Middleware>(aReq);
 }

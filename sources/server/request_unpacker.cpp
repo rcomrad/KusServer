@@ -24,3 +24,19 @@ serv::RequestUnpacker::getPart(const crow::multipart::message& aMsg,
     }
     return result;
 }
+
+const std::string&
+serv::RequestUnpacker::getPartUnsafe(const crow::multipart::message& aMsg,
+                                     std::string aStr) noexcept
+{
+    static const std::string emptyStr = "";
+    auto temp                         = getPart(aMsg, aStr);
+    if (temp.has_value())
+    {
+        return temp.value();
+    }
+    else
+    {
+        return emptyStr;
+    }
+}

@@ -17,7 +17,7 @@
 core::Populate core::Populate::mInstance;
 
 core::Populate ::Populate() noexcept
-    : ModuleBase("clear", file::Value::Type::Int)
+    : ModuleBase("clear", file::Value::Type::String)
 {
 }
 
@@ -26,7 +26,11 @@ core::Populate ::Populate() noexcept
 std::string
 core::Populate::doAction() noexcept
 {
-    static auto& state = VariableStorage::touchInt("clear");
+    static auto& command = VariableStorage::touchWord("clear");
+
+    int state = 0;
+    if (command == "empty") state = 1;
+    if (command == "full") state = 3;
 
     auto dumpPath = mult::DumpManager::makeSaveFile();
     std::string res;

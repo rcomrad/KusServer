@@ -18,6 +18,8 @@ struct RequestUnpacker
 
     static boost::optional<const std::string&> getPart(
         const crow::multipart::message& aMsg, std::string aStr) noexcept;
+    static const std::string& getPartUnsafe(
+        const crow::multipart::message& aMsg, std::string aStr) noexcept;
 };
 
 } // namespace serv

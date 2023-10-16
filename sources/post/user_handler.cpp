@@ -10,11 +10,11 @@
 #include "database/safe_sql_wrapper.hpp"
 
 #include "core/role.hpp"
-#include "core/token_handler.hpp"
 #include "file_data/file.hpp"
 #include "file_data/parser.hpp"
 #include "file_data/path.hpp"
 #include "get/get_handler.hpp"
+#include "server/token_handler.hpp"
 
 std::mutex post::UserHandler::mRegMut;
 
@@ -95,11 +95,11 @@ post::UserHandler::autorisation(const crow::request& aReq) noexcept
             }
 
             crow::json::wvalue uJson;
-            uJson["user"] = user.getAsJson({"password", "role_id"});
+            uJson["user"] =
+                user.getAsJson({"password", "role_id", "last_login"});
 
-            auto& tokenHandler = core::TokenHandler::getInstance();
-            uJson["user"]["token"] =
-                tokenHandler.generate(user, aReq.remote_ip_address);
+            // uJson["user"]["token"] =
+            //     serv::TokenHandler::generate(user, aReq.remote_ip_address);
 
             auto roles = core::Role::getInstance().getRoles(user.roleID);
             crow::json::wvalue::list roleList;
@@ -267,6 +267,7 @@ post::UserHandler::fiil(data::User& aUser) noexcept
 {
     if (aUser.name.empty()) aUser.name = "NUN";
     if (aUser.surname.empty()) aUser.surname = "NUN";
+    if (aUser.lastLogin.empty()) aUser.lastLogin = "NUN";
 
     if (aUser.schoolID == 0) aUser.schoolID = -1;
 

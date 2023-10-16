@@ -9,6 +9,9 @@ set(
 
     main.cpp
 
+    module_base.cpp
+    module_base.hpp
+
     populate.cpp
     populate.hpp
 

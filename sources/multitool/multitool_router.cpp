@@ -4,6 +4,8 @@
 
 // #include "core/token_handler.hpp"
 
+#include "server/server.hpp"
+
 #include "command_handler.hpp"
 #include "dump_manager.hpp"
 #include "mail_sender.hpp"
@@ -16,8 +18,7 @@ mult::MultitoolRouter::route(const crow::request& aReq)
 {
     crow::response result;
 
-    static bool noAuthorization =
-        !core::TokenHandler::getInstance().checkAuthorizationStatus();
+    auto& ctx = serv::Server::getContext(aReq);
 
     crow::multipart::message msg(aReq);
     // TODO: check if no name
@@ -26,8 +27,7 @@ mult::MultitoolRouter::route(const crow::request& aReq)
     auto it = mMultitoolRouter.find(techName);
     if (it != mMultitoolRouter.end())
     {
-        auto role = core::TokenHandler::getInstance().getRoleID(aReq);
-        if (noAuthorization || role & it->second.roles)
+        if (ctx.mUser->role & it->second.roles)
         {
             crow::json::wvalue json;
             json["html"] = it->second.func(aReq);

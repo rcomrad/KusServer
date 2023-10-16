@@ -15,7 +15,7 @@ core::ModuleBase::process() noexcept
 {
     for (auto& i : mModules)
     {
-        if (hasValue(i) && VariableStorage::touchWord("command_result").empty())
+        if (hasValue(i) && VariableStorage::touchWord("executed_command").empty())
         {
             VariableStorage::beginLock();
             VariableStorage::setVariable("command_result",
@@ -40,7 +40,7 @@ core::ModuleBase::hasValue(const Module& aModule) noexcept
             result = VariableStorage::touchFlag(aModule.name);
             break;
         case file::Value::Type::String:
-            result = VariableStorage::touchWord(aModule.name).empty();
+            result = !VariableStorage::touchWord(aModule.name).empty();
             break;
     }
     return result;

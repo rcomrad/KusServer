@@ -15,10 +15,12 @@
 #include "populate.hpp"
 #include "role.hpp"
 #include "submission_queue.hpp"
+#include "variable_storage.hpp"
 
 //--------------------------------------------------------------------------------
 
-core::Core::Core() noexcept : mKillFlag(false)
+core::Core::Core() noexcept
+    : ModuleBase("core", file::Value::Type::String), mKillFlag(false)
 {
     code::CodeGenerator cg;
     cg.makeAll();
@@ -30,16 +32,6 @@ core::Core::Core() noexcept : mKillFlag(false)
                                file::Path::FileType::File,
                                file::Path::LevelType::Recursive);
     file::Path::addContentFrom(file::Path::getPathUnsafe("scripts"));
-
-    auto restartState = VariableStorage::touchWord("restart_on_start");
-    if (!restartState.empty())
-    {
-        std::thread temp(static_cast<std::string (*)(const std::string&,
-                                                     const std::string&)>(
-                             &mult::CommandHandler::process),
-                         "restart", restartState);
-        temp.join();
-    }
 }
 
 core::Core&
@@ -54,19 +46,57 @@ core::Core::getInstance() noexcept
 void
 core::Core::run() noexcept
 {
+    // core::VariableStorage::setVariable("core", "start", 0ms);
+    start();
+
+    while (!mKillFlag)
+    {
+        ModuleBase::process();
+    }
+}
+
+std::string
+core::Core::doAction() noexcept
+{
+    static auto& command = VariableStorage::touchWord("core");
+
+    std::string res;
+    if (command == "start")
+    {
+        start();
+    }
+    else if (command == "kill")
+    {
+        res       = "You're monster!";
+        mKillFlag = true;
+    }
+
+    return res;
+}
+
+//--------------------------------------------------------------------------------
+
+void
+core::Core::start() noexcept
+{
     mApps["server"] = std::move(std::thread(&Core::serverThread, this));
     if (VariableStorage::touchFlag("submission_auto_check"))
         mApps["tester"] = std::move(std::thread(&Core::testerThread, this));
 
-    auto& killCommand = VariableStorage::touchWord("kill");
-    while (!mKillFlag)
+    auto restartState = VariableStorage::touchWord("restart_on_start");
+    if (!restartState.empty())
     {
-        ModuleBase::process();
-        if (!killCommand.empty()) mKillFlag = true;
+        mApps["restart"] =
+            std::move(std::thread(static_cast<std::string (*)(
+                                      const std::string&, const std::string&)>(
+                                      &mult::CommandHandler::process),
+                                  "restart", restartState));
+        // temp.join();
     }
-}
 
-//--------------------------------------------------------------------------------
+    VariableStorage::setVariable("executed_command"s, ""s, 0ms);
+    VariableStorage::setVariable("command_result"s, ""s, 0ms);
+}
 
 void
 core::Core::serverThread() noexcept

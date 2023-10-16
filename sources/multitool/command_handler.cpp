@@ -16,26 +16,27 @@
 std::unordered_map<std::string,
                    std::function<std::string(const std::string& aValue)>>
     mult::CommandHandler::mSpecialRoutes = {
-        {"restart",        &mult::CommandHandler::restart        },
+        {"restart",        [](const std::string& aValue)
+         { return applyCommand("clear", aValue); }},
         {"kill",           [](const std::string& aValue)
-         { return applyCommand("kill", "kill"); }},
+         { return applyCommand("core", "kill"); }    },
         {"dump",
          [](const std::string& aValue)
          {
              core::VariableStorage::setVariable("args", aValue, 0ms);
              return applyCommand("dump", "dump");
-         }                                                       },
+         }                                                           },
         {"dump_as_string",
          [](const std::string& aValue)
          {
              core::VariableStorage::setVariable("args", aValue, 0ms);
              return applyCommand("dump", "dump_as_string");
-         }                                                       },
+         }                                                           },
         {"dump_as_html",   [](const std::string& aValue)
          {
              core::VariableStorage::setVariable("args", aValue, 0ms);
              return applyCommand("dump", "dump_as_html");
-         }                               }
+         }                                   }
 };
 
 std::unordered_set<std::string> mult::CommandHandler::mLegaCommands = {

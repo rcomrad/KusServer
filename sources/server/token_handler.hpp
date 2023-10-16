@@ -45,6 +45,7 @@ private:
     //--------------------------------------------------------------------------------
 
 private:
+    static TokenHandler& mInstance;
     TokenHandler() noexcept;
     static TokenHandler& getInstance() noexcept;
 
