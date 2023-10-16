@@ -96,6 +96,20 @@ get::QuestionHandler::loadQuestion(int aQuestionID) const noexcept
         {
             if (i.first == "legend.txt" || i.first == "data.txt") continue;
 
+            if (i.first == "ans_list.txt"
+                // &&
+                // (question.type == "multi" || question.type == "table")
+            )
+            {
+                auto temp = file::File::getLines(i.second);
+                crow::json::wvalue::list ans_list;
+                for (auto& i : temp)
+                {
+                    ans_list.emplace_back(i);
+                }
+                result["ans_list"] = std::move(ans_list);
+            }
+
             if (i.first.find(".gif") != -1 || i.first.find(".png") != -1 ||
                 i.first.find(".PNG") != -1 || i.first.find(".jpg") != -1)
             {
