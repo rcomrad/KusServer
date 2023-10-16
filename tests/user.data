@@ -1,5 +1,5 @@
 user	1
-login	password	email	name	surname	school_id	key	status
+login	password	email   last_login	name	surname	school_id	key	status
 user1	123	NUN	NUN	Полина	Субботина	1	NUN	10
 student
 user2	123	NUN	NUN	Иван	Вдовин	1	NUN	10

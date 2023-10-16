@@ -98,7 +98,7 @@ mult::MailSender::process(const crow::request& aReq) noexcept
 
     return result;
 }
-
+#include <set>
 void
 mult::MailSender::threadSender(Letter aLetter,
                                std::string aFileName,
@@ -113,6 +113,39 @@ mult::MailSender::threadSender(Letter aLetter,
                                  return c == ';' || c == ',' || c == '\0';
                                  ;
                              });
+
+    std::unordered_map<std::string,
+                       std::unordered_map<std::string, std::string>*>
+        mmm;
+    for (auto& i : table)
+    {
+        auto it = mmm.find(i["$mail$"]);
+        if (it == mmm.end())
+        {
+            it = mmm.insert({i["$mail$"], &i}).first;
+        }
+        else
+        {
+            i.erase("$mail$");
+        }
+
+        std::set<std::string> q;
+        for (auto& k : i)
+        {
+            if (k.first == "$mail$") continue;
+            q.insert(k.first);
+        }
+
+        for (auto& j : q)
+        {
+            (*(it->second))["$all$"] += j + ": " + i[j] + " \t ";
+        }
+        (*(it->second))["$all$"].push_back('\n');
+    }
+
+    for (auto& i : table)
+        i["$all$"] = file::Parser::slice(i["$all$"], "", "\"")[0];
+
     auto letter = sliseText(aLetter.text, *table.begin());
 
     if (!aRealSend)
@@ -135,7 +168,7 @@ mult::MailSender::threadSender(Letter aLetter,
         auto temp = row.find("$mail$");
         if (temp == row.end())
         {
-            out << "--> отсутствует адрес электронной почты!";
+            out << "--> отсутствует адрес электронной почты!\n";
             continue;
         }
         auto addr = temp->second;
