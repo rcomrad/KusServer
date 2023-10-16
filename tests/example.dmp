@@ -66,8 +66,6 @@ holiday
 END
 
 competition
-	Пробный;2023-04-14 01:00:00;2023-04-14 23:00:00
-	Чуток пробный;2023-04-14 01:00:00;2023-04-14 23:00:00
 END
 
 competition_user
@@ -76,9 +74,6 @@ competition_user
 END
 
 question
-	Задача 1;R-1-1;1;1;asas.
-	Задача 2;t2;1;1;ag.
-	Задача 3;t3;1;1;ag.
 END
 
 competition_question

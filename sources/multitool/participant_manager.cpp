@@ -48,3 +48,49 @@ mult::PaticipantManager::userComp(const std::string aValue) noexcept
 
     return "sus";
 }
+
+mult::CompetitionManager mult::CompetitionManager::mInstance;
+
+mult::CompetitionManager::CompetitionManager() noexcept
+    : ModuleBase("comp=question", file::Value::Type::String)
+{
+}
+
+std::string
+mult::CompetitionManager::doAction() noexcept
+{
+    static auto& command = core::VariableStorage::touchWord("comp=question");
+    return userComp(command);
+}
+
+std::string
+mult::CompetitionManager::userComp(const std::string aValue) noexcept
+{
+    auto connection = data::ConnectionManager::getUserConnection();
+
+    auto data          = file::Parser::slice(aValue, "=");
+    auto& questionPref = data[1];
+
+    data::Competition comp;
+    comp.name      = data[0];
+    comp.startTime = "2020-10-16 14:00:00";
+    comp.endTime   = "2030-10-16 14:00:00";
+    connection.val.write(comp);
+
+    data::DataArray<data::CompetitionQuestion> arr;
+    auto questions = connection.val.getDataArray<data::Question>();
+    for (auto& q : questions)
+    {
+        if (q.nickname.find(questionPref) != std::string::npos)
+        {
+            data::CompetitionQuestion c;
+            c.competitionID = comp.id;
+            c.questionID    = q.id;
+            c.name          = q.name;
+            arr.emplace_back(std::move(c));
+        }
+    }
+    connection.val.write(arr);
+
+    return "sus";
+}

@@ -22,6 +22,18 @@ private:
 
     static std::string userComp(const std::string aValue) noexcept;
 };
+
+class CompetitionManager : public core::ModuleBase
+{
+protected:
+    std::string doAction() noexcept override;
+
+private:
+    static CompetitionManager mInstance;
+    CompetitionManager() noexcept;
+
+    static std::string userComp(const std::string aValue) noexcept;
+};
 } // namespace mult
 
 //--------------------------------------------------------------------------------

@@ -38,12 +38,10 @@ mult::QuestionManager::loadQuestions() noexcept
 
     auto hasQ = file::Path::getContentMap(file::Path::getPathUnsafe("question"),
                                           file::Path::FileType::Folder);
-    std::map<std::string, std::string> q;
-    q.insert(hasQ.begin(), hasQ.end());
+    std::map<std::string, std::string> questions;
+    questions.insert(hasQ.begin(), hasQ.end());
 
-    auto ans = file::File::getWordsMap("question"s, "ans.txt"s);
-
-    for (auto& i : q)
+    for (auto& i : questions)
     {
         data::Question q = connection.val.getData<data::Question>(
             "nickname=\'" + i.first + "\'");
@@ -54,12 +52,17 @@ mult::QuestionManager::loadQuestions() noexcept
         q.weight     = 1;
         q.juryAnswer = "1";
 
-        auto it = ans.find(i.first);
-        if (it != ans.end())
-        {
-            q.juryAnswer = it->second;
-            q.juryAnswer.push_back('.');
-        }
+        auto data = file::File::getWordsMap(
+            i.second + "data.txt", file::FileType::File,
+            [](char c) { return c == '=' || c == '\n' || c == '\0'; });
+
+        auto ansIt  = data.find("answer");
+        auto typeIt = data.find("type");
+        auto nameIt = data.find("name");
+
+        if (ansIt != data.end()) q.juryAnswer = ansIt->second;
+        if (typeIt != data.end()) q.type = typeIt->second;
+        if (nameIt != data.end()) q.name = nameIt->second;
 
         connection.val.write(q);
     }

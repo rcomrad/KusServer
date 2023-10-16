@@ -7,7 +7,12 @@ std::vector<core::ModuleBase::Module> core::ModuleBase::mModules;
 core::ModuleBase::ModuleBase(const std::string& aName,
                              file::Value::Type aType) noexcept
 {
-    mModules.emplace_back(this, aName, aType);
+    // TODO: Linux doesn't work. Again!
+    // mModules.emplace_back(this, aName, aType);
+    mModules.emplace_back();
+    mModules.back().ptr  = this;
+    mModules.back().name = aName;
+    mModules.back().type = aType;
 }
 
 void
@@ -15,7 +20,8 @@ core::ModuleBase::process() noexcept
 {
     for (auto& i : mModules)
     {
-        if (hasValue(i) && VariableStorage::touchWord("executed_command").empty())
+        if (hasValue(i) &&
+            VariableStorage::touchWord("executed_command").empty())
         {
             VariableStorage::beginLock();
             VariableStorage::setVariable("command_result",
