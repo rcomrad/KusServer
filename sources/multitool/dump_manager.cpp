@@ -44,7 +44,7 @@ mult::DumpManager::makeSaveFile() noexcept
 {
     std::optional<std::string> result;
 
-    auto flag = core::VariableStorage::touchFlag("bad_db_flag");
+    auto flag = !core::VariableStorage::touchFlag("bad_db_flag");
     if (flag)
     {
         result = mult::DumpManager::dumpAsFile();

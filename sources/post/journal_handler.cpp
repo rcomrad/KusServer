@@ -9,10 +9,9 @@
 #include "domain/date_and_time.hpp"
 
 #include "database/connection_manager.hpp"
+#include "database/safe_sql_wrapper.hpp"
 
 #include "file_data/file.hpp"
-
-#include "database/safe_sql_wrapper.hpp"
 
 crow::json::wvalue
 post::JournalHandler::process(
@@ -38,15 +37,18 @@ post::JournalHandler::process(
 crow::json::wvalue
 post::JournalHandler::rawDataHandler(data::RawData& aData) noexcept
 {
-    for (size_t i = 0; i < aData.value.size(); ++i)
+    if (aData.additionalInfo.size())
     {
-        if (aData.additionalInfo[i].size())
+        for (size_t i = 0; i < aData.value.size(); ++i)
         {
-            aData.value[i].emplace_back();
-            for (auto& j : aData.additionalInfo[i])
+            if (aData.additionalInfo[i].size())
             {
-                aData.value[i].back() += j;
-                aData.value[i].back().push_back(' ');
+                aData.value[i].emplace_back();
+                for (auto& j : aData.additionalInfo[i])
+                {
+                    aData.value[i].back() += j;
+                    aData.value[i].back().push_back(' ');
+                }
             }
         }
     }

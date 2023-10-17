@@ -23,7 +23,9 @@ dom::DateAndTime::getCurentTime() noexcept
     dateTime += std::to_string(timeLocal.date().month()) + "-";
     dateTime += std::to_string(timeLocal.date().day()) + " ";
 
+    if (timeLocal.time_of_day().hours() < 10) dateTime += "0";
     dateTime += std::to_string(timeLocal.time_of_day().hours()) + ":";
+    if (timeLocal.time_of_day().minutes() < 10) dateTime += "0";
     dateTime += std::to_string(timeLocal.time_of_day().minutes()) + ":";
     if (timeLocal.time_of_day().seconds() < 10) dateTime += "0";
     dateTime += std::to_string(timeLocal.time_of_day().seconds());
@@ -91,4 +93,13 @@ dom::DateAndTime::curentTimeAssert(
         boost::posix_time::second_clock::local_time();
 
     return (aTime - timeLocal) < aDuration;
+}
+
+bool
+dom::DateAndTime::isPassed(const std::string& aTime) noexcept
+{
+    boost::posix_time::ptime timeLocal =
+        boost::posix_time::second_clock::local_time();
+
+    return getTime(aTime) < timeLocal;
 }

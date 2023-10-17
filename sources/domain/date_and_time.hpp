@@ -22,6 +22,7 @@ public:
     static bool curentTimeAssert(
         const boost::posix_time::ptime& aTime,
         const boost::posix_time::time_duration& aDuration) noexcept;
+    static bool isPassed(const std::string& aTime) noexcept;
 };
 } // namespace dom
 

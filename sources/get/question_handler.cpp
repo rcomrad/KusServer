@@ -70,6 +70,9 @@ get::QuestionHandler::getQuestion(int aQuestionID) const noexcept
 crow::json::wvalue
 get::QuestionHandler::loadQuestion(int aQuestionID) const noexcept
 {
+    static const std::unordered_set<std::string> excludedFiles = {"legend.txt",
+                                                                  "data.txt"};
+
     data::Question question;
     {
         auto connection = data::ConnectionManager::getUserConnection();
@@ -94,11 +97,11 @@ get::QuestionHandler::loadQuestion(int aQuestionID) const noexcept
         auto data = file::Path::getContentMap(folder);
         for (auto& i : data)
         {
-            if (i.first == "legend.txt" || i.first == "data.txt") continue;
+            if (excludedFiles.count(i.first)) continue;
 
-            if (i.first == "ans_list.txt"
-                // &&
-                // (question.type == "multi" || question.type == "table")
+            else if (i.first == "ans_list.txt"
+                     // &&
+                     // (question.type == "multi" || question.type == "table")
             )
             {
                 auto temp = file::File::getLines(i.second);
@@ -109,9 +112,8 @@ get::QuestionHandler::loadQuestion(int aQuestionID) const noexcept
                 }
                 result["ans_list"] = std::move(ans_list);
             }
-
-            if (i.first.find(".gif") != -1 || i.first.find(".png") != -1 ||
-                i.first.find(".PNG") != -1 || i.first.find(".jpg") != -1)
+            else if (i.first.find(".gif") != -1 || i.first.find(".png") != -1 ||
+                     i.first.find(".PNG") != -1 || i.first.find(".jpg") != -1)
             {
                 legend += dom::UrlWrapper::toHTMLSrc(
                     "question/" + question.nickname + "/" + i.first);

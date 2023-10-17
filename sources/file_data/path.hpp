@@ -4,6 +4,7 @@
 #include <boost/optional.hpp>
 
 #include <algorithm>
+#include <map>
 #include <optional>
 #include <string>
 #include <unordered_map>
@@ -57,7 +58,7 @@ public:
         const std::string& aPath,
         FileType aFIleType   = FileType::File,
         LevelType aLevelType = LevelType::Current) noexcept;
-    static std::unordered_map<std::string, std::string> getContentMap(
+    static std::map<std::string, std::string> getContentMap(
         const std::string& aPath,
         FileType aFIleType   = FileType::File,
         LevelType aLevelType = LevelType::Current) noexcept;

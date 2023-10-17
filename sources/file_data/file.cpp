@@ -101,9 +101,9 @@ file::File::getWords(const std::string& aFileName,
         int indx = 0;
         while (indx < line.size())
         {
-            while (funk(line[indx])) indx++;
+            while (line.size() > indx && funk(line[indx])) indx++;
             int from = indx;
-            while (!funk(line[indx])) indx++;
+            while (line.size() > indx && !funk(line[indx])) indx++;
             result.back().emplace_back(line.substr(from, indx - from));
             indx += 1;
         }

@@ -7,32 +7,32 @@
 // std::string get::CompetitionHandler::mProblemPath =
 //     dom::Path::getInstance().getPath("problem").value();
 
-boost::posix_time::ptime
-foott()
-{
-    auto time = file::File::getAllData("data", "time.txt");
-    return dom::DateAndTime::getTime(time);
-}
+// boost::posix_time::ptime
+// foott()
+// {
+//     auto time = file::File::getAllData("data", "time.txt");
+//     return dom::DateAndTime::getTime(time);
+// }
 
 crow::json::wvalue
 get::CompetitionQuestionHandler::process(
     const std::unordered_set<int>& aColumn,
     data::SmartConnection& aConnection) noexcept
 {
-    static auto time = foott();
+    // static auto time = foott();
 
     crow::json::wvalue result;
-    if (dom::DateAndTime::getRawCurentTime() > time)
-    {
+    // if (dom::DateAndTime::getRawCurentTime() > time)
+    // {
         auto table     = aConnection.val.getNextDataArray<data::Form>(aColumn);
         auto tableList = table.getAsJList();
         result["competition_question"] = std::move(tableList);
-    }
-    else
-    {
-        result["error"]                = dom::DateAndTime::getCurentTime();
-        result["competition_question"] = "error";
-    }
+    // }
+    // else
+    // {
+    //     result["error"]                = dom::DateAndTime::getCurentTime();
+    //     result["competition_question"] = "error";
+    // }
 
     return result;
 

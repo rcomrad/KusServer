@@ -1,5 +1,11 @@
 #include "middleware.hpp"
 
+#include <string>
+
+#include "domain/date_and_time.hpp"
+
+#include "database/connection_manager.hpp"
+
 #include "core/variable_storage.hpp"
 
 #include "token_handler.hpp"
@@ -21,6 +27,32 @@ serv::Middleware::before_handle(crow::request& req,
     {
         res.code = 403;
         res.end();
+    }
+
+    if (req.url.size() == 71)
+    {
+        std::string temp = req.url;
+        std::string id   = {temp.back()};
+        temp.resize(temp.size() - 17);
+        if (temp == "/api/get/if/competition_question[question_id[id,name]]")
+        {
+
+            data::Competition comp;
+            {
+                auto connection = data::ConnectionManager::getUserConnection();
+                comp = connection.val.getData<data::Competition>("id=" + id);
+            }
+
+            if (comp.id == 0 || !dom::DateAndTime::isPassed(comp.startTime) ||
+                dom::DateAndTime::isPassed(comp.endTime))
+            {
+                crow::json::wvalue result;
+                result["error"] = dom::DateAndTime::getCurentTime();
+                result["competition_question"] = "error";
+                res                            = std::move(result);
+                res.end();
+            }
+        }
     }
 }
 

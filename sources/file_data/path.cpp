@@ -217,12 +217,12 @@ file::Path::addContentFrom(const std::string& aPath,
 
 //--------------------------------------------------------------------------------
 
-std::unordered_map<std::string, std::string>
+std::map<std::string, std::string>
 file::Path::getContentMap(const std::string& aPath,
                           FileType aFIleType,
                           LevelType aLevelType) noexcept
 {
-    std::unordered_map<std::string, std::string> result;
+    std::map<std::string, std::string> result;
 
     auto paths = getContent(aPath, aFIleType, aLevelType);
     for (auto&& i : paths)
