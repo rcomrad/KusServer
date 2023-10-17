@@ -98,8 +98,8 @@ post::UserHandler::autorisation(const crow::request& aReq) noexcept
             uJson["user"] =
                 user.getAsJson({"password", "role_id", "last_login"});
 
-            // uJson["user"]["token"] =
-            //     serv::TokenHandler::generate(user, aReq.remote_ip_address);
+            uJson["user"]["token"] =
+                serv::TokenHandler::generate(user, aReq.remote_ip_address);
 
             auto roles = core::Role::getInstance().getRoles(user.roleID);
             crow::json::wvalue::list roleList;

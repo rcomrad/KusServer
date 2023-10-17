@@ -16,6 +16,7 @@ std::unordered_map<std::string, mult::MultitoolRouter::Rote>
 crow::response
 mult::MultitoolRouter::route(const crow::request& aReq)
 {
+    // dom::writeInfo("-||->GG");
     crow::response result;
 
     auto& ctx = serv::Server::getContext(aReq);
@@ -27,17 +28,19 @@ mult::MultitoolRouter::route(const crow::request& aReq)
     auto it = mMultitoolRouter.find(techName);
     if (it != mMultitoolRouter.end())
     {
-        // if (ctx.mUser->role & it->second.roles)
+        if (ctx.mUser->role & it->second.roles)
         {
             crow::json::wvalue json;
             json["html"] = it->second.func(aReq);
             result       = std::move(json);
         }
-        // else
-        // {
-        //     result      = {"Access denied!"};
-        //     result.code = 403;
-        // }
+        else
+        {
+            dom::writeInfo("My role:", ctx.mUser->role,
+                           "Needed role:", it->second.roles);
+            result      = {"Access denied!"};
+            result.code = 403;
+        }
     }
     else
     {

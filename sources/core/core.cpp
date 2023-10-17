@@ -49,6 +49,13 @@ core::Core::run() noexcept
     // core::VariableStorage::setVariable("core", "start", 0ms);
     start();
 
+    for (int i = 0; i < 5; ++i)
+    {
+        ModuleBase::process();
+        VariableStorage::setVariable("executed_command"s, ""s, 0ms);
+        VariableStorage::setVariable("command_result"s, ""s, 0ms);
+    }
+
     while (!mKillFlag)
     {
         ModuleBase::process();

@@ -39,6 +39,7 @@ sudo ps axu
 sudo netstat -ntlp
 sudo kill -9
 ps -efj
+ps ugx | grep nano
 
 # memory
 swapon --show

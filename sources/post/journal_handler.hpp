@@ -21,7 +21,9 @@ public:
     static crow::json::wvalue rawDataHandler(data::RawData& aData) noexcept;
     // static void headerParser(data::RawData& aData,
     //                          const crow::multipart::message& msg) noexcept;
-
+    static void remakeSchedule(data::JournalTable& aJournal,
+                               const std::string& fromID,
+                               const std::string& toVal) noexcept;
 private:
     static void makeSchedule(data::JournalTable& aJournal) noexcept;
 };

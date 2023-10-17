@@ -16,9 +16,9 @@
 std::unordered_map<std::string,
                    std::function<std::string(const std::string& aValue)>>
     mult::CommandHandler::mSpecialRoutes = {
-        {"restart",        [](const std::string& aValue)
+        {"restart",      [](const std::string& aValue)
          { return applyCommand("clear", aValue); }},
-        {"kill",           [](const std::string& aValue)
+        {"kill",         [](const std::string& aValue)
          { return applyCommand("core", "kill"); }    },
         {"dump",
          [](const std::string& aValue)
@@ -26,13 +26,13 @@ std::unordered_map<std::string,
              core::VariableStorage::setVariable("args", aValue, 0ms);
              return applyCommand("dump", "dump");
          }                                                           },
-        {"dump_as_string",
+        {"dump_as_file",
          [](const std::string& aValue)
          {
              core::VariableStorage::setVariable("args", aValue, 0ms);
-             return applyCommand("dump", "dump_as_string");
+             return applyCommand("dump", "dump_as_file");
          }                                                           },
-        {"dump_as_html",   [](const std::string& aValue)
+        {"dump_as_html", [](const std::string& aValue)
          {
              core::VariableStorage::setVariable("args", aValue, 0ms);
              return applyCommand("dump", "dump_as_html");
@@ -40,8 +40,7 @@ std::unordered_map<std::string,
 };
 
 std::unordered_set<std::string> mult::CommandHandler::mLegaCommands = {
-    "token",        "question",       "results",   "dump",
-    "dump_as_file", "dump_as_string", "user=comp", "comp=question"};
+    "token", "question", "results", "user=comp", "comp=question"};
 
 std::string
 mult::CommandHandler::process(const crow::request& aReq) noexcept

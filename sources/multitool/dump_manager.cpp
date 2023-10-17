@@ -85,7 +85,7 @@ mult::DumpManager::privateProcess(const std::string& aCommand,
     {
         result = dumpAsString(processedArgs);
     }
-    else if (aCommand == "dump_as_string")
+    else if (aCommand == "dump_as_file")
     {
         auto path = mult::DumpManager::dumpAsFile(processedArgs);
         if (path.has_value()) result = path.value();

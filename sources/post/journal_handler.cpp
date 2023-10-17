@@ -151,3 +151,84 @@ post::JournalHandler::makeSchedule(data::JournalTable& aJournal) noexcept
 
     connection.val.write(lessons);
 }
+
+void
+post::JournalHandler::remakeSchedule(data::JournalTable& aJournal,
+                                     const std::string& fromID,
+                                     const std::string& toVal) noexcept
+{
+    auto connection = data::ConnectionManager::getUserConnection();
+
+    std::vector<int> schedule;
+    for (auto i : aJournal.schedule)
+        if (i >= '1' && i <= '7') schedule.emplace_back(i - '1');
+
+    data::User methodist = connection.val.getData<data::User>(
+        "id = " + data::safeWrap(aJournal.methodistID));
+
+    int methodistSchool = -1;
+    if (methodist.id) methodistSchool = methodist.schoolID;
+    data::School school = connection.val.getData<data::School>(
+        "id = " + data::safeWrap(methodistSchool));
+
+    int schoolID  = -1;
+    uint16_t year = 1991;
+    uint8_t month = 12;
+    uint8_t day   = 26;
+    if (school.id)
+    {
+        schoolID = school.id;
+
+        year  = uint16_t(std::stoi(school.startDate.substr(0, 4)));
+        month = uint8_t(std::stoi(school.startDate.substr(5, 2)));
+        day   = uint8_t(std::stoi(school.startDate.substr(8, 2)));
+    };
+
+    data::DataArray<data::Holiday> holidays =
+        connection.val.getDataArray<data::Holiday>("school_id = " +
+                                                   data::safeWrap(schoolID));
+
+    boost::gregorian::date startDate{year, month, day};
+    boost::gregorian::date date = startDate;
+    while (date.day_of_week() != 1)
+    {
+        date -= boost::gregorian::days(1);
+    }
+
+    int j = 0;
+    while (j < schedule.size() &&
+           date + boost::gregorian::days(schedule[j]) < startDate)
+    {
+        j++;
+    }
+
+    std::set<boost::gregorian::date> holidaysSet;
+    for (auto& i : holidays)
+    {
+        holidaysSet.insert(dom::DateAndTime::getDate(i.dateVal));
+    }
+
+    boost::gregorian::date toDate = dom::DateAndTime::getDate(toVal);
+    data::DataArray<data::Lesson> lessons =
+        connection.val.getDataArray<data::Lesson>("id>" + fromID);
+    for (auto& i : lessons)
+    {
+        if (j == schedule.size())
+        {
+            j = 0;
+            date += boost::gregorian::days(7);
+        }
+
+        auto newData = date + boost::gregorian::days(schedule[j++]);
+        if (newData > toDate)
+        {
+            i.dateVal = toVal;
+        }
+
+        if (holidaysSet.count(newData)) continue;
+        auto dateStr = dom::DateAndTime::getDateStr(newData);
+        i.dateVal    = dateStr;
+    }
+
+    connection.val.write(lessons);
+}

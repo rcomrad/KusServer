@@ -47,8 +47,8 @@ serv::Middleware::before_handle(crow::request& req,
                 dom::DateAndTime::isPassed(comp.endTime))
             {
                 crow::json::wvalue result;
-                result["error"] = dom::DateAndTime::getCurentTime();
-                result["competition_question"] = "error";
+                result["errors"] = dom::DateAndTime::getCurentTime();
+                result["competition_question"] = "errors";
                 res                            = std::move(result);
                 res.end();
             }
