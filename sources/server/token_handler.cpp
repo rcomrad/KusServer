@@ -121,11 +121,7 @@ serv::TokenHandler::processNonstatic(const crow::request& aReq) noexcept
     auto url      = urlDedaction(aReq.raw_url);
     auto tokenOpt = RequestUnpacker::getToken(aReq);
 
-    if (withoutAuthentication.count(url))
-    {
-        result = &mTokens[0];
-    }
-    else if (tokenOpt.has_value())
+    if (tokenOpt.has_value())
     {
         auto& token = tokenOpt.value();
         result      = mAuthorizationMemorise
@@ -133,7 +129,7 @@ serv::TokenHandler::processNonstatic(const crow::request& aReq) noexcept
                           : check(token, url, aReq.remote_ip_address);
     }
     // TODO: remove
-    else if (!mIsActive)
+    if (!result.has_value() && (withoutAuthentication.count(url) || !mIsActive))
     {
         result = &mTokens[0];
     }

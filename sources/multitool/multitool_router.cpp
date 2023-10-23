@@ -28,6 +28,7 @@ mult::MultitoolRouter::route(const crow::request& aReq)
     auto it = mMultitoolRouter.find(techName);
     if (it != mMultitoolRouter.end())
     {
+        // TODO: use storage flag
         if (ctx.mUser->role & it->second.roles)
         {
             crow::json::wvalue json;

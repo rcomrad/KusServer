@@ -43,9 +43,11 @@ serv::Middleware::before_handle(crow::request& req,
                 comp = connection.val.getData<data::Competition>("id=" + id);
             }
 
-            if (comp.id == 0 || !dom::DateAndTime::isPassed(comp.startTime) ||
-                dom::DateAndTime::isPassed(comp.endTime))
+            if (user.value()->id != 2 &&
+                (comp.id == 0 || !dom::DateAndTime::isPassed(comp.startTime) ||
+                 dom::DateAndTime::isPassed(comp.endTime)))
             {
+                dom::writeInfo("My id: ", user.value()->id);
                 crow::json::wvalue result;
                 result["errors"] = dom::DateAndTime::getCurentTime();
                 result["competition_question"] = "errors";

@@ -114,7 +114,7 @@ TABLE question
 	nickname character varying(20) NOT NULL
 	type character varying(5) NOT NULL
 	weight integer NOT NULL
-	jury_answer character varying(40) NOT NULL
+	jury_answer character varying(100) NOT NULL
 
 TABLE competition_question
 	competition_id integer NOT NULL
@@ -127,7 +127,7 @@ TABLE answer
 	time character varying(20) NOT NULL
 	verdict character varying(1) NOT NULL
 	weight integer NOT NULL
-	value character varying(40) NOT NULL
+	value character varying(100) NOT NULL
 
 TABLE form
 	module character varying(20) NOT NULL

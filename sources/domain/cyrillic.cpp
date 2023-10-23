@@ -197,7 +197,7 @@ dom::Cyrilic::destroyWhiteSpaces(std::wstring& aStr, bool flag) noexcept
         ++r;
     }
     aStr.resize(l);
-    if (std::iswspace(aStr.back()))
+    while (!aStr.empty() && std::iswspace(aStr.back()))
     {
         aStr.pop_back();
     }

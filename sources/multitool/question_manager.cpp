@@ -4,6 +4,7 @@
 
 #include "core/variable_storage.hpp"
 #include "file_data/file.hpp"
+#include "file_data/parser.hpp"
 #include "file_data/path.hpp"
 
 mult::QuestionManager mult::QuestionManager::mInstance;
@@ -69,7 +70,7 @@ mult::QuestionManager::loadQuestions() noexcept
 
     return "?";
 }
-
+#include "domain/cyrillic.hpp"
 std::string
 mult::QuestionManager::retestQuestions() noexcept
 {
@@ -84,7 +85,56 @@ mult::QuestionManager::retestQuestions() noexcept
     auto answers = connection.val.getDataArray<data::Answer>();
     for (auto& a : answers)
     {
-        a.verdict = (a.value == questions[a.questionID].juryAnswer) ? "T" : "F";
+        if (a.questionID > 24)
+        {
+            int yy = 0;
+            ++yy;
+        }
+
+        auto& q = questions[a.questionID];
+        if (q.type == "table")
+        {
+            a.verdict = "P";
+            a.weight  = 0;
+
+            auto pAns = file::Parser::slice(a.value, ",");
+            auto jAns = file::Parser::slice(q.juryAnswer, ",");
+            pAns.resize(jAns.size());
+
+            for (int i = 0; i < jAns.size(); ++i)
+            {
+                auto pAnsStr = dom::Cyrilic::global.toWString(pAns[i]);
+                dom::Cyrilic::global.standardProcedure(pAnsStr);
+
+                auto jAnsStr = dom::Cyrilic::global.toWString(jAns[i]);
+                dom::Cyrilic::global.standardProcedure(jAnsStr);
+
+                if (pAnsStr == jAnsStr)
+                {
+                    a.weight += 1;
+                }
+            }
+
+            if (a.weight == 0) a.weight = -1;
+        }
+        else
+        {
+            auto pAnsStr = dom::Cyrilic::global.toWString(a.value);
+            dom::Cyrilic::global.standardProcedure(pAnsStr);
+
+            auto jAnsStr = dom::Cyrilic::global.toWString(q.juryAnswer);
+            dom::Cyrilic::global.standardProcedure(jAnsStr);
+
+            a.verdict = (pAnsStr == jAnsStr) ? "T" : "F";
+            if (a.verdict == "T")
+            {
+                a.weight = 1;
+            }
+            else
+            {
+                a.weight = -1;
+            }
+        }
     }
 
     connection.val.write(answers);

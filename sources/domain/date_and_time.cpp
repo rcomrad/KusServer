@@ -20,7 +20,9 @@ dom::DateAndTime::getCurentTime() noexcept
 
     std::string dateTime;
     dateTime += std::to_string(timeLocal.date().year()) + "-";
+    if (timeLocal.date().month() < 10) dateTime += "0";
     dateTime += std::to_string(timeLocal.date().month()) + "-";
+    if (timeLocal.date().day() < 10) dateTime += "0";
     dateTime += std::to_string(timeLocal.date().day()) + " ";
 
     if (timeLocal.time_of_day().hours() < 10) dateTime += "0";

@@ -40,7 +40,7 @@ std::unordered_map<std::string,
 };
 
 std::unordered_set<std::string> mult::CommandHandler::mLegaCommands = {
-    "token", "question", "results", "user=comp", "comp=question"};
+    "token", "question", "result", "user=comp", "comp=question"};
 
 std::string
 mult::CommandHandler::process(const crow::request& aReq) noexcept

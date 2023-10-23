@@ -19,6 +19,10 @@ sudo psql -U journal_user -h localhost -d journal_db
 sudo psql -U postgres -h localhost -d postgres 
 sudo -u postgres psql -c "CREATE USER journal_user;"
 sudo -u postgres psql -c "ALTER USER journal_user password '$1';"
+SHOW search_path;
+SET search_path TO myschema;
+SET search_path TO myschema, public;
+
  
 # service
 /etc/systemd/system/

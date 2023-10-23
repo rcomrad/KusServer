@@ -1,5 +1,6 @@
 #include "results_manager.hpp"
 
+#include "domain/date_and_time.hpp"
 #include "domain/url_wrapper.hpp"
 
 #include "database/connection_manager.hpp"
@@ -41,7 +42,13 @@ mult::ResultsManager::getResults(const std::string aValue) noexcept
 
     for (auto& u : users)
     {
+        auto comUser = connection.val.getData<data::CompetitionUser>(
+            "competition_id = " + aValue + " AND " +
+            "user_id = " + data::wrap(u.id));
+        if (!comUser.id) continue;
+
         results += u.login + " ; ";
+        int sum = 0;
         for (auto& q : questions)
         {
             auto answer = connection.val.getData<data::Answer>(
@@ -49,19 +56,23 @@ mult::ResultsManager::getResults(const std::string aValue) noexcept
                 " AND "
                 "question_id = " +
                 data::wrap(q.id));
+            if (answer.weight == -1) answer.weight = 0;
+
             if (answer.id)
             {
-                results += answer.verdict + ";";
+                results += std::to_string(answer.weight);
             }
-            else
-            {
-                results += " ;";
-            }
+            results += ";";
+
+            sum += answer.weight;
         }
+        results += ";=;" + std::to_string(sum);
         results += "\n";
     }
 
-    file::File::writeData("print", "results.txt", results);
+    file::File::writeData(
+        "print", "results" + dom::DateAndTime::getCurentTimeSafe() + ".txt",
+        results);
 
     return dom::UrlWrapper::toSite("print/results.txt");
 }

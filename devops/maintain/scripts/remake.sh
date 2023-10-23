@@ -10,7 +10,7 @@ sudo chmod +x remake.sh
 sudo chmod +x build.sh
 sudo -H -u $KUS_BUILD_USER ./build.sh
 
-sudo systemctl restart KusManager
+sudo systemctl restart KusManager.service
 
 sudo chmod +x ../../../scripts/pdf_compile.sh
 sudo chmod +x ../../../scripts/to_csv.sh
