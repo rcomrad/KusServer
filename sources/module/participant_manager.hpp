@@ -5,16 +5,16 @@
 
 #include <string>
 
-#include "core/module_base.hpp"
+#include "module_base.hpp"
 
 //--------------------------------------------------------------------------------
 
-namespace mult
+namespace mod
 {
-class PaticipantManager : public core::ModuleBase
+class PaticipantManager : public ModuleBase
 {
 protected:
-    std::string doAction() noexcept override;
+    std::string doAction(const Command& aComman) noexcept override;
 
 private:
     static PaticipantManager mInstance;
@@ -22,19 +22,7 @@ private:
 
     static std::string userComp(const std::string aValue) noexcept;
 };
-
-class CompetitionManager : public core::ModuleBase
-{
-protected:
-    std::string doAction() noexcept override;
-
-private:
-    static CompetitionManager mInstance;
-    CompetitionManager() noexcept;
-
-    static std::string userComp(const std::string aValue) noexcept;
-};
-} // namespace mult
+} // namespace mod
 
 //--------------------------------------------------------------------------------
 

@@ -9,28 +9,23 @@
 #include "post/plan_handler.hpp"
 #include "post/user_handler.hpp"
 
-#include "variable_storage.hpp"
-
 // TODO: to commands
 //--------------------------------------------------------------------------------
 
-core::Populate core::Populate::mInstance;
+mod::Populate mod::Populate::mInstance;
 
-core::Populate ::Populate() noexcept
-    : ModuleBase("clear", file::Value::Type::String)
+mod::Populate::Populate() noexcept : ModuleBase({"restart"})
 {
 }
 
 //--------------------------------------------------------------------------------
 
 std::string
-core::Populate::doAction() noexcept
+mod::Populate::doAction(const Command& aCommand) noexcept
 {
-    static auto& command = VariableStorage::touchWord("clear");
-
     int state = 0;
-    if (command == "empty") state = 1;
-    if (command == "full") state = 3;
+    if (aCommand.argument == "empty") state = 1;
+    if (aCommand.argument == "full") state = 3;
 
     auto dumpPath = mult::DumpManager::makeSaveFile();
     std::string res;
@@ -59,7 +54,7 @@ core::Populate::doAction() noexcept
 }
 
 void
-core::Populate::remakeDatabase() noexcept
+mod::Populate::remakeDatabase() noexcept
 {
     createEnvironment();
     createDatabaseFromFile(
@@ -72,7 +67,7 @@ core::Populate::remakeDatabase() noexcept
 }
 
 void
-core::Populate::populate() noexcept
+mod::Populate::populate() noexcept
 {
     post::PostHandler::uploadFromFile(
         {
@@ -109,7 +104,7 @@ core::Populate::populate() noexcept
 }
 
 void
-core::Populate::createDatabaseFromFile(std::string aFileName) noexcept
+mod::Populate::createDatabaseFromFile(std::string aFileName) noexcept
 {
     auto connection = data::ConnectionManager::getUserConnection();
 
@@ -136,7 +131,7 @@ core::Populate::createDatabaseFromFile(std::string aFileName) noexcept
 }
 
 void
-core::Populate::createEnvironment() noexcept
+mod::Populate::createEnvironment() noexcept
 {
     data::ConnectionManager::turnOff();
     {

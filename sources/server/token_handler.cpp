@@ -4,6 +4,8 @@
 
 #include "domain/date_and_time.hpp"
 
+#include "database/connection_manager.hpp"
+
 #include "core/role.hpp"
 #include "core/variable_storage.hpp"
 #include "file_data/file.hpp"
@@ -15,10 +17,11 @@
 
 //--------------------------------------------------------------------------------
 
-serv::TokenHandler& serv::TokenHandler::mInstance = getInstance();
+serv::TokenHandler& serv::TokenHandler::mInstance =
+    serv::TokenHandler::getInstance();
 
 serv::TokenHandler::TokenHandler() noexcept
-    : ModuleBase("token", file::Value::Type::String),
+    : ModuleBase({"token"}),
       //   mIsActive(core::VariableStorage::touchFlag("token_isActive")),
       //   mAuthorizationMemorise(
       //       core::VariableStorage::touchFlag("token_isMemory")),
@@ -140,34 +143,39 @@ serv::TokenHandler::processNonstatic(const crow::request& aReq) noexcept
 //--------------------------------------------------------------------------------
 
 std::string
-serv::TokenHandler::doAction() noexcept
+serv::TokenHandler::doAction(const Command& aCommand) noexcept
 {
-    static auto& command =
-        core::VariableStorage::touchWord("token", "turn_off");
-
     std::string res = "No token command applied.";
-    if (command == "turn_off")
+    if (aCommand.argument == "turn_off")
     {
         res                    = "Tokens turned OFF!";
         mIsActive              = false;
         mAuthorizationMemorise = false;
     }
-    else if (command == "turn_on")
+    else if (aCommand.argument == "turn_on")
     {
         res                    = "Tokens turned ON!";
         mIsActive              = true;
         mAuthorizationMemorise = false;
     }
-    else if (command == "memory")
+    else if (aCommand.argument == "memory")
     {
         res                    = "Start url-role memorization.";
         mIsActive              = false;
         mAuthorizationMemorise = true;
     }
-    else if (command == "print")
+    else if (aCommand.argument == "print")
     {
         res = "Print url-role data.";
         printAutorisation();
+    }
+    else if (aCommand.argument == "cut")
+    {
+        core::VariableStorage::setVariable("insert_tokens", false);
+    }
+    else if (aCommand.argument == "add")
+    {
+        core::VariableStorage::setVariable("insert_tokens", true);
     }
 
     return res;
@@ -320,4 +328,17 @@ serv::TokenHandler::urlDedaction(const std::string& aUrl) noexcept
         }
     }
     return result;
+}
+
+void
+serv::TokenHandler::rearrangeTokenArray() noexcept
+{
+    auto connection = data::ConnectionManager::getUserConnection();
+    auto tokens     = connection.val.getDataArray<data::Token>();
+    int delID       = 0;
+    for (auto& i : tokens)
+    {
+        // if (dom::DateAndTime::curentTimeAssert(i.startTime, mTokenLifespan))
+        //     delID = i.id;
+    }
 }

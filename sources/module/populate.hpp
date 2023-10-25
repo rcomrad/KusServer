@@ -9,12 +9,12 @@
 
 //--------------------------------------------------------------------------------
 
-namespace core
+namespace mod
 {
 class Populate : public ModuleBase
 {
 protected:
-    std::string doAction() noexcept override;
+    std::string doAction(const Command& aCommand) noexcept override;
 
 private:
     static Populate mInstance;

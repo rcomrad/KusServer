@@ -441,6 +441,25 @@ struct ThemeBase : public BaseDataStruct<4>
 
 using Theme = UpperDataStruct<ThemeBase>;
 
+struct TokenBase : public BaseDataStruct<6>
+{
+    int id = 0;
+    std::string startTime;
+    std::string value;
+    int userID   = 0;
+    int userRole = 0;
+    std::string userIp;
+
+    static std::string tableName;
+    static std::vector<data::Type> types;
+    static std::vector<std::string> columnNames;
+    static std::unordered_map<std::string, uint8_t> nameToNum;
+
+    void reset();
+};
+
+using Token = UpperDataStruct<TokenBase>;
+
 struct UserBase : public BaseDataStruct<11>
 {
     int id = 0;

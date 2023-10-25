@@ -9,22 +9,20 @@
 #include "file_data/file.hpp"
 #include "file_data/path.hpp"
 
-mult::ResultsManager mult::ResultsManager::mInstance;
+mod::ResultsManager mod::ResultsManager::mInstance;
 
-mult::ResultsManager::ResultsManager() noexcept
-    : ModuleBase("result", file::Value::Type::String)
+mod::ResultsManager::ResultsManager() noexcept : ModuleBase({"get_results"})
 {
 }
 
 std::string
-mult::ResultsManager::doAction() noexcept
+mod::ResultsManager::doAction(const Command& aCommand) noexcept
 {
-    static auto& command = core::VariableStorage::touchWord("result");
-    return getResults(command);
+    return getResults(aCommand.argument);
 }
 
 std::string
-mult::ResultsManager::getResults(const std::string aValue) noexcept
+mod::ResultsManager::getResults(const std::string aValue) noexcept
 {
     std::string results;
 

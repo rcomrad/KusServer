@@ -12,7 +12,7 @@
 #include "database/database_structures.hpp"
 
 #include "boost/optional.hpp"
-#include "core/module_base.hpp"
+#include "module/module_base.hpp"
 
 #include "user_data.hpp"
 
@@ -23,7 +23,7 @@ namespace serv
 
 using UserDataPtr = boost::optional<const UserData*>;
 
-class TokenHandler : public core::ModuleBase
+class TokenHandler : public mod::ModuleBase
 {
     //--------------------------------------------------------------------------------
 
@@ -35,7 +35,7 @@ public:
     static UserDataPtr process(const crow::request& aReq) noexcept;
 
 protected:
-    std::string doAction() noexcept override;
+    std::string doAction(const Command& aCommand) noexcept override;
 
 private:
     std::string generateNonstatic(const data::User& aUser,
@@ -45,7 +45,7 @@ private:
     //--------------------------------------------------------------------------------
 
 private:
-    static TokenHandler& mInstance;
+    static serv::TokenHandler& mInstance;
     TokenHandler() noexcept;
     static TokenHandler& getInstance() noexcept;
 
@@ -70,6 +70,8 @@ private:
     boost::optional<UserData&> getUserDataByToken(
         const std::string& aToken) noexcept;
     static std::string urlDedaction(const std::string& aUrl) noexcept;
+
+    void rearrangeTokenArray() noexcept;
 };
 
 } // namespace serv

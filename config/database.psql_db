@@ -124,7 +124,7 @@ TABLE competition_question
 TABLE answer
 	user_id integer NOT NULL
 	question_id integer NOT NULL
-	time character varying(20) NOT NULL
+	time timestamp NOT NULL
 	verdict character varying(1) NOT NULL
 	weight integer NOT NULL
 	value character varying(100) NOT NULL
@@ -145,3 +145,10 @@ TABLE field
 TABLE field_form
 	field_id integer NOT NULL
 	form_id integer NOT NULL
+
+TABLE token
+    start_time  timestamp NOT NULL
+    value character varying(25) NOT NULL
+    user_id integer NOT NULL
+    user_role integer NOT NULL
+    user_ip character varying(15) NOT NULL

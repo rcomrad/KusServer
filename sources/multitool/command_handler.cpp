@@ -8,39 +8,11 @@
 #include "file_data/file.hpp"
 #include "file_data/parser.hpp"
 #include "file_data/path.hpp"
+#include "module/module_handler.hpp"
 #include "server/request_unpacker.hpp"
 #include "server/token_handler.hpp"
 
 #include "dump_manager.hpp"
-
-std::unordered_map<std::string,
-                   std::function<std::string(const std::string& aValue)>>
-    mult::CommandHandler::mSpecialRoutes = {
-        {"restart",      [](const std::string& aValue)
-         { return applyCommand("clear", aValue); }},
-        {"kill",         [](const std::string& aValue)
-         { return applyCommand("core", "kill"); }    },
-        {"dump",
-         [](const std::string& aValue)
-         {
-             core::VariableStorage::setVariable("args", aValue, 0ms);
-             return applyCommand("dump", "dump");
-         }                                                           },
-        {"dump_as_file",
-         [](const std::string& aValue)
-         {
-             core::VariableStorage::setVariable("args", aValue, 0ms);
-             return applyCommand("dump", "dump_as_file");
-         }                                                           },
-        {"dump_as_html", [](const std::string& aValue)
-         {
-             core::VariableStorage::setVariable("args", aValue, 0ms);
-             return applyCommand("dump", "dump_as_html");
-         }                                   }
-};
-
-std::unordered_set<std::string> mult::CommandHandler::mLegaCommands = {
-    "token", "question", "result", "user=comp", "comp=question"};
 
 std::string
 mult::CommandHandler::process(const crow::request& aReq) noexcept
@@ -65,16 +37,13 @@ mult::CommandHandler::process(const crow::request& aReq) noexcept
 }
 
 std::string
-mult::CommandHandler::process(const std::string& aType,
-                              const std::string& aValue) noexcept
+mult::CommandHandler::process(const std::string& aCommand,
+                              const std::string& aArgument) noexcept
 {
     std::string res = "ERROR\nInvalid command!\n>:(\n";
-    auto it1        = mSpecialRoutes.find(aType);
-    if (it1 != mSpecialRoutes.end()) res = it1->second(aValue);
-    else
+    if (mod::ModuleHandler::hasCommand(aCommand))
     {
-        auto it2 = mLegaCommands.find(aType);
-        if (it2 != mLegaCommands.end()) res = applyCommand(aType, aValue);
+        res = mod::ModuleHandler::processCommand(aCommand, aArgument);
     }
     return res;
 }

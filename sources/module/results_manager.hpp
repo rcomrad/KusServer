@@ -5,16 +5,16 @@
 
 #include <string>
 
-#include "core/module_base.hpp"
+#include "module_base.hpp"
 
 //--------------------------------------------------------------------------------
 
-namespace mult
+namespace mod
 {
-class ResultsManager : public core::ModuleBase
+class ResultsManager : public ModuleBase
 {
 protected:
-    std::string doAction() noexcept override;
+    std::string doAction(const Command& aCommand) noexcept override;
 
 private:
     static ResultsManager mInstance;
@@ -22,7 +22,7 @@ private:
 
     static std::string getResults(const std::string aValue) noexcept;
 };
-} // namespace mult
+} // namespace mod
 
 //--------------------------------------------------------------------------------
 

@@ -5,16 +5,16 @@
 
 #include <string>
 
-#include "core/module_base.hpp"
+#include "module_base.hpp"
 
 //--------------------------------------------------------------------------------
 
-namespace mult
+namespace mod
 {
-class QuestionManager : public core::ModuleBase
+class QuestionManager : public ModuleBase
 {
 protected:
-    std::string doAction() noexcept override;
+    std::string doAction(const Command& aComman) noexcept override;
 
 private:
     static QuestionManager mInstance;
@@ -23,7 +23,7 @@ private:
     static std::string loadQuestions() noexcept;
     static std::string retestQuestions() noexcept;
 };
-} // namespace mult
+} // namespace mod
 
 //--------------------------------------------------------------------------------
 

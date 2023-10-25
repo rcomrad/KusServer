@@ -8,13 +8,13 @@
 #include <string>
 #include <vector>
 
-#include "core/module_base.hpp"
+#include "module/module_base.hpp"
 
 //--------------------------------------------------------------------------------
 
 namespace mult
 {
-class DumpManager : public core::ModuleBase
+class DumpManager : public mod::ModuleBase
 {
 public:
     static std::string process(const crow::request& aReq) noexcept;
@@ -23,7 +23,7 @@ public:
                                 const std::string& aArgs) noexcept;
 
 protected:
-    std::string doAction() noexcept override;
+    std::string doAction(const Command& aCommand) noexcept override;
 
 private:
     static DumpManager mInstance;

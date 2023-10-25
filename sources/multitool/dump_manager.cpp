@@ -14,7 +14,7 @@
 mult::DumpManager mult::DumpManager::mInstance;
 
 mult::DumpManager::DumpManager() noexcept
-    : ModuleBase("dump", file::Value::Type::String)
+    : ModuleBase({"dump", "dump_as_file", "dump_as_html"})
 {
 }
 
@@ -67,11 +67,9 @@ mult::DumpManager::makeDump(const std::string& aCommand,
 //--------------------------------------------------------------------------------
 
 std::string
-mult::DumpManager::doAction() noexcept
+mult::DumpManager::doAction(const Command& aCommand) noexcept
 {
-    static auto& command = core::VariableStorage::touchWord("dump");
-    static auto& args    = core::VariableStorage::touchWord("args");
-    return privateProcess(command, args);
+    return privateProcess(aCommand.value, aCommand.argument);
 }
 
 std::string

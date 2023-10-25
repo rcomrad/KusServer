@@ -10,13 +10,13 @@
 
 #include "domain/holy_trinity.hpp"
 
-#include "module_base.hpp"
+#include "module/module_base.hpp"
 
 //--------------------------------------------------------------------------------
 
 namespace core
 {
-class Core : public ModuleBase
+class Core : public mod::ModuleBase
 {
 public:
     HOLY_TRINITY_SINGLE(Core);
@@ -25,7 +25,7 @@ public:
     void run() noexcept;
 
 protected:
-    std::string doAction() noexcept override;
+    std::string doAction(const Command& aCommand) noexcept override;
 
 private:
     Core() noexcept;

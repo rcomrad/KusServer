@@ -86,6 +86,14 @@ dom::DateAndTime::getDateStr(const boost::gregorian::date& aDate) noexcept
            std::to_string(day);
 }
 
+// bool
+// dom::DateAndTime::curentTimeAssert(
+//     const std::string& aTime,
+//     const boost::posix_time::time_duration& aDuration) noexcept
+// {
+//     return curentTimeAssert(aTime, aDuration);
+// }
+
 bool
 dom::DateAndTime::curentTimeAssert(
     const boost::posix_time::ptime& aTime,

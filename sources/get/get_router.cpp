@@ -1,40 +1,39 @@
 #include "get_router.hpp"
 
-// #include "competition_handler.hpp"
-#include "competition_question_handler.hpp"
 #include "form_handler.hpp"
 #include "get_handler.hpp"
 #include "question_handler.hpp"
 #include "user_handler.hpp"
 
 std::unordered_map<std::string, decltype(&get::GetHandler::process<data::Dummy>)> get::GetRouter::mBasicRouter = {
-    {"answer",               &get::GetHandler::process<data::Answer>            },
-    {"competition",          &get::GetHandler::process<data::Competition>       },
-    {"competition_problem",  &get::GetHandler::process<data::CompetitionProblem>},
-    {"competition_question", &get::CompetitionQuestionHandler::process          },
-    {"competition_user",     &get::GetHandler::process<data::CompetitionUser>   },
-    {"dummy",                &get::GetHandler::process<data::Dummy>             },
-    {"field",                &get::GetHandler::process<data::Field>             },
-    {"field_form",           &get::GetHandler::process<data::FieldForm>         },
-    {"file",                 &get::GetHandler::process<data::File>              },
-    {"form",                 &get::FormHandler::process                         },
-    {"grade",                &get::GetHandler::process<data::Grade>             },
-    {"grade_student",        &get::GetHandler::process<data::GradeStudent>      },
-    {"holiday",              &get::GetHandler::process<data::Holiday>           },
-    {"journal_table",        &get::GetHandler::process<data::JournalTable>      },
-    {"lesson",               &get::GetHandler::process<data::Lesson>            },
-    {"mark",                 &get::GetHandler::process<data::Mark>              },
-    {"plan",                 &get::GetHandler::process<data::Plan>              },
-    {"problem",              &get::GetHandler::process<data::Problem>           },
-    {"question",             &get::GetHandler::process<data::Question>          },
-    {"role",                 &get::GetHandler::process<data::Role>              },
-    {"safe_file",            &get::GetHandler::process<data::SafeFile>          },
-    {"school",               &get::GetHandler::process<data::School>            },
-    {"subject",              &get::GetHandler::process<data::Subject>           },
-    {"submission",           &get::GetHandler::process<data::Submission>        },
-    {"theme",                &get::GetHandler::process<data::Theme>             },
-    {"user",                 &get::UserHandler::process                         },
-    {"user_registration",    &get::GetHandler::process<data::UserRegistration>  }
+    {"answer",               &get::GetHandler::process<data::Answer>             },
+    {"competition",          &get::GetHandler::process<data::Competition>        },
+    {"competition_problem",  &get::GetHandler::process<data::CompetitionProblem> },
+    {"competition_question", &get::GetHandler::process<data::CompetitionQuestion>},
+    {"competition_user",     &get::GetHandler::process<data::CompetitionUser>    },
+    {"dummy",                &get::GetHandler::process<data::Dummy>              },
+    {"field",                &get::GetHandler::process<data::Field>              },
+    {"field_form",           &get::GetHandler::process<data::FieldForm>          },
+    {"file",                 &get::GetHandler::process<data::File>               },
+    {"form",                 &get::FormHandler::process                          },
+    {"grade",                &get::GetHandler::process<data::Grade>              },
+    {"grade_student",        &get::GetHandler::process<data::GradeStudent>       },
+    {"holiday",              &get::GetHandler::process<data::Holiday>            },
+    {"journal_table",        &get::GetHandler::process<data::JournalTable>       },
+    {"lesson",               &get::GetHandler::process<data::Lesson>             },
+    {"mark",                 &get::GetHandler::process<data::Mark>               },
+    {"plan",                 &get::GetHandler::process<data::Plan>               },
+    {"problem",              &get::GetHandler::process<data::Problem>            },
+    {"question",             &get::GetHandler::process<data::Question>           },
+    {"role",                 &get::GetHandler::process<data::Role>               },
+    {"safe_file",            &get::GetHandler::process<data::SafeFile>           },
+    {"school",               &get::GetHandler::process<data::School>             },
+    {"subject",              &get::GetHandler::process<data::Subject>            },
+    {"submission",           &get::GetHandler::process<data::Submission>         },
+    {"theme",                &get::GetHandler::process<data::Theme>              },
+    {"token",                &get::GetHandler::process<data::Token>              },
+    {"user",                 &get::UserHandler::process                          },
+    {"user_registration",    &get::GetHandler::process<data::UserRegistration>   }
 };
 
 std::unordered_map<std::string, decltype(&get::GetHandler::dump<data::Dummy>)> get::GetRouter::mDumpRouter = {
@@ -63,6 +62,7 @@ std::unordered_map<std::string, decltype(&get::GetHandler::dump<data::Dummy>)> g
     {"subject",              &get::GetHandler::dump<data::Subject>            },
     {"submission",           &get::GetHandler::dump<data::Submission>         },
     {"theme",                &get::GetHandler::dump<data::Theme>              },
+    {"token",                &get::GetHandler::dump<data::Token>              },
     {"user",                 &get::GetHandler::dump<data::User>               },
     {"user_registration",    &get::GetHandler::dump<data::UserRegistration>   }
 };
@@ -93,6 +93,7 @@ std::unordered_map<std::string, std::vector<std::string>> get::GetRouter::mColum
     {"subject",              data::Subject::columnNames            },
     {"submission",           data::Submission::columnNames         },
     {"theme",                data::Theme::columnNames              },
+    {"token",                data::Token::columnNames              },
     {"user",                 data::User::columnNames               },
     {"user_registration",    data::UserRegistration::columnNames   }
 };

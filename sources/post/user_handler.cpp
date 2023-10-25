@@ -10,6 +10,7 @@
 #include "database/safe_sql_wrapper.hpp"
 
 #include "core/role.hpp"
+#include "core/variable_storage.hpp"
 #include "file_data/file.hpp"
 #include "file_data/parser.hpp"
 #include "file_data/path.hpp"
@@ -62,8 +63,9 @@ post::UserHandler::rawDataHandler(data::RawData& aData) noexcept
 crow::response
 post::UserHandler::autorisation(const crow::request& aReq) noexcept
 {
-    auto x    = crow::json::load(aReq.body);
-    auto resp = crow::response(400);
+    auto addTokenFlag = core::VariableStorage::touchFlag("insert_tokens", true);
+    auto x            = crow::json::load(aReq.body);
+    auto resp         = crow::response(400);
     if (x)
     {
         // data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
@@ -98,8 +100,11 @@ post::UserHandler::autorisation(const crow::request& aReq) noexcept
             uJson["user"] =
                 user.getAsJson({"password", "role_id", "last_login"});
 
-            uJson["user"]["token"] =
-                serv::TokenHandler::generate(user, aReq.remote_ip_address);
+            if (addTokenFlag)
+            {
+                uJson["user"]["token"] =
+                    serv::TokenHandler::generate(user, aReq.remote_ip_address);
+            }
 
             auto roles = core::Role::getInstance().getRoles(user.roleID);
             crow::json::wvalue::list roleList;

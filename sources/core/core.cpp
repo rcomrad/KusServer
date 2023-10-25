@@ -4,6 +4,7 @@
 #include "core/variable_storage.hpp"
 #include "file_data/file.hpp"
 #include "file_data/path.hpp"
+#include "module/module_handler.hpp"
 #include "multitool/command_handler.hpp"
 #include "post/journal_handler.hpp"
 #include "post/plan_handler.hpp"
@@ -11,16 +12,13 @@
 #include "server/server.hpp"
 #include "tester/tester.hpp"
 
-#include "module_base.hpp"
-#include "populate.hpp"
 #include "role.hpp"
 #include "submission_queue.hpp"
 #include "variable_storage.hpp"
 
 //--------------------------------------------------------------------------------
 
-core::Core::Core() noexcept
-    : ModuleBase("core", file::Value::Type::String), mKillFlag(false)
+core::Core::Core() noexcept : ModuleBase({"kill"}), mKillFlag(false)
 {
     code::CodeGenerator cg;
     cg.makeAll();
@@ -46,33 +44,19 @@ core::Core::getInstance() noexcept
 void
 core::Core::run() noexcept
 {
-    // core::VariableStorage::setVariable("core", "start", 0ms);
     start();
-
-    for (int i = 0; i < 5; ++i)
-    {
-        ModuleBase::process();
-        VariableStorage::setVariable("executed_command"s, ""s, 0ms);
-        VariableStorage::setVariable("command_result"s, ""s, 0ms);
-    }
-
     while (!mKillFlag)
     {
-        ModuleBase::process();
+        mod::ModuleHandler::run();
     }
 }
 
 std::string
-core::Core::doAction() noexcept
+core::Core::doAction(const Command& aCommand) noexcept
 {
-    static auto& command = VariableStorage::touchWord("core");
-
     std::string res;
-    if (command == "start")
-    {
-        start();
-    }
-    else if (command == "kill")
+
+    if (aCommand.value == "kill")
     {
         res       = "You're monster!";
         mKillFlag = true;
@@ -91,7 +75,7 @@ core::Core::start() noexcept
         mApps["tester"] = std::move(std::thread(&Core::testerThread, this));
 
     auto restartState = VariableStorage::touchWord("restart_on_start");
-    if (!restartState.empty())
+    if (restartState != "nun")
     {
         mApps["restart"] =
             std::move(std::thread(static_cast<std::string (*)(
@@ -100,9 +84,6 @@ core::Core::start() noexcept
                                   "restart", restartState));
         // temp.join();
     }
-
-    VariableStorage::setVariable("executed_command"s, ""s, 0ms);
-    VariableStorage::setVariable("command_result"s, ""s, 0ms);
 }
 
 void

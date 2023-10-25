@@ -550,6 +550,32 @@ data::ThemeBase::reset()
     ptrs[3] = (void*)(&hourCount);
 }
 
+std::string data::TokenBase::tableName         = {"token"};
+std::vector<data::Type> data::TokenBase::types = {
+    data::Type::INT, data::Type::STRING, data::Type::STRING,
+    data::Type::INT, data::Type::INT,    data::Type::STRING};
+std::vector<std::string> data::TokenBase::columnNames = {
+    "id", "start_time", "value", "user_id", "user_role", "user_ip"};
+std::unordered_map<std::string, uint8_t> data::TokenBase::nameToNum = {
+    {"id",         0},
+    {"start_time", 1},
+    {"value",      2},
+    {"user_id",    3},
+    {"user_role",  4},
+    {"user_ip",    5}
+};
+
+void
+data::TokenBase::reset()
+{
+    ptrs[0] = (void*)(&id);
+    ptrs[1] = (void*)(&startTime);
+    ptrs[2] = (void*)(&value);
+    ptrs[3] = (void*)(&userID);
+    ptrs[4] = (void*)(&userRole);
+    ptrs[5] = (void*)(&userIp);
+}
+
 std::string data::UserBase::tableName         = {"user"};
 std::vector<data::Type> data::UserBase::types = {
     data::Type::INT,    data::Type::STRING, data::Type::STRING,

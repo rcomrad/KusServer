@@ -7,24 +7,21 @@
 #include "file_data/parser.hpp"
 #include "file_data/path.hpp"
 
-mult::QuestionManager mult::QuestionManager::mInstance;
+mod::QuestionManager mod::QuestionManager::mInstance;
 
-mult::QuestionManager::QuestionManager() noexcept
-    : ModuleBase("question", file::Value::Type::String)
+mod::QuestionManager::QuestionManager() noexcept : ModuleBase({"question"})
 {
 }
 
 std::string
-mult::QuestionManager::doAction() noexcept
+mod::QuestionManager::doAction(const Command& aComman) noexcept
 {
-    static auto& command = core::VariableStorage::touchWord("question");
-
     std::string result = "ERROR: no such command!";
-    if (command == "load")
+    if (aComman.argument == "load")
     {
         result = loadQuestions();
     }
-    else if (command == "retest")
+    else if (aComman.argument == "retest")
     {
         result = retestQuestions();
     }
@@ -32,7 +29,7 @@ mult::QuestionManager::doAction() noexcept
 }
 
 std::string
-mult::QuestionManager::loadQuestions() noexcept
+mod::QuestionManager::loadQuestions() noexcept
 {
     auto connection = data::ConnectionManager::getUserConnection();
     // connection.val.drop("question", "id > 0");
@@ -72,7 +69,7 @@ mult::QuestionManager::loadQuestions() noexcept
 }
 #include "domain/cyrillic.hpp"
 std::string
-mult::QuestionManager::retestQuestions() noexcept
+mod::QuestionManager::retestQuestions() noexcept
 {
     auto connection = data::ConnectionManager::getUserConnection();
     auto temp       = connection.val.getDataArray<data::Question>();

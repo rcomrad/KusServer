@@ -32,6 +32,7 @@ std::unordered_map<std::string, decltype(&post::PostHandler::postSubrouter<post:
     {"subject",              &post::PostHandler::postSubrouter<post::PostHandler,    data::Subject>            },
     {"submission",           &post::PostHandler::postSubrouter<post::PostHandler,    data::Submission>         },
     {"theme",                &post::PostHandler::postSubrouter<post::PostHandler,    data::Theme>              },
+    {"token",                &post::PostHandler::postSubrouter<post::PostHandler,    data::Token>              },
     {"user",                 &post::PostHandler::postSubrouter<post::UserHandler,    data::User>               },
     {"user_registration",    &post::PostHandler::postSubrouter<post::PostHandler,    data::UserRegistration>   }
 };
@@ -62,6 +63,7 @@ std::unordered_map<std::string, decltype(&post::PostHandler::drop<data::Dummy>)>
     {"subject",              &post::PostHandler::drop<data::Subject>            },
     {"submission",           &post::PostHandler::drop<data::Submission>         },
     {"theme",                &post::PostHandler::drop<data::Theme>              },
+    {"token",                &post::PostHandler::drop<data::Token>              },
     {"user",                 &post::PostHandler::drop<data::User>               },
     {"user_registration",    &post::PostHandler::drop<data::UserRegistration>   }
 };
@@ -92,6 +94,7 @@ std::unordered_map<std::string, decltype(&post::PostHandler::rawDataHandler<data
     {"subject",              &post::PostHandler::rawDataHandler<data::Subject>            },
     {"submission",           &post::PostHandler::rawDataHandler<data::Submission>         },
     {"theme",                &post::PostHandler::rawDataHandler<data::Theme>              },
+    {"token",                &post::PostHandler::rawDataHandler<data::Token>              },
     {"user",                 &post::UserHandler::rawDataHandler                           },
     {"user_registration",    &post::PostHandler::rawDataHandler<data::UserRegistration>   }
 };

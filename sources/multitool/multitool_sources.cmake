@@ -15,13 +15,4 @@ set(
 
     multitool_router.cpp
     multitool_router.hpp
-
-    participant_manager.cpp
-    participant_manager.hpp
-
-    question_manager.cpp
-    question_manager.hpp
-
-    results_manager.cpp
-    results_manager.hpp
 )
