@@ -22,6 +22,8 @@ public:
         int num;
         std::string value;
         std::string argument;
+
+        Command(int a, const std::string& b, const std::string& c);
     };
     virtual std::string doAction(const Command& aCommand) noexcept = 0;
 
