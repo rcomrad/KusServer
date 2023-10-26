@@ -27,11 +27,13 @@ serv::TokenHandler::TokenHandler() noexcept
       //       core::VariableStorage::touchFlag("token_isMemory")),
       mIsActive(false),
       mAuthorizationMemorise(false),
-      mTokenIterator(1)
+      mTokenIterator(1),
+      mTokenCount(100)
 {
-    auto size = core::VariableStorage::touchInt("token_size", 100);
-    size      = std::max(size, 10);
-    mTokens.resize(size);
+    auto size   = core::VariableStorage::touchInt("token_size", 100);
+    mTokenCount = std::max(size, mTokenCount);
+    mTokens.resize(mTokenCount);
+    // rearrangeTokenArray();
 
     std::vector<int> lifespan = {24, 0, 0};
     auto lifespanInput =
@@ -102,6 +104,15 @@ serv::TokenHandler::generateNonstatic(const data::User& aUser,
     user.role       = aUser.roleID;
     user.password =
         PassGenerator::generate() + "=" + dom::toString(mTokenIterator);
+
+    // auto connection = data::ConnectionManager::getUserConnection();
+    // data::Token token;
+    // token.userID    = user.id;
+    // token.userIp    = user.ip;
+    // token.startTime = dom::DateAndTime::getDateStr(user.time);
+    // token.userRole  = user.role;
+    // token.value     = user.password;
+    // connection.val.write(token);
 
     return user.password;
 }
@@ -294,16 +305,29 @@ serv::TokenHandler::getUserDataByToken(const std::string& aToken) noexcept
 {
     boost::optional<UserData&> result;
 
-    int num = 0;
-    for (int i = aToken.size() - 1; i >= 0 && std::isdigit(aToken[i]); --i)
-    {
-        num *= 10;
-        num += aToken[i] - '0';
-    }
-
-    if (num > 0 && num < mTokens.size())
+    int num = getUserNum(aToken);
+    if (num > 0)
     {
         result = mTokens[num];
+    }
+
+    return result;
+}
+
+int
+serv::TokenHandler::getUserNum(const std::string& aToken) noexcept
+{
+    int result = 0;
+
+    for (int i = aToken.size() - 1; i >= 0 && std::isdigit(aToken[i]); --i)
+    {
+        result *= 10;
+        result += aToken[i] - '0';
+    }
+
+    if (result > 0 && result < mTokens.size())
+    {
+        result = 0;
     }
 
     return result;
@@ -333,12 +357,29 @@ serv::TokenHandler::urlDedaction(const std::string& aUrl) noexcept
 void
 serv::TokenHandler::rearrangeTokenArray() noexcept
 {
+    mTokens.resize(mTokenCount);
+    // std::vector<bool> inUse(mTokenCount, false);
+
     auto connection = data::ConnectionManager::getUserConnection();
     auto tokens     = connection.val.getDataArray<data::Token>();
-    int delID       = 0;
+    std::vector<int> toDrop;
     for (auto& i : tokens)
     {
-        // if (dom::DateAndTime::curentTimeAssert(i.startTime, mTokenLifespan))
-        //     delID = i.id;
+        if (dom::DateAndTime::curentTimeAssert(i.startTime, mTokenLifespan))
+        {
+            toDrop.emplace_back(i.id);
+        }
+        else
+        {
+            int num = getUserNum(i.value);
+            // inUse[num] = true;
+
+            mTokens[num].id       = i.userID;
+            mTokens[num].role     = i.userRole;
+            mTokens[num].ip       = i.userIp;
+            mTokens[num].password = i.value;
+            mTokens[num].time     = dom::DateAndTime::getTime(i.startTime);
+        }
     }
+    connection.val.dropByID("token", toDrop);
 }

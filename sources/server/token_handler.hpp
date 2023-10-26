@@ -55,6 +55,7 @@ private:
     std::mutex mTokenGenerationMutex;
     boost::posix_time::time_duration mTokenLifespan;
     int mTokenIterator;
+    int mTokenCount;
     std::vector<UserData> mTokens;
     std::unordered_map<std::string, int> mAutorisation;
 
@@ -69,6 +70,7 @@ private:
 
     boost::optional<UserData&> getUserDataByToken(
         const std::string& aToken) noexcept;
+    int getUserNum(const std::string& aToken) noexcept;
     static std::string urlDedaction(const std::string& aUrl) noexcept;
 
     void rearrangeTokenArray() noexcept;
