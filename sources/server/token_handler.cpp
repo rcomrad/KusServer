@@ -25,15 +25,15 @@ serv::TokenHandler::TokenHandler() noexcept
       //   mIsActive(core::VariableStorage::touchFlag("token_isActive")),
       //   mAuthorizationMemorise(
       //       core::VariableStorage::touchFlag("token_isMemory")),
-      mIsActive(false),
-      mAuthorizationMemorise(false),
+      mIsActive(core::VariableStorage::touchFlag("token:isActive", false)),
+      mAuthorizationMemorise(
+          core::VariableStorage::touchFlag("token:isMemory", false)),
       mTokenIterator(1),
       mTokenCount(100)
 {
     auto size   = core::VariableStorage::touchInt("token_size", 100);
     mTokenCount = std::max(size, mTokenCount);
-    mTokens.resize(mTokenCount);
-    // rearrangeTokenArray();
+    rearrangeTokenArray();
 
     std::vector<int> lifespan = {24, 0, 0};
     auto lifespanInput =
@@ -53,9 +53,9 @@ serv::TokenHandler::TokenHandler() noexcept
         mAutorisation[i[0]] = std::stoi(i[1]);
     }
 
-    mTokens[0].id    = 0;
-    mTokens[0].role  = 0;
-    mTokens[0].inUse = true;
+    mod::ModuleBase::Command aCommand(
+        0, "token", core::VariableStorage::touchWord("token", "turn_off"));
+    doAction(aCommand);
 }
 
 serv::TokenHandler&
@@ -88,31 +88,45 @@ serv::TokenHandler::generateNonstatic(const data::User& aUser,
 {
     std::string result;
 
-    mTokenGenerationMutex.lock();
-    if (++mTokenIterator == mTokens.size())
+    auto connection = data::ConnectionManager::getUserConnection();
+    auto token =
+        connection.val.getData<data::Token>("user_id=" + data::wrap(aUser.id));
+
+    int num = 0;
+    if (token.id)
     {
-        mTokenIterator = 1;
+        num = getUserNum(token.value);
     }
-    mTokenGenerationMutex.unlock();
+    else
+    {
+        mTokenGenerationMutex.lock();
+        do
+        {
+            if (++mTokenIterator == mTokens.size())
+            {
+                rearrangeTokenArray();
+            }
+        } while (mTokens[mTokenIterator].inUse);
+        num = mTokenIterator;
+        mTokenGenerationMutex.unlock();
 
-    auto& user      = mTokens[mTokenIterator];
+        token.userIp    = aIP;
+        token.userID    = aUser.id;
+        token.startTime = dom::DateAndTime::getCurentTime();
+        token.userRole  = aUser.roleID;
+        token.value =
+            PassGenerator::generate() + "=" + dom::toString(mTokenIterator);
+        connection.val.write(token);
+    }
+
+    auto& user      = mTokens[num];
     user.inUse      = true;
-    user.ip         = aIP;
-    user.id         = aUser.id;
-    user.time       = boost::posix_time::second_clock::local_time();
+    user.ip         = token.userIp;
+    user.id         = token.userID;
+    user.time       = dom::DateAndTime::getTime(token.startTime);
     user.falseLogin = 0;
-    user.role       = aUser.roleID;
-    user.password =
-        PassGenerator::generate() + "=" + dom::toString(mTokenIterator);
-
-    // auto connection = data::ConnectionManager::getUserConnection();
-    // data::Token token;
-    // token.userID    = user.id;
-    // token.userIp    = user.ip;
-    // token.startTime = dom::DateAndTime::getDateStr(user.time);
-    // token.userRole  = user.role;
-    // token.value     = user.password;
-    // connection.val.write(token);
+    user.role       = token.userRole;
+    user.password   = token.value;
 
     return user.password;
 }
@@ -123,14 +137,13 @@ serv::TokenHandler::processNonstatic(const crow::request& aReq) noexcept
     serv::UserDataPtr result;
 
     static std::unordered_set<std::string> withoutAuthentication = {
-        "/api/login",
-        "/api/registration",
-        "/api/get/if/competition",
-        "/api/get_question",
-        "/api/post/answer",
-        "/api/get/if/competition",
-        "/api/get/if/competition_user[competition_id[]]",
-        "/api/get/if/competition_question[question_id[id,name]]",
+        "/api/login", "/api/registration",
+        // "/api/get/if/competition",
+        // "/api/get_question",
+        // "/api/post/answer",
+        // "/api/get/if/competition",
+        // "/api/get/if/competition_user[competition_id[]]",
+        // "/api/get/if/competition_question[question_id[id,name]]",
     };
     auto url      = urlDedaction(aReq.raw_url);
     auto tokenOpt = RequestUnpacker::getToken(aReq);
@@ -159,21 +172,21 @@ serv::TokenHandler::doAction(const Command& aCommand) noexcept
     std::string res = "No token command applied.";
     if (aCommand.argument == "turn_off")
     {
-        res                    = "Tokens turned OFF!";
-        mIsActive              = false;
-        mAuthorizationMemorise = false;
+        res = "Tokens turned OFF!";
+        core::VariableStorage::setVariable("token:isActive", false);
+        core::VariableStorage::setVariable("token:isMemory", false);
     }
     else if (aCommand.argument == "turn_on")
     {
-        res                    = "Tokens turned ON!";
-        mIsActive              = true;
-        mAuthorizationMemorise = false;
+        res = "Tokens turned ON!";
+        core::VariableStorage::setVariable("token:isActive", true);
+        core::VariableStorage::setVariable("token:isMemory", false);
     }
     else if (aCommand.argument == "memory")
     {
-        res                    = "Start url-role memorization.";
-        mIsActive              = false;
-        mAuthorizationMemorise = true;
+        res = "Start url-role memorization.";
+        core::VariableStorage::setVariable("token:isActive", false);
+        core::VariableStorage::setVariable("token:isMemory", true);
     }
     else if (aCommand.argument == "print")
     {
@@ -242,36 +255,35 @@ serv::TokenHandler::check(const std::string& aToken,
 {
     serv::UserDataPtr result;
 
-    if (mIsActive)
+    auto userOpt = getUserDataByToken(aToken);
+    if (userOpt.has_value())
     {
-        auto userOpt = getUserDataByToken(aToken);
-        if (userOpt.has_value())
+        auto& user = userOpt.value();
+
+        // if (!dom::DateAndTime::curentTimeAssert(user.time,
+        // mTokenLifespan))
+        // {
+        //     user.inUse = false;
+        // }
+
+        if (user.inUse) // && user.ip == aIP)
         {
-            auto& user = userOpt.value();
-
-            if (!dom::DateAndTime::curentTimeAssert(user.time, mTokenLifespan))
+            auto it = mAutorisation.find(aURL);
+            if (it != mAutorisation.end() && it->second & user.role)
             {
-                user.inUse = false;
+                result = &user;
             }
-
-            if (user.inUse) // && user.ip == aIP)
-            {
-                auto it = mAutorisation.find(aURL);
-                if (it != mAutorisation.end() && it->second & user.role)
-                {
-                    result = &user;
-                }
-            }
-            // else
-            // {
-            //     if (++mTokens[num].falseLogin > 10)
-            //     {
-            //         mTokens[num].inUse = false;
-            //     }
-            // }
         }
+        // else
+        // {
+        //     if (++mTokens[num].falseLogin > 10)
+        //     {
+        //         mTokens[num].inUse = false;
+        //     }
+        // }
     }
-    else
+
+    if (!mIsActive && !result.has_value())
     {
         result = &mTokens[0];
     }
@@ -325,7 +337,7 @@ serv::TokenHandler::getUserNum(const std::string& aToken) noexcept
         result += aToken[i] - '0';
     }
 
-    if (result > 0 && result < mTokens.size())
+    if (result < 1 || result >= mTokens.size())
     {
         result = 0;
     }
@@ -358,18 +370,18 @@ void
 serv::TokenHandler::rearrangeTokenArray() noexcept
 {
     mTokens.resize(mTokenCount);
-    // std::vector<bool> inUse(mTokenCount, false);
+    for (auto& i : mTokens) i.inUse = false;
 
     auto connection = data::ConnectionManager::getUserConnection();
     auto tokens     = connection.val.getDataArray<data::Token>();
     std::vector<int> toDrop;
     for (auto& i : tokens)
     {
-        if (dom::DateAndTime::curentTimeAssert(i.startTime, mTokenLifespan))
-        {
-            toDrop.emplace_back(i.id);
-        }
-        else
+        // if (dom::DateAndTime::curentTimeAssert(i.startTime, mTokenLifespan))
+        // {
+        //     toDrop.emplace_back(i.id);
+        // }
+        // else
         {
             int num = getUserNum(i.value);
             // inUse[num] = true;
@@ -378,8 +390,15 @@ serv::TokenHandler::rearrangeTokenArray() noexcept
             mTokens[num].role     = i.userRole;
             mTokens[num].ip       = i.userIp;
             mTokens[num].password = i.value;
+            mTokens[num].inUse    = true;
             mTokens[num].time     = dom::DateAndTime::getTime(i.startTime);
         }
     }
     connection.val.dropByID("token", toDrop);
+
+    mTokenIterator = 1;
+
+    mTokens[0].id    = 0;
+    mTokens[0].role  = 0;
+    mTokens[0].inUse = true;
 }

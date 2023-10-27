@@ -19,6 +19,7 @@ public:
     static boost::posix_time::ptime getTime(const std::string& aTime) noexcept;
 
     static std::string getDateStr(const boost::gregorian::date& aDate) noexcept;
+    static std::string toStr(const boost::posix_time::ptime& aTime) noexcept;
     static bool curentTimeAssert(
         const std::string& aTime,
         const boost::posix_time::time_duration& aDuration) noexcept;

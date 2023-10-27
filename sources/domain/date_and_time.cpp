@@ -86,6 +86,26 @@ dom::DateAndTime::getDateStr(const boost::gregorian::date& aDate) noexcept
            std::to_string(day);
 }
 
+std::string
+dom::DateAndTime::toStr(const boost::posix_time::ptime& aTime) noexcept
+{
+    std::string dateTime;
+
+    dateTime += std::to_string(aTime.date().year()) + "-";
+    if (aTime.date().month() < 10) dateTime += "0";
+    dateTime += std::to_string(aTime.date().month()) + "-";
+    if (aTime.date().day() < 10) dateTime += "0";
+    dateTime += std::to_string(aTime.date().day()) + " ";
+
+    if (aTime.time_of_day().hours() < 10) dateTime += "0";
+    dateTime += std::to_string(aTime.time_of_day().hours()) + ":";
+    if (aTime.time_of_day().minutes() < 10) dateTime += "0";
+    dateTime += std::to_string(aTime.time_of_day().minutes()) + ":";
+    if (aTime.time_of_day().seconds() < 10) dateTime += "0";
+    dateTime += std::to_string(aTime.time_of_day().seconds());
+    return dateTime;
+}
+
 bool
 dom::DateAndTime::curentTimeAssert(
     const std::string& aTime,

@@ -36,6 +36,8 @@ private:
         const std::vector<std::string>& aTableNames = {}) noexcept;
     static std::optional<std::string> dumpAsFile(
         const std::vector<std::string>& aTableNames = {}) noexcept;
+    static std::string dumpAsHTML(
+        const std::vector<std::string>& aTableNames = {}) noexcept;
 
     static std::vector<std::string> getDatabaseTableNames() noexcept;
 };

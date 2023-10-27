@@ -7,9 +7,9 @@ serv::PassGenerator::PassGenerator() noexcept
     mAlphabet = "0123456789"
                 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 "abcdefghijklmnopqrstuvwxyz"
-                "!\"#$%&\'()*+,-./:;<>?@[\\]^_`{|}~";
+                "!#$%&()*+,./:<>?@[\\]^_`{|}~";
 
-    mRandGenerator.seed(0);
+    mRandGenerator.seed(time(NULL));
     mDistribution = std::move(
         std::uniform_int_distribution<uint32_t>(0, mAlphabet.size() - 1));
 }

@@ -49,8 +49,8 @@ private:
     TokenHandler() noexcept;
     static TokenHandler& getInstance() noexcept;
 
-    bool mIsActive;
-    bool mAuthorizationMemorise;
+    const bool& mIsActive;
+    const bool& mAuthorizationMemorise;
 
     std::mutex mTokenGenerationMutex;
     boost::posix_time::time_duration mTokenLifespan;

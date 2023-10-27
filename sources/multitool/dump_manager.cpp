@@ -92,7 +92,7 @@ mult::DumpManager::privateProcess(const std::string& aCommand,
     else if (aCommand == "dump_as_html")
     {
         // TODO:
-        result = "HTML dump doesn't ready!";
+        result = dumpAsHTML(processedArgs);
     }
 
     return result;
@@ -129,6 +129,21 @@ mult::DumpManager::dumpAsFile(
 
     if (!path.has_value()) dom::writeError("Can't create file in dump folder");
     return path;
+}
+
+std::string
+mult::DumpManager::dumpAsHTML(
+    const std::vector<std::string>& aTableNames) noexcept
+{
+    auto data = dumpAsString(aTableNames);
+
+    std::string res;
+    for (auto i : data)
+    {
+        res += i;
+        if (i == '\n') res += "<br>";
+    }
+    return res;
 }
 
 //--------------------------------------------------------------------------------
