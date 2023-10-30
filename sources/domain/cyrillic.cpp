@@ -23,6 +23,7 @@ dom::Cyrilic::standardProcedure(std::wstring& aStr) noexcept
     dom::Cyrilic::global.destroyBadCharacters(aStr);
     dom::Cyrilic::global.toUpper(aStr);
     dom::Cyrilic::global.destroyWhiteSpaces(aStr, true);
+    dom::Cyrilic::global.cutOffEnding(aStr);
 }
 
 void
@@ -57,16 +58,20 @@ dom::Cyrilic::toUpper(std::wstring& aStr) noexcept
 {
     for (auto& i : aStr)
     {
-        if (i >= L'а' && i <= L'я' || i == L'ё')
+        // TODO:
+        //  int g1 = i;
+        //  int g2 = std::wstring{L"а"}[0];
+        //  int g3 = L'я';
+        if (i >= 1072 && i <= 1103 || i == 1105)
         {
-            if (i == L'ё')
+            if (i == 1105)
             {
-                i = L'Ё';
+                i = 1025;
             }
             else
             {
-                i -= L'а';
-                i += L'А';
+                i -= 1072;
+                i += 1040;
             }
         }
         else if (i >= L'a' && i <= L'z')
@@ -114,21 +119,21 @@ dom::Cyrilic::destroyBadCharacters(std::wstring& aStr) noexcept
 {
     for (auto& i : aStr)
     {
-        if (i == L'ё')
+        if (i == 1105)
         {
-            i = L'е';
+            i = 1077;
         }
-        else if (i == L'Ё')
+        else if (i == 1025)
         {
-            i = L'Е';
+            i = 1045;
         }
-        else if (i == L'й')
+        else if (i == 1081)
         {
-            i = L'и';
+            i = 1080;
         }
-        else if (i == L'Й')
+        else if (i == 1049)
         {
-            i = L'И';
+            i = 1048;
         }
         else if (i == L'A')
         {
@@ -204,23 +209,28 @@ dom::Cyrilic::destroyWhiteSpaces(std::wstring& aStr, bool flag) noexcept
 }
 
 //--------------------------------------------------------------------------------
-
+using namespace std::string_literals;
 void
 dom::Cyrilic::cutOffEnding(std::wstring& aStr) noexcept
 {
     if (aStr.size() < 5) return;
 
-    if (aStr == L"геометрическая")
+    // TODO:
+    auto ggrr = toWString("ножницы"s);
+    if (aStr == ggrr)
     {
         int yy = 0;
         ++yy;
     }
 
-    std::vector<std::wstring> endings = {L"ой", L"ая", L"ое", L"ые"};
+    std::vector<std::wstring> endings = {toWString("ой "s), toWString("ая "s),
+                                         toWString("ое "s), toWString("ые "s),
+                                         toWString("ы "s),  toWString("и "s),
+                                         toWString("а "s),  toWString("ия "s)};
     aStr.push_back(L' ');
     for (auto& i : endings)
     {
-        destroyWord(aStr, i + L" ");
+        destroyWord(aStr, i);
     }
     if (aStr.back() == L' ') aStr.pop_back();
 }

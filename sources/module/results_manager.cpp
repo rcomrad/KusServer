@@ -59,6 +59,7 @@ mod::ResultsManager::getResults(const std::string aValue) noexcept
             if (answer.id)
             {
                 results += std::to_string(answer.weight);
+                // results += "(" + answer.value + "/" + q.juryAnswer + ")";
             }
             results += ";";
 
@@ -68,9 +69,9 @@ mod::ResultsManager::getResults(const std::string aValue) noexcept
         results += "\n";
     }
 
-    file::File::writeData(
-        "print", "results" + dom::DateAndTime::getCurentTimeSafe() + ".txt",
-        results);
+    std::string outputName =
+        "results" + dom::DateAndTime::getCurentTimeSafe() + ".txt";
+    file::File::writeData("print", outputName, results);
 
-    return dom::UrlWrapper::toSite("print/results.txt");
+    return dom::UrlWrapper::toSite("print/" + outputName);
 }

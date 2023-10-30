@@ -16,7 +16,7 @@ struct AnswerBase : public BaseDataStruct<7>
     int questionID = 0;
     std::string time;
     std::string verdict;
-    int weight = 0;
+    float weight;
     std::string value;
 
     static std::string tableName;
@@ -329,7 +329,7 @@ struct QuestionBase : public BaseDataStruct<6>
     std::string name;
     std::string nickname;
     std::string type;
-    int weight = 0;
+    float weight;
     std::string juryAnswer;
 
     static std::string tableName;

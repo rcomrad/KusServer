@@ -18,6 +18,7 @@ code::CodeGenerator::getTableData() noexcept
         {"text",      "std::string"},
         {"integer",   "int"        },
         {"smallint",  "int"        },
+        {"real",      "float"      },
         {"boolean",   "char"       },
         {"date",      "std::string"},
         {"timestamp", "std::string"}
@@ -73,7 +74,8 @@ code::CodeGenerator::makeDatabaseStructure() noexcept
     std::unordered_map<std::string, std::string> typeToDataType = {
         {"std::string", "data::Type::STRING"},
         {"int",         "data::Type::INT"   },
-        {"char",        "data::Type::BOOL"  }
+        {"char",        "data::Type::BOOL"  },
+        {"float",        "data::Type::FLOAT"  }
     };
     for (auto& i : mTables)
     {

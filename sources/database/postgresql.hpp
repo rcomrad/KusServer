@@ -136,6 +136,10 @@ public:
                             *((std::string*)result.ptrs[i]) =
                                 getColumnAsStringUnsafe(aOffset);
                             break;
+                        case data::Type::FLOAT:
+                            *((float*)result.ptrs[i]) =
+                                getColumnFloatUnsafe(aOffset);
+                            break;
                     }
 
                     ++aOffset;
@@ -172,6 +176,7 @@ public:
     std::optional<std::string> getColumnAsString(int aColumNumber) noexcept;
 
     int getColumnIntUnsafe(int aColumNumber) noexcept;
+    float getColumnFloatUnsafe(int aColumNumber) noexcept;
     bool getColumnBoolUnsafe(int aColumNumber) noexcept;
     const char* getColumnAsCharsUnsafe(int aColumNumber) noexcept;
     std::string getColumnAsStringUnsafe(int aColumNumber) noexcept;

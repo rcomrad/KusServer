@@ -24,6 +24,7 @@ enum class Type
 {
     NUN,
     INT,
+    FLOAT,
     BOOL,
     CHARS,
     STRING
@@ -178,6 +179,10 @@ struct UpperDataStruct : public T
                     if (!((std::string*)T::ptrs[i])->empty())
                         result[T::columnNames[i]] = *(std::string*)T::ptrs[i];
                     break;
+                case data::Type::FLOAT:
+                    if (*(float*)T::ptrs[i] != 0)
+                        result[T::columnNames[i]] = *(float*)T::ptrs[i];
+                    break;
             }
         }
         return result;
@@ -200,6 +205,9 @@ struct UpperDataStruct : public T
                         break;
                     case data::Type::STRING:
                         *(std::string*)T::ptrs[it->second] = i.s();
+                        break;
+                    case data::Type::FLOAT:
+                        *(float*)T::ptrs[it->second] = i.d();
                         break;
                 }
             }
@@ -258,6 +266,9 @@ protected:
                 if (!((std::string*)aPtr)->empty())
                     result = StrClass::convert(*((std::string*)aPtr));
                 break;
+            case data::Type::FLOAT:
+                if (*((float*)aPtr) != 0)
+                    result = StrClass::convert(*((float*)aPtr));
         }
         return result;
     }
@@ -277,6 +288,9 @@ protected:
                 break;
             case data::Type::STRING:
                 *(std::string*)aPtr = aData;
+                break;
+            case data::Type::FLOAT:
+                *(float*)aPtr = std::stof(aData);
                 break;
         }
     }

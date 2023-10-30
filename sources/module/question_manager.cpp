@@ -1,5 +1,7 @@
 #include "question_manager.hpp"
 
+#include <algorithm>
+
 #include "database/connection_manager.hpp"
 
 #include "core/variable_storage.hpp"
@@ -82,7 +84,7 @@ mod::QuestionManager::retestQuestions() noexcept
     auto answers = connection.val.getDataArray<data::Answer>();
     for (auto& a : answers)
     {
-        if (a.questionID > 24)
+        if (a.questionID == 30)
         {
             int yy = 0;
             ++yy;
@@ -91,28 +93,74 @@ mod::QuestionManager::retestQuestions() noexcept
         auto& q = questions[a.questionID];
         if (q.type == "table")
         {
+            if (a.questionID == 30 && a.value == "13467810")
+            {
+                int yy = 0;
+                ++yy;
+            }
+
             a.verdict = "P";
             a.weight  = 0;
 
-            auto pAns = file::Parser::slice(a.value, ",");
             auto jAns = file::Parser::slice(q.juryAnswer, ",");
-            pAns.resize(jAns.size());
+            auto pAns = file::Parser::slice(a.value, ", ;.");
+
+            bool ggFlag = jAns[0].back() >= '0' && jAns[0].back() <= '9';
+            if (ggFlag && pAns.size() == 1 && pAns[0].size() > 1)
+            {
+                std::string ghgh;
+                for (auto& i : pAns[0])
+                {
+                    ghgh += std::string({i}) + ",";
+                }
+                pAns = file::Parser::slice(ghgh, ", ;.");
+            }
+
+            if (!ggFlag || pAns.size() < jAns.size())
+            {
+                pAns.resize(jAns.size());
+            }
+
+            std::unordered_set<std::wstring> ggAnss;
 
             for (int i = 0; i < jAns.size(); ++i)
             {
+                auto jAnsStr = dom::Cyrilic::global.toWString(jAns[i]);
+                dom::Cyrilic::global.standardProcedure(jAnsStr);
+                if (ggFlag)
+                {
+                    ggAnss.insert(jAnsStr);
+                    continue;
+                }
+
                 auto pAnsStr = dom::Cyrilic::global.toWString(pAns[i]);
                 dom::Cyrilic::global.standardProcedure(pAnsStr);
 
-                auto jAnsStr = dom::Cyrilic::global.toWString(jAns[i]);
-                dom::Cyrilic::global.standardProcedure(jAnsStr);
-
                 if (pAnsStr == jAnsStr)
                 {
-                    a.weight += 1;
+                    a.weight += q.weight;
                 }
             }
 
-            if (a.weight == 0) a.weight = -1;
+            if (ggFlag)
+            {
+                for (int i = 0; i < jAns.size(); ++i)
+                {
+                    auto pAnsStr = dom::Cyrilic::global.toWString(pAns[i]);
+                    dom::Cyrilic::global.standardProcedure(pAnsStr);
+
+                    if (ggAnss.count(pAnsStr))
+                    {
+                        a.weight += q.weight;
+                    }
+                    else
+                    {
+                        a.weight -= q.weight;
+                    }
+                }
+            }
+
+            if (a.weight <= 0) a.weight = -1;
         }
         else
         {

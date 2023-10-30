@@ -113,7 +113,7 @@ TABLE question
 	name character varying(20) NOT NULL
 	nickname character varying(20) NOT NULL
 	type character varying(5) NOT NULL
-	weight integer NOT NULL
+	weight real NOT NULL
 	jury_answer character varying(100) NOT NULL
 
 TABLE competition_question
@@ -126,7 +126,7 @@ TABLE answer
 	question_id integer NOT NULL
 	time timestamp NOT NULL
 	verdict character varying(1) NOT NULL
-	weight integer NOT NULL
+	weight real NOT NULL
 	value character varying(100) NOT NULL
 
 TABLE form

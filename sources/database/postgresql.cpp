@@ -250,6 +250,12 @@ data::Postgresql::getColumnIntUnsafe(int aColumNumber) noexcept
     return mResultIterator[aColumNumber].as<int>();
 }
 
+float
+data::Postgresql::getColumnFloatUnsafe(int aColumNumber) noexcept
+{
+    return mResultIterator[aColumNumber].as<float>();
+}
+
 bool
 data::Postgresql::getColumnBoolUnsafe(int aColumNumber) noexcept
 {
