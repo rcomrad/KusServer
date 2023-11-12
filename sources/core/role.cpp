@@ -6,13 +6,16 @@
 
 #include "variable_storage.hpp"
 
+//--------------------------------------------------------------------------------
+
 core::Role::Role() noexcept
 {
-    // reset();
     auto flag = VariableStorage::touchFlag("bad_db_flag");
     if (!flag)
     {
         loadRoles();
+
+        // TODO: call only after database remake
         resetFormRoleIDs();
     }
 }
@@ -22,46 +25,6 @@ core::Role::getInstance() noexcept
 {
     static Role instance;
     return instance;
-}
-
-// void
-// core::Role::reset() noexcept
-// {
-//     auto flag = file::VariableStorage::getInstance().getFlag("bad_db_flag");
-//     if (!flag.has_value() || flag.has_value() && !flag.value())
-//     {
-//         loadRoles();
-//         resetFormRoleIDs();
-//     }
-// }
-
-int
-core::Role::getRoleID(
-    const std::unordered_set<std::string>& aRoleNames) noexcept
-{
-    return getInstance().getRoleIDNonstatic(aRoleNames);
-}
-
-int
-core::Role::getRoleID(const std::vector<std::string>& aRoleNames) noexcept
-{
-    std::unordered_set<std::string> s(aRoleNames.begin(), aRoleNames.end());
-    return getRoleID(s);
-}
-
-int
-core::Role::getRoleID(const std::string& aRoleNames,
-                      const std::string& aDelimiter) noexcept
-{
-    auto roles = file::Parser::slice(
-        aRoleNames, (aDelimiter.size() == 0) ? " \t\n,;"s : aDelimiter);
-    return getRoleID(roles);
-}
-
-std::unordered_set<std::string>
-core::Role::getRoles(int aRoleID) noexcept
-{
-    return getInstance().getRolesNonstatic(aRoleID);
 }
 
 void
@@ -89,18 +52,56 @@ core::Role::loadRoles() noexcept
 void
 core::Role::resetFormRoleIDs() const noexcept
 {
+    int adminRole = 0;
+    auto it       = mRoleToInt.find("admin");
+    if (it != mRoleToInt.end())
+    {
+        adminRole = it->second;
+    }
+
     auto connection = data::ConnectionManager::getUserConnection();
     auto forms      = connection.val.getDataArray<data::Form>();
     for (auto& i : forms)
     {
-        // TODO: use functions
-        auto roles = file::Parser::slice(i.roleStr, ","s);
-        roles.emplace_back("admin");
-        std::unordered_set<std::string> s(roles.begin(), roles.end());
-        i.roleID = getRoleIDNonstatic(s);
+        i.roleID = getRoleID(i.roleStr, ",") | adminRole;
     }
     connection.val.write(forms);
 }
+
+//--------------------------------------------------------------------------------
+
+int
+core::Role::getRoleID(
+    const std::unordered_set<std::string>& aRoleNames) noexcept
+{
+    return getInstance().getRoleIDNonstatic(aRoleNames);
+}
+
+int
+core::Role::getRoleID(const std::vector<std::string>& aRoleNames) noexcept
+{
+    std::unordered_set<std::string> s(aRoleNames.begin(), aRoleNames.end());
+    return getRoleID(s);
+}
+
+int
+core::Role::getRoleID(const std::string& aRoleNames,
+                      const std::string& aDelimiter) noexcept
+{
+    auto roles = file::Parser::slice(
+        aRoleNames, (aDelimiter.size() == 0) ? " \t\n,;"s : aDelimiter);
+    return getRoleID(roles);
+}
+
+//--------------------------------------------------------------------------------
+
+std::unordered_set<std::string>
+core::Role::getRoles(int aRoleID) noexcept
+{
+    return getInstance().getRolesNonstatic(aRoleID);
+}
+
+//--------------------------------------------------------------------------------
 
 int
 core::Role::getRoleIDNonstatic(

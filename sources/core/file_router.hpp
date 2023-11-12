@@ -1,11 +1,14 @@
 #ifndef FILE_ROUTER_HPP
 #define FILE_ROUTER_HPP
 
+//--------------------------------------------------------------------------------
+
 #include <string>
 #include <unordered_map>
-#include <vector>
 
 #include "database/raw_data.hpp"
+
+//--------------------------------------------------------------------------------
 
 namespace core
 {
@@ -28,5 +31,7 @@ private:
 };
 
 } // namespace core
+
+//--------------------------------------------------------------------------------
 
 #endif // !FILE_ROUTER_HPP

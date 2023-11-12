@@ -6,33 +6,44 @@
 #include <string>
 #include <thread>
 #include <unordered_map>
-#include <vector>
 
 #include "domain/holy_trinity.hpp"
 
-#include "module/module_base.hpp"
+#include "module/command.hpp"
+
+#include "router/router_node.hpp"
 
 //--------------------------------------------------------------------------------
 
 namespace core
 {
-class Core : public mod::ModuleBase
+class Core
 {
 public:
     HOLY_TRINITY_SINGLE(Core);
     static Core& getInstance() noexcept;
 
+    //----------------------------------------------------------------------------
+
+    void setup() noexcept;
     void run() noexcept;
 
-protected:
-    std::string doAction(const Command& aCommand) noexcept override;
+    //----------------------------------------------------------------------------
+
+public:
+    static std::string doAction(const modul::Command& aCommand) noexcept;
 
 private:
-    Core() noexcept;
+    std::string doActionNonstatic(const modul::Command& aCommand) noexcept;
 
+    //----------------------------------------------------------------------------
+
+private:
+    static route::RouterNode mRouterNode;
     bool mKillFlag;
-
     std::unordered_map<std::string, std::thread> mApps;
+
+    Core() noexcept;
 
     void start() noexcept;
     void serverThread() noexcept;

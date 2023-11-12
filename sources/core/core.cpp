@@ -1,15 +1,13 @@
 #include "core.hpp"
 
 #include "code/generate_code.hpp"
-#include "core/variable_storage.hpp"
-#include "file_data/file.hpp"
+
 #include "file_data/path.hpp"
+
 #include "module/module_handler.hpp"
-#include "multitool/command_handler.hpp"
-#include "post/journal_handler.hpp"
-#include "post/plan_handler.hpp"
-#include "post/user_handler.hpp"
+
 #include "server/server.hpp"
+
 #include "tester/tester.hpp"
 
 #include "role.hpp"
@@ -18,7 +16,12 @@
 
 //--------------------------------------------------------------------------------
 
-core::Core::Core() noexcept : ModuleBase({"kill"}), mKillFlag(false)
+route::RouterNode core::Core::mRouterNode(
+    "module", {"kill"}, []() { return (void*)&core::Core::doAction; });
+
+//--------------------------------------------------------------------------------
+
+core::Core::Core() noexcept : mKillFlag(false)
 {
     code::CodeGenerator cg;
     cg.makeAll();
@@ -42,6 +45,16 @@ core::Core::getInstance() noexcept
 //--------------------------------------------------------------------------------
 
 void
+core::Core::setup() noexcept
+{
+    auto restartState = VariableStorage::touchWord("restart_on_start", "nun");
+    if (restartState != "nun")
+    {
+        mod::ModuleHandler::applyCommand("restart", restartState);
+    }
+}
+
+void
 core::Core::run() noexcept
 {
     start();
@@ -51,18 +64,26 @@ core::Core::run() noexcept
     }
 }
 
+//--------------------------------------------------------------------------------
+
 std::string
-core::Core::doAction(const Command& aCommand) noexcept
+core::Core::doAction(const modul::Command& aCommand) noexcept
 {
-    std::string res;
+    return getInstance().doActionNonstatic(aCommand);
+}
+
+std::string
+core::Core::doActionNonstatic(const modul::Command& aCommand) noexcept
+{
+    std::string result;
 
     if (aCommand.value == "kill")
     {
-        res       = "You're monster!";
+        result    = "You're monster!";
         mKillFlag = true;
     }
 
-    return res;
+    return result;
 }
 
 //--------------------------------------------------------------------------------
@@ -73,17 +94,6 @@ core::Core::start() noexcept
     mApps["server"] = std::move(std::thread(&Core::serverThread, this));
     if (VariableStorage::touchFlag("submission_auto_check"))
         mApps["tester"] = std::move(std::thread(&Core::testerThread, this));
-
-    auto restartState = VariableStorage::touchWord("restart_on_start");
-    if (restartState != "nun")
-    {
-        mApps["restart"] =
-            std::move(std::thread(static_cast<std::string (*)(
-                                      const std::string&, const std::string&)>(
-                                      &mult::CommandHandler::process),
-                                  "restart", restartState));
-        // temp.join();
-    }
 }
 
 void
@@ -91,8 +101,7 @@ core::Core::serverThread() noexcept
 {
     // TODO: without thread
     serv::Server app;
-    while (true)
-        ;
+    while (!mKillFlag) continue;
 }
 
 void

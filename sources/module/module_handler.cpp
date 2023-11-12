@@ -24,11 +24,18 @@ mod::ModuleHandler::processCommand(const std::string& aCommand,
     return getInstance().processCommandNonstatic(aCommand, aArgument);
 }
 
+void
+mod::ModuleHandler::applyCommand(const std::string& aCommand,
+                                 const std::string& aArgument) noexcept
+{
+    getInstance().applyCommandNonstatic(aCommand, aArgument, false);
+}
+
 //--------------------------------------------------------------------------------
 
 void
-mod::ModuleHandler::addCommand(const std::string& aCommand,
-                               ModuleBase* aPtr) noexcept
+mod::ModuleHandler::addCommandHandler(const std::string& aCommand,
+                                      ModuleBase* aPtr) noexcept
 {
     getInstance().mModules[aCommand] = aPtr;
 }
@@ -50,7 +57,7 @@ mod::ModuleHandler::executeCommand(int aResultNumber,
     {
         auto res = it->second->doAction(aCommand);
         mResultMutex.lock();
-        mResults[aResultNumber] = std::move(res);
+        if (aCommand.saveResult) mResults[aResultNumber] = std::move(res);
         mResultMutex.unlock();
     }
 }
@@ -73,19 +80,29 @@ mod::ModuleHandler::runNonstatic() noexcept
     }
 }
 
-std::string
-mod::ModuleHandler::processCommandNonstatic(
-    const std::string& aCommand, const std::string& aArgument) noexcept
+int
+mod::ModuleHandler::applyCommandNonstatic(const std::string& aCommand,
+                                          const std::string& aArgument,
+                                          bool aSaveResult) noexcept
 {
-    std::string result;
-
     static int intglobalTesultCounter = 0;
 
     mCommandMutex.lock();
     ++intglobalTesultCounter;
     int curResultNum = intglobalTesultCounter;
-    mCommands.emplace_back(curResultNum, aCommand, aArgument);
+    mCommands.emplace_back(curResultNum, aCommand, aArgument, aSaveResult);
     mCommandMutex.unlock();
+
+    return curResultNum;
+}
+
+std::string
+mod::ModuleHandler::processCommandNonstatic(
+    const std::string& aCommand, const std::string& aArgument) noexcept
+{
+    int curResultNum = applyCommandNonstatic(aCommand, aArgument, true);
+
+    std::string result;
 
     bool flag = true;
     while (flag)

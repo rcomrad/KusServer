@@ -5,13 +5,16 @@
 #include "get_router.hpp"
 #include "request_storage.hpp"
 
+//--------------------------------------------------------------------------------
+
 crow::json::wvalue
-get::GetHandler::singlGet(const std::string& aRequest,
+get::GetHandler::singlGet(const crow::request& aRequest,
+                          const std::string& aTableNames,
                           const std::string& aCondition) noexcept
 {
     crow::json::wvalue result;
 
-    auto temp = mainGet(aRequest, aCondition);
+    auto temp = mainGet(aRequest, aTableNames, aCondition);
     auto keys = temp.keys();
     if (keys.size() > 0 && temp[keys[0]].size() > 0)
     {
@@ -22,12 +25,13 @@ get::GetHandler::singlGet(const std::string& aRequest,
 }
 
 crow::json::wvalue
-get::GetHandler::multiplelGet(const std::string& aRequest,
+get::GetHandler::multiplelGet(const crow::request& aRequest,
+                              const std::string& aTableNames,
                               const std::string& aCondition) noexcept
 {
     crow::json::wvalue result = {401};
 
-    auto temp = mainGet(aRequest, aCondition);
+    auto temp = mainGet(aRequest, aTableNames, aCondition);
     auto keys = temp.keys();
     if (keys.size() > 0)
     {
@@ -37,13 +41,16 @@ get::GetHandler::multiplelGet(const std::string& aRequest,
     return result;
 }
 
+//--------------------------------------------------------------------------------
+
 crow::json::wvalue
-get::GetHandler::mainGet(const std::string& aRequest,
+get::GetHandler::mainGet(const crow::request& aRequest,
+                         const std::string& aTableNames,
                          const std::string& aCondition) noexcept
 {
     crow::json::wvalue result;
 
-    auto req = RequestStorage::getRequest(aRequest);
+    auto req = RequestStorage::getRequest(aTableNames);
     std::vector<crow::json::wvalue> temp;
     {
         auto connection = data::ConnectionManager::getUserConnection();
@@ -63,9 +70,9 @@ get::GetHandler::mainGet(const std::string& aRequest,
             std::string name;
             for (int j = 0; j < curBlock.size(); ++j)
             {
-                auto additionalTable =
-                    multiplelGet(req[i].additionalTable,
-                            req[i].name + "_id=" + curBlock[j]["id"].dump());
+                auto additionalTable = multiplelGet(
+                    req[i].additionalTable,
+                    req[i].name + "_id=" + curBlock[j]["id"].dump());
                 if (name.empty()) name = additionalTable.keys()[0];
                 curBlock[j][name] = std::move(additionalTable[name]);
             }

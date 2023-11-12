@@ -35,7 +35,7 @@ using enableIfSame = typename std::enable_if_t<isSameWeak<T1, T2>::value>;
 
 template <typename Base, typename Derived>
 using enableIfDerivedOf =
-    typename std::enable_if_t<dom::isDerivedOf<Base, Derived>::value>;
+    typename std::enable_if_t<isDerivedOf<Base, Derived>::value>;
 
 template <class T>
 using isSTDString = isOneOf<T, std::string>;
@@ -45,6 +45,11 @@ using isString = isOneOf<T, std::string, char*, const char*>;
 
 template <class T>
 using isNotString = isNotOneOf<T, std::string, char*, const char*>;
+
+template <class T1, class T2>
+using isContainersWithSameElements =
+    enableIfSame<typename std::decay_t<T1>::value_type,
+                 typename std::decay_t<T2>::value_type>;
 
 } // namespace dom
 

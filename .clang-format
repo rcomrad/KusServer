@@ -42,12 +42,34 @@ IncludeCategories:
   - Regex:           '<*>'
     Priority:        30
 
-  - Regex:           '"domain.*"'
+  - Regex:           '"code.*"'
     Priority:        50
-  - Regex:           '"algorithms.*"'
+  - Regex:           '"core.*"'
     Priority:        51
   - Regex:           '"database.*"'
-    Priority:        51
+    Priority:        52
+  - Regex:           '"domain.*"'
+    Priority:        53
+  - Regex:           '"file_data.*"'
+    Priority:        54
+  - Regex:           '"get.*"'
+    Priority:        55
+  - Regex:           '"module.*"'
+    Priority:        56
+  - Regex:           '"multitool.*"'
+    Priority:        57
+  - Regex:           '"post.*"'
+    Priority:        58
+  - Regex:           '"process.*"'
+    Priority:        59
+  - Regex:           '"router.*"'
+    Priority:        60
+  - Regex:           '"server.*"'
+    Priority:        61
+  - Regex:           '"tester.*"'
+    Priority:        62
+  - Regex:           '"tex_manager.*"'
+    Priority:        63
 
   - Regex:           '"*/.*"'
     Priority:        100

@@ -22,9 +22,11 @@ public:
     static void run() noexcept;
     static std::string processCommand(const std::string& aCommand,
                                       const std::string& aArgument) noexcept;
+    static void applyCommand(const std::string& aCommand,
+                             const std::string& aArgument) noexcept;
 
-    static void addCommand(const std::string& aCommand,
-                           ModuleBase* aPtr) noexcept;
+    static void addCommandHandler(const std::string& aCommand,
+                                  ModuleBase* aPtr) noexcept;
     static bool hasCommand(const std::string& aCommand) noexcept;
 
 private:
@@ -43,6 +45,9 @@ private:
                         const ModuleBase::Command& aCommand) noexcept;
 
     void runNonstatic() noexcept;
+    int applyCommandNonstatic(const std::string& aCommand,
+                              const std::string& aArgument,
+                              bool aSaveResult) noexcept;
     std::string processCommandNonstatic(const std::string& aCommand,
                                         const std::string& aArgument) noexcept;
 };

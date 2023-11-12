@@ -19,17 +19,25 @@ namespace get
 class GetHandler
 {
 public:
-    static crow::json::wvalue singlGet(const std::string& aRequest,
+    static crow::json::wvalue singlGet(const crow::request& aRequest,
+                                       const std::string& aTableNames,
                                        const std::string& aCondition) noexcept;
-
     static crow::json::wvalue multiplelGet(
-        const std::string& aRequest, const std::string& aCondition) noexcept;
+        const crow::request& aRequest,
+        const std::string& aTableNames,
+        const std::string& aCondition) noexcept;
 
-    static crow::json::wvalue mainGet(const std::string& aRequest,
+    //--------------------------------------------------------------------------------
+
+    static crow::json::wvalue mainGet(const crow::request& aRequest,
+                                      const std::string& aTableNames,
                                       const std::string& aCondition) noexcept;
+
+    //--------------------------------------------------------------------------------
 
     template <typename T>
     static crow::json::wvalue process(
+        const crow::request& aRequest,
         const std::unordered_set<int>& aColumn,
         data::SmartConnection& aConnection) noexcept
     {
@@ -39,16 +47,10 @@ public:
         return result;
     }
 
-    // TODO: better switch
-    template <typename T>
-    static std::string dump() noexcept
-    {
-        auto connection = data::ConnectionManager::getUserConnection();
-        return getDataAsDMP<T>();
-    }
+    //--------------------------------------------------------------------------------
 
     template <typename T>
-    static std::string getDataAsDMP() noexcept
+    static std::string dump(const crow::request& aRequest) noexcept
     {
         data::DataArray<T> table;
         {
@@ -56,7 +58,9 @@ public:
             table           = connection.val.getDataArray<T>();
         }
 
-        std::string result = table.getTableName() + "\n";
+        std::string result;
+        result.resize(table.size() * 20);
+        result += table.getTableName() + "\n";
         for (auto& i : table)
         {
             result.push_back('\t');

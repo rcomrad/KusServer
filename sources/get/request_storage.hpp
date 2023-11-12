@@ -1,6 +1,7 @@
 #ifndef REQUEST_STORAGE_HPP
 #define REQUEST_STORAGE_HPP
 
+#include <mutex>
 #include <string>
 #include <unordered_map>
 
@@ -15,12 +16,14 @@ public:
         const std::string& aRequest) noexcept;
 
 private:
+    static bool mMutexFlag;
+    static std::mutex mInsertMutex;
     std::unordered_map<std::string, RequestParser::DataRequest> mStorage;
 
     RequestStorage() noexcept = default;
     static RequestStorage& getInstance() noexcept;
 };
 
-};                         // namespace get
+}; // namespace get
 
 #endif // !REQUEST_STORAGE_HPP

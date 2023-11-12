@@ -24,4 +24,7 @@ set(
 
     url_wrapper.cpp
     url_wrapper.hpp
+
+    variable_storage.cpp
+    variable_storage.hpp
 )

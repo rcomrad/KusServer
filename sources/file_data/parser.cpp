@@ -1,5 +1,7 @@
 #include "parser.hpp"
 
+#include <unordered_set>
+
 #include "domain/cyrillic.hpp"
 #include "domain/log.hpp"
 
@@ -24,11 +26,11 @@ file::Parser::makeVariable(const std::string& aStr) noexcept
 }
 
 std::vector<file::Variable>
-file::Parser::getVariablesFromFile(const std::string aFilename) noexcept
+file::Parser::getVariablesFromFile(const std::string& aFileName) noexcept
 {
     std::vector<Variable> result;
 
-    auto lines = file::File::getLines(aFilename);
+    auto lines = file::File::getLines(aFileName);
     for (auto& str : lines)
     {
         auto temp = file::Parser::makeVariable(str);
@@ -38,7 +40,7 @@ file::Parser::getVariablesFromFile(const std::string aFilename) noexcept
         }
         else
         {
-            dom::writeError("Line '", str, "' from ", aFilename,
+            dom::writeError("Line '", str, "' from ", aFileName,
                             " doesn't contain variable");
             continue;
         }
@@ -47,9 +49,17 @@ file::Parser::getVariablesFromFile(const std::string aFilename) noexcept
     return result;
 }
 
+std::string
+file::Parser::getFileExtension(const std::string& aFileName) noexcept
+{
+    int indx = aFileName.size() - 1;
+    while (aFileName[indx] != '.') --indx;
+    return aFileName.substr(indx + 1);
+}
+
 std::vector<file::Variable>
 file::Parser::getVariablesFromFile(const std::string& aFolderName,
-                                   const std::string aFilename) noexcept
+                                   const std::string& aFilename) noexcept
 {
     return file::Parser::getVariablesFromFile(
         file::Path::getPathUnsafe(aFolderName, aFilename));
@@ -60,35 +70,23 @@ file::Parser::slice(const std::string& aStr,
                     const std::string& aDelimiters,
                     const std::string& aErase) noexcept
 {
+    std::unordered_set<char> delimiters(aDelimiters.begin(), aDelimiters.end());
+    std::unordered_set<char> erase(aErase.begin(), aErase.end());
     std::vector<std::string> result(1);
 
-    for (auto i : aStr)
+    for (auto c : aStr)
     {
-        if (aErase.find(i) != std::string::npos)
+        if (erase.count(c)) continue;
+        if (delimiters.count(c) && result.back.size())
         {
+            result.emplace_back();
             continue;
         }
 
-        if (aDelimiters.find(i) == std::string::npos)
-        {
-            // TODO: unicode
-            //  if (!(std::isspace(i) && result.back().empty()))
-            if (!(dom::isSpace(i) && result.back().empty()))
-            {
-                result.back().push_back(i);
-            }
-        }
-        else if (!result.back().empty())
-        {
-            while (!result.back().empty() && dom::isSpace(result.back().back()))
-            {
-                result.back().pop_back();
-            }
-            result.emplace_back();
-        }
+        result.back().emplace_back(c);
     }
 
-    if (!result.empty() && result.back().empty())
+    if (result.back().empty())
     {
         result.pop_back();
     }
