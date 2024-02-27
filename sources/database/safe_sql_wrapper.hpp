@@ -31,9 +31,9 @@ public:
 
         bool flag = false;
         int cnt   = 0;
-        for (char c : s)
+        for (int i = 0; i < s.size(); ++i)
         {
-            switch (c)
+            switch (s[i])
             {
                 case '-':
                     ++cnt;
@@ -41,7 +41,12 @@ public:
                 case ';':
                 case '\'':
                 case '\"':
+                    dom::writeError("penetration!", s[i], i);
                     flag = true;
+                    break;
+                default :
+                    cnt = 0;
+                    break;
             }
         }
         if (flag) s.clear();

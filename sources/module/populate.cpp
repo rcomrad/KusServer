@@ -81,26 +81,26 @@ mod::Populate::populate() noexcept
     },
         "../tests/user.data");
 
-    post::PostHandler::uploadFromFile(
-        {
-            {"type",       "plan"                  },
-            {"name",       "Информатика"},
-            {"subject_id", "1"                     }
-    },
-        "../tests/plan_test.csv");
-    post::PostHandler::uploadFromFile(
-        {
-            {"type",       "plan"},
-            {"name",       "C++" },
-            {"subject_id", "1"   }
-    },
-        "../tests/plan_cpp.csv");
+    // post::PostHandler::uploadFromFile(
+    //     {
+    //         {"type",       "plan"                  },
+    //         {"name",       "Информатика"},
+    //         {"subject_id", "1"                     }
+    // },
+    //     "../tests/plan_test.csv");
+    // post::PostHandler::uploadFromFile(
+    //     {
+    //         {"type",       "plan"},
+    //         {"name",       "C++" },
+    //         {"subject_id", "1"   }
+    // },
+    //     "../tests/plan_cpp.csv");
 
-    post::PostHandler::uploadFromFile(
-        {
-            {"type", "journal_table"}
-    },
-        "../tests/journal.data");
+    // post::PostHandler::uploadFromFile(
+    //     {
+    //         {"type", "journal_table"}
+    // },
+    //     "../tests/journal.data");
 }
 
 void

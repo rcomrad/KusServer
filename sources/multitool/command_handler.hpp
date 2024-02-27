@@ -21,6 +21,10 @@ public:
     static std::string process(const crow::request& aReq) noexcept;
     static std::string process(const std::string& aCommand,
                                const std::string& aArgument = "") noexcept;
+    // static std::string info(const std::string& aCommand,
+    //                            const std::string& aArgument = "") noexcept;
+    // static std::string proga(const std::string& aCommand,
+    //                            const std::string& aArgument = "") noexcept;
 };
 } // namespace mult
 

@@ -141,10 +141,10 @@ post::UserHandler::registration(const crow::request& aReq,
         std::string loginCond = "login = " + data::safeWrap(newUser.login);
         data::User sameLogin  = connection.val.getData<data::User>(loginCond);
 
-        std::string emailCond = "email = " + data::safeWrap(newUser.email);
-        data::User sameEmail  = connection.val.getData<data::User>(emailCond);
+        // std::string emailCond = "email = " + data::safeWrap(newUser.email);
+        // data::User sameEmail  = connection.val.getData<data::User>(emailCond);
 
-        if (sameLogin.id)
+        if (sameLogin.id && newUser.key == "prog")
         {
             // crow::json::wvalue uJson;
             // uJson["code"] = 406;
@@ -155,16 +155,30 @@ post::UserHandler::registration(const crow::request& aReq,
             resp = {"Username already in use!"};
             // resp.set_header("text", "Username already in use!");
         }
-        else if (sameEmail.id)
+        else if (sameLogin.password != "NUN" && newUser.key == "info")
         {
-            resp = {"Email already in use!"};
+            // crow::json::wvalue uJson;
+            // uJson["code"] = 406;
+            // uJson["resp"] = "Username already in use!";
+            // resp          = std::move(uJson);
+            // resp.code     = crow::response::code;
+
+            resp = {"Username already in use!"};
+            // resp.set_header("text", "Username already in use!");
         }
-        else if (!applyKey(newUser))
-        {
-            resp = {"Bad key!"};
-        }
+        // else if (sameEmail.id)
+        // {
+        //     resp = {"Email already in use!"};
+        // }
+        // else if (!applyKey(newUser))
+        // {
+        //     resp = {"Bad key!"};
+        // }
         else
         {
+            if (newUser.key == "info") newUser.id = sameLogin.id ;
+
+            applyKey(newUser);
             fiil(newUser);
             newUser.status = -1;
             connection.val.write(newUser);
@@ -186,7 +200,8 @@ post::UserHandler::registration(const crow::request& aReq,
             else
             {
                 // TODO: remove drop
-                connection.val.drop(newUser);
+                newUser.password = "NUN";
+                connection.val.write(newUser);
                 resp = {"Bad email address!"};
             }
         }
@@ -199,6 +214,96 @@ post::UserHandler::registration(const crow::request& aReq,
     return resp;
 }
 
+
+// std::string
+// post::UserHandler::registration2(const crow::request& aReq,
+//                                 bool info) noexcept
+// {
+//     auto resp = "400";
+//     auto body = crow::json::load(aReq.body);
+
+//     if (body)
+//     {
+//         bool allGoodFlag = false;
+
+//         data::User newUser = parseRequest<data::User>(body).data;
+
+//         mRegMut.lock();
+
+//         auto connection = data::ConnectionManager::getUserConnection();
+
+//         std::string loginCond = "login = " + data::safeWrap(newUser.login);
+//         data::User sameLogin  = connection.val.getData<data::User>(loginCond);
+
+//         std::string emailCond = "email = " + data::safeWrap(newUser.email);
+//         data::User sameEmail  = connection.val.getData<data::User>(emailCond);
+
+//         if (!info && sameLogin.id)
+//         {
+//             // crow::json::wvalue uJson;
+//             // uJson["code"] = 406;
+//             // uJson["resp"] = "Username already in use!";
+//             // resp          = std::move(uJson);
+//             // resp.code     = crow::response::code;
+
+//             resp = {"Username already in use!"};
+//             // resp.set_header("text", "Username already in use!");
+//         }
+//         else if (info && sameLogin.email != "NUN")
+//         {
+//             // crow::json::wvalue uJson;
+//             // uJson["code"] = 406;
+//             // uJson["resp"] = "Username already in use!";
+//             // resp          = std::move(uJson);
+//             // resp.code     = crow::response::code;
+
+//             resp = {"Username already in use!"};
+//             // resp.set_header("text", "Username already in use!");
+//         }
+//         // else if (sameEmail.id)
+//         // {
+//         //     resp = {"Email already in use!"};
+//         // }
+//         else if (!applyKey(newUser))
+//         {
+//             resp = {"Bad key!"};
+//         }
+//         else
+//         {
+//             fiil(newUser);
+//             newUser.status = -1;
+//             connection.val.write(newUser);
+
+//             auto link = sendComfLink(newUser);
+//             if (link.has_value())
+//             {
+//                 crow::json::wvalue uJson;
+//                 uJson["user"] = newUser.getAsJson();
+//                 uJson["link"] = link.value();
+//                 resp          = std::move(uJson);
+//                 allGoodFlag   = true;
+
+//                 data::UserRegistration reg;
+//                 reg.userID = newUser.id;
+//                 reg.link   = link.value();
+//                 connection.val.write(reg);
+//             }
+//             else
+//             {
+//                 // TODO: remove drop
+//                 connection.val.drop(newUser);
+//                 resp = {"Bad email address!"};
+//             }
+//         }
+
+//         mRegMut.unlock();
+
+//         if (!allGoodFlag) resp.code = 409;
+//     }
+
+//     return resp;
+// }
+
 crow::response
 post::UserHandler::confirmation(const std::string& aUrl) noexcept
 {
@@ -207,9 +312,12 @@ post::UserHandler::confirmation(const std::string& aUrl) noexcept
     auto connection = data::ConnectionManager::getUserConnection();
     auto userReg    = connection.val.getData<data::UserRegistration>(
         "link = " + data::safeWrap(aUrl));
+    dom::writeError(data::safeWrap(aUrl));
 
     if (userReg.id)
     {
+        dom::writeError(1);
+
         connection.val.drop(userReg);
         auto user = connection.val.getData<data::User>(
             "id = " + data::safeWrap(userReg.userID));
@@ -234,6 +342,8 @@ post::UserHandler::confirmation(const std::string& aUrl) noexcept
     }
     else
     {
+        dom::writeError(2);
+
         std::string id;
         for (auto c : aUrl)
         {
@@ -280,6 +390,7 @@ post::UserHandler::fiil(data::User& aUser) noexcept
     if (aUser.key.empty()) aUser.key = "NUN";
 
     if (aUser.status == 0) aUser.status = 10;
+    aUser.lastLogin = dom::DateAndTime::getCurentTimeSafe();
 }
 
 std::unordered_map<std::string, std::unordered_set<std::string>>

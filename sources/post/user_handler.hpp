@@ -22,6 +22,9 @@ public:
     static crow::response registration(const crow::request& aReq,
                                        bool aNoConfirmation = false) noexcept;
 
+    // static std::string registration2(const crow::request& aReq,
+    //                                    bool info) noexcept;
+
     static crow::response confirmation(const std::string& aUrl) noexcept;
 
 private:

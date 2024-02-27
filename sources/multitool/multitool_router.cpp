@@ -61,6 +61,8 @@ mult::MultitoolRouter::generateMultitoolRouter() noexcept
         {"mail",    {&mult::MailSender::process, 0}    },
         {"dump",    {&mult::DumpManager::process, 0}   },
         {"command", {&mult::CommandHandler::process, 0}},
+        // {"info",    {&mult::CommandHandler::info, 0}   },
+        // {"proga",   {&mult::CommandHandler::proga, 0}},
     };
 
     auto connection = data::ConnectionManager::getUserConnection();

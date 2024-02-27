@@ -131,7 +131,7 @@ TABLE answer
 
 TABLE form
 	module character varying(20) NOT NULL
-	userName character varying(50) NOT NULL
+	userName character varying(100) NOT NULL
 	techName character varying(20) NOT NULL
 	role_str character varying(50) NOT NULL
 	role_id integer NOT NULL
