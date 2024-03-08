@@ -121,6 +121,16 @@ post::UserHandler::autorisation(const crow::request& aReq) noexcept
     return resp;
 }
 
+void checkUser(data::User& aUser)
+{
+    aUser.login     = data::safeWrap(newUser.login);
+    aUser.password  = data::safeWrap(newUser.password);
+    aUser.email     = data::safeWrap(newUser.email);
+    aUser.name      = data::safeWrap(newUser.name);
+    aUser.surname   = data::safeWrap(newUser.surname);
+    aUser.key       = data::safeWrap(newUser.key);
+}
+
 crow::response
 post::UserHandler::registration(const crow::request& aReq,
                                 bool aNoConfirmation) noexcept
@@ -180,29 +190,33 @@ post::UserHandler::registration(const crow::request& aReq,
 
             applyKey(newUser);
             fiil(newUser);
+            checkUser(newUser);
             newUser.status = -1;
             connection.val.write(newUser);
 
-            auto link = sendComfLink(newUser);
-            if (link.has_value())
+            if (newUser.id)
             {
-                crow::json::wvalue uJson;
-                uJson["user"] = newUser.getAsJson();
-                uJson["link"] = link.value();
-                resp          = std::move(uJson);
-                allGoodFlag   = true;
+                auto link = sendComfLink(newUser);
+                if (link.has_value())
+                {
+                    crow::json::wvalue uJson;
+                    uJson["user"] = newUser.getAsJson();
+                    uJson["link"] = link.value();
+                    resp          = std::move(uJson);
+                    allGoodFlag   = true;
 
-                data::UserRegistration reg;
-                reg.userID = newUser.id;
-                reg.link   = link.value();
-                connection.val.write(reg);
-            }
-            else
-            {
-                // TODO: remove drop
-                newUser.password = "NUN";
-                connection.val.write(newUser);
-                resp = {"Bad email address!"};
+                    data::UserRegistration reg;
+                    reg.userID = newUser.id;
+                    reg.link   = link.value();
+                    connection.val.write(reg);
+                }
+                else
+                {
+                    // TODO: remove drop
+                    newUser.password = "NUN";
+                    connection.val.write(newUser);
+                    resp = {"Bad email address!"};
+                }
             }
         }
 
