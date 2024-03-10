@@ -137,7 +137,9 @@ serv::TokenHandler::processNonstatic(const crow::request& aReq) noexcept
     serv::UserDataPtr result;
 
     static std::unordered_set<std::string> withoutAuthentication = {
-        "/api/login", "/api/registration",
+        "/api/login", 
+        "/api/registration",
+        "/api/confirm",
         // "/api/get/if/competition",
         // "/api/get_question",
         // "/api/post/answer",

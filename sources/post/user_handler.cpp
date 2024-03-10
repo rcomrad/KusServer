@@ -123,12 +123,12 @@ post::UserHandler::autorisation(const crow::request& aReq) noexcept
 
 void checkUser(data::User& aUser)
 {
-    aUser.login     = data::safeWrap(newUser.login);
-    aUser.password  = data::safeWrap(newUser.password);
-    aUser.email     = data::safeWrap(newUser.email);
-    aUser.name      = data::safeWrap(newUser.name);
-    aUser.surname   = data::safeWrap(newUser.surname);
-    aUser.key       = data::safeWrap(newUser.key);
+    // aUser.login     = data::safeWrap(aUser.login);
+    // aUser.password  = data::safeWrap(aUser.password);
+    // aUser.email     = data::safeWrap(aUser.email);
+    // aUser.name      = data::safeWrap(aUser.name);
+    // aUser.surname   = data::safeWrap(aUser.surname);
+    // aUser.key       = data::safeWrap(aUser.key);
 }
 
 crow::response
@@ -190,7 +190,7 @@ post::UserHandler::registration(const crow::request& aReq,
 
             applyKey(newUser);
             fiil(newUser);
-            checkUser(newUser);
+            // checkUser(newUser);
             newUser.status = -1;
             connection.val.write(newUser);
 

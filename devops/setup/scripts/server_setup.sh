@@ -72,3 +72,5 @@ sudo ./rsa.sh
 cd ../../maintain/scripts
 sudo chmod +x remake.sh
 sudo ./remake.sh
+
+sudo apt install mc

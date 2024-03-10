@@ -14,6 +14,8 @@ sudo systemctl status nginx
 sudo nginx -s reload
 sudo certbot install --cert-name kusmirror.ru
 
+/etc/nginx/nginx.conf user  rcomrad;
+
 # postgres
 sudo psql -U journal_user -h localhost -d journal_db 
 sudo psql -U postgres -h localhost -d postgres 
