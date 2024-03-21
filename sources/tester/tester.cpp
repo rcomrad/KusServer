@@ -89,7 +89,7 @@ test::Tester::run(data::Submission&& aSubmission) noexcept
     aSubmission.verdict = verdictTostring(mFinalVerdict);
     {
         auto connection = data::ConnectionManager::getUserConnection();
-        connection.val.update(aSubmission);
+        connection.val.write(aSubmission);
     }
 }
 

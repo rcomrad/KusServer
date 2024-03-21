@@ -1,6 +1,7 @@
 #include "middleware.hpp"
 
 #include <string>
+#include <iostream>
 
 #include "domain/date_and_time.hpp"
 
@@ -9,7 +10,7 @@
 #include "core/variable_storage.hpp"
 
 #include "token_handler.hpp"
-
+#include "file_data/parser.hpp"
 void
 serv::Middleware::before_handle(crow::request& req,
                                 crow::response& res,
@@ -56,6 +57,43 @@ serv::Middleware::before_handle(crow::request& req,
             }
         }
     }
+// std::cout << "----->>>>>>>>> " <<  req.url << std::endl;
+    std::string temp = req.url;
+    auto parts = file::Parser::slice(temp, "/");
+
+    // if (parts[parts.size() - 2] == "user_competition[competition_id[id;name;start_time]]")
+    // {
+    //     parts[parts.size() - 2] = "user_competition[competition_id[]]";
+    //     req.url.clear();
+    //     for(auto& ii : parts)
+    //     {
+    //         req.url.push_back('/');
+    //         req.url+= ii;
+    //     }
+    // }
+    if (parts[parts.size() - 2] == "user_competition[competition_id[id;name;start_time]]")
+    {
+        crow::json::wvalue comp;
+        comp["end_time"] = "2024-03-11 21:00:00";
+        comp["start_time"] = "2024-03-12 10:00:00";
+        comp["name"] = "Тестовое задание";
+        comp["id"] = 1;
+
+        crow::json::wvalue comp2;
+        comp2["competition"] = std::move(comp);
+
+        crow::json::wvalue::list ls;
+        ls.push_back(std::move(comp2));
+
+        crow::json::wvalue result;
+        result["user_competitions"] = std::move(ls);
+
+        res                            = std::move(result);
+        res.end();
+    }
+
+
+    // std::cout << "----->>>>>>>>> " <<  req.url << std::endl;
 }
 
 void

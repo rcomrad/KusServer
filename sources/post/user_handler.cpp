@@ -83,11 +83,11 @@ post::UserHandler::autorisation(const crow::request& aReq) noexcept
             resp      = {"Wrong username or password!"};
             resp.code = 403;
         }
-        else if (user.status <= 0)
-        {
-            resp      = {"Need account confirmation."};
-            resp.code = 403;
-        }
+        // else if (user.status <= 0)
+        // {
+        //     resp      = {"Need account confirmation."};
+        //     resp.code = 403;
+        // }
         else
         {
             user.lastLogin = dom::DateAndTime::getCurentTimeSafe();

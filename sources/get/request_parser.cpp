@@ -10,7 +10,8 @@ std::unordered_map<std::string, std::string> get::RequestParser::mActualNames =
         {"methodist", "user"},
         {"teacher",   "user"},
         {"head",      "user"},
-        {"student",   "user"}
+        {"student",   "user"},
+        {"user_competition", "competition_user"}
 };
 
 const get::RequestParser::DataRequest::TableData&
