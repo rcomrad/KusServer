@@ -7,6 +7,7 @@
 #include "get/competition_handler.hpp"
 #include "get/get_handler.hpp"
 #include "get/get_router.hpp"
+#include "get/problem_handler.hpp"
 #include "get/question_handler.hpp"
 #include "multitool/command_handler.hpp"
 #include "multitool/dump_manager.hpp"
@@ -15,8 +16,61 @@
 #include "post/print_journal.hpp"
 #include "post/submit_handler.hpp"
 #include "post/user_handler.hpp"
-
 crow::App<crow::CORSHandler, serv::Middleware> serv::Server::mApp;
+
+#include <fstream>
+#include <string>
+#include <unordered_map>
+
+#include "domain/cyrillic.hpp"
+#include "domain/date_and_time.hpp"
+
+#include "database/connection_manager.hpp"
+
+#include "file_data/file.hpp"
+#include "file_data/parser.hpp"
+std::string
+susRes()
+{
+    auto connection = data::ConnectionManager::getUserConnection();
+
+    // auto questionIDs =
+    // connection.val.getDataArray<data::CompetitionQuestion>(
+    //     "competition_id=" + data::wrap(aCompetitionID));
+    //     std::string cond;
+    //     for(auto& i : questionIDs) cond += "id=" +
+    //     std::to_string(i.questionID) + " OR "; cond.resize(cond.size() - 4);
+    //     auto questions = connection.val.getDataArray<data::Question>(
+    //     cond);
+
+    auto users = connection.val.getDataArray<data::User>();
+    std::string res;
+    for (auto& u : users)
+    {
+        std::vector<int> aa(6);
+        auto answer = connection.val.getDataArray<data::Answer>(
+            "user_id=" + data::wrap(u.id));
+        for (auto& a : answer)
+        {
+            int num = a.questionID % 6;
+
+            std::string times = file::Parser::slice(a.time, " ")[1];
+            auto time         = file::Parser::slice(times, ":");
+            aa[num] = std::stoi(time[0]) * 60 * 60 + std::stoi(time[1]) * 60 +
+                      std::stoi(time[2]);
+            aa[num] *= a.verdict == "T" ? 1 : -1;
+        }
+
+        res += u.login;
+        for (auto& a : aa)
+        {
+            res += " ";
+            res += std::to_string(a);
+        }
+        res += "\n";
+    }
+    return res;
+}
 
 serv::Server::Server() noexcept
 {
@@ -106,6 +160,13 @@ serv::Server::Server() noexcept
     CROW_ROUTE(mApp, "/api/get_question/<int>/<int>")
     ([&](int aQuestionID, int aUserID)
      { return get::QuestionHandler::process(aQuestionID, aUserID); });
+
+    CROW_ROUTE(mApp, "/api/qqq")
+    ([]() { return susRes(); });
+
+    CROW_ROUTE(mApp, "/api/get_problem/<int>/<int>")
+    ([&](int aProblemID, int aUserID)
+     { return get::ProblemHandler::process(aProblemID, aUserID); });
 
     //---------------------------------------------------------------------
 

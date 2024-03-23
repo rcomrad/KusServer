@@ -25,7 +25,7 @@ test::Tester::Tester(uint8_t aThreadCount) noexcept
 }
 
 //--------------------------------------------------------------------------------
-
+#include <cstdio>
 void
 test::Tester::run(data::Submission&& aSubmission) noexcept
 {
@@ -86,11 +86,14 @@ test::Tester::run(data::Submission&& aSubmission) noexcept
     }
 
     if (mFinalVerdict != Test::TestVerdict::OK) aSubmission.test = ttt;
+    if (aSubmission.test < 1) aSubmission.test = 1;
     aSubmission.verdict = verdictTostring(mFinalVerdict);
     {
         auto connection = data::ConnectionManager::getUserConnection();
         connection.val.write(aSubmission);
     }
+
+    std::remove("/home/rcomrad/data/working_directory/sus_solution.exe");
 }
 
 //--------------------------------------------------------------------------------

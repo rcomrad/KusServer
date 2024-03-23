@@ -14,9 +14,7 @@ namespace get
 class ProblemHandler : public GetHandler
 {
 public:
-    static crow::json::wvalue process(
-        const std::unordered_set<std::string>& aColumn,
-        data::SmartConnection& aConnection) noexcept;
+    static crow::json::wvalue process(int aProblemID, int aUserID) noexcept;
 };
 } // namespace get
 

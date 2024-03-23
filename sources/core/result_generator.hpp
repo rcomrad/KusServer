@@ -18,6 +18,8 @@ class ResultGenerator
 public:
     static std::string generate(int aCompetitionID) noexcept;
 
+    static  std::string susRes()noexcept;
+
 private:
 };
 

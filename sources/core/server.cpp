@@ -6,6 +6,7 @@
 #include "get/competition_handler.hpp"
 #include "get/get_handler.hpp"
 #include "get/get_router.hpp"
+#include "get/problem_handler.hpp"
 #include "get/question_handler.hpp"
 #include "multitool/command_handler.hpp"
 #include "multitool/dump_manager.hpp"
@@ -58,7 +59,7 @@ core::Server::Server()
     //--------------------------------------------------------
 
     CROW_ROUTE(app, "/api/test")
-    ([]() { return "All fine!"; });
+    ([]() { return "All fine1!"; });
 
     CROW_ROUTE(app, "/api/exload")
     (
@@ -74,11 +75,8 @@ core::Server::Server()
         });
 
     CROW_ROUTE(app, "/api/get_results/<int>")
-    (
-        [](int aCompetitionID)
-        {
-            return core::ResultGenerator::generate(aCompetitionID);
-        });
+    ([](int aCompetitionID)
+     { return core::ResultGenerator::generate(aCompetitionID); });
 
     CROW_ROUTE(app, "/api/command/<string>/<string>")
     ([](const std::string& aType, const std::string& aValue)
@@ -126,6 +124,16 @@ core::Server::Server()
     CROW_ROUTE(app, "/api/get_question/<int>/<int>")
     ([&](int aQuestionID, int aUserID)
      { return get::QuestionHandler::process(aQuestionID, aUserID); });
+
+    CROW_ROUTE(app, "/api/get_problem/<int>/<int>")
+    ([&](int aProblemID, int aUserID)
+     { return get::ProblemHandler::process(aProblemID, aUserID); });
+
+    // CROW_ROUTE(app, "/api/sufr")
+    // ([&]()
+    //  { return "hello"; });//core::ResultGenerator::susRes();
+    CROW_ROUTE(app, "/api/qqqqq")
+    ([]() { return "hello"; });
 
     //---------------------------------------------------------------------
 

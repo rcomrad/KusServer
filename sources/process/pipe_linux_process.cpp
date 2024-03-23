@@ -41,6 +41,11 @@ proc::PipeLinuxProcess::~PipeLinuxProcess() noexcept
         if (i != NULL) delete[] i;
     }
 
+    close(mPipeA[0]);
+    close(mPipeA[1]);
+    close(mPipeB[0]);
+    close(mPipeB[1]);
+
     std::cout << "kill: " << kill(mChildPID, SIGKILL) << "\n";
     // std::cout << "kill: " << kill(-mChildPID, SIGKILL) << "\n";
 

@@ -101,9 +101,9 @@ test::Test::checkTest() noexcept
     mSolutionProcess = *mSolutionTemplate;
     mSolutionProcess.create();
     dom::writeInfo("Test_cell_num:", mTesterID, "Write_data:", mTLM.mTest);
-    // mSolutionProcess.writeData(mTLM.mTest, true);
+    mSolutionProcess.writeData(mTLM.mTest);
     auto testRes = mSolutionProcess.runWithLimits();
-
+    // dom::writeInfo("Test_cell_num:", mTesterID, "Test:", mTLM.mTest);
     if (!testRes.has_value())
     {
         dom::writeInfo("Test_cell_num:", mTesterID, "Output:", mTLM.mOutput);
