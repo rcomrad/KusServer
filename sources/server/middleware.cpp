@@ -1,16 +1,19 @@
 #include "middleware.hpp"
 
-#include <string>
 #include <iostream>
-
-#include "domain/date_and_time.hpp"
-
-#include "database/connection_manager.hpp"
+#include <string>
+#include <unordered_map>
 
 #include "core/variable_storage.hpp"
 
-#include "token_handler.hpp"
+#include "database/connection_manager.hpp"
+
+#include "domain/date_and_time.hpp"
+
 #include "file_data/parser.hpp"
+
+#include "token_handler.hpp"
+
 void
 serv::Middleware::before_handle(crow::request& req,
                                 crow::response& res,
@@ -30,12 +33,18 @@ serv::Middleware::before_handle(crow::request& req,
         res.end();
     }
 
+    std::unordered_map<std::string, bool> quicker_filter = {
+        {"/api/get/if/competition_question[question_id[id,name]]", true},
+        {"competition_user[competition_id[]]",                     true}
+    };
+
     if (req.url.size() == 71)
     {
         std::string temp = req.url;
         std::string id   = {temp.back()};
         temp.resize(temp.size() - 17);
-        if (temp == "/api/get/if/competition_question[question_id[id,name]]")
+
+        if (quicker_filter.find(temp) != quicker_filter.end())
         {
 
             data::Competition comp;
@@ -57,7 +66,7 @@ serv::Middleware::before_handle(crow::request& req,
             }
         }
     }
-// std::cout << "----->>>>>>>>> " <<  req.url << std::endl;
+    // std::cout << "----->>>>>>>>> " <<  req.url << std::endl;
     std::string temp = req.url;
     auto parts = file::Parser::slice(temp, "/");
 
@@ -73,7 +82,7 @@ serv::Middleware::before_handle(crow::request& req,
     // }
     // https://kussystem.ru/api/get/if/competition_user[competition_id[]]/user_id=2
     // if (parts[parts.size() - 2] == "user_competition[competition_id[id;name;start_time]]")
-    if (parts[parts.size() - 2] == "competition_user[competition_id[]]")
+    if (quicker_filter.find(parts[parts.size() - 2]) != quicker_filter.end())
     {
         crow::json::wvalue comp;
         comp["end_time"] = "2024-03-23 23:59:59";
