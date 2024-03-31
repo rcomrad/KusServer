@@ -43,7 +43,7 @@ core::VariableStorage::reloadSettings() noexcept
                 mFlags[var.name] = var.value;
                 break;
             case file::Value::Type::String:
-                mWords[var.name] = std::string(var.value);
+                mWords[var.name] = str::string(var.value);
                 break;
         }
     }
@@ -76,7 +76,7 @@ core::VariableStorage::endLock() noexcept
 //--------------------------------------------------------------------------------
 
 const bool&
-core::VariableStorage::touchFlag(const std::string& aName,
+core::VariableStorage::touchFlag(const str::string& aName,
                                  bool aDefaultValu) noexcept
 {
     static VariableStorage& instance = getInstance();
@@ -89,7 +89,7 @@ core::VariableStorage::touchFlag(const std::string& aName,
 }
 
 const int&
-core::VariableStorage::touchInt(const std::string& aName,
+core::VariableStorage::touchInt(const str::string& aName,
                                 int aDefaultValue) noexcept
 {
     static VariableStorage& instance = getInstance();
@@ -101,9 +101,9 @@ core::VariableStorage::touchInt(const std::string& aName,
     return instance.mInts.insert({aName, aDefaultValue}).first->second;
 }
 
-const std::string&
-core::VariableStorage::touchWord(const std::string& aName,
-                                 const std::string& aDefaultValue) noexcept
+const str::string&
+core::VariableStorage::touchWord(const str::string& aName,
+                                 const str::string& aDefaultValue) noexcept
 {
     static VariableStorage& instance = getInstance();
     auto it                          = instance.mWords.find(aName);
@@ -118,7 +118,7 @@ core::VariableStorage::touchWord(const std::string& aName,
 
 void
 core::VariableStorage::setVariable(
-    const std::string& aName,
+    const str::string& aName,
     bool aValue,
     std::chrono::milliseconds aSleepValue) noexcept
 {
@@ -137,7 +137,7 @@ core::VariableStorage::setVariable(
 
 void
 core::VariableStorage::setVariable(
-    const std::string& aName,
+    const str::string& aName,
     int aValue,
     std::chrono::milliseconds aSleepValue) noexcept
 {
@@ -156,8 +156,8 @@ core::VariableStorage::setVariable(
 
 // void
 // core::VariableStorage::setVariable(
-//     const std::string& aName,
-//     const std::string& aValue,
+//     const str::string& aName,
+//     const str::string& aValue,
 //     std::chrono::milliseconds aSleepValue) noexcept
 // {
 //     static VariableStorage& instance = getInstance();

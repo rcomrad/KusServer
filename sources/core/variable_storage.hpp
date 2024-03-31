@@ -30,26 +30,26 @@ public:
         std::chrono::milliseconds aSleepValue = 200ms) noexcept;
     static void endLock() noexcept;
 
-    static const bool& touchFlag(const std::string& aName,
+    static const bool& touchFlag(const str::string& aName,
                                  bool aDefaultValue = false) noexcept;
-    static const int& touchInt(const std::string& aName,
+    static const int& touchInt(const str::string& aName,
                                int aDefaultValue = 0) noexcept;
-    static const std::string& touchWord(
-        const std::string& aName,
-        const std::string& aDefaultValue = "") noexcept;
+    static const str::string& touchWord(
+        const str::string& aName,
+        const str::string& aDefaultValue = "") noexcept;
 
     static void setVariable(
-        const std::string& aName,
+        const str::string& aName,
         bool aValue,
         std::chrono::milliseconds aSleepValue = 200ms) noexcept;
     static void setVariable(
-        const std::string& aName,
+        const str::string& aName,
         int aValue,
         std::chrono::milliseconds aSleepValue = 200ms) noexcept;
 
     template <typename S, typename = dom::enableIf<dom::isString<S>>>
     static void setVariable(
-        const std::string& aName,
+        const str::string& aName,
         S&& aValue,
         std::chrono::milliseconds aSleepValue = 200ms) noexcept
     {
@@ -68,9 +68,9 @@ public:
 
 private:
     bool mMutexFlag;
-    std::unordered_map<std::string, bool> mFlags;
-    std::unordered_map<std::string, int> mInts;
-    std::unordered_map<std::string, std::string> mWords;
+    std::unordered_map<str::string, bool> mFlags;
+    std::unordered_map<str::string, int> mInts;
+    std::unordered_map<str::string, str::string> mWords;
 
     VariableStorage() noexcept;
     static VariableStorage& getInstance() noexcept;

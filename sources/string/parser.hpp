@@ -1,5 +1,4 @@
-#ifndef PARSER_HPP
-#define PARSER_HPP
+#pragma once
 
 //--------------------------------------------------------------------------------
 
@@ -12,24 +11,27 @@
 #include "file.hpp"
 #include "variable.hpp"
 
+//--------------------------------------------------------------------------------
+
 namespace file
 {
+
 class Parser
 {
 public:
     Parser() noexcept = delete;
 
     static std::optional<Variable> makeVariable(
-        const std::string& aStr) noexcept;
+        const str::string& aStr) noexcept;
     static std::vector<Variable> getVariablesFromFile(
-        const std::string aFilename) noexcept;
+        const str::string aFilename) noexcept;
     static std::vector<Variable> getVariablesFromFile(
-        const std::string& aFolderName, const std::string aFilename) noexcept;
+        const str::string& aFolderName, const str::string aFilename) noexcept;
 
-    static std::vector<std::string> slice(
-        const std::string& aStr,
-        const std::string& aDelimiters,
-        const std::string& aErase = "") noexcept;
+    static std::vector<str::string> slice(
+        const str::string& aStr,
+        const str::string& aDelimiters,
+        const str::string& aErase = "") noexcept;
 
     enum class Type
     {
@@ -37,11 +39,10 @@ public:
         Upper,
         Lower
     };
-    static void normalize(std::string& aStr, Type aType) noexcept;
-    static std::string normalize(const std::string& aStr, Type aType) noexcept;
+    static void normalize(str::string& aStr, Type aType) noexcept;
+    static str::string normalize(const str::string& aStr, Type aType) noexcept;
 };
+
 } // namespace file
 
 //--------------------------------------------------------------------------------
-
-#endif // !PARSER_HPP

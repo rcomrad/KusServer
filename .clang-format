@@ -22,7 +22,6 @@ AllowShortIfStatementsOnASingleLine: AllIfsAndElse
 AlwaysBreakTemplateDeclarations: Yes
 BreakBeforeConceptDeclarations: Always
 AllowShortLoopsOnASingleLine: true
-AllowShortIfStatementsOnASingleLine : AllIfsAndElse
 
 AllowAllArgumentsOnNextLine : true
 BinPackArguments: true

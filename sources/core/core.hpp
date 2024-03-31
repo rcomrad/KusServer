@@ -16,23 +16,32 @@
 
 namespace core
 {
-class Core : public mod::ModuleBase
+class Core
+
 {
 public:
+    static void run() noexcept;
+
+private:
+    bool mAppIsTurnedOn;
+    static route::RouterNode mRouterNode;
+
+    //----------------------------------------------------------------------------
+
+    Core() noexcept;
     HOLY_TRINITY_SINGLE(Core);
     static Core& getInstance() noexcept;
 
-    void run() noexcept;
+    //----------------------------------------------------------------------------
 
-protected:
-    std::string doAction(const Command& aCommand) noexcept override;
+    void setup() noexcept;
+    void runNonstatic() noexcept;
 
-private:
-    Core() noexcept;
+    //----------------------------------------------------------------------------
 
-    bool mKillFlag;
+    
 
-    std::unordered_map<std::string, std::thread> mApps;
+    std::unordered_map<str::string, std::thread> mApps;
 
     void start() noexcept;
     void serverThread() noexcept;

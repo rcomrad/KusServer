@@ -18,18 +18,21 @@
 
 //--------------------------------------------------------------------------------
 
-core::Core::Core() noexcept : ModuleBase({"kill"}), mKillFlag(false)
+core::Core::Core() noexcept  :
+    mAppIsTurnedOn  (true)
+//: ModuleBase({"kill"}), mKillFlag(false)
 {
-    code::CodeGenerator cg;
-    cg.makeAll();
-    cg.generate();
 
-    core::Role::getInstance();
+    // code::CodeGenerator cg;
+    // cg.makeAll();
+    // cg.generate();
 
-    file::Path::addContentFrom(file::Path::getPathUnsafe("resource"),
-                               file::Path::FileType::File,
-                               file::Path::LevelType::Recursive);
-    file::Path::addContentFrom(file::Path::getPathUnsafe("scripts"));
+    // core::Role::getInstance();
+
+    // file::Path::addContentFrom(file::Path::getPathUnsafe("resource"),
+    //                            file::Path::FileType::File,
+    //                            file::Path::LevelType::Recursive);
+    // file::Path::addContentFrom(file::Path::getPathUnsafe("scripts"));
 }
 
 core::Core&
@@ -49,21 +52,38 @@ core::Core::run() noexcept
     {
         mod::ModuleHandler::run();
     }
+    // start();
+    // while (!mKillFlag)
+    // {
+    //     mod::ModuleHandler::run();
+    // }
 }
 
-std::string
-core::Core::doAction(const Command& aCommand) noexcept
+void
+core::Core::setup() noexcept
 {
-    std::string res;
-
-    if (aCommand.value == "kill")
-    {
-        res       = "You're monster!";
-        mKillFlag = true;
-    }
-
-    return res;
+    getInstance().run();
 }
+
+void
+core::Core::runNonstatic() noexcept
+{
+    getInstance().run();
+}
+
+// str::string
+// core::Core::doAction(const Command& aCommand) noexcept
+// {
+//     str::string res;
+
+//     if (aCommand.value == "kill")
+//     {
+//         res       = "You're monster!";
+//         mKillFlag = true;
+//     }
+
+//     return res;
+// }
 
 //--------------------------------------------------------------------------------
 
@@ -78,8 +98,8 @@ core::Core::start() noexcept
     if (restartState != "nun")
     {
         mApps["restart"] =
-            std::move(std::thread(static_cast<std::string (*)(
-                                      const std::string&, const std::string&)>(
+            std::move(std::thread(static_cast<str::string (*)(
+                                      const str::string&, const str::string&)>(
                                       &mult::CommandHandler::process),
                                   "restart", restartState));
         // temp.join();
