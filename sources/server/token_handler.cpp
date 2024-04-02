@@ -173,38 +173,39 @@ std::string
 serv::TokenHandler::doAction(const Command& aCommand) noexcept
 {
     std::string res = "No token command applied.";
-    if (aCommand.argument == "turn_off")
+    std::map<std::string, std::function<std::string()>> tokens_mode = 
     {
-        res = "Tokens turned OFF!";
-        core::VariableStorage::setVariable("token:isActive", false);
-        core::VariableStorage::setVariable("token:isMemory", false);
+        {"turn_off", [](){
+            core::VariableStorage::setVariable("token:isActive", false);
+            core::VariableStorage::setVariable("token:isMemory", false);
+            return "Tokens turned OFF!";
+        }},
+        {"turn_on", [](){
+            core::VariableStorage::setVariable("token:isActive", true);
+            core::VariableStorage::setVariable("token:isMemory", false);
+            return "Tokens turned ON!";
+        }},
+        {"memory", [](){
+            core::VariableStorage::setVariable("token:isActive", false);
+            core::VariableStorage::setVariable("token:isMemory", true);
+            return "Start url-role memorization.";
+        }},
+        {"print", [this](){
+            printAutorisation();
+            return "Print url-role data.";
+        }},
+        {"cut", [](){
+            core::VariableStorage::setVariable("insert_tokens", false);
+            return "No token command applied.";
+        }},
+        {"add", [](){
+            core::VariableStorage::setVariable("insert_tokens", true);
+            return "No token command applied.";
+        }}
+    };
+    if (tokens_mode.find(aCommand.argument) != tokens_mode.end()) {
+        res = tokens_mode[aCommand.argument]();
     }
-    else if (aCommand.argument == "turn_on")
-    {
-        res = "Tokens turned ON!";
-        core::VariableStorage::setVariable("token:isActive", true);
-        core::VariableStorage::setVariable("token:isMemory", false);
-    }
-    else if (aCommand.argument == "memory")
-    {
-        res = "Start url-role memorization.";
-        core::VariableStorage::setVariable("token:isActive", false);
-        core::VariableStorage::setVariable("token:isMemory", true);
-    }
-    else if (aCommand.argument == "print")
-    {
-        res = "Print url-role data.";
-        printAutorisation();
-    }
-    else if (aCommand.argument == "cut")
-    {
-        core::VariableStorage::setVariable("insert_tokens", false);
-    }
-    else if (aCommand.argument == "add")
-    {
-        core::VariableStorage::setVariable("insert_tokens", true);
-    }
-
     return res;
 }
 
@@ -250,7 +251,6 @@ serv::TokenHandler::printAutorisation() const noexcept
 // }
 
 //--------------------------------------------------------------------------------
-
 serv::UserDataPtr
 serv::TokenHandler::check(const std::string& aToken,
                           const std::string& aURL,
