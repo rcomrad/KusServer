@@ -23,7 +23,7 @@ serv::Middleware::redirection_enabled()
 void
 serv::Middleware::emergency_redirection()
 {
-    std::cout << "Emergency rediraction was successful" << std::endl;
+    std::cout << "Emergency redirection was successful" << std::endl;
 }
 
 void
