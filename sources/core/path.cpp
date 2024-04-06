@@ -23,34 +23,36 @@ core::Path::Path() noexcept
     auto mainFolderPathStr = binPath.parent_path().string() + "/";
 
     mFolderPaths.insert({"bin", binPathStr});
-    mFolderPaths.insert({"main", mainFolderPathStr});
+    auto configPathIt =
+        mFolderPaths.insert({"config", mainFolderPathStr + "config/"}).first;
+    mFolderPaths.insert({"main", std::move(mainFolderPathStr)});
     mFolderPaths.insert({"data", std::move(binPathStr)}); // default data folder
     // std::replace(binPath.begin(), binPath.end(), '\\', '/');
 
-    // Set config folder path
-    mFolderPaths.insert({"bin", mainFolderPathStr + "config/"});
-
-    // Add path config file
-    auto pathCfgIt =
-        mFolderPaths.insert({"config", mainFolderPathStr + "config/"}).first;
-    addAllFiles();
+    // Add paths to all config files
+    addContentToPaths(configPathIt->second, FileType::File, LevelType::Current);
 
     // Load paths from path config file
-    auto paths = core::Parser::getVariablesFromFile(pathCfgFileIt->second);
-    if (paths.empty())
+    auto pathCfgFileIt = mFilesPaths.find("path.cfg");
+    if (pathCfgFileIt != mFilesPaths.end())
     {
-        LOG_WARNING("Path file doesn't exist or empty");
-    }
-    for (auto& var : paths)
-    {
-        if (var.value.getType() != core::Value::Type::String)
+        auto paths = core::Parser::getVariablesFromFile(pathCfgFileIt->second);
+        if (paths.empty())
         {
-            dom::writeError("'", var.name, "' from ", pathFile, " isn't path");
-            continue;
+            LOG_WARNING("Path file doesn't exist or empty");
         }
+        for (auto& var : paths)
+        {
+            if (var.value.getType() != core::Value::Type::String)
+            {
+                dom::writeError("'", var.name, "' from ", pathFile,
+                                " isn't path");
+                continue;
+            }
 
-        mFolderPaths[var.name] = str::string(var.value);
-        addAllFolders(var.value);
+            mFolderPaths[var.name] = str::string(var.value);
+            addAllFolders(var.value);
+        }
     }
 }
 
@@ -69,10 +71,10 @@ boost::optional<const str::string&>
 core::Path::getFilePath(const str::string& aFileName) noexcept
 {
     auto path = getInstance().getPath(getInstance().mFilesPaths, aFileName);
-    if (!path.has_value())
-    {
-        LOG_WARNING("No such file(", aFileName, ")");
-    }
+    // if (!path.has_value())
+    // {
+    //     LOG_WARNING("No such file(", aFileName, ")");
+    // }
     return path;
 }
 
@@ -81,11 +83,11 @@ core::Path::getFilePath(const str::string& aFolderName,
                         const str::string& aFileName) noexcept
 {
     auto path = getInstance().getPath(aFolderName, aFileName);
-    if (!path.has_value())
-    {
-        LOG_WARNING("Can't reach file", aFileName, "- no such folder(",
-                    aFolderName, ")");
-    }
+    // if (!path.has_value())
+    // {
+    //     LOG_WARNING("Can't reach file", aFileName, "- no such folder(",
+    //                 aFolderName, ")");
+    // }
     return path;
 }
 
@@ -126,33 +128,6 @@ core::Path::getFilePathUnsafe(const str::string& aFolderName,
 }
 
 //--------------------------------------------------------------------------------
-//                           Get file path nonstatic
-//--------------------------------------------------------------------------------
-
-// boost::optional<const str::string&>
-// core::Path::getFilePathNonstatic(const str::string& aName) noexcept
-// {
-//     boost::optional<const str::string&> result;
-
-//     auto it = mFilesPaths.find(aName);
-//     if (it != mFilesPaths.end()) result = it->second;
-
-//     return result;
-// }
-
-// std::optional<str::string>
-// core::Path::getFilePathNonstatic(const str::string& aFolder,
-//                                  const str::string& aName) noexcept
-// {
-//     str::string result;
-
-//     auto it = mFolderPaths.find(aName);
-//     if (it != mFilesPaths.end()) result = it->second;
-
-//     return result;
-// }
-
-//--------------------------------------------------------------------------------
 //                               Get folder path
 //--------------------------------------------------------------------------------
 
@@ -182,17 +157,6 @@ core::Path::getFolderPathUnsafe(const str::string& aFolderName) noexcept
         return str::EMPTY_STRING;
     }
 }
-
-// boost::optional<const str::string&> core::Path::getFolderPathNonstatic(
-//     const str::string& aFolderName) noexcept
-// {
-//     boost::optional<const str::string&> result;
-
-//     auto folderIt = mFolderPaths(aFolder);
-//     if (folderIt.has_value()) result = folderIt.value();
-
-//     return result;
-// }
 
 //--------------------------------------------------------------------------------
 //                               Basic get path
@@ -245,6 +209,7 @@ core::Path::touchFolderNonstatic(const str::string& aFolderParentPath,
 
     str::string fullPath = aFolderParentPath + "/" + aFolderName + "/";
     auto storedPath      = getPath(mFolderPaths, aFolderName);
+    // TODO: check for existance on disk
     if (!storedPath.has_value())
     {
         if (std::filesystem::create_directories(fullPath))
@@ -310,58 +275,33 @@ core::Path::clearFolder(const str::string& aFolderName) noexcept
 }
 
 //--------------------------------------------------------------------------------
-
-// void
-// core::Path::addFoldersFrom(const str::string& aPath) noexcept
-// {
-//     getInstance().addAllFolders(aPath);
-// }
-
-// void
-// core::Path::addContentFrom(const str::string& aPath,
-//                            FileType aFIleType,
-//                            LevelType aLevelType) noexcept
-// {
-
-//     auto& instance = getInstance();
-//     auto cont      = getContentMap(aPath, aFIleType, aLevelType);
-//     for (auto& i : cont)
-//     {
-//         instance.mPaths[i.first] = i.second;
-//     }
-// }
-
+//                                 Content handler
 //--------------------------------------------------------------------------------
 
-std::map<str::string, str::string>
-core::Path::getContentMap(const str::string& aPath,
-                          FileType aFIleType,
-                          LevelType aLevelType) noexcept
+void
+core::Path::addContentToMap(
+    const str::string& aPath,
+    FileType aType,
+    LevelType aLevelType,
+    std::unordered_map<str::string, str::string>& aPathMap) noexcept
 {
-    std::map<str::string, str::string> result;
-
-    auto paths = getContent(aPath, aFIleType, aLevelType);
-    for (auto&& i : paths)
-    {
-        bool flag = i.back() == '/';
-        if (flag) i.pop_back();
-
-        int num = i.size();
-        while (num >= 0 && i[num] != '/') num--;
-        auto name = i.substr(num + 1, i.size());
-        if (flag) i.push_back('/');
-
-        result[name] = std::move(i);
-    }
-
-    return result;
+    auto temp = getContentMap(aPath, aType, aLevelType);
+    aPathMap.insert(temp.begin(), temp.end());
 }
 
 void
-core::Path::addAllFolders(const str::string& aPath) noexcept
+core::Path::addContentToPaths(const str::string& aPath,
+                              FileType aFIleType,
+                              LevelType aLevelType) noexcept
 {
-    auto temp = getContentMap(aPath, FileType::Folder, LevelType::Recursive);
-    mPaths.insert(temp.begin(), temp.end());
+    if (aFIleType & FileType::File)
+    {
+        addContentToMap(aPath, FileType::File, aLevelType, mFilesPaths);
+    }
+    if (aFIleType & FileType::Folder)
+    {
+        addContentToMap(aPath, FileType::Folder, aLevelType, mFolderPaths);
+    }
 }
 
 std::vector<str::string>
@@ -380,5 +320,25 @@ core::Path::getContent(const str::string& aPath,
         result = getContent(
             std::filesystem::recursive_directory_iterator(aPath), aFIleType);
     }
+    return result;
+}
+
+std::map<str::string, str::string>
+core::Path::getContentMap(const str::string& aPath,
+                          FileType aFIleType,
+                          LevelType aLevelType) noexcept
+{
+    std::map<str::string, str::string> result;
+
+    auto paths = getContent(aPath, aFIleType, aLevelType);
+    for (auto&& i : paths)
+    {
+        auto num = i.rfind("/", i.size() - 2);
+        auto key = i.substr(num + 1, i.size());
+        if (key.back() == '/') key.pop_back();
+        // TODO: check move existance
+        result.insert({std::move(key), std::move(i)});
+    }
+
     return result;
 }

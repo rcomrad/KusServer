@@ -1,8 +1,24 @@
-#--------------------------------------------------------------------------------
+file(GLOB
+    module_folders
+    CONFIGURE_DEPENDS    
+    "${CMAKE_CURRENT_LIST_DIR}/*"
+)
 
-macro(get_sources SOURCE_LIST DIR)
-    set(FOLDER_NAMES "core" "string")
-    add_sources(${SOURCE_LIST} "${DIR}/sources" "${FOLDER_NAMES}")
-endmacro()
+FOREACH(module ${module_folders})
+    IF(NOT IS_DIRECTORY ${module})
+        continue()
+    ENDIF()
 
-#--------------------------------------------------------------------------------
+    file(GLOB
+        module_src
+        CONFIGURE_DEPENDS    
+        "${module}/*.cpp"
+        "${module}/*.hpp"
+    )
+
+    get_filename_component(module_name ${module} NAME)
+
+    add_library(${module_name} ${module_src})
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${module_name})
+    target_include_directories(${module_name} PRIVATE "sources/")
+ENDFOREACH()

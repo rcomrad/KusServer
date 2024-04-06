@@ -103,24 +103,11 @@ private:
 
     //----------------------------------------------------------------------------
 
-    template <typename Result, typename Function, typename... Args>
-    static Result getPath(Function aFunc,
-                          str::string aObjectName,
-                          Args args) noexcept
-    {
-        auto path = (getInstance().*aFunc)(args...);
-        if (path.has_value())
-        {
-            return path.value();
-        }
-        else
-        {
-            LOG_ERROR("No such", aObjectName, "(", str::toString(args...), ")");
-            return str::EMPTY_STRING;
-        }
-    }
-
-    //----------------------------------------------------------------------------
+    void addContentToMap(
+        const str::string& aPath,
+        FileType aType,
+        LevelType aLevelType,
+        std::unordered_map<str::string, str::string>& aPathMap) noexcept;
 
     template <typename PathIterator>
     static std::unordered_map<str::string, str::string> getContent(
@@ -133,9 +120,10 @@ private:
             {
                 str::string path = entry.path().string();
 
-#ifdef BILL_WINDOWS
-                std::replace(path.begin(), path.end(), '\\', '/');
-#endif
+                // #ifdef BILL_WINDOWS
+                //                 std::replace(path.begin(), path.end(), '\\',
+                //                 '/');
+                // #endif
 
                 if (entry.is_directory()) path.push_back('/');
 
@@ -144,24 +132,6 @@ private:
         }
         return result;
     }
-
-    // template <typename... Args>
-    // str::string getPathUnsafeTempl(Args&&... args) noexcept
-    // {
-    //     str::string result;
-
-    //     auto temp = getPath(std::forward<Args>(args)..., true);
-    //     if (temp.has_value())
-    //     {
-    //         result = temp.value();
-    //     }
-    //     else
-    //     {
-    //         dom::writeError("No such folder (", aFolder, ")");
-    //     }
-
-    //     return result;
-    // }
 };
 
 } // namespace core
