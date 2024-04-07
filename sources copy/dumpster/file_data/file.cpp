@@ -17,11 +17,11 @@ file::File::getAllData(const std::string& aFileName,
         if (!ios.is_open())
         {
 
-            dom::writeError("No such file (", aFileName, ")");
+            LOG_ERROR("No such file (", aFileName, ")");
         }
         else
         {
-            dom::writeInfo("Extracting file (", aFileName, ")");
+            LOG_INFO("Extracting file (", aFileName, ")");
         }
 
         std::string line;
@@ -34,7 +34,7 @@ file::File::getAllData(const std::string& aFileName,
     else
     {
         // TODO: no copy
-        dom::writeInfo("Parsing string", aFileName);
+        LOG_INFO("Parsing string", aFileName);
         result = aFileName;
     }
 
@@ -73,7 +73,7 @@ file::File::getLines(const std::string& aFileName,
             last = i;
         }
     }
-    dom::writeInfo("Lines parsing finished");
+    LOG_INFO("Lines parsing finished");
     return result;
 }
 
@@ -109,7 +109,7 @@ file::File::getWords(const std::string& aFileName,
         }
         if (result.back().empty()) result.pop_back();
     }
-    dom::writeInfo("Words parsing finished");
+    LOG_INFO("Words parsing finished");
     return result;
 }
 
@@ -203,7 +203,7 @@ file::File::getTable(const std::string& aFileName,
     //     {
     //         gg += j + "| ";
     //     }
-    //     dom::writeInfo(gg);
+    //     LOG_INFO(gg);
     // }
 
     for (int i = 1; i < words.size(); ++i)
@@ -246,7 +246,7 @@ file::File::writeData(const std::string& aFileName,
     }
     else
     {
-        dom::writeError("Can't create file", aFileName);
+        LOG_ERROR("Can't create file", aFileName);
     }
     return result;
 }

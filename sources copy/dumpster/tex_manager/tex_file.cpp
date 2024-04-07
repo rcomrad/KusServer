@@ -11,7 +11,7 @@
 tex::TexFile::TexFile() noexcept
 {
     mData +=
-        file::File::getAllData(file::Path::getPathUnsafe("header.textemp"));
+        file::File::getAllData(core::Path::getPathUnsafe("header.textemp"));
 }
 
 std::string
@@ -25,7 +25,7 @@ tex::TexFile::printToFile() noexcept
 void
 tex::TexFile::addFile(const std::string& aFileName) noexcept
 {
-    auto curFile = file::File::getLines(file::Path::getPathUnsafe(aFileName));
+    auto curFile = file::File::getLines(core::Path::getPathUnsafe(aFileName));
 
     if (curFile[0] != "table")
     {
@@ -55,7 +55,7 @@ tex::TexFile::makeFromFIle(const std::string& aFileName) noexcept
 {
     mData += " \\begin{document}\n";
 
-    auto templ = file::File::getLines(file::Path::getPathUnsafe(aFileName));
+    auto templ = file::File::getLines(core::Path::getPathUnsafe(aFileName));
 
     for (auto& i : templ)
     {

@@ -4,17 +4,17 @@
 
 #include "parser.hpp"
 
-file::Value::operator int() const noexcept
+str::Value::operator int() const noexcept
 {
     return std::stoi(str);
 }
 
-file::Value::operator float() const noexcept
+str::Value::operator float() const noexcept
 {
     return std::stof(str);
 }
 
-file::Value::operator bool() const noexcept
+str::Value::operator bool() const noexcept
 {
     bool result     = false;
     auto normalised = Parser::normalize(str, Parser::Type::Lower);
@@ -23,12 +23,12 @@ file::Value::operator bool() const noexcept
     return result;
 }
 
-file::Value::operator std::string() const noexcept
+str::Value::operator std::string() const noexcept
 {
     return str;
 }
 
-file::Value::operator dom::Pair<float>() const noexcept
+str::Value::operator dom::Pair<float>() const noexcept
 {
     dom::Pair<float> result;
 
@@ -62,8 +62,8 @@ file::Value::operator dom::Pair<float>() const noexcept
     return result;
 }
 
-file::Value::Type
-file::Value::getType() const noexcept
+str::Value::Type
+str::Value::getType() const noexcept
 {
     Value::Type result = Value::Type::Nun;
 

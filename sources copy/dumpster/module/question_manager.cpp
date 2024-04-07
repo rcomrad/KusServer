@@ -36,8 +36,8 @@ mod::QuestionManager::loadQuestions() noexcept
     auto connection = data::ConnectionManager::getUserConnection();
     // connection.val.drop("question", "id > 0");
 
-    auto hasQ = file::Path::getContentMap(file::Path::getPathUnsafe("question"),
-                                          file::Path::FileType::Folder);
+    auto hasQ = core::Path::getContentMap(core::Path::getPathUnsafe("question"),
+                                          core::Path::FileType::Folder);
     std::map<std::string, std::string> questions;
     questions.insert(hasQ.begin(), hasQ.end());
 

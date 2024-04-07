@@ -4,16 +4,15 @@
 
 #include <functional>
 #include <optional>
-#include <string>
 #include <unordered_map>
 #include <vector>
 
-#include "file.hpp"
 #include "variable.hpp"
+#include "kus_string.hpp"
 
 //--------------------------------------------------------------------------------
 
-namespace file
+namespace str
 {
 
 class Parser

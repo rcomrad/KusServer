@@ -3,5 +3,5 @@
 void
 sus()
 {
-    std::cout << "Hello2world\n";
+    std::cout << "eho\n";
 }

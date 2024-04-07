@@ -3,9 +3,10 @@
 
 //--------------------------------------------------------------------------------
 
-#include <string>
 #include <unordered_map>
 #include <unordered_set>
+
+#include "string/kus_string.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -19,7 +20,7 @@ struct Command
 
     Command(const str::string& aValue, const str::string& aArguments) noexcept;
 };
-} // namespace base
+} // namespace route
 
 //--------------------------------------------------------------------------------
 

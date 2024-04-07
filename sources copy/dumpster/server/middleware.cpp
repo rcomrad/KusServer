@@ -47,7 +47,7 @@ serv::Middleware::before_handle(crow::request& req,
                 (comp.id == 0 || !dom::DateAndTime::isPassed(comp.startTime) ||
                  dom::DateAndTime::isPassed(comp.endTime)))
             {
-                dom::writeInfo("My id: ", user.value()->id);
+                LOG_INFO("My id: ", user.value()->id);
                 crow::json::wvalue result;
                 result["errors"] = dom::DateAndTime::getCurentTime();
                 result["competition_question"] = "errors";

@@ -12,9 +12,8 @@
 #include <utility>
 #include <vector>
 
-#include "domain/log.hpp"
-
-#include "path.hpp"
+#include "core/logging.hpp"
+#include "core/path.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -104,8 +103,8 @@ private:
                            const std::string& aFileName,
                            Args&&... args) noexcept
     {
-        auto path = core::Path::getPath(aFolderName, aFileName);
-        decltype(aFuncPtr(path.value(), std::forward<Args>(args)...)) result;
+        auto path = core::Path::getFilePath(aFolderName, aFileName);
+        decltype(aFuncPtr(path, std::forward<Args>(args)...)) result;
         if (path.has_value())
         {
             result = aFuncPtr(path.value(), std::forward<Args>(args)...);

@@ -8,8 +8,10 @@ int
 main(int argc, char* argv[])
 {
     std::cout << "LAMPA\n";
-    // XTODO: write time
-    core::Core::getInstance().run();
+    // TODO: write time
+
+    core::Core::setup();
+    core::Core::run();
 
     return 0;
 }

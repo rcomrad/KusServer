@@ -46,8 +46,8 @@ proc::BoostProcess::create() noexcept
     //                bp::start_suspended);
     // mProcess = std::move(temp);
 
-    dom::writeInfo("Creating_process_with_name:", mProcessArgs);
-    dom::writeInfo("Runing_simple_process");
+    LOG_INFO("Creating_process_with_name:", mProcessArgs);
+    LOG_INFO("Runing_simple_process");
 
     try
     {
@@ -84,7 +84,7 @@ proc::BoostProcess::run() noexcept
 std::optional<Limits>
 proc::BoostProcess::runWithLimits() noexcept
 {
-    dom::writeInfo("Runing_process_with_time_and_memory_evaluation");
+    LOG_INFO("Runing_process_with_time_and_memory_evaluation");
 
     std::optional<Limits> result = {};
 

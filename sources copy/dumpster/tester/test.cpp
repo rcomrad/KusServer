@@ -78,7 +78,7 @@ test::Test::run(TestReader& aTestReader) noexcept
 void
 test::Test::runTesting(TestReader& aTestReader) noexcept
 {
-    dom::writeInfo("Start_new_test", "Test_cell_num:", mTesterID);
+    LOG_INFO("Start_new_test", "Test_cell_num:", mTesterID);
 
     mTLM = aTestReader.getTest();
     mTLM.makeTestSizes();
@@ -87,7 +87,7 @@ test::Test::runTesting(TestReader& aTestReader) noexcept
     checkTest();
     mThreadSignals->push(mTesterID);
 
-    dom::writeInfo("End_test#", mTLM.mTestNumber, "Test_cell_num:", mTesterID);
+    LOG_INFO("End_test#", mTLM.mTestNumber, "Test_cell_num:", mTesterID);
 }
 
 //--------------------------------------------------------------------------------
@@ -95,18 +95,17 @@ test::Test::runTesting(TestReader& aTestReader) noexcept
 void
 test::Test::checkTest() noexcept
 {
-    dom::writeInfo("Checking_test#", mTLM.mTestNumber,
-                   "Test_cell_num:", mTesterID);
+    LOG_INFO("Checking_test#", mTLM.mTestNumber, "Test_cell_num:", mTesterID);
 
     mSolutionProcess = *mSolutionTemplate;
     mSolutionProcess.create();
-    dom::writeInfo("Test_cell_num:", mTesterID, "Write_data:", mTLM.mTest);
+    LOG_INFO("Test_cell_num:", mTesterID, "Write_data:", mTLM.mTest);
     // mSolutionProcess.writeData(mTLM.mTest, true);
     auto testRes = mSolutionProcess.runWithLimits();
 
     if (!testRes.has_value())
     {
-        dom::writeInfo("Test_cell_num:", mTesterID, "Output:", mTLM.mOutput);
+        LOG_INFO("Test_cell_num:", mTesterID, "Output:", mTLM.mOutput);
         mVerdict = TestVerdict::TLE;
     }
     else
@@ -117,9 +116,9 @@ test::Test::checkTest() noexcept
         mSolutionProcess.readData(mTLM.mOutput);
         mTLM.makeOutputSizes();
 
-        dom::writeInfo("Test_cell_num:", mTesterID, "Test:", mTLM.mTest);
-        dom::writeInfo("Test_cell_num:", mTesterID, "Output:", mTLM.mOutput);
-        dom::writeInfo("Test_cell_num:", mTesterID, "Answer:", mTLM.mAnswer);
+        LOG_INFO("Test_cell_num:", mTesterID, "Test:", mTLM.mTest);
+        LOG_INFO("Test_cell_num:", mTesterID, "Output:", mTLM.mOutput);
+        LOG_INFO("Test_cell_num:", mTesterID, "Answer:", mTLM.mAnswer);
 
         mCheckerProcess = *mCheckerTemplate;
         mCheckerProcess.create();
@@ -142,9 +141,9 @@ test::Test::checkTest() noexcept
 void
 test::Test::resultEvoluation() noexcept
 {
-    dom::writeInfo("Test_cell_num:", mTesterID, "Result_evoluation");
-    dom::writeInfo("time:", mUsedTime);
-    dom::writeInfo("memory:", mUsedMemory);
+    LOG_INFO("Test_cell_num:", mTesterID, "Result_evoluation");
+    LOG_INFO("time:", mUsedTime);
+    LOG_INFO("memory:", mUsedMemory);
 
     std::string temp;
 
@@ -153,34 +152,34 @@ test::Test::resultEvoluation() noexcept
     if (temp.empty())
     {
         mVerdict = TestVerdict::TLE;
-        dom::writeInfo("Result_is_TLE");
-        dom::writeInfo("wanted:", mUsedTime);
-        dom::writeInfo("received:", mTimeLimit);
+        LOG_INFO("Result_is_TLE");
+        LOG_INFO("wanted:", mUsedTime);
+        LOG_INFO("received:", mTimeLimit);
     }
     else if (temp.substr(0, 2) != "ok")
     {
         mVerdict = TestVerdict::WA;
-        dom::writeInfo("Result_not_okay");
-        dom::writeInfo("Checker_output:", temp);
+        LOG_INFO("Result_not_okay");
+        LOG_INFO("Checker_output:", temp);
     }
     else if (mUsedTime > mTimeLimit)
     {
         mVerdict = TestVerdict::TLE;
-        dom::writeInfo("Result_is_TLE");
-        dom::writeInfo("wanted:", mUsedTime);
-        dom::writeInfo("received:", mTimeLimit);
+        LOG_INFO("Result_is_TLE");
+        LOG_INFO("wanted:", mUsedTime);
+        LOG_INFO("received:", mTimeLimit);
     }
     else if (mUsedMemory > mMemoryLimit)
     {
         mVerdict = TestVerdict::MLE;
-        dom::writeInfo("Result_is_MLE");
-        dom::writeInfo("wanted:", mUsedMemory);
-        dom::writeInfo("received:", mMemoryLimit);
+        LOG_INFO("Result_is_MLE");
+        LOG_INFO("wanted:", mUsedMemory);
+        LOG_INFO("received:", mMemoryLimit);
     }
     else
     {
         mVerdict = TestVerdict::OK;
-        dom::writeInfo("Test_cell_num:", mTesterID, "ok_test_passed");
+        LOG_INFO("Test_cell_num:", mTesterID, "ok_test_passed");
     }
 }
 

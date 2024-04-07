@@ -128,7 +128,7 @@ public:
         }
         else
         {
-            dom::writeError("Insert", T::geName(), "element failed");
+            LOG_ERROR("Insert", T::geName(), "element failed");
         }
         return aData.id;
     }

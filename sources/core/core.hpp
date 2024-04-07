@@ -3,14 +3,12 @@
 
 //--------------------------------------------------------------------------------
 
-#include <string>
 #include <thread>
 #include <unordered_map>
-#include <vector>
 
 #include "domain/holy_trinity.hpp"
 
-#include "module/module_base.hpp"
+#include "string/kus_string.hpp"
 
 //------------------------------------------------------------------------------
 
@@ -20,11 +18,11 @@ class Core
 
 {
 public:
+    static void setup() noexcept;
     static void run() noexcept;
 
 private:
     bool mAppIsTurnedOn;
-    static route::RouterNode mRouterNode;
 
     //--------------------------------------------------------------------------
 
@@ -34,16 +32,12 @@ private:
 
     //--------------------------------------------------------------------------
 
-    void setup() noexcept;
+    void setupNonstatic() noexcept;
     void runNonstatic() noexcept;
 
     //--------------------------------------------------------------------------
 
     std::unordered_map<str::string, std::thread> mApps;
-
-    void start() noexcept;
-    void serverThread() noexcept;
-    void testerThread() noexcept;
 };
 } // namespace core
 

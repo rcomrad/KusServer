@@ -44,7 +44,7 @@ post::AnswerHandler::process(post::PostRequest<data::Answer>& aReq) noexcept
     if (oldAnswer.id) answer.id = oldAnswer.id;
     if (answer.value.size() > 100)
     {
-        dom::writeError("Can't write full answer!", answer.value);
+        LOG_ERROR("Can't write full answer!", answer.value);
         answer.value.resize(100);
     }
 

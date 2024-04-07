@@ -38,7 +38,7 @@ test::Tester::run(data::Submission&& aSubmission) noexcept
             "id=" + data::wrap(aSubmission.problemID));
     }
 
-    std::string curPath = file::Path::getPathUnsafe("problem");
+    std::string curPath = core::Path::getPathUnsafe("problem");
     curPath += problem.nickname + "/";
 
     std::string submissionPath = aSubmission.sourceName;
@@ -50,10 +50,10 @@ test::Tester::run(data::Submission&& aSubmission) noexcept
     }
     else
     {
-        checkerPath = file::Path::getPathUnsafe("checker") + checkerPath;
+        checkerPath = core::Path::getPathUnsafe("checker") + checkerPath;
     }
 
-    auto workDir   = file::Path::getPathUnsafe("working_directory");
+    auto workDir   = core::Path::getPathUnsafe("working_directory");
     auto solProc   = prepareFile(submissionPath, workDir + "sus_solution");
     auto checkProc = prepareFile(checkerPath, workDir + "sus_checker");
 
@@ -111,7 +111,7 @@ test::Tester::prepareFile(const std::string& aFileName,
 void
 test::Tester::check(TestReader& aTestReader) noexcept
 {
-    dom::writeInfo("Checking_participant_code");
+    LOG_INFO("Checking_participant_code");
     boost::posix_time::ptime timeLocal =
         boost::posix_time::second_clock::local_time();
 
@@ -121,7 +121,7 @@ test::Tester::check(TestReader& aTestReader) noexcept
         auto signal = mThreadSignals.getSignal();
         if (signal.has_value())
         {
-            dom::writeInfo("Signal_number", signal.value());
+            LOG_INFO("Signal_number", signal.value());
             auto& test = mTests[signal.value()];
 
             if (mFinalVerdict == Test::TestVerdict::OK)
@@ -154,8 +154,8 @@ test::Tester::check(TestReader& aTestReader) noexcept
         }
     }
 
-    dom::writeInfo("Final_time:", mFinalTime);
-    dom::writeInfo("Final_memory:", mFinalMemory);
+    LOG_INFO("Final_time:", mFinalTime);
+    LOG_INFO("Final_memory:", mFinalMemory);
 }
 
 std::string
@@ -186,7 +186,7 @@ test::Tester::verdictTostring(const Test::TestVerdict& aVerdict) const noexcept
             result = "WA";
             break;
     }
-    dom::writeInfo("Final_result:", result);
+    LOG_INFO("Final_result:", result);
     return result;
 }
 

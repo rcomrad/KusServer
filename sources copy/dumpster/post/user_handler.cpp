@@ -121,7 +121,8 @@ post::UserHandler::autorisation(const crow::request& aReq) noexcept
     return resp;
 }
 
-void checkUser(data::User& aUser)
+void
+checkUser(data::User& aUser)
 {
     // aUser.login     = data::safeWrap(aUser.login);
     // aUser.password  = data::safeWrap(aUser.password);
@@ -152,7 +153,8 @@ post::UserHandler::registration(const crow::request& aReq,
         data::User sameLogin  = connection.val.getData<data::User>(loginCond);
 
         // std::string emailCond = "email = " + data::safeWrap(newUser.email);
-        // data::User sameEmail  = connection.val.getData<data::User>(emailCond);
+        // data::User sameEmail  =
+        // connection.val.getData<data::User>(emailCond);
 
         if (sameLogin.id && newUser.key == "prog")
         {
@@ -186,7 +188,7 @@ post::UserHandler::registration(const crow::request& aReq,
         // }
         else
         {
-            if (newUser.key == "info") newUser.id = sameLogin.id ;
+            if (newUser.key == "info") newUser.id = sameLogin.id;
 
             applyKey(newUser);
             fiil(newUser);
@@ -228,7 +230,6 @@ post::UserHandler::registration(const crow::request& aReq,
     return resp;
 }
 
-
 // std::string
 // post::UserHandler::registration2(const crow::request& aReq,
 //                                 bool info) noexcept
@@ -247,10 +248,12 @@ post::UserHandler::registration(const crow::request& aReq,
 //         auto connection = data::ConnectionManager::getUserConnection();
 
 //         std::string loginCond = "login = " + data::safeWrap(newUser.login);
-//         data::User sameLogin  = connection.val.getData<data::User>(loginCond);
+//         data::User sameLogin  =
+//         connection.val.getData<data::User>(loginCond);
 
 //         std::string emailCond = "email = " + data::safeWrap(newUser.email);
-//         data::User sameEmail  = connection.val.getData<data::User>(emailCond);
+//         data::User sameEmail  =
+//         connection.val.getData<data::User>(emailCond);
 
 //         if (!info && sameLogin.id)
 //         {
@@ -326,11 +329,11 @@ post::UserHandler::confirmation(const std::string& aUrl) noexcept
     auto connection = data::ConnectionManager::getUserConnection();
     auto userReg    = connection.val.getData<data::UserRegistration>(
         "link = " + data::safeWrap(aUrl));
-    dom::writeError(data::safeWrap(aUrl));
+    LOG_ERROR(data::safeWrap(aUrl));
 
     if (userReg.id)
     {
-        dom::writeError(1);
+        LOG_ERROR(1);
 
         connection.val.drop(userReg);
         auto user = connection.val.getData<data::User>(
@@ -356,7 +359,7 @@ post::UserHandler::confirmation(const std::string& aUrl) noexcept
     }
     else
     {
-        dom::writeError(2);
+        LOG_ERROR(2);
 
         std::string id;
         for (auto c : aUrl)

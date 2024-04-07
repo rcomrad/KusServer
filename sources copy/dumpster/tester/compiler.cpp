@@ -12,7 +12,7 @@
 //--------------------------------------------------------------------------------
 
 std::string test::Compiler::mCPPCompiler =
-    file::Path::getPathUnsafe("compiler") + "magicCPPCompiler.cmd";
+    core::Path::getPathUnsafe("compiler") + "magicCPPCompiler.cmd";
 
 std::unordered_map<std::string, test::Compiler::Language>
     test::Compiler::mLanguages = {

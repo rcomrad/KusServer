@@ -2,12 +2,10 @@
 
 #include <filesystem>
 
-#include "domain/log.hpp"
-
+#include "core/logging.hpp"
+#include "string/file.hpp"
 #include "string/kus_string.hpp"
-
-#include "file.hpp"
-#include "parser.hpp"
+#include "string/parser.hpp"
 
 //--------------------------------------------------------------------------------
 //                                Path initialise
@@ -33,27 +31,27 @@ core::Path::Path() noexcept
     addContentToPaths(configPathIt->second, FileType::File, LevelType::Current);
 
     // Load paths from path config file
-    auto pathCfgFileIt = mFilesPaths.find("path.cfg");
-    if (pathCfgFileIt != mFilesPaths.end())
-    {
-        auto paths = core::Parser::getVariablesFromFile(pathCfgFileIt->second);
-        if (paths.empty())
-        {
-            LOG_WARNING("Path file doesn't exist or empty");
-        }
-        for (auto& var : paths)
-        {
-            if (var.value.getType() != core::Value::Type::String)
-            {
-                dom::writeError("'", var.name, "' from ", pathFile,
-                                " isn't path");
-                continue;
-            }
+    // auto pathCfgFileIt = mFilesPaths.find("path.cfg");
+    // if (pathCfgFileIt != mFilesPaths.end())
+    // {
+    //     auto paths =
+    //     core::Parser::getVariablesFromFile(pathCfgFileIt->second); if
+    //     (paths.empty())
+    //     {
+    //         LOG_WARNING("Path file doesn't exist or empty");
+    //     }
+    //     for (auto& var : paths)
+    //     {
+    //         if (var.value.getType() != core::Value::Type::String)
+    //         {
+    //             LOG_ERROR("'", var.name, "' from ", pathFile, " isn't path");
+    //             continue;
+    //         }
 
-            mFolderPaths[var.name] = str::string(var.value);
-            addAllFolders(var.value);
-        }
-    }
+    //         mFolderPaths[var.name] = str::string(var.value);
+    //         addAllFolders(var.value);
+    //     }
+    // }
 }
 
 core::Path&
@@ -71,10 +69,10 @@ boost::optional<const str::string&>
 core::Path::getFilePath(const str::string& aFileName) noexcept
 {
     auto path = getInstance().getPath(getInstance().mFilesPaths, aFileName);
-    // if (!path.has_value())
-    // {
-    //     LOG_WARNING("No such file(", aFileName, ")");
-    // }
+    if (!path.has_value())
+    {
+        LOG_WARNING("No such file(", aFileName, ")");
+    }
     return path;
 }
 
@@ -83,11 +81,11 @@ core::Path::getFilePath(const str::string& aFolderName,
                         const str::string& aFileName) noexcept
 {
     auto path = getInstance().getPath(aFolderName, aFileName);
-    // if (!path.has_value())
-    // {
-    //     LOG_WARNING("Can't reach file", aFileName, "- no such folder(",
-    //                 aFolderName, ")");
-    // }
+    if (!path.has_value())
+    {
+        LOG_WARNING("Can't reach file", aFileName, "- no such folder(",
+                    aFolderName, ")");
+    }
     return path;
 }
 
@@ -185,7 +183,7 @@ core::Path::getPath(const str::string& aFolderName,
     auto it = aStorage.find(aName);
     if (it != aStorage.end())
     {
-        result = it->second;
+        result = it->second + aFileName;
     }
     return result;
 }

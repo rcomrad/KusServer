@@ -23,7 +23,7 @@ post::PrintJournal::process(const std::string& aData) noexcept
 
     // std::string output;
     // output += file::File::getAllData(
-    //     file::Path::getPathUnsafe("resource", "header.tex"), true);
+    //     core::Path::getPathUnsafe("resource", "header.tex"), true);
     // output += makeJournal(num);
     // output += "\\end{document}";
 
@@ -40,7 +40,7 @@ post::PrintJournal::process(const std::string& aData) noexcept
 #ifdef LINUS_LINUX
 
     system(
-        (file::Path::getPathUnsafe("pdf_compile.sh") + " "s + result).c_str());
+        (core::Path::getPathUnsafe("pdf_compile.sh") + " "s + result).c_str());
     result = result.substr(result.find("print"), result.size());
     result.resize(result.size() - 3);
     result += "pdf";

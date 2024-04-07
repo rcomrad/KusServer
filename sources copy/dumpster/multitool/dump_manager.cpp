@@ -127,7 +127,7 @@ mult::DumpManager::dumpAsFile(
     auto path = file::File::writeData(
         "dump", dom::DateAndTime::getCurentTimeSafe() + ".dmp", data);
 
-    if (!path.has_value()) dom::writeError("Can't create file in dump folder");
+    if (!path.has_value()) LOG_ERROR("Can't create file in dump folder");
     return path;
 }
 

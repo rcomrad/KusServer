@@ -26,7 +26,7 @@ data::ColumnSetting::ColumnSetting(std::string aName,
 
 data::Postgresql::Postgresql(const DBSettings& aDBS)
 {
-    dom::writeInfo("Creating_postgresql_database_connection");
+    LOG_INFO("Creating_postgresql_database_connection");
     try
     {
         // clang-format off
@@ -40,18 +40,18 @@ data::Postgresql::Postgresql(const DBSettings& aDBS)
     }
     catch (const std::exception& e)
     {
-        dom::writeError("Postgresql::Postgresql() ", e.what());
+        LOG_ERROR("Postgresql::Postgresql() ", e.what());
         // exit(0);
     }
 
-    dom::writeInfo("Opening_postgresql_database");
+    LOG_INFO("Opening_postgresql_database");
     if (mConnection->is_open())
     {
-        dom::writeInfo("Opened_database_successfully");
+        LOG_INFO("Opened_database_successfully");
     }
     else
     {
-        dom::writeInfo("Can't_open_database");
+        LOG_INFO("Can't_open_database");
         // exit(0);
     }
 }
@@ -298,7 +298,7 @@ void
 data::Postgresql::prepare(const std::string& aStatment) noexcept
 {
 #if LOG_POSTGRES_QUERIES
-    dom::writeInfo(aStatment);
+    LOG_INFO(aStatment);
 #endif
 
     closeStatment();
@@ -312,7 +312,7 @@ data::Postgresql::prepare(const std::string& aStatment) noexcept
     {
         std::string s(e.what());
         // auto str = dom::Cyrilic::global.translit(s);
-        dom::writeError(s, "req:", aStatment);
+        LOG_ERROR(s, "req:", aStatment);
     }
 }
 
@@ -328,7 +328,7 @@ void
 data::Postgresql::nontransaction(const std::string& aStatment) noexcept
 {
 #if LOG_POSTGRES_QUERIES
-    dom::writeInfo(aStatment);
+    LOG_INFO(aStatment);
 #endif
 
     try
@@ -341,7 +341,7 @@ data::Postgresql::nontransaction(const std::string& aStatment) noexcept
     {
         std::string s(e.what());
         // auto str = dom::Cyrilic::global.translit(s);
-        dom::writeError(s, "req:", aStatment);
+        LOG_ERROR(s, "req:", aStatment);
     }
 }
 

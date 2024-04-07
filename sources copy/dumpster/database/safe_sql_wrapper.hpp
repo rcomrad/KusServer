@@ -41,10 +41,10 @@ public:
                 case ';':
                 case '\'':
                 case '\"':
-                    dom::writeError("penetration!", s[i], i);
+                    LOG_ERROR("penetration!", s[i], i);
                     flag = true;
                     break;
-                default :
+                default:
                     cnt = 0;
                     break;
             }

@@ -21,4 +21,10 @@ FOREACH(module ${module_folders})
     add_library(${module_name} ${module_src})
     target_link_libraries(${PROJECT_NAME} PRIVATE ${module_name})
     target_include_directories(${module_name} PRIVATE "sources/")
+
+    # TODO: remove
+    target_link_libraries(${module_name} PRIVATE libpqxx::pqxx)
+    target_link_libraries(${module_name} PRIVATE Crow::Crow)
+    target_link_libraries(${module_name} PRIVATE ${Boost_LIBRARIES})
+    target_link_libraries(${module_name} PRIVATE mailio)
 ENDFOREACH()

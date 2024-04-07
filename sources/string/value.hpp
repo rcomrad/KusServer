@@ -6,7 +6,7 @@
 
 #include "domain/pair.hpp"
 
-namespace file
+namespace str
 {
 struct Value
 {
@@ -32,6 +32,6 @@ struct Value
     };
     Type getType() const noexcept;
 };
-} // namespace file
+} // namespace str
 
 #endif // !VALUE_HPP

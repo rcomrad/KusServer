@@ -1,21 +1,22 @@
-#ifndef ROUTER_MASTER_HPP
-#define ROUTER_MASTER_HPP
+#pragma once
 
 //--------------------------------------------------------------------------------
 
-#include <string>
 #include <unordered_map>
-#include <unordered_set>
 
 #include "domain/holy_trinity.hpp"
 
+#include "string/kus_string.hpp"
+
 //--------------------------------------------------------------------------------
 
-namespace route
+namespace core
 {
-class CallBackStorage
+class CallbackStorage
 {
 public:
+    static str::string MODULE_CALLBACK_VOLUME;
+
     static void add(const str::string& aVolumeName,
                     const str::string& aNodeName,
                     void* aFunc) noexcept;
@@ -23,10 +24,14 @@ public:
     static void* get(const str::string& aVolumeName,
                      const str::string& aNodeName) noexcept;
 
+    static const std::unordered_map<str::string, void*>& getVolumeCallbacks(
+        const str::string& aVolumeName) noexcept;
+
 private:
-    HOLY_TRINITY_SINGLE(CallBackStorage);
-    
-    static CallBackStorage& getInstance() noexcept;
+    HOLY_TRINITY_SINGLE(CallbackStorage);
+
+    CallbackStorage() noexcept;
+    static CallbackStorage& getInstance() noexcept;
 
     //----------------------------------------------------------------------------
 
@@ -37,13 +42,14 @@ private:
     void* getNonstatic(const str::string& aVolumeName,
                        const str::string& aNodeName) const noexcept;
 
+    const std::unordered_map<str::string, void*>& getVolumeCallbacksNonstatic(
+        const str::string& aVolumeName) noexcept;
+
     //----------------------------------------------------------------------------
 
     std::unordered_map<str::string, std::unordered_map<str::string, void*>>
         mMap;
 };
-} // namespace route
+} // namespace core
 
 //--------------------------------------------------------------------------------
-
-#endif // !ROUTER_MASTER_HPP

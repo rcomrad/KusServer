@@ -1,25 +1,26 @@
-#ifndef ROUTER_NODE_HPP
-#define ROUTER_NODE_HPP
+#pragma once
 
 //--------------------------------------------------------------------------------
 
-#include <string>
 #include <tuple>
 #include <unordered_set>
 #include <vector>
 
+#include "string/kus_string.hpp"
+
 //--------------------------------------------------------------------------------
 
-namespace route
+namespace core
 {
-class RegistrateCallBack
+class CallbackRegister
 {
 public:
-    RegistrateCallBack(const str::string& aVolumeName,
-               const str::string& aNodeName,
-               void* aFunc) noexcept;
+    CallbackRegister(const str::string& aVolumeName,
+                     const str::string& aNodeName,
+                     void* aFunc) noexcept;
 
-    // RouterNode(const std::vector<std::tuple<str::string, str::string, void*>>&
+    // RouterNode(const std::vector<std::tuple<str::string, str::string,
+    // void*>>&
     //                aRouts) noexcept;
 
     // RouterNode(const std::vector<str::string>& aVolumeNames,
@@ -34,8 +35,6 @@ public:
     //            const std::unordered_map<str::string, void*>& aNodes)
     //            noexcept;
 };
-} // namespace route
+} // namespace core
 
 //--------------------------------------------------------------------------------
-
-#endif // !ROUTER_NODE_HPP

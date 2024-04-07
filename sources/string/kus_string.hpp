@@ -9,12 +9,13 @@
 namespace str
 {
 
-typedef string std::string;
-static string EMPTY_STRING = "";
+using string = std::string;
+static string EMPTY_STRING;
 
-isEmptyString(str::string aStr)
+bool
+isSpace(char c)
 {
-    return aStr.empty();
+    return std::isspace(c);
 }
 
 } // namespace str

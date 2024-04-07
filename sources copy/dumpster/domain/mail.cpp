@@ -15,15 +15,15 @@ dom::Mail::Mail(const std::string& aLogin,
     if (aLogin.find("adtspb") != std::string::npos)
     {
         adtSmtp();
-        dom::writeInfo(0, "act");
+        LOG_INFO(0, "act");
     }
     else
     {
         academtalantTls();
-        dom::writeInfo(0, "at");
+        LOG_INFO(0, "at");
     }
 
-    dom::writeInfo(mSmtp, mPort);
+    LOG_INFO(mSmtp, mPort);
 }
 
 void
@@ -32,8 +32,8 @@ dom::Mail::useDefaultMail() noexcept
     static auto pass = file::File::getWords("config", "mail.pass");
     mLogin           = pass[0][0];
     mPassword        = pass[0][1];
-    dom::writeInfo(0, mLogin);
-    dom::writeInfo(0, mPassword);
+    LOG_INFO(0, mLogin);
+    LOG_INFO(0, mPassword);
     academtalantTls();
 }
 
@@ -64,8 +64,9 @@ dom::Mail::send(const std::string& aEmailName,
     {
         mailio::message msg;
         msg.header_codec(mailio::message::header_codec_t::BASE64);
-        msg.from(mailio::mail_address("KusSystem", mLogin)); // set the correct sender
-                                                    // name and address
+        msg.from(mailio::mail_address("KusSystem",
+                                      mLogin)); // set the correct sender
+                                                // name and address
         msg.add_recipient(
             mailio::mail_address("", aEmailName)); // set the correct recipent
                                                    // name and address
@@ -80,19 +81,19 @@ dom::Mail::send(const std::string& aEmailName,
         mailio::smtps conn(mSmtp, mPort);
         mailio::dialog_ssl::ssl_options_t temp;
         temp.verify_mode = boost::asio::ssl::verify_none;
-        temp.method = boost::asio::ssl::context::sslv23;
+        temp.method      = boost::asio::ssl::context::sslv23;
         conn.ssl_options(temp);
         conn.authenticate(mLogin, mPassword, mMetchod);
         conn.submit(msg);
     }
     catch (mailio::smtp_error& exc)
     {
-        dom::writeError(1, exc.what());
+        LOG_ERROR(1, exc.what());
         result = false;
     }
     catch (mailio::dialog_error& exc)
     {
-        dom::writeError(2, exc.what());
+        LOG_ERROR(2, exc.what());
         result = false;
     }
 

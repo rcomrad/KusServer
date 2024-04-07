@@ -22,7 +22,7 @@ proc::PipeWindowsProcess::~PipeWindowsProcess()
 void
 proc::PipeWindowsProcess::IORedirection() noexcept
 {
-    dom::writeInfo("Rederecting_input_and_output_to_pipe");
+    LOG_INFO("Rederecting_input_and_output_to_pipe");
 
     mIOSet = true;
 
@@ -33,14 +33,14 @@ proc::PipeWindowsProcess::IORedirection() noexcept
 
     if (!CreatePipe(&mChildSTDIN, &mThisSTDOUT, &securatyAttributes, 0))
     {
-        dom::writeError("PipeProcess", "IORedirection", 20, "Can't_create_pipe",
-                        "Windows");
+        LOG_ERROR("PipeProcess", "IORedirection", 20, "Can't_create_pipe",
+                  "Windows");
     }
 
     if (!CreatePipe(&mThisSTDIN, &mChildSTDOUT, &securatyAttributes, 0))
     {
-        dom::writeError("PipeProcess", "IORedirection", 21, "Can't_create_pipe",
-                        "Windows");
+        LOG_ERROR("PipeProcess", "IORedirection", 21, "Can't_create_pipe",
+                  "Windows");
     }
 
     ZeroMemory(&mStartupInfo, sizeof(STARTUPINFO));

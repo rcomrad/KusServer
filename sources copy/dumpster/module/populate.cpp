@@ -58,12 +58,12 @@ mod::Populate::remakeDatabase() noexcept
 {
     createEnvironment();
     createDatabaseFromFile(
-        file::Path::getPathUnsafe("config", "database.psql_db"));
+        core::Path::getPathUnsafe("config", "database.psql_db"));
     post::PostHandler::uploadFromFile(
         {
             {"type", "nun"}
     },
-        file::Path::getPathUnsafe("config", "database.dmp"));
+        core::Path::getPathUnsafe("config", "database.dmp"));
 }
 
 void

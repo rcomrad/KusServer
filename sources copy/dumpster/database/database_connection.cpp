@@ -44,7 +44,7 @@ data::DatabaseConnection::getConnectionTypeSettings(
 data::DatabaseConnection::DatabaseConnection(const DBSettings& aDBS) noexcept
     : mDBSettings(aDBS), mDatabase(aDBS)
 {
-    dom::writeInfo("Creating_database_quare");
+    LOG_INFO("Creating_database_quare");
 }
 
 data::DatabaseConnection::DatabaseConnection(
@@ -52,7 +52,7 @@ data::DatabaseConnection::DatabaseConnection(
     : mDBSettings(getConnectionTypeSettings(aType)),
       mDatabase(getConnectionTypeSettings(aType))
 {
-    dom::writeInfo("Creating_database_quare");
+    LOG_INFO("Creating_database_quare");
 }
 
 //--------------------------------------------------------------------------------

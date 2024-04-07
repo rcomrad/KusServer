@@ -5,7 +5,7 @@
 #include <vector>
 
 bool
-dom::isSpace(char c) noexcept
+str::isSpace(char c) noexcept
 {
     // TODO:
     //  std::isspace

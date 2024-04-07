@@ -52,7 +52,7 @@ mult::MailSender::process(const crow::request& aReq) noexcept
     {
         auto name = dom::DateAndTime::getCurentTimeSafe();
         file::File::writeData(name + ".xlsx", letter.data);
-        system((file::Path::getPathUnsafe("to_csv.sh") + " "s + name +
+        system((core::Path::getPathUnsafe("to_csv.sh") + " "s + name +
                 ".xlsx " + name + ".csv")
                    .c_str());
         letter.data = file::File::getAllData(name + ".csv");
@@ -65,7 +65,7 @@ mult::MailSender::process(const crow::request& aReq) noexcept
         bool flag =
             serv::RequestUnpacker::getPartUnsafe(msg, "command") == "отправить";
         std::thread t(threadSender, letter,
-                      file::Path::touchFolder("print").value() + fileName,
+                      core::Path::touchFolder("print").value() + fileName,
                       flag);
         t.detach();
 
@@ -161,7 +161,7 @@ mult::MailSender::threadSender(Letter aLetter,
         out << std::endl;
     }
 
-    dom::writeInfo("Start sending");
+    LOG_INFO("Start sending");
     dom::Mail mail(aLetter.login, aLetter.password);
     for (auto& row : table)
     {
@@ -173,15 +173,15 @@ mult::MailSender::threadSender(Letter aLetter,
         }
         auto addr = temp->second;
 
-        // dom::writeInfo("Sending to:", row["$mail$"]);
+        // LOG_INFO("Sending to:", row["$mail$"]);
         std::string copy;
         for (auto& l : letter)
         {
             copy += l.second + row[l.first];
         }
 
-        // dom::writeInfo("Theme is:", aLetter.theme);
-        // dom::writeInfo("Text is:", copy);
+        // LOG_INFO("Theme is:", aLetter.theme);
+        // LOG_INFO("Text is:", copy);
         if (aRealSend)
         {
             bool success = false;
@@ -216,7 +216,7 @@ mult::MailSender::threadSender(Letter aLetter,
         }
         out << std::endl;
     }
-    dom::writeInfo("Finish sending");
+    LOG_INFO("Finish sending");
 
     if (aRealSend)
     {
@@ -231,7 +231,7 @@ mult::MailSender::sliseText(
     const std::string& aText,
     const std::unordered_map<std::string, std::string>& aKeys) noexcept
 {
-    dom::writeInfo("Start parsing letter");
+    LOG_INFO("Start parsing letter");
     std::vector<std::pair<std::string, std::string>> result;
 
     int last = 0;
@@ -264,7 +264,7 @@ mult::MailSender::sliseText(
 
     result.emplace_back(""s, aText.substr(last, aText.size()));
 
-    dom::writeInfo("Finished parsing letter");
+    LOG_INFO("Finished parsing letter");
 
     return result;
 }

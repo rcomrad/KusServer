@@ -92,7 +92,7 @@ private:
         const std::unordered_map<str::string, str::string>& aStorage,
         const str::string& aName) noexcept;
 
-    std::optional<const str::string&> getPath(
+    boost::optional<str::string> getPath(
         const str::string& aFolderName, const str::string& aFileName) noexcept;
 
     //----------------------------------------------------------------------------

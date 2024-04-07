@@ -4,21 +4,40 @@
 #include <ostream>
 #include <vector>
 
-#include "text_data/to_string.hpp"
+#include "domain/holy_trinity.hpp"
 
-#include "router/command.hpp"
-#include "router/router_node.hpp"
-//--------------------------------------------------------------------------------
+#include "string/kus_string.hpp"
+#include "string/to_string.hpp"
+
+//------------------------------------------------------------------------------
+
 namespace core
 {
 
 class Logging
 {
 public:
-    static void reloadFromSettings() noexcept;
-    static str::string applyCommand(const route::Command& aCommand) noexcept;
+    enum class LogLevel
+    {
+        Nun,
+        Info,
+        Warning,
+        Error
+    };
 
-    //--------------------------------------------------------------------------------
+    enum class OutputType
+    {
+        Nun,
+        Cout,
+        Cerr,
+        File
+    };
+
+    static void setLogLevel(LogLevel aLogLevel) noexcept;
+    static void setOutputType(OutputType aOutputType,
+                              const str::string& aFileName = "") noexcept;
+
+    //--------------------------------------------------------------------------
 
     template <typename... Args>
     static void writeInfo(Args&&... args) noexcept
@@ -38,44 +57,30 @@ public:
         getInstance().writeErrorNonstatic(std::forward<Args>(args)...);
     }
 
-
-
 private:
-    HOLY_TRINITY_SINGLE(CallBackStorage);
-    static route::RouterNode mNode;
-
-    //----------------------------------------------------------------------------
-
-    enum class PrintStatus
-    {
-        Nun,
-        Info,
-        Warning,
-        Error
-    };
     bool mIsFileOutput;
-    PrintStatus mStatus;
+    LogLevel mLogLevel;
     std::ostream* mStreams;
 
-    //--------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
-    Log() noexcept;
-    ~Log();
+    HOLY_TRINITY_SINGLE(Logging);
+    Logging() noexcept;
+    ~Logging();
     void clear() noexcept;
-    static Log& getInstance() noexcept;
+    static Logging& getInstance() noexcept;
 
-    //--------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
-    str::string applyCommandNonstatic(const route::Command& aCommand) noexcept;
-    void setLogType(const str::string& aLogType) noexcept;
-    void setOutputType(const str::string& aOutputType) noexcept;
+    void setOutputTypeNonstatic(OutputType aOutputType,
+                                const str::string& aFileName) noexcept;
 
-    //--------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     template <typename... Args>
     void writeInfoNonstatic(Args&&... args) noexcept
     {
-        if (mStatus == PrintStatus::Info)
+        if (mLogLevel == LogLevel::Info)
         {
             write("Info: ", std::forward<Args>(args)...);
         }
@@ -84,7 +89,7 @@ private:
     template <typename... Args>
     void writeWarningNonstatic(Args&&... args) noexcept
     {
-        if (mStatus <= PrintStatus::Warning)
+        if (mLogLevel <= LogLevel::Warning)
         {
             write("-->Warning: ", std::forward<Args>(args)...);
         }
@@ -93,13 +98,13 @@ private:
     template <typename... Args>
     void writeErrorNonstatic(Args&&... args) noexcept
     {
-        if (mStatus <= PrintStatus::Error)
+        if (mLogLevel <= LogLevel::Error)
         {
             write("!--->ERROR: ", std::forward<Args>(args)...);
         }
     }
 
-    //--------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     template <typename... Args>
     void write(Args&&... args) noexcept
@@ -107,8 +112,10 @@ private:
         str::string str;
         std::vector<str::string> temp;
 
-        (void)(temp.emplace_back(text::toString(std::forward<Args>(args)), 0), ...);
-        // (void)(temp.emplace_back(toString      (std::forward<Args>(args)), 0), ...);
+        (void)(temp.emplace_back(str::toString(std::forward<Args>(args)), 0),
+               ...);
+        // (void)(temp.emplace_back(toString      (std::forward<Args>(args)),
+        // 0), ...);
         for (int i = 0; i < temp.size() - 1; ++i)
         {
             if (!temp[i + 1].empty() && temp[i].back() != '(' &&
@@ -129,7 +136,7 @@ private:
         (*mStreams).flush();
     }
 
-    //--------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 };
 
 // clang-format off

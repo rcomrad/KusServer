@@ -4,10 +4,11 @@
 
 cmake_minimum_required(VERSION 3.21.3)
 
-include(./vcpkg_path.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/vcpkg_path.cmake)
 set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
 
 project(KusServer)
+# project(KusSystem)
 
 #-------------------------------------------------------------------------------
 #                              Detect operating system
@@ -18,7 +19,6 @@ if (${MSVC})
 else()
     set(OS "LINUS_LINUX")
 endif()
-message(Operating system is ${OS})
 
 #-------------------------------------------------------------------------------
 #                               Executable creation
@@ -29,10 +29,10 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Libraries include
-# find_package(mailio CONFIG REQUIRED)
-# find_package(libpqxx CONFIG REQUIRED)
-# find_package(Crow CONFIG REQUIRED)
-# find_package(Boost 1.64.0 REQUIRED system filesystem)
+find_package(mailio CONFIG REQUIRED)
+find_package(libpqxx CONFIG REQUIRED)
+find_package(Crow CONFIG REQUIRED)
+find_package(Boost 1.64.0 REQUIRED system filesystem)
 
 # Sources include
 add_executable(${PROJECT_NAME} "sources/core/main.cpp")
@@ -49,10 +49,10 @@ elseif(${OS} MATCHES "BILL_WINDOWS")
 endif()
 
 # Libraries include
-# target_link_libraries(${PROJECT_NAME} PRIVATE libpqxx::pqxx)
-# target_link_libraries(${PROJECT_NAME} PRIVATE Crow::Crow)
-# target_link_libraries(${PROJECT_NAME} PRIVATE ${Boost_LIBRARIES})
-# target_link_libraries(${PROJECT_NAME} PRIVATE mailio)
+target_link_libraries(${PROJECT_NAME} PRIVATE libpqxx::pqxx)
+target_link_libraries(${PROJECT_NAME} PRIVATE Crow::Crow)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE mailio)
 
 #-------------------------------------------------------------------------------
 #                               Output settings

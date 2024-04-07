@@ -106,7 +106,7 @@ crow::json::wvalue
 post::PostHandler::uploadFromFileRequest(const std::string& aType,
                                          const crow::request& aReq) noexcept
 {
-    dom::writeInfo("Start upload");
+    LOG_INFO("Start upload");
 
     crow::multipart::message msg(aReq);
     std::string filePath = uploadFile(msg);
@@ -135,17 +135,17 @@ post::PostHandler::uploadFile(crow::multipart::message& aMsg,
                               const std::string& aFileKey,
                               const std::string& aFilenameKey) noexcept
 {
-    dom::writeInfo("File upload func");
+    LOG_INFO("File upload func");
 
-    auto pathPrefix = file::Path::getPathUnsafe("upload");
-    // dom::writeInfo("File prefix:", pathPrefix);
+    auto pathPrefix = core::Path::getPathUnsafe("upload");
+    // LOG_INFO("File prefix:", pathPrefix);
 
     std::string fileName;
     if (!aFilenameKey.empty())
         fileName = serv::RequestUnpacker::getPartUnsafe(aMsg, aFilenameKey);
-    // dom::writeInfo("File name:", fileName);
+    // LOG_INFO("File name:", fileName);
     auto file = serv::RequestUnpacker::getPartUnsafe(aMsg, aFileKey);
-    // dom::writeInfo("File data:", file);
+    // LOG_INFO("File data:", file);
 
     std::string filePath =
         pathPrefix + dom::DateAndTime::getCurentTimeSafe() + "-" + fileName;

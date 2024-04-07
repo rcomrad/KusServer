@@ -61,7 +61,7 @@ get::QuestionHandler::getQuestion(int aQuestionID) const noexcept
     }
     else
     {
-        dom::writeInfo("Loading question #", aQuestionID);
+        LOG_INFO("Loading question #", aQuestionID);
         result = loadQuestion(aQuestionID);
     }
     return result;
@@ -81,7 +81,7 @@ get::QuestionHandler::loadQuestion(int aQuestionID) const noexcept
     }
     auto result = question.getAsJson({"nickname", "jury_answer"});
 
-    auto path = file::Path::getPath("question");
+    auto path = core::Path::getPath("question");
     if (path)
     {
         std::string legend;
@@ -94,7 +94,7 @@ get::QuestionHandler::loadQuestion(int aQuestionID) const noexcept
             legend += " <br> ";
         }
 
-        auto data = file::Path::getContentMap(folder);
+        auto data = core::Path::getContentMap(folder);
         for (auto& i : data)
         {
             if (excludedFiles.count(i.first)) continue;

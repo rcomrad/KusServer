@@ -18,7 +18,7 @@ mult::MultitoolRouter::route(const crow::request& aReq)
 {
     static const bool& isTokenActive =
         core::VariableStorage::touchFlag("token:isActive", false);
-    // dom::writeInfo("-||->GG");
+    // LOG_INFO("-||->GG");
     crow::response result;
 
     auto& ctx = serv::Server::getContext(aReq);
@@ -39,8 +39,8 @@ mult::MultitoolRouter::route(const crow::request& aReq)
         }
         else
         {
-            dom::writeInfo("My role:", ctx.mUser->role,
-                           "Needed role:", it->second.roles);
+            LOG_INFO("My role:", ctx.mUser->role,
+                     "Needed role:", it->second.roles);
             result      = {"Access denied!"};
             result.code = 403;
         }
@@ -61,8 +61,8 @@ mult::MultitoolRouter::generateMultitoolRouter() noexcept
         {"mail",    {&mult::MailSender::process, 0}    },
         {"dump",    {&mult::DumpManager::process, 0}   },
         {"command", {&mult::CommandHandler::process, 0}},
-        // {"info",    {&mult::CommandHandler::info, 0}   },
-        // {"proga",   {&mult::CommandHandler::proga, 0}},
+ // {"info",    {&mult::CommandHandler::info, 0}   },
+  // {"proga",   {&mult::CommandHandler::proga, 0}},
     };
 
     auto connection = data::ConnectionManager::getUserConnection();
