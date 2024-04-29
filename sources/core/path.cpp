@@ -108,7 +108,7 @@ core::Path::getFilePathUnsafe(const str::string& aFileName) noexcept
     }
 }
 
-str::string
+const str::string&
 core::Path::getFilePathUnsafe(const str::string& aFolderName,
                               const str::string& aFileName) noexcept
 {
@@ -174,14 +174,14 @@ core::Path::getPath(
     return result;
 }
 
-boost::optional<const str::string&>
+std::optional<str::string>
 core::Path::getPath(const str::string& aFolderName,
                     const str::string& aFileName) noexcept
 {
 
-    boost::optional<const str::string&> result;
-    auto it = aStorage.find(aName);
-    if (it != aStorage.end())
+    std::optional<str::string> result;
+    auto it = mFolderPaths.find(aFolderName);
+    if (it != mFolderPaths.end())
     {
         result = it->second + aFileName;
     }
@@ -196,7 +196,7 @@ std::optional<str::string>
 core::Path::touchFolder(const str::string& aFolderParentPath,
                         const str::string& aFolderName) noexcept
 {
-    return getInstance().touchFolderNonstatic();
+    return getInstance().touchFolderNonstatic(aFolderParentPath, aFolderName);
 }
 
 std::optional<str::string>
@@ -215,7 +215,7 @@ core::Path::touchFolderNonstatic(const str::string& aFolderParentPath,
             LOG_INFO("Create folder (Path:", aFolderParentPath,
                      " Name:", aFolderName);
             result = mFolderPaths.insert({aFolderName, std::move(fullPath)})
-                         .fisert.second;
+                         .first->second;
         }
         else
         {
@@ -292,11 +292,19 @@ core::Path::addContentToPaths(const str::string& aPath,
                               FileType aFIleType,
                               LevelType aLevelType) noexcept
 {
-    if (aFIleType & FileType::File)
+    getInstance().addContentToPathsNonstatic(aPath, aFIleType, aLevelType);
+}
+
+void
+core::Path::addContentToPathsNonstatic(const str::string& aPath,
+                                       FileType aFIleType,
+                                       LevelType aLevelType) noexcept
+{
+    if (int(aFIleType) & int(FileType::File))
     {
         addContentToMap(aPath, FileType::File, aLevelType, mFilesPaths);
     }
-    if (aFIleType & FileType::Folder)
+    if (int(aFIleType) & int(FileType::Folder))
     {
         addContentToMap(aPath, FileType::Folder, aLevelType, mFolderPaths);
     }
@@ -321,12 +329,12 @@ core::Path::getContent(const str::string& aPath,
     return result;
 }
 
-std::map<str::string, str::string>
+std::unordered_map<str::string, str::string>
 core::Path::getContentMap(const str::string& aPath,
                           FileType aFIleType,
                           LevelType aLevelType) noexcept
 {
-    std::map<str::string, str::string> result;
+    std::unordered_map<str::string, str::string> result;
 
     auto paths = getContent(aPath, aFIleType, aLevelType);
     for (auto&& i : paths)

@@ -3,9 +3,9 @@
 #include <thread>
 #include <utility>
 
-#include "file_data/file.hpp"
-#include "file_data/parser.hpp"
-#include "file_data/path.hpp"
+#include "string/file.hpp"
+#include "string/parser.hpp"
+#include "path.hpp"
 
 //--------------------------------------------------------------------------------
 

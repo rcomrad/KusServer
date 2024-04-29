@@ -92,8 +92,8 @@ private:
         const std::unordered_map<str::string, str::string>& aStorage,
         const str::string& aName) noexcept;
 
-    boost::optional<str::string> getPath(
-        const str::string& aFolderName, const str::string& aFileName) noexcept;
+    std::optional<str::string> getPath(const str::string& aFolderName,
+                                       const str::string& aFileName) noexcept;
 
     //----------------------------------------------------------------------------
 
@@ -103,6 +103,10 @@ private:
 
     //----------------------------------------------------------------------------
 
+    void addContentToPathsNonstatic(const str::string& aPath,
+                                    FileType aFIleType,
+                                    LevelType aLevelType) noexcept;
+
     void addContentToMap(
         const str::string& aPath,
         FileType aType,
@@ -110,8 +114,8 @@ private:
         std::unordered_map<str::string, str::string>& aPathMap) noexcept;
 
     template <typename PathIterator>
-    static std::unordered_map<str::string, str::string> getContent(
-        const PathIterator& aPath, FileType aFIleType) noexcept
+    static std::vector<str::string> getContent(const PathIterator& aPath,
+                                               FileType aFIleType) noexcept
     {
         std::vector<str::string> result;
         for (const auto& entry : aPath)

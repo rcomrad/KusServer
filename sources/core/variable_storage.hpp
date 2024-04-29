@@ -1,5 +1,4 @@
-// #ifndef VARIABLE_STORAGE_HPP
-// #define VARIABLE_STORAGE_HPP
+#pragma once
 
 // //--------------------------------------------------------------------------------
 
