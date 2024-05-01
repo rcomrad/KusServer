@@ -3,15 +3,16 @@
 #include <thread>
 #include <utility>
 
+#include "file_system/file_read.hpp"
 #include "string/file.hpp"
 #include "string/parser.hpp"
+
 #include "path.hpp"
 
 //--------------------------------------------------------------------------------
 
 core::VariableStorage::VariableStorage() noexcept : mMutexFlag(false)
 {
-    reloadSettings();
 }
 
 core::VariableStorage&
@@ -21,11 +22,47 @@ core::VariableStorage::getInstance() noexcept
     return instance;
 }
 
+//--------------------------------------------------------------------------------
+
 void
-core::VariableStorage::reloadSettings() noexcept
+core::VariableStorage::set(int aNumber, int aValue) noexcept
 {
-    auto settings =
-        file::Parser::getVariablesFromFile("config", "main_settings.conf");
+    getInstance().setNonstatic(aNumber, aValue);
+}
+
+int
+core::VariableStorage::get(int aNumber) noexcept
+{
+    return getInstance().getNonstatic(aNumber);
+}
+
+void
+core::VariableStorage::setNonstatic(int aNumber, int aValue) noexcept
+{
+    mVariables[aNumber] = aValue;
+}
+
+int
+core::VariableStorage::getNonstatic(int aNumber) noexcept
+{
+    return mVariables[aNumber];
+}
+
+//--------------------------------------------------------------------------------
+
+void
+core::VariableStorage::reloadSettings(int aNumber, int aValue) noexcept
+{
+    getInstance().reloadSettingsNonstatic();
+}
+
+void
+core::VariableStorage::reloadSettingsNonstatic() noexcept
+{
+    // auto settings =
+    //     file::Parser::getVariablesFromFile("config", "main_settings.conf");
+
+    auto settings = fs::FileRead::getWordsMap(ReadFromFile());
     for (auto& var : settings)
     {
         if (var.name == "additional_path")
@@ -48,129 +85,5 @@ core::VariableStorage::reloadSettings() noexcept
         }
     }
 }
-
-//--------------------------------------------------------------------------------
-
-bool
-core::VariableStorage::isLocked() noexcept
-{
-    static VariableStorage& instance = getInstance();
-    return instance.mMutexFlag;
-}
-
-void
-core::VariableStorage::beginLock(std::chrono::milliseconds aSleepValue) noexcept
-{
-    static VariableStorage& instance = getInstance();
-    instance.mMutexFlag              = true;
-    std::this_thread::sleep_for(aSleepValue);
-}
-
-void
-core::VariableStorage::endLock() noexcept
-{
-    static VariableStorage& instance = getInstance();
-    instance.mMutexFlag              = false;
-}
-
-//--------------------------------------------------------------------------------
-
-const bool&
-core::VariableStorage::touchFlag(const str::string& aName,
-                                 bool aDefaultValu) noexcept
-{
-    static VariableStorage& instance = getInstance();
-    auto it                          = instance.mFlags.find(aName);
-    if (it != instance.mFlags.end())
-    {
-        return it->second;
-    }
-    return instance.mFlags.insert({aName, aDefaultValu}).first->second;
-}
-
-const int&
-core::VariableStorage::touchInt(const str::string& aName,
-                                int aDefaultValue) noexcept
-{
-    static VariableStorage& instance = getInstance();
-    auto it                          = instance.mInts.find(aName);
-    if (it != instance.mInts.end())
-    {
-        return it->second;
-    }
-    return instance.mInts.insert({aName, aDefaultValue}).first->second;
-}
-
-const str::string&
-core::VariableStorage::touchWord(const str::string& aName,
-                                 const str::string& aDefaultValue) noexcept
-{
-    static VariableStorage& instance = getInstance();
-    auto it                          = instance.mWords.find(aName);
-    if (it != instance.mWords.end())
-    {
-        return it->second;
-    }
-    return instance.mWords.insert({aName, aDefaultValue}).first->second;
-}
-
-//--------------------------------------------------------------------------------
-
-void
-core::VariableStorage::setVariable(
-    const str::string& aName,
-    bool aValue,
-    std::chrono::milliseconds aSleepValue) noexcept
-{
-    static VariableStorage& instance = getInstance();
-    if (instance.mMutexFlag == false)
-    {
-        instance.beginLock(aSleepValue);
-        instance.mFlags[aName] = aValue;
-        instance.endLock();
-    }
-    else
-    {
-        instance.mFlags[aName] = aValue;
-    }
-}
-
-void
-core::VariableStorage::setVariable(
-    const str::string& aName,
-    int aValue,
-    std::chrono::milliseconds aSleepValue) noexcept
-{
-    static VariableStorage& instance = getInstance();
-    if (instance.mMutexFlag == false)
-    {
-        instance.beginLock(aSleepValue);
-        instance.mInts[aName] = aValue;
-        instance.endLock();
-    }
-    else
-    {
-        instance.mInts[aName] = aValue;
-    }
-}
-
-// void
-// core::VariableStorage::setVariable(
-//     const str::string& aName,
-//     const str::string& aValue,
-//     std::chrono::milliseconds aSleepValue) noexcept
-// {
-//     static VariableStorage& instance = getInstance();
-//     if (instance.mMutexFlag == false)
-//     {
-//         instance.beginLock(aSleepValue);
-//         instance.mWords[aName] = aValue;
-//         instance.endLock();
-//     }
-//     else
-//     {
-//         instance.mWords[aName] = aValue;
-//     }
-// }
 
 //--------------------------------------------------------------------------------

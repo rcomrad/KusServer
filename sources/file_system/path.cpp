@@ -11,7 +11,7 @@
 //                                Path initialise
 //--------------------------------------------------------------------------------
 
-core::Path::Path() noexcept
+fs::Path::Path() noexcept
 {
     // Set path to bin and its parant folders
     auto binPath        = std::filesystem::current_path();
@@ -54,8 +54,8 @@ core::Path::Path() noexcept
     // }
 }
 
-core::Path&
-core::Path::getInstance() noexcept
+fs::Path&
+fs::Path::getInstance() noexcept
 {
     static Path instance;
     return instance;
@@ -66,7 +66,7 @@ core::Path::getInstance() noexcept
 //--------------------------------------------------------------------------------
 
 boost::optional<const str::string&>
-core::Path::getFilePath(const str::string& aFileName) noexcept
+fs::Path::getFilePath(const str::string& aFileName) noexcept
 {
     auto path = getInstance().getPath(getInstance().mFilesPaths, aFileName);
     if (!path.has_value())
@@ -77,7 +77,7 @@ core::Path::getFilePath(const str::string& aFileName) noexcept
 }
 
 std::optional<str::string>
-core::Path::getFilePath(const str::string& aFolderName,
+fs::Path::getFilePath(const str::string& aFolderName,
                         const str::string& aFileName) noexcept
 {
     auto path = getInstance().getPath(aFolderName, aFileName);
@@ -94,7 +94,7 @@ core::Path::getFilePath(const str::string& aFolderName,
 //--------------------------------------------------------------------------------
 
 const str::string&
-core::Path::getFilePathUnsafe(const str::string& aFileName) noexcept
+fs::Path::getFilePathUnsafe(const str::string& aFileName) noexcept
 {
     auto path = getInstance().getPath(getInstance().mFilesPaths, aFileName);
     if (path.has_value())
@@ -109,7 +109,7 @@ core::Path::getFilePathUnsafe(const str::string& aFileName) noexcept
 }
 
 const str::string&
-core::Path::getFilePathUnsafe(const str::string& aFolderName,
+fs::Path::getFilePathUnsafe(const str::string& aFolderName,
                               const str::string& aFileName) noexcept
 {
     auto path = getInstance().getPath(aFolderName, aFileName);
@@ -130,7 +130,7 @@ core::Path::getFilePathUnsafe(const str::string& aFolderName,
 //--------------------------------------------------------------------------------
 
 boost::optional<const str::string&>
-core::Path::getFolderPath(const str::string& aFolderName) noexcept
+fs::Path::getFolderPath(const str::string& aFolderName) noexcept
 {
     auto path = getInstance().getPath(getInstance().mFolderPaths, aFolderName);
     if (!path.has_value())
@@ -141,7 +141,7 @@ core::Path::getFolderPath(const str::string& aFolderName) noexcept
 }
 
 const str::string&
-core::Path::getFolderPathUnsafe(const str::string& aFolderName) noexcept
+fs::Path::getFolderPathUnsafe(const str::string& aFolderName) noexcept
 {
     auto path = getInstance().getPath(getInstance().mFolderPaths, aFolderName);
     if (path.has_value())
@@ -161,7 +161,7 @@ core::Path::getFolderPathUnsafe(const str::string& aFolderName) noexcept
 //--------------------------------------------------------------------------------
 
 boost::optional<const str::string&>
-core::Path::getPath(
+fs::Path::getPath(
     const std::unordered_map<str::string, str::string>& aStorage,
     const str::string& aName) noexcept
 {
@@ -175,7 +175,7 @@ core::Path::getPath(
 }
 
 std::optional<str::string>
-core::Path::getPath(const str::string& aFolderName,
+fs::Path::getPath(const str::string& aFolderName,
                     const str::string& aFileName) noexcept
 {
 
@@ -193,14 +193,14 @@ core::Path::getPath(const str::string& aFolderName,
 //--------------------------------------------------------------------------------
 
 std::optional<str::string>
-core::Path::touchFolder(const str::string& aFolderParentPath,
+fs::Path::touchFolder(const str::string& aFolderParentPath,
                         const str::string& aFolderName) noexcept
 {
     return getInstance().touchFolderNonstatic(aFolderParentPath, aFolderName);
 }
 
 std::optional<str::string>
-core::Path::touchFolderNonstatic(const str::string& aFolderParentPath,
+fs::Path::touchFolderNonstatic(const str::string& aFolderParentPath,
                                  const str::string& aFolderName) noexcept
 {
     std::optional<str::string> result;
@@ -242,7 +242,7 @@ core::Path::touchFolderNonstatic(const str::string& aFolderParentPath,
 }
 
 bool
-core::Path::clearFolder(const str::string& aFolderName) noexcept
+fs::Path::clearFolder(const str::string& aFolderName) noexcept
 {
     bool result = false;
 
@@ -277,7 +277,7 @@ core::Path::clearFolder(const str::string& aFolderName) noexcept
 //--------------------------------------------------------------------------------
 
 void
-core::Path::addContentToMap(
+fs::Path::addContentToMap(
     const str::string& aPath,
     FileType aType,
     LevelType aLevelType,
@@ -288,7 +288,7 @@ core::Path::addContentToMap(
 }
 
 void
-core::Path::addContentToPaths(const str::string& aPath,
+fs::Path::addContentToPaths(const str::string& aPath,
                               FileType aFIleType,
                               LevelType aLevelType) noexcept
 {
@@ -296,7 +296,7 @@ core::Path::addContentToPaths(const str::string& aPath,
 }
 
 void
-core::Path::addContentToPathsNonstatic(const str::string& aPath,
+fs::Path::addContentToPathsNonstatic(const str::string& aPath,
                                        FileType aFIleType,
                                        LevelType aLevelType) noexcept
 {
@@ -311,7 +311,7 @@ core::Path::addContentToPathsNonstatic(const str::string& aPath,
 }
 
 std::vector<str::string>
-core::Path::getContent(const str::string& aPath,
+fs::Path::getContent(const str::string& aPath,
                        FileType aFIleType,
                        LevelType aLevelType) noexcept
 {
@@ -330,7 +330,7 @@ core::Path::getContent(const str::string& aPath,
 }
 
 std::unordered_map<str::string, str::string>
-core::Path::getContentMap(const str::string& aPath,
+fs::Path::getContentMap(const str::string& aPath,
                           FileType aFIleType,
                           LevelType aLevelType) noexcept
 {

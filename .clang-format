@@ -26,7 +26,7 @@ AllowShortLoopsOnASingleLine: true
 AllowAllArgumentsOnNextLine : true
 BinPackArguments: true
 AlignAfterOpenBracket : Align
-AllowAllParametersOfDeclarationOnNextLine : true
+AllowAllParametersOfDeclarationOnNextLine : false
 BinPackParameters : false
 PackConstructorInitializers : NextLine
 InsertNewlineAtEOF : true
