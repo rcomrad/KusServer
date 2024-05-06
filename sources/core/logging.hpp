@@ -2,6 +2,8 @@
 #define LOGGING_HPP
 
 #include <ostream>
+#include <stdarg.h>
+#include <stdio.h>
 #include <vector>
 
 #include "domain/holy_trinity.hpp"
@@ -60,7 +62,7 @@ public:
 private:
     bool mIsFileOutput;
     LogLevel mLogLevel;
-    std::ostream* mStreams;
+    FILE* mStream;
 
     //--------------------------------------------------------------------------
 
@@ -82,7 +84,7 @@ private:
     {
         if (mLogLevel == LogLevel::Info)
         {
-            write("Info: ", std::forward<Args>(args)...);
+            write("info", std::forward<Args>(args)...);
         }
     }
 
@@ -91,7 +93,7 @@ private:
     {
         if (mLogLevel <= LogLevel::Warning)
         {
-            write("-->Warning: ", std::forward<Args>(args)...);
+            write("Warn", std::forward<Args>(args)...);
         }
     }
 
@@ -100,41 +102,37 @@ private:
     {
         if (mLogLevel <= LogLevel::Error)
         {
-            write("!--->ERROR: ", std::forward<Args>(args)...);
+            write("ERROR", std::forward<Args>(args)...);
         }
     }
 
     //--------------------------------------------------------------------------
 
     template <typename... Args>
-    void write(Args&&... args) noexcept
+    void write(const char* aType,
+               const char* aFile,
+               int aLine,
+               const char* aFunc,
+               Args&&... args) noexcept
     {
-        str::string str;
-        std::vector<str::string> temp;
-
-        (void)(temp.emplace_back(str::toString(std::forward<Args>(args)), 0),
-               ...);
-        // (void)(temp.emplace_back(toString      (std::forward<Args>(args)),
-        // 0), ...);
-        for (int i = 0; i < temp.size() - 1; ++i)
-        {
-            if (!temp[i + 1].empty() && temp[i].back() != '(' &&
-                temp[i + 1].front() != ')' && temp[i].back() != '\'' &&
-                temp[i + 1].front() != '\'')
-            {
-                temp[i] += ' ';
-            }
-        }
-        for (auto&& i : temp)
-        {
-            str += std::move(i);
-        }
-
-        str += ".\n";
-
-        (*mStreams) << str;
-        (*mStreams).flush();
+        writeDebugData(aType);
+        writeFileName(aFile, 30);
+        writeDebugData(aLine, 4);
+        writeDebugData(aFunc, 30);
+        (void)(writeArg(std::forward<Args>(args)), ...);
+        writeEnd();
+        fflush(mStream);
     }
+
+    void writeDebugData(const char* arg, int aMaxSize = 0) noexcept;
+    void writeDebugData(int arg, int aMaxSize = 0) noexcept;
+    void writeFileName(const char* arg, int aMaxSize = 0) noexcept;
+
+    void writeArg(int arg) noexcept;
+    void writeArg(const str::string& arg) noexcept;
+    void writeArg(const char* arg) noexcept;
+
+    void writeEnd() noexcept;
 
     //--------------------------------------------------------------------------
 };

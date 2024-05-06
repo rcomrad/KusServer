@@ -3,15 +3,35 @@
 #include <thread>
 #include <utility>
 
+#include "core/logging.hpp"
 #include "file_system/file_read.hpp"
-#include "string/file.hpp"
+#include "file_system/path.hpp"
 #include "string/parser.hpp"
-
-#include "path.hpp"
+#include "string/separators.hpp"
 
 //--------------------------------------------------------------------------------
 
-core::VariableStorage::VariableStorage() noexcept : mMutexFlag(false)
+core::VariableStorage::Variable::Variable(int aValue,
+                                          FPVariableToInt aParser) noexcept
+    : mValue(aValue), mParser(aParser)
+{
+}
+
+core::VariableStorage::Variable::Variable(Variable&& other) noexcept
+    : mValue(int(other.mValue)), mParser(other.mParser)
+{
+}
+
+core::VariableStorage::Variable&
+core::VariableStorage::Variable::operator=(Variable&& other) noexcept
+
+{
+    mValue  = int(other.mValue);
+    mParser = other.mParser;
+    return *this;
+}
+
+core::VariableStorage::VariableStorage() noexcept
 {
 }
 
@@ -39,19 +59,19 @@ core::VariableStorage::get(int aNumber) noexcept
 void
 core::VariableStorage::setNonstatic(int aNumber, int aValue) noexcept
 {
-    mVariables[aNumber] = aValue;
+    mVariables[aNumber].mValue = aValue;
 }
 
 int
 core::VariableStorage::getNonstatic(int aNumber) noexcept
 {
-    return mVariables[aNumber];
+    return mVariables[aNumber].mValue;
 }
 
 //--------------------------------------------------------------------------------
 
 void
-core::VariableStorage::reloadSettings(int aNumber, int aValue) noexcept
+core::VariableStorage::reloadSettings() noexcept
 {
     getInstance().reloadSettingsNonstatic();
 }
@@ -59,31 +79,47 @@ core::VariableStorage::reloadSettings(int aNumber, int aValue) noexcept
 void
 core::VariableStorage::reloadSettingsNonstatic() noexcept
 {
-    // auto settings =
-    //     file::Parser::getVariablesFromFile("config", "main_settings.conf");
-
-    auto settings = fs::FileRead::getWordsMap(ReadFromFile());
+    auto settings = fs::FileRead::getWordsMap(
+        fs::ReadFromStoredFile("main_settings.cfg"), str::Separator::variable);
     for (auto& var : settings)
     {
-        if (var.name == "additional_path")
+        auto it = mVariableNames.find(var.first);
+        if (it != mVariableNames.end())
         {
-            core::Path::addFoldersFrom(var.value);
-            continue;
+            int num                = it->second;
+            mVariables[num].mValue = mVariables[num].mParser(var.second);
         }
-
-        switch (var.value.getType())
+        else
         {
-            case file::Value::Type::Int:
-                mInts[var.name] = var.value;
-                break;
-            case file::Value::Type::Bool:
-                mFlags[var.name] = var.value;
-                break;
-            case file::Value::Type::String:
-                mWords[var.name] = str::string(var.value);
-                break;
+            LOG_ERROR("No variables with that name have been registered (",
+                      var.first, ")");
         }
     }
 }
 
 //--------------------------------------------------------------------------------
+
+int
+core::VariableStorage::addSettings(
+    const VariableSettings& aVarSettings) noexcept
+{
+    return getInstance().addSettingsNonstatic(aVarSettings);
+}
+
+int
+core::VariableStorage::addSettingsNonstatic(
+    const VariableSettings& aVarSettings) noexcept
+{
+    int start_num = mVariables.size();
+    // mVariables.resize(start_num + aVarSettings.size());
+
+    int num = start_num;
+    for (auto& i : aVarSettings)
+    {
+        mVariableNames[i.first] = num++;
+        mVariables.emplace_back(Variable{0, i.second});
+        // mVariables[num].mParser = i.second;
+    }
+
+    return start_num;
+}

@@ -4,8 +4,6 @@
 
 //------------------------------------------------------------------------------
 
-str::string core::CallbackStorage::MODULE_CALLBACK_VOLUME = "module";
-
 core::CallbackStorage::CallbackStorage() noexcept
 {
     mMap[""];

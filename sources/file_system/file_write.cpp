@@ -8,8 +8,8 @@
 #include "path.hpp"
 
 bool
-file::FileWrite::writeData(const std::string& aFileName,
-                           const std::string& aData) noexcept
+fs::FileWrite::writeData(const std::string& aFileName,
+                         const std::string& aData) noexcept
 {
     bool result = false;
     std::ofstream out(aFileName);

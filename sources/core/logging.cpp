@@ -35,21 +35,21 @@ core::Logging::setOutputTypeNonstatic(core::Logging::OutputType aOutputType,
     switch (aOutputType)
     {
         case OutputType::Cout:
-            mStreams = &std::cout;
-            writeInfo("Log buffer changed to stdout");
+            mStream = stdout;
+            LOG_INFO("Log buffer changed to stdout");
             break;
         case OutputType::Cerr:
-            mStreams = &std::cerr;
-            writeInfo("Log buffer changed to stderr");
+            mStream = stderr;
+            LOG_INFO("Log buffer changed to stderr");
             break;
         case OutputType::File:
-            mStreams      = new std::ofstream(aFileName);
+            mStream       = std::fopen(aFileName.c_str(), "w");
             mIsFileOutput = true;
-            writeInfo("Log buffer changed to ", aFileName, " file");
+            LOG_INFO("Log buffer changed to ", aFileName, " file");
             break;
         default:
-            mStreams = &std::cout;
-            writeInfo("Log buffer changed to default (cout)");
+            mStream = stdout;
+            LOG_INFO("Log buffer changed to default (cout)");
             break;
     }
 }
@@ -60,7 +60,7 @@ core::Logging::Logging() noexcept
 {
     mIsFileOutput = false;
     mLogLevel     = LogLevel::Info;
-    mStreams      = &std::cout;
+    mStream       = stdout;
 }
 
 core::Logging::~Logging()
@@ -74,7 +74,7 @@ core::Logging::clear() noexcept
     if (mIsFileOutput)
     {
         // TODO: do we need close?
-        delete mStreams;
+        delete mStream;
         mIsFileOutput = false;
     }
 }
@@ -84,4 +84,61 @@ core::Logging::getInstance() noexcept
 {
     static Logging instance;
     return instance;
+}
+
+//------------------------------------------------------------------------------
+
+// TODO: centrate
+// printf("%*s%*s\n",10+strlen(s)/2,s,10-strlen(s)/2,"");
+
+void
+core::Logging::writeDebugData(const char* arg, int aMaxSize) noexcept
+{
+    std::fprintf(mStream, "[%-*s] ", aMaxSize, arg);
+}
+
+void
+core::Logging::writeDebugData(int arg, int aMaxSize) noexcept
+{
+    std::fprintf(mStream, "[%-*d] ", aMaxSize, arg);
+}
+
+void
+core::Logging::writeFileName(const char* arg, int aMaxSize) noexcept
+{
+    int num = strlen(arg);
+    int cnt = 0;
+    while (num > 0 && cnt < 2)
+    {
+        if (arg[num] == '/' || arg[num] == '\\')
+        {
+            ++cnt;
+        }
+        --num;
+    }
+    std::fprintf(mStream, "[%-*s] ", aMaxSize, arg + num + 1);
+}
+
+void
+core::Logging::writeArg(int arg) noexcept
+{
+    std::fprintf(mStream, "%d ", arg);
+}
+
+void
+core::Logging::writeArg(const str::string& arg) noexcept
+{
+    std::fprintf(mStream, "%s ", arg.c_str());
+}
+
+void
+core::Logging::writeArg(const char* arg) noexcept
+{
+    std::fprintf(mStream, "%s ", arg);
+}
+
+void
+core::Logging::writeEnd() noexcept
+{
+    std::fprintf(mStream, "\n");
 }

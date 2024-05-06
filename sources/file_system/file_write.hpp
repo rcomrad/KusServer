@@ -8,7 +8,6 @@
 
 #include "string/kus_string.hpp"
 
-#include "read_result.hpp"
 #include "read_target.hpp"
 
 //--------------------------------------------------------------------------------

@@ -15,8 +15,6 @@ namespace core
 class CallbackStorage
 {
 public:
-    static str::string MODULE_CALLBACK_VOLUME;
-
     static void add(const str::string& aVolumeName,
                     const str::string& aNodeName,
                     void* aFunc) noexcept;

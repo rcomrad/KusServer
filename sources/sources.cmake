@@ -16,15 +16,6 @@ FOREACH(module ${module_folders})
         "${module}/*.hpp"
     )
 
-    get_filename_component(module_name ${module} NAME)
-
-    add_library(${module_name} ${module_src})
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${module_name})
-    target_include_directories(${module_name} PRIVATE "sources/")
-
-    # TODO: remove
-    target_link_libraries(${module_name} PRIVATE libpqxx::pqxx)
-    target_link_libraries(${module_name} PRIVATE Crow::Crow)
-    target_link_libraries(${module_name} PRIVATE ${Boost_LIBRARIES})
-    target_link_libraries(${module_name} PRIVATE mailio)
+    target_sources(${PROJECT_NAME} PRIVATE ${module_src})
+    target_include_directories(${PROJECT_NAME} PRIVATE "sources/")
 ENDFOREACH()

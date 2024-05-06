@@ -1,47 +1,24 @@
+#include "file_read.hpp"
+
 #include <fstream>
 
 #include "core/logging.hpp"
 #include "string/separators.hpp"
 
-#include "file_reader.hpp"
 #include "path.hpp"
 
-fs::ReadResult
-fs::FileRead::getData(const ReadTarget& aTarget) noexcept
+//--------------------------------------------------------------------------------
+
+const str::string&
+fs::FileRead::getData(const DataTarget& aTarget) noexcept
 {
-    ReadResult result;
+    return {aTarget.mData};
+}
 
-    switch (aTarget.mType)
-    {
-        case ReadTarget::Type::DATA:
-            result.mDataRef     = &aTarget.mData;
-            result.mIsDataInRef = true;
-            break;
-
-        case ReadTarget::Type::FILE_NAME:
-            result.mData        = readFile(aTarget.mFileName);
-            result.mIsDataInRef = false;
-            break;
-
-        case ReadTarget::Type::FILE_LOCATION:
-            auto path =
-                Path::getFilePath(aTarget.mFolderName, aTarget.mFileName);
-
-            if (path.has_value())
-            {
-                result.mData = readFile(path.value());
-            }
-            else
-            {
-                LOG_ERROR("Can't find file (Name:", aTarget.mFileName,
-                          "Folder:", aTarget.mFileName, ")");
-            }
-            result.mIsDataInRef = false;
-
-            break;
-    }
-
-    return result;
+str::string
+fs::FileRead::getData(const FilenameRefTarget& aTarget) noexcept
+{
+    return readFile(aTarget.mData);
 }
 
 str::string
@@ -61,26 +38,36 @@ fs::FileRead::readFile(const str::string& aPath) noexcept
     return result;
 }
 
+//--------------------------------------------------------------------------------
+
 std::vector<std::string>
 fs::FileRead::getLines(const ReadTarget& aTarget) noexcept
 {
-    auto temp                  = getData(aTarget);
-    const str::string* datePtr = temp.mDataRef;
-    if (!temp.mIsDataInRef)
+    std::string data_storage;
+    const std::string* data_ptr = &data_storage;
+
+    switch (aTarget.mType)
     {
-        datePtr = &temp.mData;
+        case fs::ReadTarget::DATA:
+            data_ptr = &getData(static_cast<const DataTarget&>(aTarget));
+            break;
+        case fs::ReadTarget::FILE_NAME:
+        case fs::ReadTarget::FILE_NAME_REF:
+            data_storage =
+                getData(static_cast<const FilenameRefTarget&>(aTarget));
+            break;
     }
-    const str::string& dateRef = *datePtr;
+    const std::string& data = *data_ptr;
 
     std::vector<std::string> result;
     int last = -1;
-    for (int i = 0; i < dateRef.size() + 1; ++i)
+    for (int i = 0; i < data.size() + 1; ++i)
     {
-        if (str::Separator::isNewLine(dateRef[i]))
+        if (str::Separator::newLine(data[i]))
         {
             if (i - last > 1)
             {
-                result.emplace_back(dateRef.substr(last + 1, i - last - 1));
+                result.emplace_back(data.substr(last + 1, i - last - 1));
             }
             last = i;
         }
@@ -89,12 +76,11 @@ fs::FileRead::getLines(const ReadTarget& aTarget) noexcept
     return result;
 }
 
-std::vector<std::vector<std::string>>
-file::FileRead::getWords(const ReadTarget& aTarget,
-                         FPSeparator aSepFunc) noexcept
+std::vector<std::vector<str::string>>
+fs::FileRead::getWords(const ReadTarget& aTarget, FPSeparator aSepFunc) noexcept
 {
-    auto lines = getLines(aFileName, aFileType);
-    std::vector<std::vector<std::string>> result;
+    auto lines = getLines(aTarget);
+    std::vector<std::vector<str::string>> result;
     for (auto& line : lines)
     {
         result.emplace_back();
@@ -102,9 +88,9 @@ file::FileRead::getWords(const ReadTarget& aTarget,
         int indx = 0;
         while (indx < line.size())
         {
-            while (line.size() > indx && funk(line[indx])) indx++;
+            while (line.size() > indx && aSepFunc(line[indx])) indx++;
             int from = indx;
-            while (line.size() > indx && !funk(line[indx])) indx++;
+            while (line.size() > indx && !aSepFunc(line[indx])) indx++;
             result.back().emplace_back(line.substr(from, indx - from));
             indx += 1;
         }
@@ -114,12 +100,12 @@ file::FileRead::getWords(const ReadTarget& aTarget,
     return result;
 }
 
-std::unordered_map<std::string, std::string>
-file::FileRead::getWordsMap(const ReadTarget& aTarget,
-                            FPSeparator aSepFunc) noexcept
+std::unordered_map<str::string, str::string>
+fs::FileRead::getWordsMap(const ReadTarget& aTarget,
+                          FPSeparator aSepFunc) noexcept
 {
     auto words = getWords(aTarget, aSepFunc);
-    std::unordered_map<std::string, std::string> result;
+    std::unordered_map<str::string, str::string> result;
     for (auto& i : words)
     {
         if (i.size() != 2)
@@ -138,12 +124,12 @@ file::FileRead::getWordsMap(const ReadTarget& aTarget,
     return result;
 }
 
-std::unordered_set<std::string>
-file::FileRead::getWordsSet(const ReadTarget& aTarget,
-                            FPSeparator aSepFunc) noexcept
+std::unordered_set<str::string>
+fs::FileRead::getWordsSet(const ReadTarget& aTarget,
+                          FPSeparator aSepFunc) noexcept
 {
     auto words = getWords(aTarget, aSepFunc);
-    std::unordered_set<std::string> result;
+    std::unordered_set<str::string> result;
     for (auto&& i : words)
     {
         for (auto&& j : i)

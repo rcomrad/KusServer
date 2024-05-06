@@ -3,9 +3,11 @@
 #include <filesystem>
 
 #include "core/logging.hpp"
-#include "string/file.hpp"
+
 #include "string/kus_string.hpp"
 #include "string/parser.hpp"
+
+// #include "file.hpp"
 
 //--------------------------------------------------------------------------------
 //                                Path initialise
@@ -28,7 +30,8 @@ fs::Path::Path() noexcept
     // std::replace(binPath.begin(), binPath.end(), '\\', '/');
 
     // Add paths to all config files
-    addContentToPaths(configPathIt->second, FileType::File, LevelType::Current);
+    addContentToPathsNonstatic(configPathIt->second, FileType::File,
+                               LevelType::Current);
 
     // Load paths from path config file
     // auto pathCfgFileIt = mFilesPaths.find("path.cfg");
@@ -78,7 +81,7 @@ fs::Path::getFilePath(const str::string& aFileName) noexcept
 
 std::optional<str::string>
 fs::Path::getFilePath(const str::string& aFolderName,
-                        const str::string& aFileName) noexcept
+                      const str::string& aFileName) noexcept
 {
     auto path = getInstance().getPath(aFolderName, aFileName);
     if (!path.has_value())
@@ -110,7 +113,7 @@ fs::Path::getFilePathUnsafe(const str::string& aFileName) noexcept
 
 const str::string&
 fs::Path::getFilePathUnsafe(const str::string& aFolderName,
-                              const str::string& aFileName) noexcept
+                            const str::string& aFileName) noexcept
 {
     auto path = getInstance().getPath(aFolderName, aFileName);
     if (path.has_value())
@@ -161,9 +164,8 @@ fs::Path::getFolderPathUnsafe(const str::string& aFolderName) noexcept
 //--------------------------------------------------------------------------------
 
 boost::optional<const str::string&>
-fs::Path::getPath(
-    const std::unordered_map<str::string, str::string>& aStorage,
-    const str::string& aName) noexcept
+fs::Path::getPath(const std::unordered_map<str::string, str::string>& aStorage,
+                  const str::string& aName) noexcept
 {
     boost::optional<const str::string&> result;
     auto it = aStorage.find(aName);
@@ -176,7 +178,7 @@ fs::Path::getPath(
 
 std::optional<str::string>
 fs::Path::getPath(const str::string& aFolderName,
-                    const str::string& aFileName) noexcept
+                  const str::string& aFileName) noexcept
 {
 
     std::optional<str::string> result;
@@ -194,14 +196,14 @@ fs::Path::getPath(const str::string& aFolderName,
 
 std::optional<str::string>
 fs::Path::touchFolder(const str::string& aFolderParentPath,
-                        const str::string& aFolderName) noexcept
+                      const str::string& aFolderName) noexcept
 {
     return getInstance().touchFolderNonstatic(aFolderParentPath, aFolderName);
 }
 
 std::optional<str::string>
 fs::Path::touchFolderNonstatic(const str::string& aFolderParentPath,
-                                 const str::string& aFolderName) noexcept
+                               const str::string& aFolderName) noexcept
 {
     std::optional<str::string> result;
 
@@ -289,16 +291,16 @@ fs::Path::addContentToMap(
 
 void
 fs::Path::addContentToPaths(const str::string& aPath,
-                              FileType aFIleType,
-                              LevelType aLevelType) noexcept
+                            FileType aFIleType,
+                            LevelType aLevelType) noexcept
 {
     getInstance().addContentToPathsNonstatic(aPath, aFIleType, aLevelType);
 }
 
 void
 fs::Path::addContentToPathsNonstatic(const str::string& aPath,
-                                       FileType aFIleType,
-                                       LevelType aLevelType) noexcept
+                                     FileType aFIleType,
+                                     LevelType aLevelType) noexcept
 {
     if (int(aFIleType) & int(FileType::File))
     {
@@ -312,8 +314,8 @@ fs::Path::addContentToPathsNonstatic(const str::string& aPath,
 
 std::vector<str::string>
 fs::Path::getContent(const str::string& aPath,
-                       FileType aFIleType,
-                       LevelType aLevelType) noexcept
+                     FileType aFIleType,
+                     LevelType aLevelType) noexcept
 {
     std::vector<str::string> result;
     if (aLevelType == LevelType::Current)
@@ -331,8 +333,8 @@ fs::Path::getContent(const str::string& aPath,
 
 std::unordered_map<str::string, str::string>
 fs::Path::getContentMap(const str::string& aPath,
-                          FileType aFIleType,
-                          LevelType aLevelType) noexcept
+                        FileType aFIleType,
+                        LevelType aLevelType) noexcept
 {
     std::unordered_map<str::string, str::string> result;
 

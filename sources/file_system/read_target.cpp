@@ -1,22 +1,76 @@
 #include "read_target.hpp"
 
-fs::ReadTarget
-fs::ReadFromData(const str::string& aDta)
+#include "core/logging.hpp"
+
+#include "path.hpp"
+
+fs::ReadTarget::ReadTarget(fs::ReadTarget::Type aType, const str::string& aData)
+    : mType(aType), mData(aData)
 {
-    return ReadTarget(aDta, str::EMPTY_STRING, str::EMPTY_STRING,
-                      ReadTarget::Type::DATA);
 }
 
-fs::ReadTarget
-fs::ReadFromFile(const str::string& aFullFileName)
+//--------------------------------------------------------------------------------
+
+fs::DataTarget::DataTarget(const str::string& aData)
+    : ReadTarget(ReadTarget::Type::DATA, aData)
 {
-    return ReadTarget(str::EMPTY_STRING, aFullFileName, str::EMPTY_STRING,
-                      ReadTarget::Type::FILE_NAME);
 }
 
-fs::ReadTarget
-fs::ReadFromFile(const str::string& aFileName, const str::string& aFolderName)
+fs::FilenameRefTarget::FilenameRefTarget(
+    const str::string& aData,
+    Type aType = ReadTarget::Type::FILE_NAME_REF)
+    : ReadTarget(aType, aData)
 {
-    return ReadTarget(str::EMPTY_STRING, aFileName, aFolderName,
-                      ReadTarget::Type::FILE_LOCATION);
+}
+
+fs::FilenameTarget::FilenameTarget(str::string&& aData,
+                                   Type aType = ReadTarget::Type::FILE_NAME)
+    : ReadTarget(aType, mFilename), mFilename(std::move(aData))
+{
+}
+
+//--------------------------------------------------------------------------------
+
+fs::DataTarget
+fs::ReadFromData(const str::string& aData)
+{
+    return {aData};
+}
+
+fs::FilenameRefTarget
+fs::ReadFromFilePath(const str::string& aFullFileName)
+{
+    return {aFullFileName};
+}
+
+fs::FilenameRefTarget
+fs::ReadFromStoredFile(const str::string& aFileName)
+{
+    auto path = Path::getFilePath(aFileName);
+    if (path.has_value())
+    {
+        return {path.value()};
+    }
+    else
+    {
+        LOG_ERROR("Can't find file (", aFileName, ")");
+        return {str::EMPTY_STRING, ReadTarget::Type::NUN};
+    }
+}
+
+fs::FilenameTarget
+fs::ReadFromStoredFile(const str::string& aFolderName,
+                       const str::string& aFileName)
+{
+    auto path = Path::getFilePath(aFolderName, aFileName);
+    if (path.has_value())
+    {
+        return {std::move(path.value())};
+    }
+    else
+    {
+        LOG_ERROR("Can't find file (Folder:", aFolderName, "Name:", aFileName,
+                  ")");
+        return {str::string(str::EMPTY_STRING), ReadTarget::Type::NUN};
+    }
 }

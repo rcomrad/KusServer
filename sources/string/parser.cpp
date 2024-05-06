@@ -1,58 +1,59 @@
 #include "parser.hpp"
 
 #include "core/logging.hpp"
+#include "string/separators.hpp"
 
-#include "file.hpp"
+// #include "file.hpp"
 
-std::optional<str::Variable>
-str::Parser::makeVariable(const str::string& aStr) noexcept
-{
-    std::optional<Variable> result;
+// std::optional<str::Variable>
+// str::Parser::makeVariable(const str::string& aStr) noexcept
+// {
+//     std::optional<Variable> result;
 
-    auto parts = slice(aStr, "=");
-    if (parts.size() == 2)
-    {
-        Variable temp;
-        temp.name      = parts[0];
-        temp.value.str = parts[1];
-        normalize(temp.name, Type::Lower);
-        result = std::move(temp);
-    }
+//     auto parts = slice(aStr, "=");
+//     if (parts.size() == 2)
+//     {
+//         Variable temp;
+//         temp.name      = parts[0];
+//         temp.value.str = parts[1];
+//         normalize(temp.name, Type::Lower);
+//         result = std::move(temp);
+//     }
 
-    return result;
-}
+//     return result;
+// }
 
-std::vector<str::Variable>
-str::Parser::getVariablesFromFile(const str::string aFilename) noexcept
-{
-    std::vector<Variable> result;
+// std::vector<str::Variable>
+// str::Parser::getVariablesFromFile(const str::string aFilename) noexcept
+// {
+//     std::vector<Variable> result;
 
-    auto lines = file::File::getLines(aFilename);
-    for (auto& str : lines)
-    {
-        auto temp = str::Parser::makeVariable(str);
-        if (temp.has_value())
-        {
-            result.emplace_back(std::move(temp.value()));
-        }
-        else
-        {
-            LOG_ERROR("Line '", str, "' from ", aFilename,
-                      " doesn't contain variable");
-            continue;
-        }
-    }
+//     auto lines = file::File::getLines(aFilename);
+//     for (auto& str : lines)
+//     {
+//         auto temp = str::Parser::makeVariable(str);
+//         if (temp.has_value())
+//         {
+//             result.emplace_back(std::move(temp.value()));
+//         }
+//         else
+//         {
+//             LOG_ERROR("Line '", str, "' from ", aFilename,
+//                       " doesn't contain variable");
+//             continue;
+//         }
+//     }
 
-    return result;
-}
+//     return result;
+// }
 
-std::vector<str::Variable>
-str::Parser::getVariablesFromFile(const str::string& aFolderName,
-                                  const str::string aFilename) noexcept
-{
-    return str::Parser::getVariablesFromFile(
-        core::Path::getFilePathUnsafe(aFolderName, aFilename));
-}
+// std::vector<str::Variable>
+// str::Parser::getVariablesFromFile(const str::string& aFolderName,
+//                                   const str::string aFilename) noexcept
+// {
+//     return str::Parser::getVariablesFromFile(
+//         core::Path::getFilePathUnsafe(aFolderName, aFilename));
+// }
 
 std::vector<str::string>
 str::Parser::slice(const str::string& aStr,
@@ -72,14 +73,15 @@ str::Parser::slice(const str::string& aStr,
         {
             // TODO: unicode
             //  if (!(std::isspace(i) && result.back().empty()))
-            if (!(str::isSpace(i) && result.back().empty()))
+            if (!(str::Separator::space(i) && result.back().empty()))
             {
                 result.back().push_back(i);
             }
         }
         else if (!result.back().empty())
         {
-            while (!result.back().empty() && str::isSpace(result.back().back()))
+            while (!result.back().empty() &&
+                   str::Separator::space(result.back().back()))
             {
                 result.back().pop_back();
             }

@@ -43,13 +43,19 @@ IncludeCategories:
 
   - Regex:           '"domain.*"'
     Priority:        50
-  - Regex:           '"algorithms.*"'
-    Priority:        51
+  - Regex:           '"core.*"'
+    Priority:        60
+  - Regex:           '"file_system.*"'
+    Priority:        70
+  - Regex:           '"string.*"'
+    Priority:        80
+  - Regex:           '"server.*"'
+    Priority:        90
   - Regex:           '"database.*"'
-    Priority:        51
-
-  - Regex:           '"*/.*"'
     Priority:        100
 
+  - Regex:           '"*/.*"'
+    Priority:        500
+
   - Regex:           '".*"'
-    Priority:        150
+    Priority:        501

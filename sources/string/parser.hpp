@@ -20,12 +20,12 @@ class Parser
 public:
     Parser() noexcept = delete;
 
-    static std::optional<Variable> makeVariable(
-        const str::string& aStr) noexcept;
-    static std::vector<Variable> getVariablesFromFile(
-        const str::string aFilename) noexcept;
-    static std::vector<Variable> getVariablesFromFile(
-        const str::string& aFolderName, const str::string aFilename) noexcept;
+    // static std::optional<Variable> makeVariable(
+    //     const str::string& aStr) noexcept;
+    // static std::vector<Variable> getVariablesFromFile(
+    //     const str::string aFilename) noexcept;
+    // static std::vector<Variable> getVariablesFromFile(
+    //     const str::string& aFolderName, const str::string aFilename) noexcept;
 
     static std::vector<str::string> slice(
         const str::string& aStr,

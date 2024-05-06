@@ -2,6 +2,7 @@
 
 #include "callback_storage.hpp"
 #include "logging.hpp"
+#include "module.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -30,14 +31,17 @@ core::Core::setupNonstatic() noexcept
     Logging::setLogLevel(Logging::LogLevel::Info);
     Logging::setOutputType(Logging::OutputType::File, "kuslog.txt");
 
+    core::Module::setupModules();
+    core::VariableStorage::reloadSettings();
+
     auto modules = CallbackStorage::getVolumeCallbacks(
-        CallbackStorage::MODULE_CALLBACK_VOLUME);
+        Module::CALLBACK_VOLUME_MODULE_START);
     for (const auto& i : modules)
     {
-        auto& module_name     = i.first;
-        void* module_callback = i.second;
-        // TODO: do we need move?
-        mApps[module_name] = std::move(std::thread((void (*)()) module_callback));
+        const auto& module_name = i.first;
+        Module::FPModuleActions module_callback =
+            (Module::FPModuleActions)i.second;
+        mApps[module_name] = std::move(std::thread(module_callback));
     }
 }
 
