@@ -8,6 +8,7 @@
 #include <unordered_set>
 
 #include "string/kus_string.hpp"
+#include "string/separators.hpp"
 
 #include "read_target.hpp"
 
@@ -48,15 +49,15 @@ public:
 
     static std::vector<std::vector<str::string>> getWords(
         const ReadTarget& aTarget,
-        FPSeparator aSepFunc) noexcept;
+        FPSeparator aSepFunc = str::Separator::newWord) noexcept;
 
     static std::unordered_map<str::string, str::string> getWordsMap(
         const ReadTarget& aTarget,
-        FPSeparator aSepFunc) noexcept;
+        FPSeparator aSepFunc = str::Separator::newWord) noexcept;
 
     static std::unordered_set<str::string> getWordsSet(
         const ReadTarget& aTarget,
-        FPSeparator aSepFunc) noexcept;
+        FPSeparator aSepFunc = str::Separator::newWord) noexcept;
 
 private:
     static str::string readFile(const str::string& aPath) noexcept;

@@ -7,9 +7,8 @@
 #include "server_variable.hpp"
 
 core::CallbackRegister serv::ServerModule::gServerModuleRegister(
-    core::Module::CALLBACK_VOLUME_MODULE_SETUP,
-    "server",
-    serv::ServerModule::getModuleSettings);
+    {core::Module::CALLBACK_VOLUME_SETUP, "server",
+     serv::ServerModule::getModuleSettings});
 
 core::Module::ModuleSettings
 serv::ServerModule::getModuleSettings() noexcept

@@ -15,6 +15,8 @@ namespace core
 class CallbackStorage
 {
 public:
+    HOLY_TRINITY_SINGLE(CallbackStorage);
+
     static void add(const str::string& aVolumeName,
                     const str::string& aNodeName,
                     void* aFunc) noexcept;
@@ -26,8 +28,6 @@ public:
         const str::string& aVolumeName) noexcept;
 
 private:
-    HOLY_TRINITY_SINGLE(CallbackStorage);
-
     CallbackStorage() noexcept;
     static CallbackStorage& getInstance() noexcept;
 

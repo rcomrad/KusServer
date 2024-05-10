@@ -56,6 +56,8 @@ core::CallbackStorage::getNonstatic(const str::string& aVolumeName,
         if (it2 != it1->second.end())
         {
             result = it2->second;
+            LOG_INFO("Return callback node (", "volume:", aVolumeName,
+                     "node:", aNodeName, ")");
         }
         else
         {
@@ -89,6 +91,7 @@ core::CallbackStorage::getVolumeCallbacksNonstatic(
     if (it != mMap.end() && !aVolumeName.empty())
     {
         return it->second;
+        LOG_INFO("Return callback volume (", aVolumeName, ")");
     }
     else
     {

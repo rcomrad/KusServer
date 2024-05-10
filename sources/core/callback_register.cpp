@@ -2,9 +2,22 @@
 
 #include "callback_storage.hpp"
 
-core::CallbackRegister::CallbackRegister(const str::string& aVolumeName,
-                                         const str::string& aNodeName,
-                                         void* aFunc) noexcept
+core::CallbackRegister::CallbackRegister(const RegisterNode& aNode) noexcept
 {
-    CallbackStorage::add(aVolumeName, aNodeName, aFunc);
+    registrate(aNode);
+}
+
+core::CallbackRegister::CallbackRegister(
+    const std::vector<RegisterNode>& aNodeList) noexcept
+{
+    for (const auto& i : aNodeList)
+    {
+        registrate(i);
+    }
+}
+
+void
+core::CallbackRegister::registrate(const RegisterNode& aNode) noexcept
+{
+    CallbackStorage::add(aNode.mVolumeName, aNode.mNodeName, aNode.mFunc);
 }

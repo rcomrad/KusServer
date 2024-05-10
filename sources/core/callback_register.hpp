@@ -2,9 +2,9 @@
 
 //--------------------------------------------------------------------------------
 
-#include <tuple>
-#include <unordered_set>
 #include <vector>
+
+#include "domain/holy_trinity.hpp"
 
 #include "string/kus_string.hpp"
 
@@ -15,25 +15,20 @@ namespace core
 class CallbackRegister
 {
 public:
-    CallbackRegister(const str::string& aVolumeName,
-                     const str::string& aNodeName,
-                     void* aFunc) noexcept;
+    HOLY_TRINITY_SINGLE(CallbackRegister);
 
-    // RouterNode(const std::vector<std::tuple<str::string, str::string,
-    // void*>>&
-    //                aRouts) noexcept;
+    struct RegisterNode
+    {
+        const str::string& mVolumeName;
+        const str::string& mNodeName;
+        void* mFunc;
+    };
 
-    // RouterNode(const std::vector<str::string>& aVolumeNames,
-    //            const str::string& aNodeName,
-    //            const std::vector<void*>& aFuncs) noexcept;
+    CallbackRegister(const RegisterNode& aNode) noexcept;
+    CallbackRegister(const std::vector<RegisterNode>& aNodeList) noexcept;
 
-    // RouterNode(const str::string& aVolumeName,
-    //            const std::unordered_set<str::string>& aNodeNames,
-    //            void* aFunc) noexcept;
-
-    // RouterNode(const str::string& aVolumeName,
-    //            const std::unordered_map<str::string, void*>& aNodes)
-    //            noexcept;
+private:
+    void registrate(const RegisterNode& aNode) noexcept;
 };
 } // namespace core
 

@@ -3,10 +3,11 @@
 #include "callback_storage.hpp"
 #include "logging.hpp"
 #include "module.hpp"
+#include "variable_storage.hpp"
 
 //--------------------------------------------------------------------------------
 
-core::Core::Core() noexcept : mAppIsTurnedOn(true)
+core::Core::Core() noexcept
 {
 }
 
@@ -28,14 +29,18 @@ core::Core::setup() noexcept
 void
 core::Core::setupNonstatic() noexcept
 {
-    Logging::setLogLevel(Logging::LogLevel::Info);
-    Logging::setOutputType(Logging::OutputType::File, "kuslog.txt");
+    Logging::setLogLevel(Logging::LogLevel::INFO);
+    Logging::setOutputType(Logging::OutputType::FILE, "kuslog.txt");
 
-    core::Module::setupModules();
-    core::VariableStorage::reloadSettings();
+    VariableStorage::addSettings({
+        {"running_flag", nullptr}
+    });
+    Module::setupModules();
+    VariableStorage::reloadSettings();
+    VariableStorage::set(0, 1);
 
-    auto modules = CallbackStorage::getVolumeCallbacks(
-        Module::CALLBACK_VOLUME_MODULE_START);
+    auto modules =
+        CallbackStorage::getVolumeCallbacks(Module::CALLBACK_VOLUME_START);
     for (const auto& i : modules)
     {
         const auto& module_name = i.first;
@@ -56,7 +61,7 @@ core::Core::run() noexcept
 void
 core::Core::runNonstatic() noexcept
 {
-    while (mAppIsTurnedOn)
+    while (VariableStorage::get(0))
     {
     }
 }

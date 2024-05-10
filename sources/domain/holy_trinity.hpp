@@ -20,6 +20,7 @@
     NAME(NAME&& other) noexcept            = default; \
     NAME& operator=(NAME&& other) noexcept = default;
 
+// TODO: rename
 #define HOLY_TRINITY_SINGLE(NAME)                    \
     NAME(const NAME&) noexcept             = delete; \
     NAME& operator=(const NAME&) noexcept  = delete; \

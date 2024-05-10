@@ -8,8 +8,6 @@
 
 #include "string/kus_string.hpp"
 
-#include "variable_storage.hpp"
-
 //--------------------------------------------------------------------------------
 
 namespace core
@@ -27,8 +25,8 @@ public:
         FPModuleActions mVariableRegister;
     };
 
-    static const str::string CALLBACK_VOLUME_MODULE_SETUP;
-    static const str::string CALLBACK_VOLUME_MODULE_START;
+    static const str::string CALLBACK_VOLUME_SETUP;
+    static const str::string CALLBACK_VOLUME_START;
 
     static void setupModules() noexcept;
 

@@ -2,21 +2,19 @@
 
 #include "file_system/file_read.hpp"
 
-#include "string/separators.hpp"
-
 #include "callback_storage.hpp"
 
-const str::string core::Module::CALLBACK_VOLUME_MODULE_SETUP = "module_setup";
-const str::string core::Module::CALLBACK_VOLUME_MODULE_START = "module_start";
+const str::string core::Module::CALLBACK_VOLUME_SETUP = "module_setup";
+const str::string core::Module::CALLBACK_VOLUME_START = "module_start";
 
 void
 core::Module::setupModules() noexcept
 {
-    auto moduleList = fs::FileRead::getWordsSet(
-        fs::ReadFromStoredFile("module_list.cfg"), str::Separator::variable);
+    auto moduleList =
+        fs::FileRead::getWordsSet(fs::ReadFromStoredFile("module_list.cfg"));
 
     auto setupFuncs =
-        core::CallbackStorage::getVolumeCallbacks(CALLBACK_VOLUME_MODULE_SETUP);
+        core::CallbackStorage::getVolumeCallbacks(CALLBACK_VOLUME_SETUP);
 
     for (auto& i : setupFuncs)
     {
@@ -24,7 +22,7 @@ core::Module::setupModules() noexcept
         {
             auto settings = ((ModuleSettings(*)())i.second)();
             settings.mVariableRegister();
-            CallbackStorage::add(CALLBACK_VOLUME_MODULE_START, i.first,
+            CallbackStorage::add(CALLBACK_VOLUME_START, i.first,
                                  settings.mModuleLoppFunc);
         }
     }

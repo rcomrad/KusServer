@@ -15,7 +15,22 @@ str::Separator::newWord(char c) noexcept
 bool
 str::Separator::variable(char c) noexcept
 {
-    return newWord(c) || c == '=';
+    static bool commentFlag = false;
+    if (c == '#')
+    {
+        commentFlag = true;
+    }
+    if (newLine(c))
+    {
+        commentFlag = false;
+    }
+
+    bool result = true;
+    if (!commentFlag)
+    {
+        result = newWord(c) || c == '=';
+    }
+    return result;
 }
 
 bool

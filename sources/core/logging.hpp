@@ -1,15 +1,10 @@
-#ifndef LOGGING_HPP
-#define LOGGING_HPP
+#pragma once
 
-#include <ostream>
-#include <stdarg.h>
 #include <stdio.h>
-#include <vector>
 
 #include "domain/holy_trinity.hpp"
 
 #include "string/kus_string.hpp"
-#include "string/to_string.hpp"
 
 //------------------------------------------------------------------------------
 
@@ -19,20 +14,22 @@ namespace core
 class Logging
 {
 public:
+    HOLY_TRINITY_SINGLE(Logging);
+
     enum class LogLevel
     {
-        Nun,
-        Info,
-        Warning,
-        Error
+        NUN,
+        INFO,
+        WARNING,
+        ERROR
     };
 
     enum class OutputType
     {
-        Nun,
-        Cout,
-        Cerr,
-        File
+        NUN,
+        STDOUT,
+        STDERR,
+        FILE
     };
 
     static void setLogLevel(LogLevel aLogLevel) noexcept;
@@ -66,7 +63,6 @@ private:
 
     //--------------------------------------------------------------------------
 
-    HOLY_TRINITY_SINGLE(Logging);
     Logging() noexcept;
     ~Logging();
     void clear() noexcept;
@@ -82,7 +78,7 @@ private:
     template <typename... Args>
     void writeInfoNonstatic(Args&&... args) noexcept
     {
-        if (mLogLevel == LogLevel::Info)
+        if (mLogLevel == LogLevel::INFO)
         {
             write("info", std::forward<Args>(args)...);
         }
@@ -91,18 +87,18 @@ private:
     template <typename... Args>
     void writeWarningNonstatic(Args&&... args) noexcept
     {
-        if (mLogLevel <= LogLevel::Warning)
+        if (mLogLevel <= LogLevel::WARNING)
         {
-            write("Warn", std::forward<Args>(args)...);
+            write("WARN", std::forward<Args>(args)...);
         }
     }
 
     template <typename... Args>
     void writeErrorNonstatic(Args&&... args) noexcept
     {
-        if (mLogLevel <= LogLevel::Error)
+        if (mLogLevel <= LogLevel::ERROR)
         {
-            write("ERROR", std::forward<Args>(args)...);
+            write("ERROR!", std::forward<Args>(args)...);
         }
     }
 
@@ -115,20 +111,23 @@ private:
                const char* aFunc,
                Args&&... args) noexcept
     {
-        writeDebugData(aType);
-        writeFileName(aFile, 30);
-        writeDebugData(aLine, 4);
-        writeDebugData(aFunc, 30);
+        writeDebugData(aType, 4);
+        writeFileName(aFile, 15);
+        writeDebugData(aLine);
+        writeDebugData(aFunc, 15);
         (void)(writeArg(std::forward<Args>(args)), ...);
         writeEnd();
-        fflush(mStream);
+        fflush(mStream); // TODO: remove
     }
 
-    void writeDebugData(const char* arg, int aMaxSize = 0) noexcept;
-    void writeDebugData(int arg, int aMaxSize = 0) noexcept;
+    void writeDebugData(int arg) noexcept;
+    void writeDebugData(const char* arg,
+                        int aMaxSize = 0,
+                        int aSize    = 0) noexcept;
     void writeFileName(const char* arg, int aMaxSize = 0) noexcept;
 
     void writeArg(int arg) noexcept;
+    void writeArg(double arg) noexcept;
     void writeArg(const str::string& arg) noexcept;
     void writeArg(const char* arg) noexcept;
 
@@ -144,5 +143,3 @@ private:
 // clang-format on
 
 } // namespace core
-
-#endif // !LOGGING_HPP
