@@ -2,11 +2,12 @@
 
 #include "string/parser.hpp"
 
-route::Command::Command(const str::string& aValue,
-                        const str::string& aArguments) noexcept
-    : value(aValue)
+core::Command::Command(const str::string& aStr) noexcept
 {
-    auto args = str::Parser::slice(aArguments, "; \n\t");
+    auto args = str::Parser::slice(aStr, "; \n\t");
+    value     = std::move(args[0]);
+    args.erase(args.begin());
+
     for (auto& i : args)
     {
         auto temp = str::Parser::slice(i, "=");
@@ -16,7 +17,7 @@ route::Command::Command(const str::string& aValue,
         }
         else
         {
-            variables[temp[0]] = temp[1];
+            variables[std::move(temp[0])] = std::move(temp[1]);
         }
     }
 }

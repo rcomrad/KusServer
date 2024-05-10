@@ -23,7 +23,7 @@ core::Module::setupModules() noexcept
             auto settings = ((ModuleSettings(*)())i.second)();
             settings.mVariableRegister();
             CallbackStorage::add(CALLBACK_VOLUME_START, i.first,
-                                 settings.mModuleLoppFunc);
+                                 (void*)settings.mModuleLoppFunc);
         }
     }
 }

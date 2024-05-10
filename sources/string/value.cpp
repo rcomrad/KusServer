@@ -28,9 +28,9 @@ str::Value::operator std::string() const noexcept
     return str;
 }
 
-str::Value::operator dom::Pair<float>() const noexcept
+str::Value::operator core::Pair<float>() const noexcept
 {
-    dom::Pair<float> result;
+    core::Pair<float> result;
 
     int cur = 0;
     std::string temp;

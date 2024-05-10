@@ -1,6 +1,7 @@
 #include "core.hpp"
 
 #include "callback_storage.hpp"
+#include "command_handler.hpp"
 #include "logging.hpp"
 #include "module.hpp"
 #include "variable_storage.hpp"
@@ -48,6 +49,8 @@ core::Core::setupNonstatic() noexcept
             (Module::FPModuleActions)i.second;
         mApps[module_name] = std::move(std::thread(module_callback));
     }
+    mApps["command_scanner"] =
+        std::move(std::thread(CommandHandler::scanCommand));
 }
 
 //--------------------------------------------------------------------------------
@@ -63,6 +66,7 @@ core::Core::runNonstatic() noexcept
 {
     while (VariableStorage::get(0))
     {
+        CommandHandler::handlCommand();
     }
 }
 

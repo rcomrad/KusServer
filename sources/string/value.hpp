@@ -4,7 +4,7 @@
 
 #include <string>
 
-#include "domain/pair.hpp"
+#include "core/pair.hpp"
 
 namespace str
 {
@@ -18,7 +18,7 @@ struct Value
 
     operator std::string() const noexcept;
 
-    operator dom::Pair<float>() const noexcept;
+    operator core::Pair<float>() const noexcept;
 
     enum class Type
     {

@@ -6,10 +6,11 @@
 #include <unordered_map>
 #include <vector>
 
-#include "domain/holy_trinity.hpp"
-
 #include "string/kus_string.hpp"
 
+#include "callback_register.hpp"
+#include "command.hpp"
+#include "holy_trinity.hpp"
 #include "int_glob_var.hpp"
 
 //--------------------------------------------------------------------------------
@@ -35,7 +36,11 @@ public:
     static void set(int aNumber, int aValue) noexcept;
     static int get(int aNumber) noexcept;
 
+    static const int CORRUPTED_VALUE;
+
 private:
+    static CallbackRegister mCommandHandlerCallback;
+
     std::vector<IntGlobVar> mVariables;
     std::unordered_map<std::string, int> mVariableNames;
 
@@ -47,6 +52,9 @@ private:
 
     void setNonstatic(int aNumber, int aValue) noexcept;
     int getNonstatic(int aNumber) noexcept;
+
+    static void setCommandHandler(const Command& aCommand) noexcept;
+    void setCommandHandlerNonstatic(const Command& aCommand) noexcept;
 };
 } // namespace core
 

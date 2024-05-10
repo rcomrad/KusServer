@@ -2,9 +2,8 @@
 
 //--------------------------------------------------------------------------------
 
-#include "domain/holy_trinity.hpp"
-
 #include "core/callback_register.hpp"
+#include "core/holy_trinity.hpp"
 #include "core/module.hpp"
 
 //--------------------------------------------------------------------------------

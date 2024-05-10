@@ -1,5 +1,4 @@
-#ifndef COMMAND_HPP
-#define COMMAND_HPP
+#pragma once
 
 //--------------------------------------------------------------------------------
 
@@ -8,20 +7,22 @@
 
 #include "string/kus_string.hpp"
 
+#include "holy_trinity.hpp"
+
 //--------------------------------------------------------------------------------
 
-namespace route
+namespace core
 {
 struct Command
 {
+    HOLY_TRINITY_NOCOPY(Command);
+
     str::string value;
     std::unordered_set<str::string> arguments;
     std::unordered_map<str::string, str::string> variables;
 
-    Command(const str::string& aValue, const str::string& aArguments) noexcept;
+    Command(const str::string& aStr) noexcept;
 };
-} // namespace route
+} // namespace core
 
 //--------------------------------------------------------------------------------
-
-#endif // !COMMAND_HPP

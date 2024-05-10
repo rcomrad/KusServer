@@ -1,5 +1,7 @@
 #include "logging.hpp"
 
+#include <cstring>
+
 //------------------------------------------------------------------------------
 
 void
@@ -110,7 +112,7 @@ core::Logging::writeDebugData(const char* arg, int aMaxSize, int aSize) noexcept
 {
     if (!aSize)
     {
-        aSize = strlen(arg);
+        aSize = std::strlen(arg);
     }
     aSize /= 2;
     std::fprintf(mStream, "[%*s%*s] ", aMaxSize + aSize, arg, aMaxSize - aSize,
@@ -120,7 +122,7 @@ core::Logging::writeDebugData(const char* arg, int aMaxSize, int aSize) noexcept
 void
 core::Logging::writeFileName(const char* arg, int aMaxSize) noexcept
 {
-    int size = strlen(arg);
+    int size = std::strlen(arg);
     int num  = size;
     int cnt  = 0;
     while (num > 0 && cnt < 2)

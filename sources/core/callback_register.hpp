@@ -4,9 +4,9 @@
 
 #include <vector>
 
-#include "domain/holy_trinity.hpp"
-
 #include "string/kus_string.hpp"
+
+#include "holy_trinity.hpp"
 
 //--------------------------------------------------------------------------------
 

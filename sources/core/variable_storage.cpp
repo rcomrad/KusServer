@@ -8,6 +8,16 @@
 #include "string/parser.hpp"
 #include "string/separators.hpp"
 
+#include "command_handler.hpp"
+
+//--------------------------------------------------------------------------------
+
+const int core::VariableStorage::CORRUPTED_VALUE = -100;
+
+core::CallbackRegister core::VariableStorage::mCommandHandlerCallback(
+    {core::CommandHandler::CALLBACK_VOLUME_COMMAND_HANDLER, "set",
+     (void*)core::VariableStorage::setCommandHandler});
+
 //--------------------------------------------------------------------------------
 
 core::VariableStorage::VariableStorage() noexcept
@@ -102,4 +112,42 @@ core::VariableStorage::addSettingsNonstatic(
     }
 
     return start_num;
+}
+
+//--------------------------------------------------------------------------------
+
+void
+core::VariableStorage::setCommandHandler(const Command& aCommand) noexcept
+{
+    getInstance().setCommandHandlerNonstatic(aCommand);
+}
+
+void
+core::VariableStorage::setCommandHandlerNonstatic(
+    const Command& aCommand) noexcept
+{
+    for (const auto& i : aCommand.variables)
+    {
+        // TODO: in separate function
+        auto it = mVariableNames.find(i.first);
+        if (it != mVariableNames.end())
+        {
+            int num = it->second;
+            int val = mVariables[num].mParser(i.second);
+            if (CORRUPTED_VALUE != val)
+            {
+                mVariables[num].mValue = val;
+                LOG_INFO("Set variable ", i.first, "with value", i.second);
+            }
+            else
+            {
+                LOG_ERROR("Set command for variable", i.first,
+                          "failed: corrupted variable value", i.second);
+            }
+        }
+        else
+        {
+            LOG_ERROR("Set command failed: no such variable", i.first);
+        }
+    }
 }

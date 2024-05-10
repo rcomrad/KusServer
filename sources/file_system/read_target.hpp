@@ -2,7 +2,7 @@
 
 //--------------------------------------------------------------------------------
 
-#include "domain/holy_trinity.hpp"
+#include "core/holy_trinity.hpp"
 
 #include "string/kus_string.hpp"
 

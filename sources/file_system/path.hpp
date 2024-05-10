@@ -7,7 +7,7 @@
 #include <optional>
 #include <unordered_map>
 
-#include "domain/holy_trinity.hpp"
+#include "core/holy_trinity.hpp"
 
 #include "string/kus_string.hpp"
 
@@ -37,12 +37,14 @@ public:
     static boost::optional<const str::string&> getFilePath(
         const str::string& aFileName) noexcept;
     static std::optional<str::string> getFilePath(
-        const str::string& aFolderName, const str::string& aFileName) noexcept;
+        const str::string& aFolderName,
+        const str::string& aFileName) noexcept;
 
     static const str::string& getFilePathUnsafe(
         const str::string& aFileName) noexcept;
     static const str::string& getFilePathUnsafe(
-        const str::string& aFolderName, const str::string& aFileName) noexcept;
+        const str::string& aFolderName,
+        const str::string& aFileName) noexcept;
 
     //----------------------------------------------------------------------------
 
@@ -138,6 +140,6 @@ private:
     }
 };
 
-} // namespace core
+} // namespace fs
 
 //--------------------------------------------------------------------------------

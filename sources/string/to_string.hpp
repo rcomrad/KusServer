@@ -5,7 +5,7 @@
 
 #include <string>
 
-#include "domain/metaprogramming.hpp"
+#include "core/metaprogramming.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -47,7 +47,7 @@ toString(T arg) noexcept
     return ToString::convert(arg);
 }
 
-} // namespace dom
+} // namespace str
 
 //--------------------------------------------------------------------------------
 

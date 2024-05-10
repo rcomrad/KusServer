@@ -5,9 +5,9 @@
 #include <thread>
 #include <unordered_map>
 
-#include "domain/holy_trinity.hpp"
-
 #include "string/kus_string.hpp"
+
+#include "holy_trinity.hpp"
 
 //------------------------------------------------------------------------------
 
@@ -27,6 +27,8 @@ private:
 
     void setupNonstatic() noexcept;
     void runNonstatic() noexcept;
+
+    void scanCommand() noexcept;
 
     std::unordered_map<str::string, std::thread> mApps;
 };

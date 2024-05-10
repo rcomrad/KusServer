@@ -22,7 +22,11 @@ serv::Server::start() noexcept
     int var = -1;
     while (var)
     {
-        std::cout << var << std::endl;
+        int old_val = var;
         var = ServerModule::getVatiable(ServerVariables::TOKEN_STATUS_VAR);
+        if (var != old_val)
+        {
+            std::cout << var << std::endl;
+        }
     }
 }
