@@ -26,14 +26,14 @@ public:
     static std::string convert(const char* str) noexcept;
 
     template <typename T,
-              typename = dom::enableIf<
-                  dom::isNotOneOf<T, bool, std::string, char*, const char*>>>
+              typename = core::enableIf<
+                  core::isNotOneOf<T, bool, std::string, char*, const char*>>>
     static std::string convert(T&& aData) noexcept
     {
         return std::to_string(aData);
     }
 
-    template <typename S, typename = dom::enableIf<dom::isSTDString<S>>>
+    template <typename S, typename = core::enableIf<core::isSTDString<S>>>
     static auto convert(S&& str) noexcept
     {
         return std::forward<S>(str);
