@@ -32,7 +32,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(mailio CONFIG REQUIRED)
 find_package(libpqxx CONFIG REQUIRED)
 find_package(Crow CONFIG REQUIRED)
-find_package(Boost 1.64.0 REQUIRED system filesystem)
+find_package(Boost REQUIRED system filesystem)
 
 # Sources include
 add_executable(${PROJECT_NAME} "sources/core/main.cpp")
