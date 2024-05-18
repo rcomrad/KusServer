@@ -1,16 +1,25 @@
-#ifndef TO_STRING_HPP
-#define TO_STRING_HPP
+#pragma once
 
 //--------------------------------------------------------------------------------
 
-#include <string>
-
 #include "core/metaprogramming.hpp"
+
+#include "kus_string.hpp"
 
 //--------------------------------------------------------------------------------
 
 namespace str
 {
+
+class StrPrintf
+{
+public:
+    static void process(bool aData, char** aPtr) noexcept;
+    static void process(int aData, char** aPtr) noexcept;
+    static void process(double aData, char** aPtr) noexcept;
+    static void process(const char* aData, char** aPtr) noexcept;
+    static void process(const str::string& aData, char** aPtr) noexcept;
+};
 
 class ToString
 {
@@ -50,5 +59,3 @@ toString(T arg) noexcept
 } // namespace str
 
 //--------------------------------------------------------------------------------
-
-#endif // !TO_STRING_HPP

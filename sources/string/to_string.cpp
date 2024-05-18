@@ -1,34 +1,37 @@
 #include "to_string.hpp"
 
-// std::string
-// dom::ToString::convert(int aData) noexcept
-// {
-//     return std::to_string(aData);
-// }
+#include <cstdio>
 
-// std::string
-// dom::ToString::convert(size_t aData) noexcept
-// {
-//     return std::to_string(aData);
-// }
+void
+str::StrPrintf::process(bool aData, char** aPtr) noexcept
+{
+    *aPtr += std::sprintf(*aPtr, aData ? "true" : "false");
+}
 
-// std::string
-// dom::ToString::convert(long long aData) noexcept
-// {
-//     return std::to_string(aData);
-// }
+void
+str::StrPrintf::process(int aData, char** aPtr) noexcept
+{
+    *aPtr += std::sprintf(*aPtr, "%d", aData);
+}
 
-// std::string
-// dom::ToString::convert(float aData) noexcept
-// {
-//     return std::to_string(aData);
-// }
+void
+str::StrPrintf::process(double aData, char** aPtr) noexcept
+{
+    *aPtr += std::sprintf(*aPtr, "%lf", aData);
+}
 
-// std::string
-// dom::ToString::convert(double aData) noexcept
-// {
-//     return std::to_string(aData);
-// }
+void
+str::StrPrintf::process(const char* aData, char** aPtr) noexcept
+{
+    char* cc = (char*)aData;
+    *aPtr += std::sprintf(*aPtr, "%s", aData);
+}
+
+void
+str::StrPrintf::process(const str::string& aData, char** aPtr) noexcept
+{
+    process(aData.c_str(), aPtr);
+}
 
 std::string
 str::ToString::convert(bool aData) noexcept
