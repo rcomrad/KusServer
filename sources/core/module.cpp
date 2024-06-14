@@ -4,8 +4,8 @@
 
 #include "callback_storage.hpp"
 
-const str::string core::Module::CALLBACK_VOLUME_SETUP = "module_setup";
-const str::string core::Module::CALLBACK_VOLUME_START = "module_start";
+const str::String core::Module::CALLBACK_VOLUME_SETUP = "module_setup";
+const str::String core::Module::CALLBACK_VOLUME_START = "module_start";
 
 void
 core::Module::setupModules() noexcept

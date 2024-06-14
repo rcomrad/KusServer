@@ -12,15 +12,15 @@ namespace tex
 class TexBase
 {
 public:
-    TexBase(std::unordered_map<std::string, std::vector<std::string>>*
+    TexBase(std::unordered_map<str::String, std::vector<str::String>>*
                 aVariables = nullptr) noexcept;
     HOLY_TRINITY_NOCOPY(TexBase);
 
 protected:
-    std::string getVariable(const std::string& aName) noexcept;
+    str::String getVariable(const str::String& aName) noexcept;
 
 private:
-    std::unordered_map<std::string, std::vector<std::string>>* mVariables;
+    std::unordered_map<str::String, std::vector<str::String>>* mVariables;
 };
 
 }; // namespace tex

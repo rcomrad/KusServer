@@ -1,32 +1,32 @@
 #include "static_variable.hpp"
 
 void
-code::StaticVariable::setNamespace(const std::string& aNamespace) noexcept
+code::StaticVariable::setNamespace(const str::String& aNamespace) noexcept
 {
     mNamespace = aNamespace;
 }
 
 void
-code::StaticVariable::setClass(const std::string& aClass) noexcept
+code::StaticVariable::setClass(const str::String& aClass) noexcept
 {
     mClass = aClass;
 }
 
 void
-code::StaticVariable::setType(const std::string& aType) noexcept
+code::StaticVariable::setType(const str::String& aType) noexcept
 {
     mType = aType;
 }
 
 void
-code::StaticVariable::setName(const std::string& aName) noexcept
+code::StaticVariable::setName(const str::String& aName) noexcept
 {
     mName = aName;
 }
 
 void
 code::StaticVariable::setInitialisation(
-    const std::string& aInitialisation) noexcept
+    const str::String& aInitialisation) noexcept
 {
     mInitialisation = aInitialisation;
 }

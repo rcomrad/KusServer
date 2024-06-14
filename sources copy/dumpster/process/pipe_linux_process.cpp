@@ -56,7 +56,7 @@ proc::PipeLinuxProcess::~PipeLinuxProcess() noexcept
 
 void
 proc::PipeLinuxProcess::setComand(
-    const std::vector<std::string>& aParameters) noexcept
+    const std::vector<str::String>& aParameters) noexcept
 {
     mParameters = aParameters;
     // getRawParameters();
@@ -204,7 +204,7 @@ proc::PipeLinuxProcess::IORedirection() noexcept
 //--------------------------------------------------------------------------------
 #    include <poll.h>
 void
-proc::PipeLinuxProcess::readData(std::string& result) noexcept
+proc::PipeLinuxProcess::readData(str::String& result) noexcept
 {
     // result.clear();
     // char buf[1024];
@@ -212,10 +212,10 @@ proc::PipeLinuxProcess::readData(std::string& result) noexcept
 
     // // while (read(mPipeB[0], &buf, 1024) == 1024)
     // // {
-    // //     result += std::string(buf);
+    // //     result += str::String(buf);
     // //     memset(buf, 0, sizeof(buf));
     // // }
-    // // result += std::string(buf);
+    // // result += str::String(buf);
 
     // boost::posix_time::ptime timeLocal =
     //     boost::posix_time::second_clock::local_time();
@@ -223,7 +223,7 @@ proc::PipeLinuxProcess::readData(std::string& result) noexcept
     // int count = 0;
     // while ((count = read(mPipeB[0], &buf, 1024)) == 1024 || count == 0)
     // {
-    //     result += std::string(buf);
+    //     result += str::String(buf);
     //     memset(buf, 0, sizeof(buf));
 
     //     boost::posix_time::ptime timeLocal2 =
@@ -231,7 +231,7 @@ proc::PipeLinuxProcess::readData(std::string& result) noexcept
     //     auto dur = timeLocal2 - timeLocal;
     //     if (dur.seconds() > 6) break;
     // }
-    // result += std::string(buf);
+    // result += str::String(buf);
 
     //===================================================
 
@@ -255,18 +255,18 @@ proc::PipeLinuxProcess::readData(std::string& result) noexcept
 
         while (read(mPipeB[0], &buf, 1024) == 1024)
         {
-            result += std::string(buf);
+            result += str::String(buf);
             memset(buf, 0, sizeof(buf));
         }
 
-        result += std::string(buf);
+        result += str::String(buf);
     }
 }
 
 //--------------------------------------------------------------------------------
 
 void
-proc::PipeLinuxProcess::writeData(const std::string& aMessage) noexcept
+proc::PipeLinuxProcess::writeData(const str::String& aMessage) noexcept
 {
     write(mPipeA[1], aMessage.c_str(), aMessage.size());
 }

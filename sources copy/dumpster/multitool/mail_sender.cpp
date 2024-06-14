@@ -6,14 +6,15 @@
 #include "domain/mail.hpp"
 #include "domain/url_wrapper.hpp"
 
+#include "server/request_unpacker.hpp"
+
 #include "file_data/file.hpp"
 #include "file_data/parser.hpp"
 #include "file_data/path.hpp"
 #include "post/post_handler.hpp"
-#include "server/request_unpacker.hpp"
 // TODO: crow::multipart::message
 
-std::string
+str::String
 mult::MailSender::process(const crow::request& aReq) noexcept
 {
     crow::multipart::message msg(aReq);
@@ -25,7 +26,7 @@ mult::MailSender::process(const crow::request& aReq) noexcept
     letter.password = serv::RequestUnpacker::getPartUnsafe(msg, "password");
     letter.data     = serv::RequestUnpacker::getPartUnsafe(msg, "data");
 
-    std::string result;
+    str::String result;
     if (letter.theme.empty())
     {
         result = "Укажите тему для отправляемых писем.";
@@ -59,7 +60,7 @@ mult::MailSender::process(const crow::request& aReq) noexcept
         // letter.data =
         //     file::File::getAllData(letter.data, file::FileType::String);
 
-        std::string fileName =
+        str::String fileName =
             "mail_report_" + dom::DateAndTime::getCurentTimeSafe() + ".txt";
 
         bool flag =
@@ -101,7 +102,7 @@ mult::MailSender::process(const crow::request& aReq) noexcept
 #include <set>
 void
 mult::MailSender::threadSender(Letter aLetter,
-                               std::string aFileName,
+                               str::String aFileName,
                                bool aRealSend) noexcept
 {
     std::ofstream out(aFileName);
@@ -114,8 +115,8 @@ mult::MailSender::threadSender(Letter aLetter,
                                  ;
                              });
 
-    std::unordered_map<std::string,
-                       std::unordered_map<std::string, std::string>*>
+    std::unordered_map<str::String,
+                       std::unordered_map<str::String, str::String>*>
         mmm;
     for (auto& i : table)
     {
@@ -129,7 +130,7 @@ mult::MailSender::threadSender(Letter aLetter,
             i.erase("$mail$");
         }
 
-        std::set<std::string> q;
+        std::set<str::String> q;
         for (auto& k : i)
         {
             if (k.first == "$mail$") continue;
@@ -174,7 +175,7 @@ mult::MailSender::threadSender(Letter aLetter,
         auto addr = temp->second;
 
         // LOG_INFO("Sending to:", row["$mail$"]);
-        std::string copy;
+        str::String copy;
         for (auto& l : letter)
         {
             copy += l.second + row[l.first];
@@ -226,16 +227,16 @@ mult::MailSender::threadSender(Letter aLetter,
     }
 }
 
-std::vector<std::pair<std::string, std::string>>
+std::vector<std::pair<str::String, str::String>>
 mult::MailSender::sliseText(
-    const std::string& aText,
-    const std::unordered_map<std::string, std::string>& aKeys) noexcept
+    const str::String& aText,
+    const std::unordered_map<str::String, str::String>& aKeys) noexcept
 {
     LOG_INFO("Start parsing letter");
-    std::vector<std::pair<std::string, std::string>> result;
+    std::vector<std::pair<str::String, str::String>> result;
 
     int last = 0;
-    std::unordered_map<std::string, int> count;
+    std::unordered_map<str::String, int> count;
     for (int indx = 0; indx < aText.size(); ++indx)
     {
         for (auto& i : aKeys)

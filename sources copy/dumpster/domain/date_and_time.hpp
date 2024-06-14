@@ -12,21 +12,21 @@ class DateAndTime
 {
 public:
     static boost::posix_time::ptime getRawCurentTime() noexcept;
-    static std::string getCurentTime() noexcept;
-    static std::string getCurentTimeSafe() noexcept;
+    static str::String getCurentTime() noexcept;
+    static str::String getCurentTimeSafe() noexcept;
 
-    static boost::gregorian::date getDate(const std::string& aDate) noexcept;
-    static boost::posix_time::ptime getTime(const std::string& aTime) noexcept;
+    static boost::gregorian::date getDate(const str::String& aDate) noexcept;
+    static boost::posix_time::ptime getTime(const str::String& aTime) noexcept;
 
-    static std::string getDateStr(const boost::gregorian::date& aDate) noexcept;
-    static std::string toStr(const boost::posix_time::ptime& aTime) noexcept;
+    static str::String getDateStr(const boost::gregorian::date& aDate) noexcept;
+    static str::String toStr(const boost::posix_time::ptime& aTime) noexcept;
     static bool curentTimeAssert(
-        const std::string& aTime,
+        const str::String& aTime,
         const boost::posix_time::time_duration& aDuration) noexcept;
     static bool curentTimeAssert(
         const boost::posix_time::ptime& aTime,
         const boost::posix_time::time_duration& aDuration) noexcept;
-    static bool isPassed(const std::string& aTime) noexcept;
+    static bool isPassed(const str::String& aTime) noexcept;
 };
 } // namespace dom
 

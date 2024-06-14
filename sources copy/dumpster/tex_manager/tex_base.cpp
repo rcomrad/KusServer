@@ -2,20 +2,20 @@
 
 #include "file_data/parser.hpp"
 
-tex::TexBase::TexBase(std::unordered_map<std::string, std::vector<std::string>>*
+tex::TexBase::TexBase(std::unordered_map<str::String, std::vector<str::String>>*
                           aVariables) noexcept
     : mVariables(aVariables)
 {
 }
 
-std::string
-tex::TexBase::getVariable(const std::string& aName) noexcept
+str::String
+tex::TexBase::getVariable(const str::String& aName) noexcept
 {
-    std::string result;
+    str::String result;
 
-    if (mVariables != nullptr && aName.find('$') != std::string::npos)
+    if (mVariables != nullptr && aName.find('$') != str::String::npos)
     {
-        std::string name = file::Parser::slice(aName, " ")[0];
+        str::String name = file::Parser::slice(aName, " ")[0];
         auto it          = mVariables->find(name);
         if (it != mVariables->end() && it->second.size() > 0)
         {

@@ -12,13 +12,13 @@ dom::DateAndTime::getRawCurentTime() noexcept
     return boost::posix_time::second_clock::local_time();
 }
 
-std::string
+str::String
 dom::DateAndTime::getCurentTime() noexcept
 {
     boost::posix_time::ptime timeLocal =
         boost::posix_time::second_clock::local_time();
 
-    std::string dateTime;
+    str::String dateTime;
     dateTime += std::to_string(timeLocal.date().year()) + "-";
     if (timeLocal.date().month() < 10) dateTime += "0";
     dateTime += std::to_string(timeLocal.date().month()) + "-";
@@ -35,17 +35,17 @@ dom::DateAndTime::getCurentTime() noexcept
     return dateTime;
 }
 
-std::string
+str::String
 dom::DateAndTime::getCurentTimeSafe() noexcept
 {
-    std::string result       = getCurentTime();
+    str::String result       = getCurentTime();
     result[result.find(' ')] = '_';
     std::replace(result.begin(), result.end(), ':', '-');
     return result;
 }
 
 boost::gregorian::date
-dom::DateAndTime::getDate(const std::string& aDate) noexcept
+dom::DateAndTime::getDate(const str::String& aDate) noexcept
 {
     uint16_t year  = uint16_t(std::stoi(aDate.substr(0, 4)));
     uint16_t month = uint8_t(std::stoi(aDate.substr(5, 2)));
@@ -56,7 +56,7 @@ dom::DateAndTime::getDate(const std::string& aDate) noexcept
 }
 
 boost::posix_time::ptime
-dom::DateAndTime::getTime(const std::string& aTime) noexcept
+dom::DateAndTime::getTime(const str::String& aTime) noexcept
 {
     // 2023-04-03 12:00:00
 
@@ -74,7 +74,7 @@ dom::DateAndTime::getTime(const std::string& aTime) noexcept
     return result;
 }
 
-std::string
+str::String
 dom::DateAndTime::getDateStr(const boost::gregorian::date& aDate) noexcept
 {
     uint16_t year  = aDate.year();
@@ -86,10 +86,10 @@ dom::DateAndTime::getDateStr(const boost::gregorian::date& aDate) noexcept
            std::to_string(day);
 }
 
-std::string
+str::String
 dom::DateAndTime::toStr(const boost::posix_time::ptime& aTime) noexcept
 {
-    std::string dateTime;
+    str::String dateTime;
 
     dateTime += std::to_string(aTime.date().year()) + "-";
     if (aTime.date().month() < 10) dateTime += "0";
@@ -108,7 +108,7 @@ dom::DateAndTime::toStr(const boost::posix_time::ptime& aTime) noexcept
 
 bool
 dom::DateAndTime::curentTimeAssert(
-    const std::string& aTime,
+    const str::String& aTime,
     const boost::posix_time::time_duration& aDuration) noexcept
 {
     return curentTimeAssert(getTime(aTime), aDuration);
@@ -126,7 +126,7 @@ dom::DateAndTime::curentTimeAssert(
 }
 
 bool
-dom::DateAndTime::isPassed(const std::string& aTime) noexcept
+dom::DateAndTime::isPassed(const str::String& aTime) noexcept
 {
     boost::posix_time::ptime timeLocal =
         boost::posix_time::second_clock::local_time();

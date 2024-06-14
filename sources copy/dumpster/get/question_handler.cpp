@@ -70,7 +70,7 @@ get::QuestionHandler::getQuestion(int aQuestionID) const noexcept
 crow::json::wvalue
 get::QuestionHandler::loadQuestion(int aQuestionID) const noexcept
 {
-    static const std::unordered_set<std::string> excludedFiles = {"legend.txt",
+    static const std::unordered_set<str::String> excludedFiles = {"legend.txt",
                                                                   "data.txt"};
 
     data::Question question;
@@ -84,9 +84,9 @@ get::QuestionHandler::loadQuestion(int aQuestionID) const noexcept
     auto path = core::Path::getPath("question");
     if (path)
     {
-        std::string legend;
+        str::String legend;
 
-        std::string folder = path.value() + question.nickname;
+        str::String folder = path.value() + question.nickname;
         auto fileData      = file::File::getLines(folder + "/legend.txt");
         for (auto& i : fileData)
         {

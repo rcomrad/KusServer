@@ -24,22 +24,22 @@ public:
     //     if (aAddNewPage) mData += "\\clearpage\n";
     // }
 
-    std::string printToFile() noexcept;
+    str::String printToFile() noexcept;
 
     template <typename T>
-    void setVariable(const std::string& aName, T&& aVariable) noexcept
+    void setVariable(const str::String& aName, T&& aVariable) noexcept
     {
         mVariables[aName] = std::forward<T>(aVariable);
         std::reverse(mVariables[aName].begin(), mVariables[aName].end());
     }
 
-    std::string makeFromFIle(const std::string& aFileName) noexcept;
+    str::String makeFromFIle(const str::String& aFileName) noexcept;
 
 private:
-    std::string mData;
-    std::unordered_map<std::string, std::vector<std::string>> mVariables;
+    str::String mData;
+    std::unordered_map<str::String, std::vector<str::String>> mVariables;
 
-    void addFile(const std::string& aFileName) noexcept;
+    void addFile(const str::String& aFileName) noexcept;
 };
 
 }; // namespace tex

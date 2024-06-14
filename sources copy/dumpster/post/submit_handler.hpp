@@ -18,7 +18,7 @@ public:
     static crow::json::wvalue process(const crow::request& aReq) noexcept;
 
 private:
-    static std::string getCurentTime() noexcept;
+    static str::String getCurentTime() noexcept;
 };
 } // namespace post
 

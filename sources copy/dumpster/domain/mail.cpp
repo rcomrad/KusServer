@@ -8,11 +8,11 @@
 
 #include "file_data/file.hpp"
 
-dom::Mail::Mail(const std::string& aLogin,
-                const std::string& aPassword) noexcept
+dom::Mail::Mail(const str::String& aLogin,
+                const str::String& aPassword) noexcept
     : mLogin(aLogin), mPassword(aPassword)
 {
-    if (aLogin.find("adtspb") != std::string::npos)
+    if (aLogin.find("adtspb") != str::String::npos)
     {
         adtSmtp();
         LOG_INFO(0, "act");
@@ -54,9 +54,9 @@ dom::Mail::academtalantTls() noexcept
 }
 
 bool
-dom::Mail::send(const std::string& aEmailName,
-                const std::string& aTheme,
-                const std::string& aText) const noexcept
+dom::Mail::send(const str::String& aEmailName,
+                const str::String& aTheme,
+                const str::String& aText) const noexcept
 {
     bool result = true;
 
@@ -108,13 +108,13 @@ dom::Mail::send(const std::string& aEmailName,
 // using mailio::smtps;
 // using std::cout;
 // using std::endl;
-// using std::string;
+// using str::String;
 
 // int
 // main()
 // {
 //     std::ifstream inp("text.txt");
-//     std::string text;
+//     str::String text;
 
 //     std::getline(inp, text, '\0');
 //     inp.close();
@@ -122,7 +122,7 @@ dom::Mail::send(const std::string& aEmailName,
 //     inp.open("data.txt");
 
 //     int cnt = 0;
-//     std::string email, name, pass;
+//     str::String email, name, pass;
 //     while (inp >> email)
 //     {
 //         cnt++;
@@ -157,7 +157,7 @@ dom::Mail::send(const std::string& aEmailName,
 //                 msg.content_type(message::media_type_t::TEXT, "plain",
 //                 "utf-8");
 
-//                 std::string temp = text;
+//                 str::String temp = text;
 
 //                 // temp += "\nЛогин: " + name + "\n";
 //                 // temp += "Пароль: " + pass + "\n";

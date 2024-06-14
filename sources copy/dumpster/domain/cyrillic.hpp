@@ -17,7 +17,7 @@ public:
     void toLower(std::wstring& aStr) noexcept;
     void toUpper(std::wstring& aStr) noexcept;
 
-    std::wstring toWString(const std::string& aStr) noexcept;
+    std::wstring toWString(const str::String& aStr) noexcept;
     std::wstring toWString(const char* aStr) noexcept;
 
     void destroyBadCharacters(std::wstring& aStr) noexcept;
@@ -25,7 +25,7 @@ public:
     void destroyWord(std::wstring& aStr, const std::wstring& aWord) noexcept;
     void cutOffEnding(std::wstring& aStr) noexcept;
     void standardProcedure(std::wstring& aStr) noexcept;
-    static std::string translit(const std::string& aStr) noexcept;
+    static str::String translit(const str::String& aStr) noexcept;
 
 private:
     Cyrilic()  = default;

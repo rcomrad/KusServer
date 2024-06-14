@@ -6,8 +6,8 @@
 #include "request_storage.hpp"
 
 crow::json::wvalue
-get::GetHandler::singlGet(const std::string& aRequest,
-                          const std::string& aCondition) noexcept
+get::GetHandler::singlGet(const str::String& aRequest,
+                          const str::String& aCondition) noexcept
 {
     crow::json::wvalue result;
 
@@ -22,8 +22,8 @@ get::GetHandler::singlGet(const std::string& aRequest,
 }
 
 crow::json::wvalue
-get::GetHandler::multiplelGet(const std::string& aRequest,
-                              const std::string& aCondition) noexcept
+get::GetHandler::multiplelGet(const str::String& aRequest,
+                              const str::String& aCondition) noexcept
 {
     crow::json::wvalue result = {401};
 
@@ -38,8 +38,8 @@ get::GetHandler::multiplelGet(const std::string& aRequest,
 }
 
 crow::json::wvalue
-get::GetHandler::mainGet(const std::string& aRequest,
-                         const std::string& aCondition) noexcept
+get::GetHandler::mainGet(const str::String& aRequest,
+                         const str::String& aCondition) noexcept
 {
     crow::json::wvalue result;
 
@@ -60,12 +60,12 @@ get::GetHandler::mainGet(const std::string& aRequest,
         if (!req[i].additionalTable.empty())
         {
             auto& curBlock = temp[i][req[i].name];
-            std::string name;
+            str::String name;
             for (int j = 0; j < curBlock.size(); ++j)
             {
-                auto additionalTable =
-                    multiplelGet(req[i].additionalTable,
-                            req[i].name + "_id=" + curBlock[j]["id"].dump());
+                auto additionalTable = multiplelGet(
+                    req[i].additionalTable,
+                    req[i].name + "_id=" + curBlock[j]["id"].dump());
                 if (name.empty()) name = additionalTable.keys()[0];
                 curBlock[j][name] = std::move(additionalTable[name]);
             }

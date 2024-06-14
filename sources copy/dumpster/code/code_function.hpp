@@ -9,42 +9,42 @@ namespace code
 class CodeFunction
 {
 public:
-    CodeFunction(const std::string& aName = "foo") noexcept;
+    CodeFunction(const str::String& aName = "foo") noexcept;
 
-    void setNamespace(const std::string& aNamespace) noexcept;
-    void setClass(const std::string& aClass) noexcept;
+    void setNamespace(const str::String& aNamespace) noexcept;
+    void setClass(const str::String& aClass) noexcept;
 
     void makeStatic() noexcept;
     void makeFunctor() noexcept;
     void makeVariadic() noexcept;
 
-    void setTemplate(const std::string& aTemplate) noexcept;
-    void setReturnType(const std::string& aType) noexcept;
-    void setName(const std::string& aName) noexcept;
-    void setArguments(const std::string& aArguments) noexcept;
-    void setBody(const std::string& aBody) noexcept;
+    void setTemplate(const str::String& aTemplate) noexcept;
+    void setReturnType(const str::String& aType) noexcept;
+    void setName(const str::String& aName) noexcept;
+    void setArguments(const str::String& aArguments) noexcept;
+    void setBody(const str::String& aBody) noexcept;
 
     void outputToHpp(std::ofstream& aOut) const noexcept;
     void outputToCpp(std::ofstream& aOut) const noexcept;
 
-    void makeRouter(std::string aMapName) noexcept;
+    void makeRouter(str::String aMapName) noexcept;
 
 private:
     bool mIsStatic;
     bool mIsFunctor;
     bool mIsVariadic;
 
-    std::string mNamespace;
-    std::string mClass;
+    str::String mNamespace;
+    str::String mClass;
 
-    std::string mTemplate;
-    std::string mType;
-    std::string mName;
-    std::string mArguments;
-    std::string mBody;
-    std::string mMapName;
+    str::String mTemplate;
+    str::String mType;
+    str::String mName;
+    str::String mArguments;
+    str::String mBody;
+    str::String mMapName;
 
-    std::string generateRouterBody() const noexcept;
+    str::String generateRouterBody() const noexcept;
 
     bool isTemplate() const noexcept;
 };

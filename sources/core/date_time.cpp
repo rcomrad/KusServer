@@ -28,28 +28,28 @@ core::DateTime::operator-(const DateTime& aOther) const noexcept
 
 //--------------------------------------------------------------------------------
 
-std::string
+str::String
 core::DateTime::getTime() const noexcept
 {
-    std::string result(10, '\0');
+    str::String result(10);
     std::sprintf((char*)result.data(), "%02d:%02d:%02d", dateTime.time.hours,
                  dateTime.time.minutes, dateTime.time.seconds);
     return result;
 }
 
-std::string
+str::String
 core::DateTime::getDate() const noexcept
 {
-    std::string result(12, '\0');
+    str::String result(12);
     std::sprintf((char*)result.data(), "%04d-%02d-%02d", dateTime.date.year,
                  dateTime.date.month, dateTime.date.day);
     return result;
 }
 
-std::string
+str::String
 core::DateTime::getAll(char aDelimiter) const noexcept
 {
-    std::string result;
+    str::String result;
     result.reserve(22);
 
     result += getDate();

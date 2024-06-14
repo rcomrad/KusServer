@@ -1,6 +1,6 @@
 #include "code_function.hpp"
 
-code::CodeFunction::CodeFunction(const std::string& aName) noexcept
+code::CodeFunction::CodeFunction(const str::String& aName) noexcept
 {
     mIsStatic   = false;
     mIsFunctor  = false;
@@ -10,13 +10,13 @@ code::CodeFunction::CodeFunction(const std::string& aName) noexcept
 }
 
 void
-code::CodeFunction::setNamespace(const std::string& aNamespace) noexcept
+code::CodeFunction::setNamespace(const str::String& aNamespace) noexcept
 {
     mNamespace = aNamespace;
 }
 
 void
-code::CodeFunction::setClass(const std::string& aClass) noexcept
+code::CodeFunction::setClass(const str::String& aClass) noexcept
 {
     mClass = aClass;
 }
@@ -42,31 +42,31 @@ code::CodeFunction::makeVariadic() noexcept
 }
 
 void
-code::CodeFunction::setTemplate(const std::string& aTemplate) noexcept
+code::CodeFunction::setTemplate(const str::String& aTemplate) noexcept
 {
     mTemplate = aTemplate;
 }
 
 void
-code::CodeFunction::setReturnType(const std::string& aType) noexcept
+code::CodeFunction::setReturnType(const str::String& aType) noexcept
 {
     mType = aType;
 }
 
 void
-code::CodeFunction::setName(const std::string& aName) noexcept
+code::CodeFunction::setName(const str::String& aName) noexcept
 {
     mName = aName;
 }
 
 void
-code::CodeFunction::setArguments(const std::string& aArguments) noexcept
+code::CodeFunction::setArguments(const str::String& aArguments) noexcept
 {
     mArguments = aArguments;
 }
 
 void
-code::CodeFunction::setBody(const std::string& aBody) noexcept
+code::CodeFunction::setBody(const str::String& aBody) noexcept
 {
     mBody = aBody;
 }
@@ -74,7 +74,7 @@ code::CodeFunction::setBody(const std::string& aBody) noexcept
 void
 code::CodeFunction::outputToHpp(std::ofstream& aOut) const noexcept
 {
-    std::string body = mBody;
+    str::String body = mBody;
     if (!mMapName.empty()) body = generateRouterBody();
 
     if (mIsVariadic)
@@ -86,8 +86,7 @@ code::CodeFunction::outputToHpp(std::ofstream& aOut) const noexcept
     aOut << mName << "(" << mArguments;
     if (mIsVariadic)
     {
-        aOut << ", "
-             << "Args&&... args";
+        aOut << ", " << "Args&&... args";
     }
 
     if (isTemplate())
@@ -113,16 +112,16 @@ code::CodeFunction::outputToCpp(std::ofstream& aOut) const noexcept
 }
 
 void
-code::CodeFunction::makeRouter(std::string aMapName) noexcept
+code::CodeFunction::makeRouter(str::String aMapName) noexcept
 {
-    mArguments = "const std::string& aName";
+    mArguments = "const str::String& aName";
     mMapName   = aMapName;
 }
 
-std::string
+str::String
 code::CodeFunction::generateRouterBody() const noexcept
 {
-    std::string execExpr;
+    str::String execExpr;
     if (mIsFunctor) execExpr = "()";
     if (mIsVariadic) execExpr = "(std::forward<Args>(args)...)";
 

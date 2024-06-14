@@ -12,14 +12,14 @@ core::Logging::setLogLevel(core::Logging::LogLevel aOutputType) noexcept
 
 void
 core::Logging::setOutputType(core::Logging::OutputType aOutputType,
-                             const str::string& aFileName) noexcept
+                             const str::String& aFileName) noexcept
 {
     getInstance().setOutputTypeNonstatic(aOutputType, aFileName);
 }
 
 void
 core::Logging::setOutputTypeNonstatic(core::Logging::OutputType aOutputType,
-                                      const str::string& aFileName) noexcept
+                                      const str::String& aFileName) noexcept
 {
     if (aOutputType == OutputType::FILE && aFileName.empty())
     {
@@ -149,7 +149,7 @@ core::Logging::writeArg(double arg) noexcept
 }
 
 void
-core::Logging::writeArg(const str::string& arg) noexcept
+core::Logging::writeArg(const str::String& arg) noexcept
 {
     std::fprintf(mStream, "%s ", arg.c_str());
 }

@@ -16,49 +16,49 @@ namespace code
 class CodeClass
 {
 public:
-    CodeClass(const std::string& aClassName,
-              const std::string& aNamespace) noexcept;
-    // void setName(const std::string& aName) noexcept;
-    // void setNamespace(const std::string& aNamespace) noexcept;
+    CodeClass(const str::String& aClassName,
+              const str::String& aNamespace) noexcept;
+    // void setName(const str::String& aName) noexcept;
+    // void setNamespace(const str::String& aNamespace) noexcept;
 
-    void addParent(const std::string& aName) noexcept;
+    void addParent(const str::String& aName) noexcept;
 
-    CodeFunction& addRouterFunction(const std::string& aName,
-                                    const std::string& aType,
-                                    const std::string& aBody) noexcept;
-    CodeFunction& addFuncRouterForDatabase(const std::string& aName,
-                                           const std::string& aFunction,
-                                           const std::string& aBody) noexcept;
+    CodeFunction& addRouterFunction(const str::String& aName,
+                                    const str::String& aType,
+                                    const str::String& aBody) noexcept;
+    CodeFunction& addFuncRouterForDatabase(const str::String& aName,
+                                           const str::String& aFunction,
+                                           const str::String& aBody) noexcept;
 
     void addFunction(const CodeFunction& aFunc) noexcept;
 
-    void addVariable(const std::string& aName,
-                     const std::string& aType,
-                     const std::string& aValue = "") noexcept;
-    void addStaticVariable(const std::string& aVarName,
-                           const std::string& aType,
-                           const std::string& aInitialisation) noexcept;
+    void addVariable(const str::String& aName,
+                     const str::String& aType,
+                     const str::String& aValue = "") noexcept;
+    void addStaticVariable(const str::String& aVarName,
+                           const str::String& aType,
+                           const str::String& aInitialisation) noexcept;
 
     void outputToCpp(std::ofstream& aFile) const noexcept;
     void outputToHpp(std::ofstream& aFile) const noexcept;
 
     void makeStruct() noexcept;
-    void addUsing(const std::string& aName,
-                  const std::string& aTemplate = "") noexcept;
+    void addUsing(const str::String& aName,
+                  const str::String& aTemplate = "") noexcept;
 
 private:
     bool mIsStruct;
-    std::string mParent;
-    std::string mUsing;
+    str::String mParent;
+    str::String mUsing;
 
-    std::string mClassName;
-    std::string mNamespace;
+    str::String mClassName;
+    str::String mNamespace;
 
     std::vector<CodeFunction> mFunctions;
     std::vector<StaticVariable> mStaticVariables;
-    std::vector<std::array<std::string, 3>> mSimpleVariables;
+    std::vector<std::array<str::String, 3>> mSimpleVariables;
 
-    std::vector<std::string> mDatabase;
+    std::vector<str::String> mDatabase;
 
     // void reloadName() noexcept;
 };

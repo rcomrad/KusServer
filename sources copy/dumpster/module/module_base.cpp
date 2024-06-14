@@ -3,13 +3,13 @@
 #include "module_handler.hpp"
 
 mod::ModuleBase::Command::Command(int a,
-                                  const std::string& b,
-                                  const std::string& c)
+                                  const str::String& b,
+                                  const str::String& c)
     : num(a), value(b), argument(c)
 {
 }
 
-mod::ModuleBase::ModuleBase(const std::vector<std::string>& aNameArray) noexcept
+mod::ModuleBase::ModuleBase(const std::vector<str::String>& aNameArray) noexcept
 {
     for (auto& i : aNameArray)
     {

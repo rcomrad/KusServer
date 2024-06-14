@@ -10,7 +10,7 @@
 #include "dump_manager.hpp"
 #include "mail_sender.hpp"
 
-std::unordered_map<std::string, mult::MultitoolRouter::Rote>
+std::unordered_map<str::String, mult::MultitoolRouter::Rote>
     mult::MultitoolRouter::mMultitoolRouter = generateMultitoolRouter();
 
 crow::response
@@ -25,7 +25,7 @@ mult::MultitoolRouter::route(const crow::request& aReq)
 
     crow::multipart::message msg(aReq);
     // TODO: check if no name
-    std::string techName = msg.get_part_by_name("techName").body;
+    str::String techName = msg.get_part_by_name("techName").body;
 
     auto it = mMultitoolRouter.find(techName);
     if (it != mMultitoolRouter.end())
@@ -54,15 +54,15 @@ mult::MultitoolRouter::route(const crow::request& aReq)
     return result;
 }
 
-std::unordered_map<std::string, mult::MultitoolRouter::Rote>
+std::unordered_map<str::String, mult::MultitoolRouter::Rote>
 mult::MultitoolRouter::generateMultitoolRouter() noexcept
 {
-    std::unordered_map<std::string, Rote> result = {
+    std::unordered_map<str::String, Rote> result = {
         {"mail",    {&mult::MailSender::process, 0}    },
         {"dump",    {&mult::DumpManager::process, 0}   },
         {"command", {&mult::CommandHandler::process, 0}},
- // {"info",    {&mult::CommandHandler::info, 0}   },
-  // {"proga",   {&mult::CommandHandler::proga, 0}},
+        // {"info",    {&mult::CommandHandler::info, 0}   },
+        // {"proga",   {&mult::CommandHandler::proga, 0}},
     };
 
     auto connection = data::ConnectionManager::getUserConnection();

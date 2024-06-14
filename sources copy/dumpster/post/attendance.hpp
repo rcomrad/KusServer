@@ -14,18 +14,18 @@ public:
     Attendance(int aID, int aSize) noexcept;
     void setMark(int aStudentId,
                  int aDateNum,
-                 const std::string& aMark) noexcept;
+                 const str::String& aMark) noexcept;
 
     void newPage(uint8_t aMounth) noexcept;
     void emplaceLesson(uint8_t aDate,
-                       const std::string& aTheme,
-                       const std::string& aTeacher) noexcept;
+                       const str::String& aTheme,
+                       const str::String& aTeacher) noexcept;
     void addFiller() noexcept;
 
-    std::vector<std::string> getAttendance() noexcept;
-    std::vector<std::string> getLessons() noexcept;
-    std::vector<std::string> getDates() noexcept;
-    std::vector<std::string> getMonths() noexcept;
+    std::vector<str::String> getAttendance() noexcept;
+    std::vector<str::String> getLessons() noexcept;
+    std::vector<str::String> getDates() noexcept;
+    std::vector<str::String> getMonths() noexcept;
 
     // void reverse() noexcept;
     bool empty() const noexcept;
@@ -33,11 +33,11 @@ public:
 private:
     int size;
     uint8_t curMounth;
-    std::map<std::string, int> orderedNames;
-    std::vector<std::unordered_map<int, std::vector<std::string>>> attendance;
-    std::vector<std::string> dates;
-    std::vector<std::string> themes;
-    std::vector<std::string> months;
+    std::map<str::String, int> orderedNames;
+    std::vector<std::unordered_map<int, std::vector<str::String>>> attendance;
+    std::vector<str::String> dates;
+    std::vector<str::String> themes;
+    std::vector<str::String> months;
 };
 
 } // namespace post

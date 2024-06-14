@@ -28,7 +28,7 @@ public:
         CodeFile::FileType aType = CodeFile::FileType::ALL) const noexcept;
 
 private:
-    std::map<std::string, std::vector<std::array<std::string, 2>>> mTables;
+    std::map<str::String, std::vector<std::array<str::String, 2>>> mTables;
 
     std::vector<CodeFile> mFiles;
 
@@ -36,12 +36,12 @@ private:
 
     void addRouter(
         code::CodeClass& aClass,
-        const std::string& aName,
-        std::unordered_map<std::string, std::string> aNameMap) const noexcept;
+        const str::String& aName,
+        std::unordered_map<str::String, str::String> aNameMap) const noexcept;
 
-    std::array<std::string, 2> makeRouterFunction(
-        const std::unordered_map<std::string, std::string>& aNameMap,
-        std::string aPostfix = "") const noexcept;
+    std::array<str::String, 2> makeRouterFunction(
+        const std::unordered_map<str::String, str::String>& aNameMap,
+        str::String aPostfix = "") const noexcept;
 };
 
 } // namespace code

@@ -3,7 +3,7 @@
 #include "string_algorithms.hpp"
 
 // void
-// code::CodeClass::setName(const std::string& aName) noexcept
+// code::CodeClass::setName(const str::String& aName) noexcept
 // {
 //     mName = normalizeName(aName, true);
 
@@ -11,31 +11,31 @@
 // }
 
 // void
-// code::CodeClass::setNamespace(const std::string& aNamespace) noexcept
+// code::CodeClass::setNamespace(const str::String& aNamespace) noexcept
 // {
 //     mNamespace = aNamespace;
 //     reloadName();
 // }
 
-code::CodeClass::CodeClass(const std::string& aCodeClassName,
-                           const std::string& aNamespace) noexcept
+code::CodeClass::CodeClass(const str::String& aCodeClassName,
+                           const str::String& aNamespace) noexcept
     : mIsStruct(false), mNamespace(aNamespace)
 {
     mClassName = StringAlgorithms::normalizeName(aCodeClassName, true);
 }
 
 void
-code::CodeClass::addParent(const std::string& aName) noexcept
+code::CodeClass::addParent(const str::String& aName) noexcept
 {
     mParent = aName;
 }
 
 code::CodeFunction&
-code::CodeClass::addRouterFunction(const std::string& aName,
-                                   const std::string& aType,
-                                   const std::string& aBody) noexcept
+code::CodeClass::addRouterFunction(const str::String& aName,
+                                   const str::String& aType,
+                                   const str::String& aBody) noexcept
 {
-    std::string variableName = "m" + aName;
+    str::String variableName = "m" + aName;
     variableName[1]          = std::toupper(variableName[1]);
 
     auto& funk = mFunctions.emplace_back();
@@ -43,19 +43,19 @@ code::CodeClass::addRouterFunction(const std::string& aName,
     funk.setName(aName);
     funk.setClass(mClassName);
     funk.setNamespace(mNamespace);
-    funk.setArguments("std::string aName");
+    funk.setArguments("str::String aName");
     funk.makeRouter(variableName);
 
     addStaticVariable(variableName,
-                      "std::unordered_map<std::string, " + aType + ">", aBody);
+                      "std::unordered_map<str::String, " + aType + ">", aBody);
 
     return funk;
 }
 
 code::CodeFunction&
-code::CodeClass::addFuncRouterForDatabase(const std::string& aName,
-                                          const std::string& aFunction,
-                                          const std::string& aBody) noexcept
+code::CodeClass::addFuncRouterForDatabase(const str::String& aName,
+                                          const str::String& aFunction,
+                                          const str::String& aBody) noexcept
 {
     auto& funk = addRouterFunction(aName, "decltype(" + aFunction + ")", aBody);
     funk.makeVariadic();
@@ -72,18 +72,18 @@ code::CodeClass::addFunction(const CodeFunction& aFunc) noexcept
 };
 
 void
-code::CodeClass::addVariable(const std::string& aName,
-                             const std::string& aType,
-                             const std::string& aValue) noexcept
+code::CodeClass::addVariable(const str::String& aName,
+                             const str::String& aType,
+                             const str::String& aValue) noexcept
 {
-    std::string name = StringAlgorithms::normalizeName(aName, false, true);
+    str::String name = StringAlgorithms::normalizeName(aName, false, true);
     mSimpleVariables.push_back({name, aType, aValue});
 };
 
 void
-code::CodeClass::addStaticVariable(const std::string& aVarName,
-                                   const std::string& aType,
-                                   const std::string& aInitialisation) noexcept
+code::CodeClass::addStaticVariable(const str::String& aVarName,
+                                   const str::String& aType,
+                                   const str::String& aInitialisation) noexcept
 {
     mStaticVariables.emplace_back();
     auto& var = mStaticVariables.back();
@@ -160,8 +160,8 @@ code::CodeClass::makeStruct() noexcept
 }
 
 void
-code::CodeClass::addUsing(const std::string& aName,
-                          const std::string& aTemplate) noexcept
+code::CodeClass::addUsing(const str::String& aName,
+                          const str::String& aTemplate) noexcept
 {
     mUsing = "using " + StringAlgorithms::normalizeName(aName, true) + " = ";
     if (!aTemplate.empty()) mUsing += aTemplate + "<";

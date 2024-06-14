@@ -42,7 +42,7 @@ file::VariableStorage::reloadSettings() noexcept
                 mFlags[var.name] = var.value;
                 break;
             case file::Value::Type::String:
-                mWords[var.name] = std::string(var.value);
+                mWords[var.name] = str::String(var.value);
                 break;
         }
     }
@@ -51,7 +51,7 @@ file::VariableStorage::reloadSettings() noexcept
 //--------------------------------------------------------------------------------
 
 std::optional<bool>
-file::VariableStorage::getFlag(const std::string& aName) const noexcept
+file::VariableStorage::getFlag(const str::String& aName) const noexcept
 {
     const std::lock_guard<std::mutex> lock(mBoolMutex);
 
@@ -65,7 +65,7 @@ file::VariableStorage::getFlag(const std::string& aName) const noexcept
 }
 
 std::optional<int>
-file::VariableStorage::getInt(const std::string& aName) const noexcept
+file::VariableStorage::getInt(const str::String& aName) const noexcept
 {
     const std::lock_guard<std::mutex> lock(mIntMutex);
 
@@ -78,12 +78,12 @@ file::VariableStorage::getInt(const std::string& aName) const noexcept
     return result;
 }
 
-boost::optional<const std::string&>
-file::VariableStorage::getWord(const std::string& aName) const noexcept
+boost::optional<const str::String&>
+file::VariableStorage::getWord(const str::String& aName) const noexcept
 {
     const std::lock_guard<std::mutex> lock(mWordMutex);
 
-    boost::optional<const std::string&> result;
+    boost::optional<const str::String&> result;
     auto it = mWords.find(aName);
     if (it != mWords.end())
     {
@@ -95,7 +95,7 @@ file::VariableStorage::getWord(const std::string& aName) const noexcept
 //--------------------------------------------------------------------------------
 
 bool
-file::VariableStorage::getFlagUnsafe(const std::string& aName,
+file::VariableStorage::getFlagUnsafe(const str::String& aName,
                                      bool aDefault) const noexcept
 {
     bool result = aDefault;
@@ -105,7 +105,7 @@ file::VariableStorage::getFlagUnsafe(const std::string& aName,
 }
 
 int
-file::VariableStorage::getIntUnsafe(const std::string& aName,
+file::VariableStorage::getIntUnsafe(const str::String& aName,
                                     int aDefault) const noexcept
 {
     int result = aDefault;
@@ -114,19 +114,19 @@ file::VariableStorage::getIntUnsafe(const std::string& aName,
     return result;
 }
 
-const std::string&
-file::VariableStorage::getWordUnsafe(const std::string& aName,
-                                     const std::string& aDefault) const noexcept
+const str::String&
+file::VariableStorage::getWordUnsafe(const str::String& aName,
+                                     const str::String& aDefault) const noexcept
 {
     auto temp                 = getWord(aName);
-    const std::string& result = temp.has_value() ? temp.value() : aDefault;
+    const str::String& result = temp.has_value() ? temp.value() : aDefault;
     return result;
 }
 
 //--------------------------------------------------------------------------------
 
 void
-file::VariableStorage::setVariable(const std::string& aName,
+file::VariableStorage::setVariable(const str::String& aName,
                                    bool aValue) noexcept
 {
     const std::lock_guard<std::mutex> lock(mBoolMutex);
@@ -134,7 +134,7 @@ file::VariableStorage::setVariable(const std::string& aName,
 }
 
 void
-file::VariableStorage::setVariable(const std::string& aName,
+file::VariableStorage::setVariable(const str::String& aName,
                                    int aValue) noexcept
 {
     const std::lock_guard<std::mutex> lock(mIntMutex);
@@ -142,8 +142,8 @@ file::VariableStorage::setVariable(const std::string& aName,
 }
 
 void
-file::VariableStorage::setVariable(const std::string& aName,
-                                   const std::string& aValue) noexcept
+file::VariableStorage::setVariable(const str::String& aName,
+                                   const str::String& aValue) noexcept
 {
     const std::lock_guard<std::mutex> lock(mWordMutex);
     mWords[aName] = aValue;

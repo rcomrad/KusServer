@@ -15,20 +15,20 @@ namespace dom
 class ToString
 {
 public:
-    // static std::string convert(int aData) noexcept;
-    // static std::string convert(size_t aData) noexcept;
-    // static std::string convert(long long aData) noexcept;
+    // static str::String convert(int aData) noexcept;
+    // static str::String convert(size_t aData) noexcept;
+    // static str::String convert(long long aData) noexcept;
 
-    // static std::string convert(float aData) noexcept;
-    // static std::string convert(double aData) noexcept;
+    // static str::String convert(float aData) noexcept;
+    // static str::String convert(double aData) noexcept;
 
-    static std::string convert(bool b) noexcept;
-    static std::string convert(const char* str) noexcept;
+    static str::String convert(bool b) noexcept;
+    static str::String convert(const char* str) noexcept;
 
     template <typename T,
               typename = dom::enableIf<
-                  dom::isNotOneOf<T, bool, std::string, char*, const char*>>>
-    static std::string convert(T&& aData) noexcept
+                  dom::isNotOneOf<T, bool, str::String, char*, const char*>>>
+    static str::String convert(T&& aData) noexcept
     {
         return std::to_string(aData);
     }

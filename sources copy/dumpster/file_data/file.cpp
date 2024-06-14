@@ -5,11 +5,11 @@
 
 #include "path.hpp"
 
-std::string
-file::File::getAllData(const std::string& aFileName,
+str::String
+file::File::getAllData(const str::String& aFileName,
                        file::FileType aFileType) noexcept
 {
-    std::string result;
+    str::String result;
 
     if (aFileType == FileType::File)
     {
@@ -24,7 +24,7 @@ file::File::getAllData(const std::string& aFileName,
             LOG_INFO("Extracting file (", aFileName, ")");
         }
 
-        std::string line;
+        str::String line;
         while (std::getline(ios, line, '\0'))
         {
             if (line.empty()) continue;
@@ -41,23 +41,23 @@ file::File::getAllData(const std::string& aFileName,
     return result;
 }
 
-std::string
-file::File::getAllData(const std::string& aFolderName,
-                       const std::string& aFileName,
+str::String
+file::File::getAllData(const str::String& aFolderName,
+                       const str::String& aFileName,
                        file::FileType aFileType) noexcept
 {
     return pathUnpack(
-        static_cast<std::string (*)(const std::string&, file::FileType)>(
+        static_cast<str::String (*)(const str::String&, file::FileType)>(
             &file::File::getAllData),
         aFolderName, aFileName, aFileType);
 }
 
-std::vector<std::string>
-file::File::getLines(const std::string& aFileName,
+std::vector<str::String>
+file::File::getLines(const str::String& aFileName,
                      file::FileType aFileType) noexcept
 {
-    std::string temp = getAllData(aFileName, aFileType);
-    std::vector<std::string> result;
+    str::String temp = getAllData(aFileName, aFileType);
+    std::vector<str::String> result;
     int last = -1;
     for (int i = 0; i < temp.size() + 1; ++i)
     {
@@ -77,24 +77,24 @@ file::File::getLines(const std::string& aFileName,
     return result;
 }
 
-std::vector<std::string>
-file::File::getLines(const std::string& aFolderName,
-                     const std::string& aFileName,
+std::vector<str::String>
+file::File::getLines(const str::String& aFolderName,
+                     const str::String& aFileName,
                      file::FileType aFileType) noexcept
 {
     return pathUnpack(
-        static_cast<std::vector<std::string> (*)(
-            const std::string&, file::FileType)>(&file::File::getLines),
+        static_cast<std::vector<str::String> (*)(
+            const str::String&, file::FileType)>(&file::File::getLines),
         aFolderName, aFileName, aFileType);
 }
 
-std::vector<std::vector<std::string>>
-file::File::getWords(const std::string& aFileName,
+std::vector<std::vector<str::String>>
+file::File::getWords(const str::String& aFileName,
                      file::FileType aFileType,
                      std::function<bool(char)> funk) noexcept
 {
     auto lines = getLines(aFileName, aFileType);
-    std::vector<std::vector<std::string>> result;
+    std::vector<std::vector<str::String>> result;
     for (auto& line : lines)
     {
         result.emplace_back();
@@ -113,26 +113,26 @@ file::File::getWords(const std::string& aFileName,
     return result;
 }
 
-std::vector<std::vector<std::string>>
-file::File::getWords(const std::string& aFolderName,
-                     const std::string& aFileName,
+std::vector<std::vector<str::String>>
+file::File::getWords(const str::String& aFolderName,
+                     const str::String& aFileName,
                      file::FileType aFileType,
                      std::function<bool(char)> funk) noexcept
 {
     return pathUnpack(
-        static_cast<std::vector<std::vector<std::string>> (*)(
-            const std::string&, file::FileType, std::function<bool(char)>)>(
+        static_cast<std::vector<std::vector<str::String>> (*)(
+            const str::String&, file::FileType, std::function<bool(char)>)>(
             &file::File::getWords),
         aFolderName, aFileName, aFileType, funk);
 }
 
 // TODO: merge with getWords
-std::unordered_map<std::string, std::string>
-file::File::getWordsMap(const std::string& aFileName,
+std::unordered_map<str::String, str::String>
+file::File::getWordsMap(const str::String& aFileName,
                         file::FileType aFileType,
                         std::function<bool(char)> funk) noexcept
 {
-    std::unordered_map<std::string, std::string> result;
+    std::unordered_map<str::String, str::String> result;
     auto words = getWords(aFileName, aFileType, funk);
 
     for (auto& i : words)
@@ -144,25 +144,25 @@ file::File::getWordsMap(const std::string& aFileName,
     return result;
 }
 
-std::unordered_map<std::string, std::string>
-file::File::getWordsMap(const std::string& aFolderName,
-                        const std::string& aFileName,
+std::unordered_map<str::String, str::String>
+file::File::getWordsMap(const str::String& aFolderName,
+                        const str::String& aFileName,
                         file::FileType aFileType,
                         std::function<bool(char)> funk) noexcept
 {
     return pathUnpack(
-        static_cast<std::unordered_map<std::string, std::string> (*)(
-            const std::string&, file::FileType, std::function<bool(char)>)>(
+        static_cast<std::unordered_map<str::String, str::String> (*)(
+            const str::String&, file::FileType, std::function<bool(char)>)>(
             &file::File::getWordsMap),
         aFolderName, aFileName, aFileType, funk);
 }
 
-std::unordered_set<std::string>
-file::File::getWordsSet(const std::string& aFileName,
+std::unordered_set<str::String>
+file::File::getWordsSet(const str::String& aFileName,
                         file::FileType aFileType,
                         std::function<bool(char)> funk) noexcept
 {
-    std::unordered_set<std::string> result;
+    std::unordered_set<str::String> result;
     auto words = getWords(aFileName, aFileType, funk);
     for (auto&& i : words)
     {
@@ -174,31 +174,31 @@ file::File::getWordsSet(const std::string& aFileName,
     return result;
 }
 
-std::unordered_set<std::string>
-file::File::getWordsSet(const std::string& aFolderName,
-                        const std::string& aFileName,
+std::unordered_set<str::String>
+file::File::getWordsSet(const str::String& aFolderName,
+                        const str::String& aFileName,
                         file::FileType aFileType,
                         std::function<bool(char)> funk) noexcept
 {
     return pathUnpack(
-        static_cast<std::unordered_set<std::string> (*)(
-            const std::string&, file::FileType, std::function<bool(char)>)>(
+        static_cast<std::unordered_set<str::String> (*)(
+            const str::String&, file::FileType, std::function<bool(char)>)>(
             &file::File::getWordsSet),
         aFolderName, aFileName, aFileType, funk);
 }
 
-std::vector<std::unordered_map<std::string, std::string>>
-file::File::getTable(const std::string& aFileName,
+std::vector<std::unordered_map<str::String, str::String>>
+file::File::getTable(const str::String& aFileName,
                      file::FileType aFileType,
                      std::function<bool(char)> funk) noexcept
 {
-    std::vector<std::unordered_map<std::string, std::string>> result;
+    std::vector<std::unordered_map<str::String, str::String>> result;
 
     auto words = getWords(aFileName, aFileType, funk);
 
     // for (auto& i : words)
     // {
-    //     std::string gg ;
+    //     str::String gg ;
     //     for (auto& j : i)
     //     {
     //         gg += j + "| ";
@@ -218,23 +218,23 @@ file::File::getTable(const std::string& aFileName,
     return result;
 }
 
-std::vector<std::unordered_map<std::string, std::string>>
-file::File::getTable(const std::string& aFolderName,
-                     const std::string& aFileName,
+std::vector<std::unordered_map<str::String, str::String>>
+file::File::getTable(const str::String& aFolderName,
+                     const str::String& aFileName,
                      file::FileType aFileType,
                      std::function<bool(char)> funk) noexcept
 {
     return pathUnpack(
         static_cast<
-            std::vector<std::unordered_map<std::string, std::string>> (*)(
-                const std::string&, file::FileType, std::function<bool(char)>)>(
+            std::vector<std::unordered_map<str::String, str::String>> (*)(
+                const str::String&, file::FileType, std::function<bool(char)>)>(
             &file::File::getTable),
         aFolderName, aFileName, aFileType, funk);
 }
 
 bool
-file::File::writeData(const std::string& aFileName,
-                      const std::string& aData) noexcept
+file::File::writeData(const str::String& aFileName,
+                      const str::String& aData) noexcept
 {
     bool result = false;
     std::ofstream out(aFileName);
@@ -251,12 +251,12 @@ file::File::writeData(const std::string& aFileName,
     return result;
 }
 
-std::optional<std::string>
-file::File::writeData(const std::string& aFolderName,
-                      const std::string& aFileName,
-                      const std::string& aData) noexcept
+std::optional<str::String>
+file::File::writeData(const str::String& aFolderName,
+                      const str::String& aFileName,
+                      const str::String& aData) noexcept
 {
-    std::optional<std::string> result;
+    std::optional<str::String> result;
 
     auto path = Path::touchFolder(aFolderName);
     if (path.has_value())

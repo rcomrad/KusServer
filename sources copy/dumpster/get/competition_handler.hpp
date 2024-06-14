@@ -20,12 +20,12 @@ public:
         const std::unordered_set<int>& aColumn,
         data::SmartConnection& aConnection) noexcept;
 
-    // static std::vector<std::string> mRoles;
+    // static std::vector<str::String> mRoles;
 
     // private:
-    // static std::string mProblemPath;
+    // static str::String mProblemPath;
 
-    // static std::vector<std::string> getAllRoles() noexcept;
+    // static std::vector<str::String> getAllRoles() noexcept;
 };
 } // namespace get
 

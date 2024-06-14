@@ -10,34 +10,49 @@ namespace post
 struct PostRouter
 {
 
-    static std::unordered_map<std::string, decltype(&post::PostHandler::postSubrouter<post::PostHandler, data::Dummy>)> mProcessRouter;
-    static std::unordered_map<std::string, decltype(&post::PostHandler::drop<data::Dummy>)> mDropRouter;
-    static std::unordered_map<std::string, decltype(&post::PostHandler::rawDataHandler<data::Dummy>)> mRawDataRouter;
+    static std::unordered_map<
+        str::String,
+        decltype(&post::PostHandler::postSubrouter<post::PostHandler,
+                                                   data::Dummy>)>
+        mProcessRouter;
+    static std::unordered_map<str::String,
+                              decltype(&post::PostHandler::drop<data::Dummy>)>
+        mDropRouter;
+    static std::unordered_map<
+        str::String,
+        decltype(&post::PostHandler::rawDataHandler<data::Dummy>)>
+        mRawDataRouter;
 
     template <typename... Args>
-    static auto processRouter(const std::string& aName, Args&&... args)
+    static auto processRouter(const str::String& aName, Args&&... args)
     {
-        decltype(mProcessRouter.begin()->second(std::forward<Args>(args)...)) result;
+        decltype(mProcessRouter.begin()->second(
+            std::forward<Args>(args)...)) result;
         auto it = mProcessRouter.find(aName);
-        if (it != mProcessRouter.end()) result = it->second(std::forward<Args>(args)...);
+        if (it != mProcessRouter.end())
+            result = it->second(std::forward<Args>(args)...);
         return result;
     }
 
     template <typename... Args>
-    static auto dropRouter(const std::string& aName, Args&&... args)
+    static auto dropRouter(const str::String& aName, Args&&... args)
     {
-        decltype(mDropRouter.begin()->second(std::forward<Args>(args)...)) result;
+        decltype(mDropRouter.begin()->second(
+            std::forward<Args>(args)...)) result;
         auto it = mDropRouter.find(aName);
-        if (it != mDropRouter.end()) result = it->second(std::forward<Args>(args)...);
+        if (it != mDropRouter.end())
+            result = it->second(std::forward<Args>(args)...);
         return result;
     }
 
     template <typename... Args>
-    static auto rawDataRouter(const std::string& aName, Args&&... args)
+    static auto rawDataRouter(const str::String& aName, Args&&... args)
     {
-        decltype(mRawDataRouter.begin()->second(std::forward<Args>(args)...)) result;
+        decltype(mRawDataRouter.begin()->second(
+            std::forward<Args>(args)...)) result;
         auto it = mRawDataRouter.find(aName);
-        if (it != mRawDataRouter.end()) result = it->second(std::forward<Args>(args)...);
+        if (it != mRawDataRouter.end())
+            result = it->second(std::forward<Args>(args)...);
         return result;
     }
 };

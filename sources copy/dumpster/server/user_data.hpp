@@ -12,8 +12,8 @@ namespace serv
 struct UserData
 {
     boost::posix_time::ptime time;
-    std::string ip;
-    std::string password;
+    str::String ip;
+    str::String password;
     int falseLogin;
     int id;
     int role;

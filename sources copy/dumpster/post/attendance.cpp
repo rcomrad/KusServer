@@ -4,12 +4,11 @@
 
 #include "database/connection_manager.hpp"
 #include "database/database_structures.hpp"
+#include "database/safe_sql_wrapper.hpp"
 
 #include "file_data/file.hpp"
 #include "file_data/path.hpp"
 #include "tex_manager/tex_table.hpp"
-
-#include "database/safe_sql_wrapper.hpp"
 
 post::Attendance::Attendance(int aID, int aSize) noexcept : size(aSize)
 {
@@ -27,7 +26,7 @@ post::Attendance::Attendance(int aID, int aSize) noexcept : size(aSize)
     }
 
     int cnt        = 2e9;
-    std::string gg = " ";
+    str::String gg = " ";
     while (orderedNames.size() < 30)
     {
         orderedNames[gg] = ++cnt;
@@ -38,7 +37,7 @@ post::Attendance::Attendance(int aID, int aSize) noexcept : size(aSize)
 void
 post::Attendance::setMark(int aStudentId,
                           int aDateNum,
-                          const std::string& aMark) noexcept
+                          const str::String& aMark) noexcept
 {
     attendance.back()[aStudentId][aDateNum] = aMark;
 }
@@ -68,10 +67,10 @@ post::Attendance::newPage(uint8_t aMounth) noexcept
 
 void
 post::Attendance::emplaceLesson(uint8_t aDate,
-                                const std::string& aTheme,
-                                const std::string& aTeacher) noexcept
+                                const str::String& aTheme,
+                                const str::String& aTeacher) noexcept
 {
-    std::string date = std::to_string(aDate);
+    str::String date = std::to_string(aDate);
 
     if (!dates.back().empty()) dates.back() += "&";
     dates.back() += (date.size() == 1 ? " " : "") + date;
@@ -98,10 +97,10 @@ post::Attendance::addFiller() noexcept
 //     std::reverse(months.begin(), months.end());
 // }
 
-std::vector<std::string>
+std::vector<str::String>
 post::Attendance::getAttendance() noexcept
 {
-    std::vector<std::string> result;
+    std::vector<str::String> result;
 
     for (auto& attend : attendance)
     {
@@ -114,7 +113,7 @@ post::Attendance::getAttendance() noexcept
                 if (i.first[0] == ' ' ^ flag) continue;
 
                 int id                  = i.second;
-                const std::string& name = i.first;
+                const str::String& name = i.first;
 
                 cur += dom::toString(cnt) + "& " + name;
                 for (auto& j : attend[id])
@@ -131,19 +130,19 @@ post::Attendance::getAttendance() noexcept
     return result;
 }
 
-std::vector<std::string>
+std::vector<str::String>
 post::Attendance::getLessons() noexcept
 {
     return themes;
 }
 
-std::vector<std::string>
+std::vector<str::String>
 post::Attendance::getDates() noexcept
 {
     return dates;
 }
 
-std::vector<std::string>
+std::vector<str::String>
 post::Attendance::getMonths() noexcept
 {
     return months;

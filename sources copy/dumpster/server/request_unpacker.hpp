@@ -13,13 +13,15 @@ namespace serv
 {
 struct RequestUnpacker
 {
-    static boost::optional<const std::string&> getToken(
+    static boost::optional<const str::String&> getToken(
         const crow::request& aReq) noexcept;
 
-    static boost::optional<const std::string&> getPart(
-        const crow::multipart::message& aMsg, std::string aStr) noexcept;
-    static const std::string& getPartUnsafe(
-        const crow::multipart::message& aMsg, std::string aStr) noexcept;
+    static boost::optional<const str::String&> getPart(
+        const crow::multipart::message& aMsg,
+        str::String aStr) noexcept;
+    static const str::String& getPartUnsafe(
+        const crow::multipart::message& aMsg,
+        str::String aStr) noexcept;
 };
 
 } // namespace serv

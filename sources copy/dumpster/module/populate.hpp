@@ -14,7 +14,7 @@ namespace mod
 class Populate : public ModuleBase
 {
 protected:
-    std::string doAction(const Command& aCommand) noexcept override;
+    str::String doAction(const Command& aCommand) noexcept override;
 
 private:
     static Populate mInstance;
@@ -23,10 +23,10 @@ private:
     static void remakeDatabase() noexcept;
     static void populate() noexcept;
 
-    static void createDatabaseFromFile(std::string aFileName) noexcept;
+    static void createDatabaseFromFile(str::String aFileName) noexcept;
     static void createEnvironment() noexcept;
 };
-} // namespace core
+} // namespace mod
 
 //--------------------------------------------------------------------------------
 

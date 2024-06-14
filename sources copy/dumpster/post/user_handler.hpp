@@ -22,21 +22,21 @@ public:
     static crow::response registration(const crow::request& aReq,
                                        bool aNoConfirmation = false) noexcept;
 
-    // static std::string registration2(const crow::request& aReq,
+    // static str::String registration2(const crow::request& aReq,
     //                                    bool info) noexcept;
 
-    static crow::response confirmation(const std::string& aUrl) noexcept;
+    static crow::response confirmation(const str::String& aUrl) noexcept;
 
 private:
     static std::mutex mRegMut;
 
     static void fiil(data::User& aUser) noexcept;
 
-    static std::unordered_map<std::string, std::unordered_set<std::string>>
+    static std::unordered_map<str::String, std::unordered_set<str::String>>
     getKeyMap() noexcept;
     static bool applyKey(data::User& aUser) noexcept;
 
-    static std::optional<std::string> sendComfLink(
+    static std::optional<str::String> sendComfLink(
         const data::User& aUser) noexcept;
 };
 } // namespace post

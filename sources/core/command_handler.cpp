@@ -7,17 +7,12 @@
 
 //--------------------------------------------------------------------------------
 
-const str::string core::CommandHandler::CALLBACK_VOLUME_COMMAND_HANDLER =
-    "command";
-
-//--------------------------------------------------------------------------------
-
 void
 core::CommandHandler::scanCommand() noexcept
 {
     while (true)
     {
-        str::string inp;
+        str::String inp;
         std::getline(std::cin, inp);
         if (!inp.empty())
         {
@@ -66,21 +61,22 @@ core::CommandHandler::handlCommand() noexcept
 void
 core::CommandHandler::handlCommandNonstatic() noexcept
 {
+    static auto& command_map =
+        CallbackStorage::getVolumeCallbacks(CALLBACK_VOLUME_COMMAND_HANDLER);
+
     queue_lock.lock();
-    if (mCommandQueue.empty())
+    if (mCommandQueue.empty() || !mCommandQueue.front().ready)
     {
         queue_lock.unlock();
         return;
     }
-    auto command = std::move(mCommandQueue.front());
-    mCommandQueue.pop();
+    Command& command = mCommandQueue.front();
     queue_lock.unlock();
 
-    auto temp =
-        CallbackStorage::get(CALLBACK_VOLUME_COMMAND_HANDLER, command.value);
-    if (nullptr != temp)
+    auto comm_it = command_map.find(command.value);
+    if (command_map == command_map.end())
     {
-        ((void (*)(const Command& aCommand))temp)(command);
+        ((void (*)(const Command&))comm_it->second)(command);
         LOG_INFO("Command applyed: ", command.value);
     }
     else
@@ -88,4 +84,8 @@ core::CommandHandler::handlCommandNonstatic() noexcept
         LOG_ERROR("Command don't applyed: can't call nulptr, command: ",
                   command.value);
     }
+
+    queue_lock.lock();
+    mCommandQueue.pop();
+    queue_lock.unlock();
 }

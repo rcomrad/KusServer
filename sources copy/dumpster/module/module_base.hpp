@@ -20,15 +20,15 @@ public:
     struct Command
     {
         int num;
-        std::string value;
-        std::string argument;
+        str::String value;
+        str::String argument;
 
-        Command(int a, const std::string& b, const std::string& c);
+        Command(int a, const str::String& b, const str::String& c);
     };
-    virtual std::string doAction(const Command& aCommand) noexcept = 0;
+    virtual str::String doAction(const Command& aCommand) noexcept = 0;
 
 protected:
-    ModuleBase(const std::vector<std::string>& aNameArray) noexcept;
+    ModuleBase(const std::vector<str::String>& aNameArray) noexcept;
 };
 } // namespace mod
 

@@ -24,7 +24,7 @@ public:
     PipeLinuxProcess& operator=(PipeLinuxProcess&& other) noexcept = default;
 
     void setComand(
-        const std::vector<std::string>& aParameters) noexcept final override;
+        const std::vector<str::String>& aParameters) noexcept final override;
 
     void create() noexcept final override;
 
@@ -32,11 +32,11 @@ public:
     std::optional<Limits> runWithLimits() noexcept final override;
 
     virtual void IORedirection() noexcept;
-    void readData(std::string& result) noexcept final override;
-    void writeData(const std::string& aMessage) noexcept final override;
+    void readData(str::String& result) noexcept final override;
+    void writeData(const str::String& aMessage) noexcept final override;
 
 private:
-    std::vector<std::string> mParameters;
+    std::vector<str::String> mParameters;
     std::vector<char*> mRawParameters;
 
     int mChildPID = 2e9;

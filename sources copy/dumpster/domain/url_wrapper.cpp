@@ -24,22 +24,22 @@ dom::UrlWrapper::getInstance() noexcept
     return instance;
 }
 
-std::string
-dom::UrlWrapper::toHTMLHref(const std::string& aData,
-                            const std::string& aName) noexcept
+str::String
+dom::UrlWrapper::toHTMLHref(const str::String& aData,
+                            const str::String& aName) noexcept
 {
     return " <a href=\"" + getInstance().mUrl + aData + "\"/>" + aName +
            "</a> <br>";
 }
 
-std::string
-dom::UrlWrapper::toHTMLSrc(const std::string& aStr) noexcept
+str::String
+dom::UrlWrapper::toHTMLSrc(const str::String& aStr) noexcept
 {
     return " <img src=\"" + getInstance().mUrl + aStr + "\"/><br>";
 }
 
-std::string
-dom::UrlWrapper::toSite(const std::string& aStr) noexcept
+str::String
+dom::UrlWrapper::toSite(const str::String& aStr) noexcept
 {
     return getInstance().mUrl + aStr;
 }

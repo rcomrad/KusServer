@@ -21,7 +21,7 @@ namespace mult
 class MultiHandler
 {
 public:
-    static std::string process(const crow::request& aReq) noexcept;
+    static str::String process(const crow::request& aReq) noexcept;
 };
 
 } // namespace mult

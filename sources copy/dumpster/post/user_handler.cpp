@@ -6,16 +6,18 @@
 #include "domain/mail.hpp"
 #include "domain/url_wrapper.hpp"
 
+#include "core/role.hpp"
+#include "core/variable_storage.hpp"
+
+#include "server/token_handler.hpp"
+
 #include "database/connection_manager.hpp"
 #include "database/safe_sql_wrapper.hpp"
 
-#include "core/role.hpp"
-#include "core/variable_storage.hpp"
 #include "file_data/file.hpp"
 #include "file_data/parser.hpp"
 #include "file_data/path.hpp"
 #include "get/get_handler.hpp"
-#include "server/token_handler.hpp"
 
 std::mutex post::UserHandler::mRegMut;
 
@@ -25,7 +27,7 @@ post::UserHandler::process(post::PostRequest<data::User>& aReq) noexcept
     auto it = aReq.leftovers.find("role");
     if (it != aReq.leftovers.end())
     {
-        std::unordered_set<std::string> roles;
+        std::unordered_set<str::String> roles;
         for (auto& i : it->second)
         {
             roles.insert(i.s());
@@ -71,7 +73,7 @@ post::UserHandler::autorisation(const crow::request& aReq) noexcept
         // data::DatabaseQuery dbq(data::DatabaseQuery::UserType::USER);
         data::User user = parseRequest<data::User>(x).data;
 
-        std::string cond = "login = " + data::safeWrap(user.login) + " AND " +
+        str::String cond = "login = " + data::safeWrap(user.login) + " AND " +
                            "password = " + data::safeWrap(user.password);
         {
             auto connection = data::ConnectionManager::getUserConnection();
@@ -149,10 +151,10 @@ post::UserHandler::registration(const crow::request& aReq,
 
         auto connection = data::ConnectionManager::getUserConnection();
 
-        std::string loginCond = "login = " + data::safeWrap(newUser.login);
+        str::String loginCond = "login = " + data::safeWrap(newUser.login);
         data::User sameLogin  = connection.val.getData<data::User>(loginCond);
 
-        // std::string emailCond = "email = " + data::safeWrap(newUser.email);
+        // str::String emailCond = "email = " + data::safeWrap(newUser.email);
         // data::User sameEmail  =
         // connection.val.getData<data::User>(emailCond);
 
@@ -230,7 +232,7 @@ post::UserHandler::registration(const crow::request& aReq,
     return resp;
 }
 
-// std::string
+// str::String
 // post::UserHandler::registration2(const crow::request& aReq,
 //                                 bool info) noexcept
 // {
@@ -247,11 +249,11 @@ post::UserHandler::registration(const crow::request& aReq,
 
 //         auto connection = data::ConnectionManager::getUserConnection();
 
-//         std::string loginCond = "login = " + data::safeWrap(newUser.login);
+//         str::String loginCond = "login = " + data::safeWrap(newUser.login);
 //         data::User sameLogin  =
 //         connection.val.getData<data::User>(loginCond);
 
-//         std::string emailCond = "email = " + data::safeWrap(newUser.email);
+//         str::String emailCond = "email = " + data::safeWrap(newUser.email);
 //         data::User sameEmail  =
 //         connection.val.getData<data::User>(emailCond);
 
@@ -322,7 +324,7 @@ post::UserHandler::registration(const crow::request& aReq,
 // }
 
 crow::response
-post::UserHandler::confirmation(const std::string& aUrl) noexcept
+post::UserHandler::confirmation(const str::String& aUrl) noexcept
 {
     auto resp = crow::response(400);
 
@@ -361,7 +363,7 @@ post::UserHandler::confirmation(const std::string& aUrl) noexcept
     {
         LOG_ERROR(2);
 
-        std::string id;
+        str::String id;
         for (auto c : aUrl)
         {
             if (!std::isdigit(c)) break;
@@ -410,16 +412,16 @@ post::UserHandler::fiil(data::User& aUser) noexcept
     aUser.lastLogin = dom::DateAndTime::getCurentTimeSafe();
 }
 
-std::unordered_map<std::string, std::unordered_set<std::string>>
+std::unordered_map<str::String, std::unordered_set<str::String>>
 post::UserHandler::getKeyMap() noexcept
 {
-    std::unordered_map<std::string, std::unordered_set<std::string>> result;
+    std::unordered_map<str::String, std::unordered_set<str::String>> result;
     auto data = file::File::getLines("config", "key_role.pass");
     for (int i = 0; i < data.size(); i += 2)
     {
         auto roles = file::Parser::slice(data[i + 1], " ");
         result[data[i]] =
-            std::unordered_set<std::string>(roles.begin(), roles.end());
+            std::unordered_set<str::String>(roles.begin(), roles.end());
     }
     result["NUN"] = {""};
     return result;
@@ -448,7 +450,7 @@ post::UserHandler::applyKey(data::User& aUser) noexcept
     return result;
 }
 
-std::optional<std::string>
+std::optional<str::String>
 post::UserHandler::sendComfLink(const data::User& aUser) noexcept
 {
     static dom::Mail mail;
@@ -457,11 +459,11 @@ post::UserHandler::sendComfLink(const data::User& aUser) noexcept
     // to erase whitespaces
     static auto curSiteUrl = file::File::getWords("config", "url.pass")[0][0];
 
-    std::string link = dom::toString(aUser.id) + "=" +
+    str::String link = dom::toString(aUser.id) + "=" +
                        dom::DateAndTime::getCurentTimeSafe() + "=";
     for (int i = 0; i < 10; ++i) link += 'a' + rand() % 26;
 
-    std::optional<std::string> result;
+    std::optional<str::String> result;
     if (mail.send(aUser.email,
                   "Ссылка подтверждения для акаунта на сайте kussystem",
                   dom::UrlWrapper::toSite("api/confirm/" + link)))

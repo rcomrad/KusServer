@@ -19,8 +19,8 @@ public:
 
     struct RegisterNode
     {
-        const str::string& mVolumeName;
-        const str::string& mNodeName;
+        const char* mVolumeName;
+        const char* mNodeName;
         void* mFunc;
     };
 

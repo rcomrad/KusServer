@@ -13,14 +13,14 @@ namespace core
 class FileRouter
 {
 public:
-    static data::RawDataArray process(const std::string& aFileName) noexcept;
+    static data::RawDataArray process(const str::String& aFileName) noexcept;
 
 private:
-    static data::RawDataArray dmpParser(const std::string& aFileName) noexcept;
-    static data::RawDataArray dataParser(const std::string& aFileName) noexcept;
-    static data::RawDataArray csvParser(const std::string& aFileName) noexcept;
+    static data::RawDataArray dmpParser(const str::String& aFileName) noexcept;
+    static data::RawDataArray dataParser(const str::String& aFileName) noexcept;
+    static data::RawDataArray csvParser(const str::String& aFileName) noexcept;
 
-    static std::unordered_map<std::string, decltype(&dmpParser)> mRouter;
+    static std::unordered_map<str::String, decltype(&dmpParser)> mRouter;
 
     static bool isSeparator(char c) noexcept;
     static bool isDMPSeparator(char c) noexcept;

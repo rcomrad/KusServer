@@ -12,14 +12,14 @@ namespace dom
 class UrlWrapper
 {
 public:
-    static std::string toHTMLHref(const std::string& aData,
-                                  const std::string& aName = "Файлик") noexcept;
-    static std::string toHTMLSrc(const std::string& aStr) noexcept;
+    static str::String toHTMLHref(const str::String& aData,
+                                  const str::String& aName = "Файлик") noexcept;
+    static str::String toHTMLSrc(const str::String& aStr) noexcept;
 
-    static std::string toSite(const std::string& aStr) noexcept;
+    static str::String toSite(const str::String& aStr) noexcept;
 
 private:
-    std::string mUrl;
+    str::String mUrl;
 
     UrlWrapper() noexcept;
     static UrlWrapper& getInstance() noexcept;

@@ -14,14 +14,14 @@ namespace mod
 class QuestionManager : public ModuleBase
 {
 protected:
-    std::string doAction(const Command& aComman) noexcept override;
+    str::String doAction(const Command& aComman) noexcept override;
 
 private:
     static QuestionManager mInstance;
     QuestionManager() noexcept;
 
-    static std::string loadQuestions() noexcept;
-    static std::string retestQuestions() noexcept;
+    static str::String loadQuestions() noexcept;
+    static str::String retestQuestions() noexcept;
 };
 } // namespace mod
 

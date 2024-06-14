@@ -2,11 +2,12 @@
 
 #include <boost/date_time/gregorian/gregorian.hpp>
 
+#include "core/submission_queue.hpp"
+#include "core/variable_storage.hpp"
+
 #include "database/connection_manager.hpp"
 #include "database/safe_sql_wrapper.hpp"
 
-#include "core/submission_queue.hpp"
-#include "core/variable_storage.hpp"
 #include "file_data/path.hpp"
 
 crow::json::wvalue
@@ -42,13 +43,13 @@ post::SubmitHandler::process(const crow::request& aReq) noexcept
     return res;
 }
 
-std::string
+str::String
 post::SubmitHandler::getCurentTime() noexcept
 {
     boost::posix_time::ptime timeLocal =
         boost::posix_time::second_clock::local_time();
 
-    std::string result;
+    str::String result;
     result += std::to_string(timeLocal.date().year()) + "-";
     result += std::to_string(timeLocal.date().month()) + "-";
     result += std::to_string(timeLocal.date().day()) + " ";

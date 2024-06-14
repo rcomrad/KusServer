@@ -2,27 +2,27 @@
 
 #include <fstream>
 
-std::unordered_map<std::string, std::string> code::CodeFile::globalPaths = {
+std::unordered_map<str::String, str::String> code::CodeFile::globalPaths = {
     {"post", "../sources/post/"    },
     {"get",  "../sources/get/"     },
     {"data", "../sources/database/"}
 };
 
-// std::unordered_map<std::string, std::string> code::CodeFile::globalPaths = {
+// std::unordered_map<str::String, str::String> code::CodeFile::globalPaths = {
 //     {"post", ""},
 //     {"get",  ""},
 //     {"data", ""}
 // };
 
-code::CodeFile::CodeFile(const std::string& aClassName,
-                         const std::string& aNamespace) noexcept
+code::CodeFile::CodeFile(const str::String& aClassName,
+                         const str::String& aNamespace) noexcept
     : mNamespace(aNamespace)
 {
     mFileName = normalizeName(aClassName);
 }
 
 code::CodeClass&
-code::CodeFile::makeClass(const std::string& aClassName) noexcept
+code::CodeFile::makeClass(const str::String& aClassName) noexcept
 {
     mClasses.emplace_back(
         CodeClass{aClassName.empty() ? mFileName : aClassName, mNamespace});
@@ -33,27 +33,27 @@ code::CodeFile::makeClass(const std::string& aClassName) noexcept
 void
 code::CodeFile::generate(CodeFile::FileType aType) const noexcept
 {
-    std::string CodeFilePath = globalPaths[mNamespace] + mFileName;
+    str::String CodeFilePath = globalPaths[mNamespace] + mFileName;
     if (int(aType) & int(FileType::CPP)) generateCPP(CodeFilePath);
     if (int(aType) & int(FileType::HEADER)) generateHPP(CodeFilePath);
 }
 
 void
-code::CodeFile::addHeaderToCpp(const std::string& aName,
+code::CodeFile::addHeaderToCpp(const str::String& aName,
                                bool aIsStdHeader) noexcept
 {
     mCppHeaders.emplace_back(makeHeader(aName, aIsStdHeader));
 }
 
 void
-code::CodeFile::addHeaderToHpp(const std::string& aName,
+code::CodeFile::addHeaderToHpp(const str::String& aName,
                                bool aIsStdHeader) noexcept
 {
     mHppHeaders.emplace_back(makeHeader(aName, aIsStdHeader));
 }
 
 void
-code::CodeFile::generateCPP(const std::string& aPath) const noexcept
+code::CodeFile::generateCPP(const str::String& aPath) const noexcept
 {
     std::ofstream CodeFile(aPath + ".cpp");
     CodeFile << "#include \"" << mFileName + ".hpp\"\n\n";
@@ -67,10 +67,10 @@ code::CodeFile::generateCPP(const std::string& aPath) const noexcept
 }
 
 void
-code::CodeFile::generateHPP(const std::string& aPath) const noexcept
+code::CodeFile::generateHPP(const str::String& aPath) const noexcept
 {
     std::ofstream CodeFile(aPath + ".hpp");
-    std::string define = normalizeDefine(mFileName) + "_HPP";
+    str::String define = normalizeDefine(mFileName) + "_HPP";
 
     CodeFile << "#ifndef " << define << "\n";
     CodeFile << "#define " << define << "\n\n";
@@ -96,14 +96,13 @@ code::CodeFile::generateHPP(const std::string& aPath) const noexcept
         CodeFile << "};\n";
     }
 
-    CodeFile << "\n#endif "
-             << "// !" << define << "\n";
+    CodeFile << "\n#endif " << "// !" << define << "\n";
 }
 
-std::string
-code::CodeFile::normalizeName(const std::string& aName) noexcept
+str::String
+code::CodeFile::normalizeName(const str::String& aName) noexcept
 {
-    std::string result = aName;
+    str::String result = aName;
 
     result[0] = std::tolower(result[0]);
     for (int i = 0; i < result.size(); ++i)
@@ -118,10 +117,10 @@ code::CodeFile::normalizeName(const std::string& aName) noexcept
     return result;
 }
 
-std::string
-code::CodeFile::normalizeDefine(const std::string& aName) noexcept
+str::String
+code::CodeFile::normalizeDefine(const str::String& aName) noexcept
 {
-    std::string result = aName;
+    str::String result = aName;
 
     for (int i = 0; i < result.size(); ++i)
     {
@@ -134,10 +133,10 @@ code::CodeFile::normalizeDefine(const std::string& aName) noexcept
     return result;
 }
 
-std::string
-code::CodeFile::makeHeader(const std::string& aName, bool aIsStdHeader) noexcept
+str::String
+code::CodeFile::makeHeader(const str::String& aName, bool aIsStdHeader) noexcept
 {
-    std::string fullName = "#include ";
+    str::String fullName = "#include ";
 
     if (aIsStdHeader) fullName.push_back('<');
     else fullName.push_back('\"');

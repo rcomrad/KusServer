@@ -38,11 +38,11 @@ test::Tester::run(data::Submission&& aSubmission) noexcept
             "id=" + data::wrap(aSubmission.problemID));
     }
 
-    std::string curPath = core::Path::getPathUnsafe("problem");
+    str::String curPath = core::Path::getPathUnsafe("problem");
     curPath += problem.nickname + "/";
 
-    std::string submissionPath = aSubmission.sourceName;
-    std::string checkerPath    = problem.checkerName;
+    str::String submissionPath = aSubmission.sourceName;
+    str::String checkerPath    = problem.checkerName;
 
     if (checkerPath == "NUN")
     {
@@ -96,8 +96,8 @@ test::Tester::run(data::Submission&& aSubmission) noexcept
 //--------------------------------------------------------------------------------
 
 std::shared_ptr<proc::Process>
-test::Tester::prepareFile(const std::string& aFileName,
-                          const std::string& aOutputFileName) const noexcept
+test::Tester::prepareFile(const str::String& aFileName,
+                          const str::String& aOutputFileName) const noexcept
 {
     std::shared_ptr<proc::Process> result = std::make_shared<proc::Process>();
     auto cmd = test::Compiler::getExecutableCommand(aFileName, aOutputFileName);
@@ -158,10 +158,10 @@ test::Tester::check(TestReader& aTestReader) noexcept
     LOG_INFO("Final_memory:", mFinalMemory);
 }
 
-std::string
+str::String
 test::Tester::verdictTostring(const Test::TestVerdict& aVerdict) const noexcept
 {
-    std::string result = "ERR";
+    str::String result = "ERR";
     switch (aVerdict)
     {
         case Test::TestVerdict::NUN:

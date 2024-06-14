@@ -84,7 +84,7 @@ dom::Cyrilic::toUpper(std::wstring& aStr) noexcept
 //--------------------------------------------------------------------------------
 
 std::wstring
-dom::Cyrilic::toWString(const std::string& aStr) noexcept
+dom::Cyrilic::toWString(const str::String& aStr) noexcept
 {
     return toWString(aStr.c_str());
 }
@@ -209,7 +209,7 @@ dom::Cyrilic::destroyWhiteSpaces(std::wstring& aStr, bool flag) noexcept
 }
 
 //--------------------------------------------------------------------------------
-using namespace std::string_literals;
+using namespace str::String_literals;
 void
 dom::Cyrilic::cutOffEnding(std::wstring& aStr) noexcept
 {
@@ -316,10 +316,10 @@ dom::Cyrilic::toUpperCyrillic(const char* aCharacter) noexcept
 }
 
 //--------------------------------------------------------------------------------
-std::string
-dom::Cyrilic::translit(const std::string& aStr) noexcept
+str::String
+dom::Cyrilic::translit(const str::String& aStr) noexcept
 {
-    static std::unordered_map<std::string, std::string> dict = {
+    static std::unordered_map<str::String, str::String> dict = {
         {"А", "A"},
         {"а", "a"},
         {"Б", "B"},
@@ -402,10 +402,10 @@ dom::Cyrilic::translit(const std::string& aStr) noexcept
         {"э", "e"}
     };
 
-    std::string result;
+    str::String result;
     for (int i = 0; i < aStr.size(); ++i)
     {
-        std::string temp = aStr.substr(i, 2);
+        str::String temp = aStr.substr(i, 2);
         auto it          = dict.find(temp);
         if (it != dict.end())
         {

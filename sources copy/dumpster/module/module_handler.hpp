@@ -20,12 +20,12 @@ class ModuleHandler
 {
 public:
     static void run() noexcept;
-    static std::string processCommand(const std::string& aCommand,
-                                      const std::string& aArgument) noexcept;
+    static str::String processCommand(const str::String& aCommand,
+                                      const str::String& aArgument) noexcept;
 
-    static void addCommand(const std::string& aCommand,
+    static void addCommand(const str::String& aCommand,
                            ModuleBase* aPtr) noexcept;
-    static bool hasCommand(const std::string& aCommand) noexcept;
+    static bool hasCommand(const str::String& aCommand) noexcept;
 
 private:
     ModuleHandler() noexcept = default;
@@ -35,16 +35,16 @@ private:
     std::vector<ModuleBase::Command> mCommands;
 
     std::mutex mResultMutex;
-    std::unordered_map<int, std::string> mResults;
+    std::unordered_map<int, str::String> mResults;
 
-    std::unordered_map<std::string, ModuleBase*> mModules;
+    std::unordered_map<str::String, ModuleBase*> mModules;
 
     void executeCommand(int aResultNumber,
                         const ModuleBase::Command& aCommand) noexcept;
 
     void runNonstatic() noexcept;
-    std::string processCommandNonstatic(const std::string& aCommand,
-                                        const std::string& aArgument) noexcept;
+    str::String processCommandNonstatic(const str::String& aCommand,
+                                        const str::String& aArgument) noexcept;
 };
 } // namespace mod
 

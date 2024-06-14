@@ -2,10 +2,11 @@
 
 #include "domain/date_and_time.hpp"
 
+#include "core/file_router.hpp"
+
 #include "database/connection_manager.hpp"
 #include "database/safe_sql_wrapper.hpp"
 
-#include "core/file_router.hpp"
 #include "file_data/file.hpp"
 #include "file_data/path.hpp"
 
@@ -16,13 +17,13 @@
 crow::json::wvalue
 post::PostHandler::manyToMany(
     int aID,
-    const std::string& aTableName,
+    const str::String& aTableName,
     ManyToMany& aType,
-    std::unordered_map<std::string, crow::json::rvalue> aLeftovers) noexcept
+    std::unordered_map<str::String, crow::json::rvalue> aLeftovers) noexcept
 {
     crow::json::wvalue res;
 
-    std::string id = data::safeWrap(aID);
+    str::String id = data::safeWrap(aID);
 
     for (auto& other : aLeftovers)
     {
@@ -54,7 +55,7 @@ post::PostHandler::manyToMany(
             }
         }
 
-        std::string mtmTable;
+        str::String mtmTable;
         mtmTable.reserve(aTableName.size() + other.first.size() + 1);
         mtmTable += flag ? aTableName : other.first;
         mtmTable.push_back('_');
@@ -79,8 +80,8 @@ post::PostHandler::manyToMany(
 
 crow::json::wvalue
 post::PostHandler::uploadFromFile(
-    std::unordered_map<std::string, std::string>&& aHeader,
-    const std::string& aFileName) noexcept
+    std::unordered_map<str::String, str::String>&& aHeader,
+    const str::String& aFileName) noexcept
 {
     auto data = core::FileRouter::process(aFileName);
 
@@ -103,15 +104,15 @@ post::PostHandler::uploadFromFile(
 }
 
 crow::json::wvalue
-post::PostHandler::uploadFromFileRequest(const std::string& aType,
+post::PostHandler::uploadFromFileRequest(const str::String& aType,
                                          const crow::request& aReq) noexcept
 {
     LOG_INFO("Start upload");
 
     crow::multipart::message msg(aReq);
-    std::string filePath = uploadFile(msg);
+    str::String filePath = uploadFile(msg);
 
-    std::unordered_map<std::string, std::string> header = {
+    std::unordered_map<str::String, str::String> header = {
         {"type", aType}
     };
     for (auto& i : msg.part_map)
@@ -130,24 +131,24 @@ post::PostHandler::uploadFromFileRequest(const std::string& aType,
 #include "server/request_unpacker.hpp"
 
 // TODO: use file.hpp
-std::string
+str::String
 post::PostHandler::uploadFile(crow::multipart::message& aMsg,
-                              const std::string& aFileKey,
-                              const std::string& aFilenameKey) noexcept
+                              const str::String& aFileKey,
+                              const str::String& aFilenameKey) noexcept
 {
     LOG_INFO("File upload func");
 
     auto pathPrefix = core::Path::getPathUnsafe("upload");
     // LOG_INFO("File prefix:", pathPrefix);
 
-    std::string fileName;
+    str::String fileName;
     if (!aFilenameKey.empty())
         fileName = serv::RequestUnpacker::getPartUnsafe(aMsg, aFilenameKey);
     // LOG_INFO("File name:", fileName);
     auto file = serv::RequestUnpacker::getPartUnsafe(aMsg, aFileKey);
     // LOG_INFO("File data:", file);
 
-    std::string filePath =
+    str::String filePath =
         pathPrefix + dom::DateAndTime::getCurentTimeSafe() + "-" + fileName;
     file::File::writeData(filePath, file);
 
@@ -155,10 +156,10 @@ post::PostHandler::uploadFile(crow::multipart::message& aMsg,
 }
 
 void
-post::PostHandler::setRawData(std::vector<std::vector<std::string>>& aData,
+post::PostHandler::setRawData(std::vector<std::vector<str::String>>& aData,
                               int aNum,
-                              const std::string& aTableName,
-                              const std::string& aColumnName) noexcept
+                              const str::String& aTableName,
+                              const str::String& aColumnName) noexcept
 {
     auto connection = data::ConnectionManager::getUserConnection();
     for (auto& i : aData)

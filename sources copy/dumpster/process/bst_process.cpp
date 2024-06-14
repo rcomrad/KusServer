@@ -28,7 +28,7 @@ proc::BoostProcess::operator=(const BoostProcess& other) noexcept
 
 void
 proc::BoostProcess::setComand(
-    const std::vector<std::string>& aParameters) noexcept
+    const std::vector<str::String>& aParameters) noexcept
 {
     for (auto& i : aParameters) mProcessArgs += i + " ";
     if (mProcessArgs.size()) mProcessArgs.pop_back();
@@ -117,9 +117,9 @@ proc::BoostProcess::IORedirection() noexcept
 //--------------------------------------------------------------------------------
 
 void
-proc::BoostProcess::readData(std::string& result) noexcept
+proc::BoostProcess::readData(str::String& result) noexcept
 {
-    std::string line;
+    str::String line;
     while (flag && std::getline(in, line) && !line.empty())
     {
         // if (!mProcess.running() && line.empty()) break;
@@ -130,7 +130,7 @@ proc::BoostProcess::readData(std::string& result) noexcept
 //--------------------------------------------------------------------------------
 
 void
-proc::BoostProcess::writeData(const std::string& aMessage) noexcept
+proc::BoostProcess::writeData(const str::String& aMessage) noexcept
 {
     out << aMessage;
 }

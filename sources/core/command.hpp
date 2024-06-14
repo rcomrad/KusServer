@@ -2,10 +2,9 @@
 
 //--------------------------------------------------------------------------------
 
+#include <string_view>
 #include <unordered_map>
 #include <unordered_set>
-
-#include "string/kus_string.hpp"
 
 #include "holy_trinity.hpp"
 
@@ -17,11 +16,13 @@ struct Command
 {
     HOLY_TRINITY_NOCOPY(Command);
 
-    str::string value;
-    std::unordered_set<str::string> arguments;
-    std::unordered_map<str::string, str::string> variables;
+    bool ready;
+    char buffer[40];
+    std::string_view value;
+    std::unordered_set<std::string_view> arguments;
+    std::unordered_map<std::string_view, std::string_view> variables;
 
-    Command(const str::string& aStr) noexcept;
+    Command() noexcept;
 };
 } // namespace core
 

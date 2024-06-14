@@ -19,12 +19,12 @@ public:
     static Role& getInstance() noexcept;
 
     static int getRoleID(
-        const std::unordered_set<std::string>& aRoleNames) noexcept;
-    static int getRoleID(const std::vector<std::string>& aRoleNames) noexcept;
-    static int getRoleID(const std::string& aRoleNames,
-                         const std::string& aDelimiter = "") noexcept;
+        const std::unordered_set<str::String>& aRoleNames) noexcept;
+    static int getRoleID(const std::vector<str::String>& aRoleNames) noexcept;
+    static int getRoleID(const str::String& aRoleNames,
+                         const str::String& aDelimiter = "") noexcept;
 
-    static std::unordered_set<std::string> getRoles(int aRoleID) noexcept;
+    static std::unordered_set<str::String> getRoles(int aRoleID) noexcept;
 
     // void reset() noexcept;
 
@@ -34,12 +34,12 @@ private:
     void resetFormRoleIDs() const noexcept;
 
     int getRoleIDNonstatic(
-        const std::unordered_set<std::string>& aRoleNames) const noexcept;
-    std::unordered_set<std::string> getRolesNonstatic(
+        const std::unordered_set<str::String>& aRoleNames) const noexcept;
+    std::unordered_set<str::String> getRolesNonstatic(
         int aRoleID) const noexcept;
 
-    std::unordered_map<std::string, int> mRoleToInt;
-    std::vector<std::string> mIntToRole;
+    std::unordered_map<str::String, int> mRoleToInt;
+    std::vector<str::String> mIntToRole;
 };
 
 } // namespace core

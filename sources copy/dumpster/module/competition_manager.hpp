@@ -14,13 +14,13 @@ namespace mod
 class CompetitionManager : public ModuleBase
 {
 protected:
-    std::string doAction(const Command& aComman) noexcept override;
+    str::String doAction(const Command& aComman) noexcept override;
 
 private:
     static CompetitionManager mInstance;
     CompetitionManager() noexcept;
 
-    static std::string userComp(const std::string aValue) noexcept;
+    static str::String userComp(const str::String aValue) noexcept;
 };
 } // namespace mod
 

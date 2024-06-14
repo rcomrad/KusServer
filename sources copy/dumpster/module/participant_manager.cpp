@@ -2,9 +2,10 @@
 
 #include "domain/url_wrapper.hpp"
 
+#include "core/variable_storage.hpp"
+
 #include "database/connection_manager.hpp"
 
-#include "core/variable_storage.hpp"
 #include "file_data/file.hpp"
 #include "file_data/parser.hpp"
 #include "file_data/path.hpp"
@@ -15,14 +16,14 @@ mod::PaticipantManager::PaticipantManager() noexcept : ModuleBase({"user=comp"})
 {
 }
 
-std::string
+str::String
 mod::PaticipantManager::doAction(const Command& aComman) noexcept
 {
     return userComp(aComman.argument);
 }
 
-std::string
-mod::PaticipantManager::userComp(const std::string aValue) noexcept
+str::String
+mod::PaticipantManager::userComp(const str::String aValue) noexcept
 {
     auto data      = file::Parser::slice(aValue, "=");
     auto& userPref = data[0];
@@ -36,7 +37,7 @@ mod::PaticipantManager::userComp(const std::string aValue) noexcept
     data::DataArray<data::CompetitionUser> arr;
     for (auto& u : users)
     {
-        if (u.login.find(userPref) != std::string::npos)
+        if (u.login.find(userPref) != str::String::npos)
         {
             data::CompetitionUser c;
             c.competitionID = compId;

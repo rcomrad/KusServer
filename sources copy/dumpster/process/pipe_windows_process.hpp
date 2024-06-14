@@ -24,8 +24,8 @@ public:
         default;
 
     virtual void IORedirection() noexcept final override;
-    void readData(std::string& result) noexcept final override;
-    void writeData(const std::string& aMessage) noexcept final override;
+    void readData(str::String& result) noexcept final override;
+    void writeData(const str::String& aMessage) noexcept final override;
 
 private:
     bool mIOSet = false;

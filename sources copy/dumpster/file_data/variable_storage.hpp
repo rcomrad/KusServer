@@ -22,22 +22,22 @@ public:
     HOLY_TRINITY_SINGLE(VariableStorage);
     static VariableStorage& getInstance() noexcept;
 
-    std::optional<bool> getFlag(const std::string& aName) const noexcept;
-    std::optional<int> getInt(const std::string& aName) const noexcept;
-    boost::optional<const std::string&> getWord(
-        const std::string& aName) const noexcept;
+    std::optional<bool> getFlag(const str::String& aName) const noexcept;
+    std::optional<int> getInt(const str::String& aName) const noexcept;
+    boost::optional<const str::String&> getWord(
+        const str::String& aName) const noexcept;
 
-    bool getFlagUnsafe(const std::string& aName,
+    bool getFlagUnsafe(const str::String& aName,
                        bool aDefault = false) const noexcept;
-    int getIntUnsafe(const std::string& aName, int aDefault = 0) const noexcept;
-    const std::string& getWordUnsafe(
-        const std::string& aName,
-        const std::string& aDefault = "") const noexcept;
+    int getIntUnsafe(const str::String& aName, int aDefault = 0) const noexcept;
+    const str::String& getWordUnsafe(
+        const str::String& aName,
+        const str::String& aDefault = "") const noexcept;
 
-    void setVariable(const std::string& aName, bool aValue) noexcept;
-    void setVariable(const std::string& aName, int aValue) noexcept;
-    void setVariable(const std::string& aName,
-                     const std::string& aValue) noexcept;
+    void setVariable(const str::String& aName, bool aValue) noexcept;
+    void setVariable(const str::String& aName, int aValue) noexcept;
+    void setVariable(const str::String& aName,
+                     const str::String& aValue) noexcept;
 
 private:
     VariableStorage() noexcept;
@@ -45,13 +45,13 @@ private:
     void reloadSettings() noexcept;
 
     mutable std::mutex mBoolMutex;
-    std::unordered_map<std::string, bool> mFlags;
+    std::unordered_map<str::String, bool> mFlags;
 
     mutable std::mutex mIntMutex;
-    std::unordered_map<std::string, int> mInts;
+    std::unordered_map<str::String, int> mInts;
 
     mutable std::mutex mWordMutex;
-    std::unordered_map<std::string, std::string> mWords;
+    std::unordered_map<str::String, str::String> mWords;
 };
 } // namespace file
 

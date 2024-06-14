@@ -1,9 +1,9 @@
 #include "generate_code.hpp"
 
+#include "string_algorithms.hpp"
+
 #include "file_data/file.hpp"
 #include "file_data/path.hpp"
-
-#include "string_algorithms.hpp"
 
 code::CodeGenerator::CodeGenerator() noexcept
 {
@@ -13,19 +13,19 @@ code::CodeGenerator::CodeGenerator() noexcept
 void
 code::CodeGenerator::getTableData() noexcept
 {
-    std::unordered_map<std::string, std::string> typeMap = {
-        {"character", "std::string"},
-        {"text",      "std::string"},
+    std::unordered_map<str::String, str::String> typeMap = {
+        {"character", "str::String"},
+        {"text",      "str::String"},
         {"integer",   "int"        },
         {"smallint",  "int"        },
         {"real",      "float"      },
         {"boolean",   "char"       },
-        {"date",      "std::string"},
-        {"timestamp", "std::string"}
+        {"date",      "str::String"},
+        {"timestamp", "str::String"}
     };
 
     auto words       = file::File::getWords("config", "database.psql_db");
-    std::string last = "";
+    str::String last = "";
     for (auto& i : words)
     {
         if (i[0] == "TABLE")
@@ -66,16 +66,16 @@ code::CodeGenerator::makeDatabaseStructure() noexcept
 
     CodeFunction func("reset");
     func.setReturnType("void");
-    std::unordered_map<std::string, std::string> initializationMap = {
-        {"std::string", "" },
+    std::unordered_map<str::String, str::String> initializationMap = {
+        {"str::String", "" },
         {"int",         "0"},
         {"char",        "0"}
     };
-    std::unordered_map<std::string, std::string> typeToDataType = {
-        {"std::string", "data::Type::STRING"},
+    std::unordered_map<str::String, str::String> typeToDataType = {
+        {"str::String", "data::Type::STRING"},
         {"int",         "data::Type::INT"   },
         {"char",        "data::Type::BOOL"  },
-        {"float",        "data::Type::FLOAT"  }
+        {"float",       "data::Type::FLOAT" }
     };
     for (auto& i : mTables)
     {
@@ -84,20 +84,20 @@ code::CodeGenerator::makeDatabaseStructure() noexcept
                        ">");
         temp.addUsing(i.first, "UpperDataStruct");
 
-        std::string types;
-        std::string names;
-        std::string nameNum;
-        std::string resetFunc;
+        str::String types;
+        str::String names;
+        str::String nameNum;
+        str::String resetFunc;
         int cnt = 0;
         for (auto& j : i.second)
         {
             temp.addVariable(j[0], j[1], initializationMap[j[1]]);
-            std::string strName = "\"" + j[0] + "\"";
+            str::String strName = "\"" + j[0] + "\"";
 
             names += strName + ",";
             types += typeToDataType[j[1]] + ",";
 
-            std::string num = std::to_string(cnt++);
+            str::String num = std::to_string(cnt++);
             nameNum += "{" + strName + "," + num + "},";
             resetFunc += "ptrs[" + num + "] = (void*)(&" +
                          StringAlgorithms::normalizeName(j[0], false, true) +
@@ -111,13 +111,13 @@ code::CodeGenerator::makeDatabaseStructure() noexcept
         func.setBody(resetFunc);
         temp.addFunction(func);
 
-        temp.addStaticVariable("tableName", "std::string",
+        temp.addStaticVariable("tableName", "str::String",
                                "\"" + i.first + "\"");
         temp.addStaticVariable("types", "std::vector<data::Type>", types);
-        temp.addStaticVariable("columnNames", "std::vector<std::string>",
+        temp.addStaticVariable("columnNames", "std::vector<str::String>",
                                names);
         temp.addStaticVariable(
-            "nameToNum", "std::unordered_map<std::string, uint8_t>", nameNum);
+            "nameToNum", "std::unordered_map<str::String, uint8_t>", nameNum);
     }
 }
 
@@ -153,13 +153,13 @@ code::CodeGenerator::makePostHandler() noexcept
     addRouter(
         temp, "processRouter",
         {
-  // clang-format off
+            // clang-format off
             {"default",       "post::PostHandler::postSubrouter<post::PostHandler, "       },
             {"user",          "post::PostHandler::postSubrouter<post::UserHandler, "       },
             {"answer",        "post::PostHandler::postSubrouter<post::AnswerHandler, "     },
             {"journal_table", "post::PostHandler::postSubrouter<post::JournalHandler, "    },
             {"mark",          "post::PostHandler::postSubrouter<post::MarkHandler, "       }
-  // clang-format on
+            // clang-format on
     });
 
     addRouter(temp, "dropRouter",
@@ -205,13 +205,13 @@ code::CodeGenerator::makeGetRouter() noexcept
     });
 
     auto& func =
-        temp.addRouterFunction("columnNamesRouter", "std::vector<std::string>",
+        temp.addRouterFunction("columnNamesRouter", "std::vector<str::String>",
                                makeRouterFunction(
                                    {
                                        {"default", ""}
     },
                                    "::columnNames")[1]);
-    func.setReturnType("std::vector<std::string>&");
+    func.setReturnType("std::vector<str::String>&");
     func.setBody("auto it = mColumnNamesRouter.find(aName);"
                  "if (it == mColumnNamesRouter.end())"
                  "it = mColumnNamesRouter.find(\"dummy\");"
@@ -230,21 +230,21 @@ code::CodeGenerator::generate(CodeFile::FileType aType) const noexcept
 void
 code::CodeGenerator::addRouter(
     code::CodeClass& aClass,
-    const std::string& aName,
-    std::unordered_map<std::string, std::string> aNameMap) const noexcept
+    const str::String& aName,
+    std::unordered_map<str::String, str::String> aNameMap) const noexcept
 {
     for (auto& i : aNameMap) i.second.insert(0, 1, '&');
     auto temp = makeRouterFunction(aNameMap);
     aClass.addFuncRouterForDatabase(aName, temp[0], temp[1]);
 }
 
-std::array<std::string, 2>
+std::array<str::String, 2>
 code::CodeGenerator::makeRouterFunction(
-    const std::unordered_map<std::string, std::string>& aNameMap,
-    std::string aPostfix) const noexcept
+    const std::unordered_map<str::String, str::String>& aNameMap,
+    str::String aPostfix) const noexcept
 {
     bool templateOpened =
-        aNameMap.find("default")->second.find('<') != std::string::npos;
+        aNameMap.find("default")->second.find('<') != str::String::npos;
     if (aPostfix.empty())
     {
         aPostfix = ">";
@@ -253,7 +253,7 @@ code::CodeGenerator::makeRouterFunction(
     {
         templateOpened = true;
     }
-    std::array<std::string, 2> result;
+    std::array<str::String, 2> result;
 
     for (auto& i : mTables)
     {
@@ -267,7 +267,7 @@ code::CodeGenerator::makeRouterFunction(
 
         result[1] += "{\"" + i.first + "\",";
 
-        std::string temp = it->second;
+        str::String temp = it->second;
         if (flag || templateOpened)
         {
             if (!templateOpened) temp.push_back('<');

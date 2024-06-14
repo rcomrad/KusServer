@@ -30,7 +30,7 @@ private:
 
     void scanCommand() noexcept;
 
-    std::unordered_map<str::string, std::thread> mApps;
+    std::unordered_map<str::String, std::thread> mApps;
 };
 } // namespace core
 

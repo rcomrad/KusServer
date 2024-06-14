@@ -10,29 +10,39 @@ namespace get
 struct GetRouter
 {
 
-    static std::unordered_map<std::string, decltype(&get::GetHandler::process<data::Dummy>)> mBasicRouter;
-    static std::unordered_map<std::string, decltype(&get::GetHandler::dump<data::Dummy>)> mDumpRouter;
-    static std::unordered_map<std::string, std::vector<std::string>> mColumnNamesRouter;
+    static std::unordered_map<str::String,
+                              decltype(&get::GetHandler::process<data::Dummy>)>
+        mBasicRouter;
+    static std::unordered_map<str::String,
+                              decltype(&get::GetHandler::dump<data::Dummy>)>
+        mDumpRouter;
+    static std::unordered_map<str::String, std::vector<str::String>>
+        mColumnNamesRouter;
 
     template <typename... Args>
-    static auto basicRouter(const std::string& aName, Args&&... args)
+    static auto basicRouter(const str::String& aName, Args&&... args)
     {
-        decltype(mBasicRouter.begin()->second(std::forward<Args>(args)...)) result;
+        decltype(mBasicRouter.begin()->second(
+            std::forward<Args>(args)...)) result;
         auto it = mBasicRouter.find(aName);
-        if (it != mBasicRouter.end()) result = it->second(std::forward<Args>(args)...);
+        if (it != mBasicRouter.end())
+            result = it->second(std::forward<Args>(args)...);
         return result;
     }
 
     template <typename... Args>
-    static auto dumpRouter(const std::string& aName, Args&&... args)
+    static auto dumpRouter(const str::String& aName, Args&&... args)
     {
-        decltype(mDumpRouter.begin()->second(std::forward<Args>(args)...)) result;
+        decltype(mDumpRouter.begin()->second(
+            std::forward<Args>(args)...)) result;
         auto it = mDumpRouter.find(aName);
-        if (it != mDumpRouter.end()) result = it->second(std::forward<Args>(args)...);
+        if (it != mDumpRouter.end())
+            result = it->second(std::forward<Args>(args)...);
         return result;
     }
 
-    static std::vector<std::string>& columnNamesRouter(const std::string& aName);
+    static std::vector<str::String>& columnNamesRouter(
+        const str::String& aName);
 };
 
 }; // namespace get

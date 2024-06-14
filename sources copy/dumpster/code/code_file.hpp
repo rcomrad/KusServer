@@ -16,32 +16,33 @@ public:
         ALL    = 3
     };
 
-    CodeFile(const std::string& aClassName, const std::string& aNamespace) noexcept;
-    CodeClass& makeClass(const std::string& aClassName = "") noexcept;
+    CodeFile(const str::String& aClassName,
+             const str::String& aNamespace) noexcept;
+    CodeClass& makeClass(const str::String& aClassName = "") noexcept;
     void generate(FileType aType) const noexcept;
 
-    void addHeaderToCpp(const std::string& aName, bool aIsStdHeader) noexcept;
-    void addHeaderToHpp(const std::string& aName, bool aIsStdHeader) noexcept;
+    void addHeaderToCpp(const str::String& aName, bool aIsStdHeader) noexcept;
+    void addHeaderToHpp(const str::String& aName, bool aIsStdHeader) noexcept;
 
 private:
-    static std::unordered_map<std::string, std::string> globalPaths;
+    static std::unordered_map<str::String, str::String> globalPaths;
 
-    std::string mNamespace;
-    std::string mFileName;
-    std::string mFilePath;
+    str::String mNamespace;
+    str::String mFileName;
+    str::String mFilePath;
 
-    std::vector<std::string> mCppHeaders;
-    std::vector<std::string> mHppHeaders;
+    std::vector<str::String> mCppHeaders;
+    std::vector<str::String> mHppHeaders;
 
     std::vector<CodeClass> mClasses;
 
-    void generateCPP(const std::string& aPath) const noexcept;
-    void generateHPP(const std::string& aPath) const noexcept;
+    void generateCPP(const str::String& aPath) const noexcept;
+    void generateHPP(const str::String& aPath) const noexcept;
 
-    static std::string normalizeName(const std::string& aName) noexcept;
-    static std::string normalizeDefine(const std::string& aName) noexcept;
+    static str::String normalizeName(const str::String& aName) noexcept;
+    static str::String normalizeDefine(const str::String& aName) noexcept;
 
-    static std::string makeHeader(const std::string& aName,
+    static str::String makeHeader(const str::String& aName,
                                   bool aIsStdHeader) noexcept;
 };
 

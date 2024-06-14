@@ -37,28 +37,28 @@ core::Role::getInstance() noexcept
 
 int
 core::Role::getRoleID(
-    const std::unordered_set<std::string>& aRoleNames) noexcept
+    const std::unordered_set<str::String>& aRoleNames) noexcept
 {
     return getInstance().getRoleIDNonstatic(aRoleNames);
 }
 
 int
-core::Role::getRoleID(const std::vector<std::string>& aRoleNames) noexcept
+core::Role::getRoleID(const std::vector<str::String>& aRoleNames) noexcept
 {
-    std::unordered_set<std::string> s(aRoleNames.begin(), aRoleNames.end());
+    std::unordered_set<str::String> s(aRoleNames.begin(), aRoleNames.end());
     return getRoleID(s);
 }
 
 int
-core::Role::getRoleID(const std::string& aRoleNames,
-                      const std::string& aDelimiter) noexcept
+core::Role::getRoleID(const str::String& aRoleNames,
+                      const str::String& aDelimiter) noexcept
 {
     auto roles = file::Parser::slice(
         aRoleNames, (aDelimiter.size() == 0) ? " \t\n,;"s : aDelimiter);
     return getRoleID(roles);
 }
 
-std::unordered_set<std::string>
+std::unordered_set<str::String>
 core::Role::getRoles(int aRoleID) noexcept
 {
     return getInstance().getRolesNonstatic(aRoleID);
@@ -96,7 +96,7 @@ core::Role::resetFormRoleIDs() const noexcept
         // TODO: use functions
         auto roles = file::Parser::slice(i.roleStr, ","s);
         roles.emplace_back("admin");
-        std::unordered_set<std::string> s(roles.begin(), roles.end());
+        std::unordered_set<str::String> s(roles.begin(), roles.end());
         i.roleID = getRoleIDNonstatic(s);
     }
     connection.val.write(forms);
@@ -104,7 +104,7 @@ core::Role::resetFormRoleIDs() const noexcept
 
 int
 core::Role::getRoleIDNonstatic(
-    const std::unordered_set<std::string>& aRoleNames) const noexcept
+    const std::unordered_set<str::String>& aRoleNames) const noexcept
 {
     int result = 0;
     for (auto& i : aRoleNames)
@@ -118,10 +118,10 @@ core::Role::getRoleIDNonstatic(
     return result;
 }
 
-std::unordered_set<std::string>
+std::unordered_set<str::String>
 core::Role::getRolesNonstatic(int aRoleID) const noexcept
 {
-    std::unordered_set<std::string> result;
+    std::unordered_set<str::String> result;
     if (aRoleID > 0)
     {
         for (int i = 0; i < mIntToRole.size(); ++i, aRoleID >>= 1)

@@ -22,9 +22,9 @@ private:
         int roles;
     };
 
-    static std::unordered_map<std::string, Rote> mMultitoolRouter;
+    static std::unordered_map<str::String, Rote> mMultitoolRouter;
 
-    static std::unordered_map<std::string, Rote>
+    static std::unordered_map<str::String, Rote>
     generateMultitoolRouter() noexcept;
 };
 

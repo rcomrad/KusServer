@@ -17,9 +17,9 @@ mod::ModuleHandler::run() noexcept
     getInstance().runNonstatic();
 }
 
-std::string
-mod::ModuleHandler::processCommand(const std::string& aCommand,
-                                   const std::string& aArgument) noexcept
+str::String
+mod::ModuleHandler::processCommand(const str::String& aCommand,
+                                   const str::String& aArgument) noexcept
 {
     return getInstance().processCommandNonstatic(aCommand, aArgument);
 }
@@ -27,14 +27,14 @@ mod::ModuleHandler::processCommand(const std::string& aCommand,
 //--------------------------------------------------------------------------------
 
 void
-mod::ModuleHandler::addCommand(const std::string& aCommand,
+mod::ModuleHandler::addCommand(const str::String& aCommand,
                                ModuleBase* aPtr) noexcept
 {
     getInstance().mModules[aCommand] = aPtr;
 }
 
 bool
-mod::ModuleHandler::hasCommand(const std::string& aCommand) noexcept
+mod::ModuleHandler::hasCommand(const str::String& aCommand) noexcept
 {
     return getInstance().mModules.count(aCommand);
 }
@@ -73,11 +73,12 @@ mod::ModuleHandler::runNonstatic() noexcept
     }
 }
 
-std::string
+str::String
 mod::ModuleHandler::processCommandNonstatic(
-    const std::string& aCommand, const std::string& aArgument) noexcept
+    const str::String& aCommand,
+    const str::String& aArgument) noexcept
 {
-    std::string result;
+    str::String result;
 
     static int intglobalTesultCounter = 0;
 

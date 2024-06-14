@@ -12,13 +12,13 @@ struct TestLibMessage
 public:
     int mTestNumber;
 
-    std::string mTest;
-    std::string mAnswer;
-    std::string mOutput;
+    str::String mTest;
+    str::String mAnswer;
+    str::String mOutput;
 
-    std::string mTestSize;
-    std::string mAnswerSize;
-    std::string mOutputSize;
+    str::String mTestSize;
+    str::String mAnswerSize;
+    str::String mOutputSize;
 
     void makeTestSizes() noexcept;
     void makeAnswerSizes() noexcept;
@@ -31,7 +31,7 @@ private:
         uint64_t value;
     } StringSizeCoder{};
 
-    void makeSize(std::string& aStr, std::string& aSize) noexcept;
+    void makeSize(str::String& aStr, str::String& aSize) noexcept;
 };
 
 //--------------------------------------------------------------------------------

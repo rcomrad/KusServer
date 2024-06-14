@@ -12,15 +12,15 @@ class RequestStorage
 {
 public:
     static RequestParser::DataRequest& getRequest(
-        const std::string& aRequest) noexcept;
+        const str::String& aRequest) noexcept;
 
 private:
-    std::unordered_map<std::string, RequestParser::DataRequest> mStorage;
+    std::unordered_map<str::String, RequestParser::DataRequest> mStorage;
 
     RequestStorage() noexcept = default;
     static RequestStorage& getInstance() noexcept;
 };
 
-};                         // namespace get
+}; // namespace get
 
 #endif // !REQUEST_STORAGE_HPP

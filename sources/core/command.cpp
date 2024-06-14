@@ -2,7 +2,12 @@
 
 #include "string/parser.hpp"
 
-core::Command::Command(const str::string& aStr) noexcept
+core::Command::Command() noexcept : ready(false)
+{
+    buffer[0] = 0;
+}
+
+core::Command::Command(const str::String& aStr) noexcept
 {
     auto args = str::Parser::slice(aStr, "; \n\t");
     value     = std::move(args[0]);

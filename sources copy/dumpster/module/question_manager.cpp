@@ -2,9 +2,10 @@
 
 #include <algorithm>
 
+#include "core/variable_storage.hpp"
+
 #include "database/connection_manager.hpp"
 
-#include "core/variable_storage.hpp"
 #include "file_data/file.hpp"
 #include "file_data/parser.hpp"
 #include "file_data/path.hpp"
@@ -15,10 +16,10 @@ mod::QuestionManager::QuestionManager() noexcept : ModuleBase({"question"})
 {
 }
 
-std::string
+str::String
 mod::QuestionManager::doAction(const Command& aComman) noexcept
 {
-    std::string result = "ERROR: no such command!";
+    str::String result = "ERROR: no such command!";
     if (aComman.argument == "load")
     {
         result = loadQuestions();
@@ -30,7 +31,7 @@ mod::QuestionManager::doAction(const Command& aComman) noexcept
     return result;
 }
 
-std::string
+str::String
 mod::QuestionManager::loadQuestions() noexcept
 {
     auto connection = data::ConnectionManager::getUserConnection();
@@ -38,7 +39,7 @@ mod::QuestionManager::loadQuestions() noexcept
 
     auto hasQ = core::Path::getContentMap(core::Path::getPathUnsafe("question"),
                                           core::Path::FileType::Folder);
-    std::map<std::string, std::string> questions;
+    std::map<str::String, str::String> questions;
     questions.insert(hasQ.begin(), hasQ.end());
 
     for (auto& i : questions)
@@ -70,7 +71,7 @@ mod::QuestionManager::loadQuestions() noexcept
     return "?";
 }
 #include "domain/cyrillic.hpp"
-std::string
+str::String
 mod::QuestionManager::retestQuestions() noexcept
 {
     auto connection = data::ConnectionManager::getUserConnection();
@@ -108,10 +109,10 @@ mod::QuestionManager::retestQuestions() noexcept
             bool ggFlag = jAns[0].back() >= '0' && jAns[0].back() <= '9';
             if (ggFlag && pAns.size() == 1 && pAns[0].size() > 1)
             {
-                std::string ghgh;
+                str::String ghgh;
                 for (auto& i : pAns[0])
                 {
-                    ghgh += std::string({i}) + ",";
+                    ghgh += str::String({i}) + ",";
                 }
                 pAns = file::Parser::slice(ghgh, ", ;.");
             }

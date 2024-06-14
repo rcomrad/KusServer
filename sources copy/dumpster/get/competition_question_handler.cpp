@@ -4,7 +4,7 @@
 
 #include "file_data/file.hpp"
 #include "file_data/path.hpp"
-// std::string get::CompetitionHandler::mProblemPath =
+// str::String get::CompetitionHandler::mProblemPath =
 //     dom::Path::getInstance().getPath("problem").value();
 
 // boost::posix_time::ptime
@@ -24,9 +24,9 @@ get::CompetitionQuestionHandler::process(
     crow::json::wvalue result;
     // if (dom::DateAndTime::getRawCurentTime() > time)
     // {
-        auto table     = aConnection.val.getNextDataArray<data::Form>(aColumn);
-        auto tableList = table.getAsJList();
-        result["competition_question"] = std::move(tableList);
+    auto table     = aConnection.val.getNextDataArray<data::Form>(aColumn);
+    auto tableList = table.getAsJList();
+    result["competition_question"] = std::move(tableList);
     // }
     // else
     // {
@@ -43,8 +43,8 @@ get::CompetitionQuestionHandler::process(
     // std::vector<data::Table<data::Submission>> submissions;
 
     // {
-    //     std::vector<std::string> empty;
-    //     std::vector<std::string> probV = {"3", "4", " 5"};
+    //     std::vector<str::String> empty;
+    //     std::vector<str::String> probV = {"3", "4", " 5"};
     //     auto connection = data::ConnectionManager::getUserConnection();
 
     //     competition = connection.val.select<data::Competition>(

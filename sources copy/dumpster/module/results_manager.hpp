@@ -14,13 +14,13 @@ namespace mod
 class ResultsManager : public ModuleBase
 {
 protected:
-    std::string doAction(const Command& aCommand) noexcept override;
+    str::String doAction(const Command& aCommand) noexcept override;
 
 private:
     static ResultsManager mInstance;
     ResultsManager() noexcept;
 
-    static std::string getResults(const std::string aValue) noexcept;
+    static str::String getResults(const str::String aValue) noexcept;
 };
 } // namespace mod
 

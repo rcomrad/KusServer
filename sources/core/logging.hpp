@@ -34,7 +34,7 @@ public:
 
     static void setLogLevel(LogLevel aLogLevel) noexcept;
     static void setOutputType(OutputType aOutputType,
-                              const str::string& aFileName = "") noexcept;
+                              const str::String& aFileName = "") noexcept;
 
     //--------------------------------------------------------------------------
 
@@ -71,7 +71,7 @@ private:
     //--------------------------------------------------------------------------
 
     void setOutputTypeNonstatic(OutputType aOutputType,
-                                const str::string& aFileName) noexcept;
+                                const str::String& aFileName) noexcept;
 
     //--------------------------------------------------------------------------
 
@@ -128,13 +128,23 @@ private:
 
     void writeArg(int arg) noexcept;
     void writeArg(double arg) noexcept;
-    void writeArg(const str::string& arg) noexcept;
+    void writeArg(const str::String& arg) noexcept;
     void writeArg(const char* arg) noexcept;
 
     void writeEnd() noexcept;
 
     //--------------------------------------------------------------------------
 };
+
+enum
+{
+    LOG_BUFFER_SIZE = 200
+};
+
+#define arr(...)                          \
+    {                                     \
+        char log_buffer[LOG_BUFFER_SIZE]; \
+    }
 
 // clang-format off
 #define LOG_INFO(...)     core::Logging::writeInfo    (__FILE__, __LINE__, __func__, __VA_ARGS__)

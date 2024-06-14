@@ -25,13 +25,13 @@ public:
         FPModuleActions mVariableRegister;
     };
 
-    static const str::string CALLBACK_VOLUME_SETUP;
-    static const str::string CALLBACK_VOLUME_START;
+    static const str::String CALLBACK_VOLUME_SETUP;
+    static const str::String CALLBACK_VOLUME_START;
 
     static void setupModules() noexcept;
 
 private:
-    std::unordered_map<str::string, ModuleSettings> mModules;
+    std::unordered_map<str::String, ModuleSettings> mModules;
 };
 } // namespace core
 

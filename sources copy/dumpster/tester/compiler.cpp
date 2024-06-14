@@ -11,10 +11,10 @@
 
 //--------------------------------------------------------------------------------
 
-std::string test::Compiler::mCPPCompiler =
+str::String test::Compiler::mCPPCompiler =
     core::Path::getPathUnsafe("compiler") + "magicCPPCompiler.cmd";
 
-std::unordered_map<std::string, test::Compiler::Language>
+std::unordered_map<str::String, test::Compiler::Language>
     test::Compiler::mLanguages = {
         {"cpp", test::Compiler::Language::CPP       },
         {"py",  test::Compiler::Language::PYTHON    },
@@ -24,15 +24,16 @@ std::unordered_map<std::string, test::Compiler::Language>
 
 //--------------------------------------------------------------------------------
 
-std::vector<std::string>
+std::vector<str::String>
 test::Compiler::getExecutableCommand(
-    const std::string& aFileName, const std::string& aOutputFileName) noexcept
+    const str::String& aFileName,
+    const str::String& aOutputFileName) noexcept
 {
     int num = aFileName.size() - 1;
     while (num >= 1 && aFileName[num] != '.') num--;
-    std::string extension = aFileName.substr(num + 1);
+    str::String extension = aFileName.substr(num + 1);
 
-    std::vector<std::string> result;
+    std::vector<str::String> result;
 
     auto it = mLanguages.find(extension);
     if (it != mLanguages.end())
@@ -58,11 +59,12 @@ test::Compiler::getExecutableCommand(
 
 //--------------------------------------------------------------------------------
 
-std::vector<std::string>
+std::vector<str::String>
 test::Compiler::prepareCommandForCPP(
-    const std::string& aFileName, const std::string& aOutputFileName) noexcept
+    const str::String& aFileName,
+    const str::String& aOutputFileName) noexcept
 {
-    std::vector<std::string> compileCommand;
+    std::vector<str::String> compileCommand;
 
     auto outputName = aOutputFileName + ".exe";
 #ifdef BILL_WINDOWS
@@ -81,7 +83,7 @@ test::Compiler::prepareCommandForCPP(
     compiler.setComand(compileCommand);
     compiler.create();
 
-    std::vector<std::string> result;
+    std::vector<str::String> result;
 
     // TODO: do i need double args
     // return {outputName, outputName};
@@ -99,24 +101,24 @@ test::Compiler::prepareCommandForCPP(
 
 //--------------------------------------------------------------------------------
 
-std::vector<std::string>
-test::Compiler::prepareCommandForPython(const std::string& aFileName) noexcept
+std::vector<str::String>
+test::Compiler::prepareCommandForPython(const str::String& aFileName) noexcept
 {
-    std::vector<std::string> result;
+    std::vector<str::String> result;
     result.emplace_back("python3");
     result.emplace_back(aFileName);
     return result;
 }
 
-std::vector<std::string>
-test::Compiler::prepareCommandForPascal(const std::string& aFileName) noexcept
+std::vector<str::String>
+test::Compiler::prepareCommandForPascal(const str::String& aFileName) noexcept
 {
-    std::string temp;
+    str::String temp;
     temp = aFileName;
     while (temp.back() != '.') temp.pop_back();
     temp.pop_back();
 
-    std::vector<std::string> compileCommand;
+    std::vector<str::String> compileCommand;
     compileCommand.emplace_back("pc");
     compileCommand.emplace_back(aFileName);
 
@@ -124,7 +126,7 @@ test::Compiler::prepareCommandForPascal(const std::string& aFileName) noexcept
     compiler.setComand(compileCommand);
     compiler.create();
 
-    std::vector<std::string> result;
+    std::vector<str::String> result;
     if (compiler.run()) result = {temp};
     return result;
 }

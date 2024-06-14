@@ -3,7 +3,7 @@
 #include "file_data/file.hpp"
 #include "post/post_router.hpp"
 
-std::unordered_map<std::string, decltype(&core::FileRouter::dmpParser)>
+std::unordered_map<str::String, decltype(&core::FileRouter::dmpParser)>
     core::FileRouter::mRouter = {
         {"dmp",  &core::FileRouter::dmpParser },
         {"data", &core::FileRouter::dataParser},
@@ -11,11 +11,11 @@ std::unordered_map<std::string, decltype(&core::FileRouter::dmpParser)>
 };
 
 data::RawDataArray
-core::FileRouter::process(const std::string& aFileName) noexcept
+core::FileRouter::process(const str::String& aFileName) noexcept
 {
     int indx = aFileName.size() - 1;
     while (aFileName[indx] != '.') --indx;
-    std::string extension = aFileName.substr(indx + 1);
+    str::String extension = aFileName.substr(indx + 1);
 
     auto it = mRouter.find(extension);
     data::RawDataArray result;
@@ -24,7 +24,7 @@ core::FileRouter::process(const std::string& aFileName) noexcept
 }
 
 data::RawDataArray
-core::FileRouter::dmpParser(const std::string& aFileName) noexcept
+core::FileRouter::dmpParser(const str::String& aFileName) noexcept
 {
     auto words = file::File::getWords(aFileName, file::FileType::File,
                                       &core::FileRouter::isDMPSeparator);
@@ -44,7 +44,7 @@ core::FileRouter::dmpParser(const std::string& aFileName) noexcept
 }
 
 data::RawDataArray
-core::FileRouter::dataParser(const std::string& aFileName) noexcept
+core::FileRouter::dataParser(const str::String& aFileName) noexcept
 {
     auto words = file::File::getWords(aFileName);
     data::RawDataArray res;
@@ -68,7 +68,7 @@ core::FileRouter::dataParser(const std::string& aFileName) noexcept
 }
 
 data::RawDataArray
-core::FileRouter::csvParser(const std::string& aFileName) noexcept
+core::FileRouter::csvParser(const str::String& aFileName) noexcept
 {
     auto words = file::File::getWords(aFileName, file::FileType::File,
                                       &core::FileRouter::isCSVSeparator);

@@ -145,7 +145,7 @@ test::Test::resultEvoluation() noexcept
     LOG_INFO("time:", mUsedTime);
     LOG_INFO("memory:", mUsedMemory);
 
-    std::string temp;
+    str::String temp;
 
     mCheckerProcess.readData(temp);
 

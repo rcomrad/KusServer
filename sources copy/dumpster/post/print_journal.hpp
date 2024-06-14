@@ -4,7 +4,9 @@
 #include <string>
 
 #include "database/database_structures.hpp"
+
 #include "tex_manager/tex_file.hpp"
+
 #include "attendance.hpp"
 
 namespace post
@@ -12,13 +14,13 @@ namespace post
 class PrintJournal
 {
 public:
-    static std::string process(const std::string& aData) noexcept;
+    static str::String process(const str::String& aData) noexcept;
 
 private:
-    static std::string makeJournal(tex::TexFile& aTexFile, int aID) noexcept;
+    static str::String makeJournal(tex::TexFile& aTexFile, int aID) noexcept;
     static Attendance makeAttendance(
         const data::JournalTable& aJournal) noexcept;
-    static std::string makeFrontPage(
+    static str::String makeFrontPage(
         const data::JournalTable& aJournal) noexcept;
 
     static const int limit = 15;

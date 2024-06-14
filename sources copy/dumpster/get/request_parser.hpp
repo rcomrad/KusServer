@@ -25,55 +25,55 @@ public:
         struct TableData
         {
             int prev;
-            std::string name;
-            std::string nickname;
+            str::String name;
+            str::String nickname;
             std::unordered_set<int> columnNums;
-            std::vector<std::string> columnNames;
+            std::vector<str::String> columnNames;
             // std::unique_ptr<DataRequest*> additionalTable;
-            std::string additionalTable;
+            str::String additionalTable;
         };
 
     public:
         size_t size;
-        std::string rowStatement;
+        str::String rowStatement;
         std::vector<TableData> tables;
 
         const TableData& operator[](int num) const noexcept;
-        std::string getFullStatement(
-            const std::string& aCondition) const noexcept;
+        str::String getFullStatement(
+            const str::String& aCondition) const noexcept;
     };
 
-    static DataRequest process(const std::string& aRequest) noexcept;
+    static DataRequest process(const str::String& aRequest) noexcept;
 
 private:
     std::vector<int> mPrev;
-    std::vector<std::string> mTables;
-    std::vector<std::string> mNicknames;
+    std::vector<str::String> mTables;
+    std::vector<str::String> mNicknames;
     std::vector<std::unordered_set<int>> mColumnNums;
-    std::vector<std::vector<std::string>> mColumnNames;
+    std::vector<std::vector<str::String>> mColumnNames;
     std::vector<bool> mHasAttachment;
     // std::vector<std::unique_ptr<DataRequest>> mAdditionalTable;
-    std::vector<std::string> mAdditionalTable;
+    std::vector<str::String> mAdditionalTable;
 
-    static std::unordered_map<std::string, std::string> mActualNames;
+    static std::unordered_map<str::String, str::String> mActualNames;
 
     RequestParser() noexcept = default;
 
-    std::string getTables() const noexcept;
-    std::string getColumns() const noexcept;
+    str::String getTables() const noexcept;
+    str::String getColumns() const noexcept;
 
-    void parse(const std::string& aRequest) noexcept;
+    void parse(const str::String& aRequest) noexcept;
     void arrangeActualNames() noexcept;
     void arrangeColumns() noexcept;
 
     void pushTable(int iter,
                    int& last,
-                   const std::string& aRequest,
+                   const str::String& aRequest,
                    int aOffset) noexcept;
 
     void pushName(int iter,
                   int& last,
-                  const std::string& aRequest,
+                  const str::String& aRequest,
                   int curPrev) noexcept;
 };
 

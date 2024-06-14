@@ -23,11 +23,11 @@ serv::PassGenerator::getInstance() noexcept
 
 //--------------------------------------------------------------------------------
 
-std::string
+str::String
 serv::PassGenerator::generate(int aSize) noexcept
 {
     static PassGenerator& instance = getInstance();
-    std::string result;
+    str::String result;
     while (result.size() < aSize)
     {
         int indx = instance.mDistribution(instance.mRandGenerator);

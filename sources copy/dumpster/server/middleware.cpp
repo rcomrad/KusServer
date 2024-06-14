@@ -4,9 +4,9 @@
 
 #include "domain/date_and_time.hpp"
 
-#include "database/connection_manager.hpp"
-
 #include "core/variable_storage.hpp"
+
+#include "database/connection_manager.hpp"
 
 #include "token_handler.hpp"
 
@@ -15,8 +15,7 @@ serv::Middleware::before_handle(crow::request& req,
                                 crow::response& res,
                                 context& ctx)
 {
-    while (core::VariableStorage::isLocked())
-        ;
+    while (core::VariableStorage::isLocked());
 
     auto user = serv::TokenHandler::process(req);
     if (user.has_value())
@@ -31,8 +30,8 @@ serv::Middleware::before_handle(crow::request& req,
 
     if (req.url.size() == 71)
     {
-        std::string temp = req.url;
-        std::string id   = {temp.back()};
+        str::String temp = req.url;
+        str::String id   = {temp.back()};
         temp.resize(temp.size() - 17);
         if (temp == "/api/get/if/competition_question[question_id[id,name]]")
         {

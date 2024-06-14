@@ -23,17 +23,17 @@ str::Value::operator bool() const noexcept
     return result;
 }
 
-str::Value::operator std::string() const noexcept
-{
-    return str;
-}
+// str::Value::operator str::String() const noexcept
+// {
+//     return str;
+// }
 
 str::Value::operator core::Pair<float>() const noexcept
 {
     core::Pair<float> result;
 
     int cur = 0;
-    std::string temp;
+    str::String temp;
     bool flag = true;
     for (int cur = 0; cur < str.size() + 1; ++cur)
     {

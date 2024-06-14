@@ -51,15 +51,15 @@ public:
     };
 
     TexTable(const std::vector<Column>& aSettings,
-             std::unordered_map<std::string, std::vector<std::string>>*
+             std::unordered_map<str::String, std::vector<str::String>>*
                  aVariables = nullptr) noexcept;
-    TexTable(const std::vector<std::string>& aData,
-             std::unordered_map<std::string, std::vector<std::string>>*
+    TexTable(const std::vector<str::String>& aData,
+             std::unordered_map<str::String, std::vector<str::String>>*
                  aVariables = nullptr) noexcept;
     HOLY_TRINITY_NOCOPY(TexTable);
 
-    void fromRawData(const std::vector<std::string>& aData) noexcept;
-    std::string get() const noexcept;
+    void fromRawData(const std::vector<str::String>& aData) noexcept;
+    str::String get() const noexcept;
 
     template <typename... Args>
     void pushBack(Args&&... args) noexcept
@@ -122,16 +122,16 @@ public:
         setWithCount(aData, aType, aTo - aFrom, aColumnBorders);
     }
 
-    void add(const std::string& aData) noexcept;
+    void add(const str::String& aData) noexcept;
     void newLine(int aFrom = 1, int aTo = 0) noexcept;
     void finish() noexcept;
 
 private:
     int mSize;
     int mCurColumn;
-    std::string mData;
+    str::String mData;
 
-    static std::unordered_map<ColumnType, std::string> gPosition;
+    static std::unordered_map<ColumnType, str::String> gPosition;
 };
 
 }; // namespace tex

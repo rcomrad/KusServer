@@ -55,7 +55,7 @@ proc::PipeWindowsProcess::IORedirection() noexcept
 //--------------------------------------------------------------------------------
 
 void
-proc::PipeWindowsProcess::readData(std::string& result) noexcept
+proc::PipeWindowsProcess::readData(str::String& result) noexcept
 {
     const size_t bufSize = 1024;
     char buf[bufSize];
@@ -75,14 +75,14 @@ proc::PipeWindowsProcess::readData(std::string& result) noexcept
     {
         memset(buf, 0, sizeof(buf));
         ReadFile(mThisSTDIN, buf, bufSize - 1, &bread, NULL);
-        result += std::string(buf);
+        result += str::String(buf);
     }
 }
 
 //--------------------------------------------------------------------------------
 
 void
-proc::PipeWindowsProcess::writeData(const std::string& aMessage) noexcept
+proc::PipeWindowsProcess::writeData(const str::String& aMessage) noexcept
 {
     unsigned long bread;
     WriteFile(mThisSTDOUT, aMessage.c_str(), aMessage.size(), &bread, NULL);

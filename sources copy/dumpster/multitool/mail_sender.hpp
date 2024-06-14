@@ -13,25 +13,25 @@ namespace mult
 class MailSender
 {
 public:
-    static std::string process(const crow::request& aReq) noexcept;
+    static str::String process(const crow::request& aReq) noexcept;
 
 private:
     struct Letter
     {
-        std::string theme;
-        std::string text;
-        std::string login;
-        std::string password;
-        std::string data;
+        str::String theme;
+        str::String text;
+        str::String login;
+        str::String password;
+        str::String data;
     };
 
     static void threadSender(Letter aLetter,
-                             std::string aFileName,
+                             str::String aFileName,
                              bool aRealSend) noexcept;
 
-    static std::vector<std::pair<std::string, std::string>> sliseText(
-        const std::string& aText,
-        const std::unordered_map<std::string, std::string>& aKeys) noexcept;
+    static std::vector<std::pair<str::String, str::String>> sliseText(
+        const str::String& aText,
+        const std::unordered_map<str::String, str::String>& aKeys) noexcept;
 };
 
 } // namespace mult

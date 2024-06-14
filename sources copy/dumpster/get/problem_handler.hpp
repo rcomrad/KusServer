@@ -15,7 +15,7 @@ class ProblemHandler : public GetHandler
 {
 public:
     static crow::json::wvalue process(
-        const std::unordered_set<std::string>& aColumn,
+        const std::unordered_set<str::String>& aColumn,
         data::SmartConnection& aConnection) noexcept;
 };
 } // namespace get

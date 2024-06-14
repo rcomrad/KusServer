@@ -66,7 +66,7 @@ proc::WindowsProcess::runWithLimits() noexcept
 
 void
 proc::WindowsProcess::setComand(
-    const std::vector<std::string>& aParameters) noexcept
+    const std::vector<str::String>& aParameters) noexcept
 {
     mProcessName = aParameters[0];
     for (auto& i : aParameters) mProcessArgs += i + " ";

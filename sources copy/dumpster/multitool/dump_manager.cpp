@@ -4,6 +4,7 @@
 #include "domain/log.hpp"
 
 #include "core/variable_storage.hpp"
+
 #include "file_data/file.hpp"
 #include "file_data/parser.hpp"
 #include "get/get_router.hpp"
@@ -20,13 +21,13 @@ mult::DumpManager::DumpManager() noexcept
 
 //--------------------------------------------------------------------------------
 
-std::string
+str::String
 mult::DumpManager::process(const crow::request& aReq) noexcept
 {
     crow::multipart::message msg(aReq);
 
     // TODO: don't save in file
-    std::string file = msg.get_part_by_name("file").body;
+    str::String file = msg.get_part_by_name("file").body;
     auto path        = file::File::writeData(
         "bin", dom::DateAndTime::getCurentTimeSafe() + ".dmp", file);
 
@@ -39,10 +40,10 @@ mult::DumpManager::process(const crow::request& aReq) noexcept
     return "1";
 }
 
-std::optional<std::string>
+std::optional<str::String>
 mult::DumpManager::makeSaveFile() noexcept
 {
-    std::optional<std::string> result;
+    std::optional<str::String> result;
 
     auto flag = !core::VariableStorage::touchFlag("bad_db_flag");
     if (flag)
@@ -57,28 +58,28 @@ mult::DumpManager::makeSaveFile() noexcept
     return result;
 }
 
-std::string
-mult::DumpManager::makeDump(const std::string& aCommand,
-                            const std::string& aArgs) noexcept
+str::String
+mult::DumpManager::makeDump(const str::String& aCommand,
+                            const str::String& aArgs) noexcept
 {
     return privateProcess(aCommand, aArgs);
 }
 
 //--------------------------------------------------------------------------------
 
-std::string
+str::String
 mult::DumpManager::doAction(const Command& aCommand) noexcept
 {
     return privateProcess(aCommand.value, aCommand.argument);
 }
 
-std::string
-mult::DumpManager::privateProcess(const std::string& aCommand,
-                                  const std::string& aArgs) noexcept
+str::String
+mult::DumpManager::privateProcess(const str::String& aCommand,
+                                  const str::String& aArgs) noexcept
 {
     auto processedArgs = file::Parser::slice(aArgs, ",", "*");
 
-    std::string result = "ERROR: wrong dump type!";
+    str::String result = "ERROR: wrong dump type!";
     if (aCommand == "dump")
     {
         result = dumpAsString(processedArgs);
@@ -100,15 +101,15 @@ mult::DumpManager::privateProcess(const std::string& aCommand,
 
 //--------------------------------------------------------------------------------
 
-std::string
+str::String
 mult::DumpManager::dumpAsString(
-    const std::vector<std::string>& aTableNames) noexcept
+    const std::vector<str::String>& aTableNames) noexcept
 {
-    static std::vector<std::string> databaseTables = getDatabaseTableNames();
-    const std::vector<std::string>& names =
+    static std::vector<str::String> databaseTables = getDatabaseTableNames();
+    const std::vector<str::String>& names =
         aTableNames.empty() ? databaseTables : aTableNames;
 
-    std::string result;
+    str::String result;
 
     for (auto& i : names)
     {
@@ -119,9 +120,9 @@ mult::DumpManager::dumpAsString(
     return result;
 }
 
-std::optional<std::string>
+std::optional<str::String>
 mult::DumpManager::dumpAsFile(
-    const std::vector<std::string>& aTableNames) noexcept
+    const std::vector<str::String>& aTableNames) noexcept
 {
     auto data = dumpAsString(aTableNames);
     auto path = file::File::writeData(
@@ -131,13 +132,13 @@ mult::DumpManager::dumpAsFile(
     return path;
 }
 
-std::string
+str::String
 mult::DumpManager::dumpAsHTML(
-    const std::vector<std::string>& aTableNames) noexcept
+    const std::vector<str::String>& aTableNames) noexcept
 {
     auto data = dumpAsString(aTableNames);
 
-    std::string res;
+    str::String res;
     for (auto i : data)
     {
         res += i;
@@ -148,10 +149,10 @@ mult::DumpManager::dumpAsHTML(
 
 //--------------------------------------------------------------------------------
 
-std::vector<std::string>
+std::vector<str::String>
 mult::DumpManager::getDatabaseTableNames() noexcept
 {
-    std::vector<std::string> result;
+    std::vector<str::String> result;
 
     auto words = file::File::getWords("config"s, "database.psql_db"s);
     for (auto& i : words)

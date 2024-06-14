@@ -36,13 +36,13 @@ public:
     \param aCode A struct with the path to code to execute,
         output directory and language information.
     */
-    static std::vector<std::string> getExecutableCommand(
-        const std::string& aFileName,
-        const std::string& aOutputFileName) noexcept;
+    static std::vector<str::String> getExecutableCommand(
+        const str::String& aFileName,
+        const str::String& aOutputFileName) noexcept;
 
 private:
-    static std::unordered_map<std::string, Language> mLanguages;
-    static std::string mCPPCompiler;
+    static std::unordered_map<str::String, Language> mLanguages;
+    static str::String mCPPCompiler;
 
     /*
     \brief Compile the cpp file and return the cmd command to execute it.
@@ -50,9 +50,9 @@ private:
     \return An array of strings with the commands for
         exe execution execution.
     */
-    static std::vector<std::string> prepareCommandForCPP(
-        const std::string& aFileName,
-        const std::string& aOutputFileName) noexcept;
+    static std::vector<str::String> prepareCommandForCPP(
+        const str::String& aFileName,
+        const str::String& aOutputFileName) noexcept;
 
     /*
     \brief Prepare the cmd command for python file interpretation.
@@ -60,11 +60,11 @@ private:
     \return An array of strings with the commands for python
         file einterpretation.
     */
-    static std::vector<std::string> prepareCommandForPython(
-        const std::string& aFileName) noexcept;
+    static std::vector<str::String> prepareCommandForPython(
+        const str::String& aFileName) noexcept;
 
-    static std::vector<std::string> prepareCommandForPascal(
-        const std::string& aFileName) noexcept;
+    static std::vector<str::String> prepareCommandForPascal(
+        const str::String& aFileName) noexcept;
 };
 } // namespace test
 

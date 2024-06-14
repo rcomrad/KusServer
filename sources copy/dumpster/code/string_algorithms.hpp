@@ -9,7 +9,7 @@ namespace code
 class StringAlgorithms
 {
 public:
-    static std::string normalizeName(const std::string& aName,
+    static str::String normalizeName(const str::String& aName,
                                      bool aIsFirstCapital,
                                      bool aIsIdCapital = false) noexcept;
 };

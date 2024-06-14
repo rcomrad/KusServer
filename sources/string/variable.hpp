@@ -11,12 +11,12 @@ namespace str
 
 struct Variable
 {
-    std::string name;
+    str::String name;
     Value value;
 };
 
-using VariableArray = std::unordered_map<std::string, Value>;
+using VariableArray = std::unordered_map<str::String, Value>;
 
-} // namespace file
+} // namespace str
 
 #endif // !VARIABLE_HPP

@@ -2,21 +2,21 @@
 #ifndef VALUE_HPP
 #define VALUE_HPP
 
-#include <string>
-
 #include "core/pair.hpp"
+
+#include "kus_string.hpp"
 
 namespace str
 {
 struct Value
 {
-    std::string str;
+    str::String str;
 
     operator int() const noexcept;
     operator float() const noexcept;
     operator bool() const noexcept;
 
-    operator std::string() const noexcept;
+    // operator str::String() const noexcept;
 
     operator core::Pair<float>() const noexcept;
 

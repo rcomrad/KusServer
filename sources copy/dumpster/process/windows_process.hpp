@@ -5,20 +5,20 @@
 
 //--------------------------------------------------------------------------------
 
-#include "base_process.hpp"
+#    include "base_process.hpp"
 
 //--------------------------------------------------------------------------------
 
-#define _CRT_SECURE_NO_WARNINGS
-#include <atlalloc.h>
-#include <atlconv.h>
-#include <cstdint>
-#include <psapi.h>
-#include <shlwapi.h>
-#include <string>
-#include <tlhelp32.h>
-#include <userenv.h>
-#include <windows.h>
+#    define _CRT_SECURE_NO_WARNINGS
+#    include <atlalloc.h>
+#    include <atlconv.h>
+#    include <cstdint>
+#    include <psapi.h>
+#    include <shlwapi.h>
+#    include <string>
+#    include <tlhelp32.h>
+#    include <userenv.h>
+#    include <windows.h>
 
 //--------------------------------------------------------------------------------
 
@@ -43,7 +43,7 @@ public:
     WindowsProcess& operator=(WindowsProcess&& other) noexcept = default;
 
     void setComand(
-        const std::vector<std::string>& aParameters) noexcept final override;
+        const std::vector<str::String>& aParameters) noexcept final override;
 
     /*
     \brief Create a child process with the specified parameters.
@@ -80,8 +80,8 @@ protected:
     virtual void closeHandles() noexcept = 0;
 
 private:
-    std::string mProcessName;
-    std::string mProcessArgs;
+    str::String mProcessName;
+    str::String mProcessArgs;
 
     long long getMillisecondsNow() noexcept;
 
@@ -94,8 +94,8 @@ private:
 
 } // namespace proc
 
-#undef max
-#undef min
+#    undef max
+#    undef min
 
 //--------------------------------------------------------------------------------
 

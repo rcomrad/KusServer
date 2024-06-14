@@ -20,7 +20,7 @@ mod::Populate::Populate() noexcept : ModuleBase({"restart"})
 
 //--------------------------------------------------------------------------------
 
-std::string
+str::String
 mod::Populate::doAction(const Command& aCommand) noexcept
 {
     int state = 0;
@@ -28,7 +28,7 @@ mod::Populate::doAction(const Command& aCommand) noexcept
     if (aCommand.argument == "full") state = 3;
 
     auto dumpPath = mult::DumpManager::makeSaveFile();
-    std::string res;
+    str::String res;
     if (dumpPath.has_value())
     {
         res = "No restart.";
@@ -104,14 +104,14 @@ mod::Populate::populate() noexcept
 }
 
 void
-mod::Populate::createDatabaseFromFile(std::string aFileName) noexcept
+mod::Populate::createDatabaseFromFile(str::String aFileName) noexcept
 {
     auto connection = data::ConnectionManager::getUserConnection();
 
     std::vector<data::ColumnSetting> colums;
     auto lines = file::File::getWords(aFileName);
-    lines.emplace_back(std::vector<std::string>{"TABLE", "NUN"});
-    std::string name;
+    lines.emplace_back(std::vector<str::String>{"TABLE", "NUN"});
+    str::String name;
     for (auto i : lines)
     {
         if (i[0] == "TABLE")
@@ -123,7 +123,7 @@ mod::Populate::createDatabaseFromFile(std::string aFileName) noexcept
         else
         {
             // TODO: beter
-            std::string col;
+            str::String col;
             for (int j = 1; j < i.size(); ++j) col += i[j] + " ";
             colums.emplace_back(i[0], col);
         }

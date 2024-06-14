@@ -31,7 +31,7 @@ struct PostRequest
 {
     T data;
     ManyToMany type;
-    std::unordered_map<std::string, crow::json::rvalue> leftovers;
+    std::unordered_map<str::String, crow::json::rvalue> leftovers;
 };
 
 class PostHandler
@@ -88,10 +88,11 @@ public:
     //--------------------------------------------------------------------------------
 
     static crow::json::wvalue uploadFromFile(
-        std::unordered_map<std::string, std::string>&& aHeader,
-        const std::string& aFileName) noexcept;
+        std::unordered_map<str::String, str::String>&& aHeader,
+        const str::String& aFileName) noexcept;
     static crow::json::wvalue uploadFromFileRequest(
-        const std::string& aType, const crow::request& aReq) noexcept;
+        const str::String& aType,
+        const crow::request& aReq) noexcept;
 
     template <typename T>
     static crow::json::wvalue rawDataHandler(data::RawData& aData) noexcept
@@ -100,14 +101,14 @@ public:
         if (it != aData.header.end() && it->second == "true" &&
             T::types.size() > 3)
         {
-            std::string first = T::columnNames[1];
+            str::String first = T::columnNames[1];
             first.resize(first.size() - 3);
-            std::string second = T::columnNames[2];
+            str::String second = T::columnNames[2];
             second.resize(second.size() - 3);
 
             for (size_t i = 3; i < T::types.size(); ++i)
             {
-                std::string temp = T::columnNames[i];
+                str::String temp = T::columnNames[i];
                 first.resize(first.size());
 
                 if (temp == first)
@@ -125,7 +126,7 @@ public:
 
     template <typename T>
     static crow::json::wvalue rawDataInsert(
-        const std::vector<std::vector<std::string>>& aData) noexcept
+        const std::vector<std::vector<str::String>>& aData) noexcept
     {
         // TODO: result
         data::DataArray<T> table;
@@ -137,10 +138,10 @@ public:
 
     //--------------------------------------------------------------------------------
 
-    static std::string uploadFile(
+    static str::String uploadFile(
         crow::multipart::message& aMsg,
-        const std::string& aFileKey     = "file",
-        const std::string& aFilenameKey = "filename") noexcept;
+        const str::String& aFileKey     = "file",
+        const str::String& aFilenameKey = "filename") noexcept;
 
 protected:
     template <typename T>
@@ -179,15 +180,15 @@ protected:
 private:
     static crow::json::wvalue manyToMany(
         int aID,
-        const std::string& aTableName,
+        const str::String& aTableName,
         ManyToMany& aType,
-        std::unordered_map<std::string, crow::json::rvalue>
+        std::unordered_map<str::String, crow::json::rvalue>
             aLeftovers) noexcept;
 
-    static void setRawData(std::vector<std::vector<std::string>>& aData,
+    static void setRawData(std::vector<std::vector<str::String>>& aData,
                            int aNum,
-                           const std::string& aTableName,
-                           const std::string& aColumnName) noexcept;
+                           const str::String& aTableName,
+                           const str::String& aColumnName) noexcept;
 };
 
 } // namespace post

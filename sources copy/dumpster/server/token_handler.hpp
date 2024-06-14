@@ -30,16 +30,16 @@ class TokenHandler : public mod::ModuleBase
 public:
     HOLY_TRINITY_SINGLE(TokenHandler);
 
-    static std::string generate(const data::User& aUser,
-                                const std::string& aIP) noexcept;
+    static str::String generate(const data::User& aUser,
+                                const str::String& aIP) noexcept;
     static UserDataPtr process(const crow::request& aReq) noexcept;
 
 protected:
-    std::string doAction(const Command& aCommand) noexcept override;
+    str::String doAction(const Command& aCommand) noexcept override;
 
 private:
-    std::string generateNonstatic(const data::User& aUser,
-                                  const std::string& aIP) noexcept;
+    str::String generateNonstatic(const data::User& aUser,
+                                  const str::String& aIP) noexcept;
     UserDataPtr processNonstatic(const crow::request& aReq) noexcept;
 
     //--------------------------------------------------------------------------------
@@ -57,21 +57,21 @@ private:
     int mTokenIterator;
     int mTokenCount;
     std::vector<UserData> mTokens;
-    std::unordered_map<std::string, int> mAutorisation;
+    std::unordered_map<str::String, int> mAutorisation;
 
     bool processCommandsStatic() noexcept;
     void printAutorisation() const noexcept;
 
-    UserDataPtr check(const std::string& aToken,
-                      const std::string& aURL,
-                      const std::string& aIP) noexcept;
-    UserDataPtr apply(const std::string& aToken,
-                      const std::string& aURL) noexcept;
+    UserDataPtr check(const str::String& aToken,
+                      const str::String& aURL,
+                      const str::String& aIP) noexcept;
+    UserDataPtr apply(const str::String& aToken,
+                      const str::String& aURL) noexcept;
 
     boost::optional<UserData&> getUserDataByToken(
-        const std::string& aToken) noexcept;
-    int getUserNum(const std::string& aToken) noexcept;
-    static std::string urlDedaction(const std::string& aUrl) noexcept;
+        const str::String& aToken) noexcept;
+    int getUserNum(const str::String& aToken) noexcept;
+    static str::String urlDedaction(const str::String& aUrl) noexcept;
 
     void rearrangeTokenArray() noexcept;
 };

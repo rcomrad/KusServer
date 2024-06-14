@@ -1,16 +1,16 @@
 #include "string_algorithms.hpp"
 
-std::string
-code::StringAlgorithms::normalizeName(const std::string& aName,
+str::String
+code::StringAlgorithms::normalizeName(const str::String& aName,
                                       bool aIsFirstCapital,
                                       bool aIsIdCapital) noexcept
 {
-    std::string result = aName;
+    str::String result = aName;
 
     if (aIsFirstCapital) result[0] = std::toupper(result[0]);
 
     int it = result.find('_');
-    while (it != std::string::npos)
+    while (it != str::String::npos)
     {
         result[it + 1] = std::toupper(result[it + 1]);
         result.erase(it, 1);
@@ -18,7 +18,7 @@ code::StringAlgorithms::normalizeName(const std::string& aName,
     }
 
     it = result.find("Id");
-    if (aIsIdCapital && it != std::string::npos)
+    if (aIsIdCapital && it != str::String::npos)
     {
         result[it + 1] = std::toupper(result[it + 1]);
     }

@@ -3,9 +3,10 @@
 #include "domain/date_and_time.hpp"
 #include "domain/url_wrapper.hpp"
 
+#include "core/variable_storage.hpp"
+
 #include "database/connection_manager.hpp"
 
-#include "core/variable_storage.hpp"
 #include "file_data/file.hpp"
 #include "file_data/path.hpp"
 
@@ -15,16 +16,16 @@ mod::ResultsManager::ResultsManager() noexcept : ModuleBase({"get_results"})
 {
 }
 
-std::string
+str::String
 mod::ResultsManager::doAction(const Command& aCommand) noexcept
 {
     return getResults(aCommand.argument);
 }
 
-std::string
-mod::ResultsManager::getResults(const std::string aValue) noexcept
+str::String
+mod::ResultsManager::getResults(const str::String aValue) noexcept
 {
-    std::string results;
+    str::String results;
 
     auto connection   = data::ConnectionManager::getUserConnection();
     auto com_question = connection.val.getDataArray<data::CompetitionQuestion>(
@@ -69,7 +70,7 @@ mod::ResultsManager::getResults(const std::string aValue) noexcept
         results += "\n";
     }
 
-    std::string outputName =
+    str::String outputName =
         "results" + dom::DateAndTime::getCurentTimeSafe() + ".txt";
     file::File::writeData("print", outputName, results);
 

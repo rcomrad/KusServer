@@ -49,9 +49,9 @@ union DateTime
     bool operator<(const DateTime& aOther) const noexcept;
     DateTime operator-(const DateTime& aOther) const noexcept;
 
-    str::string getTime() const noexcept;
-    str::string getDate() const noexcept;
-    str::string getAll(char aDelimiter = '_') const noexcept;
+    str::String getTime() const noexcept;
+    str::String getDate() const noexcept;
+    str::String getAll(char aDelimiter = '_') const noexcept;
 };
 
 } // namespace core

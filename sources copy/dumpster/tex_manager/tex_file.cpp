@@ -14,16 +14,16 @@ tex::TexFile::TexFile() noexcept
         file::File::getAllData(core::Path::getPathUnsafe("header.textemp"));
 }
 
-std::string
+str::String
 tex::TexFile::printToFile() noexcept
 {
     mData += "\\end{document}\n";
-    std::string name = dom::DateAndTime::getCurentTimeSafe() + ".tex";
+    str::String name = dom::DateAndTime::getCurentTimeSafe() + ".tex";
     return file::File::writeData("print", name, mData).value();
 }
 
 void
-tex::TexFile::addFile(const std::string& aFileName) noexcept
+tex::TexFile::addFile(const str::String& aFileName) noexcept
 {
     auto curFile = file::File::getLines(core::Path::getPathUnsafe(aFileName));
 
@@ -50,8 +50,8 @@ tex::TexFile::addFile(const std::string& aFileName) noexcept
     }
 }
 
-std::string
-tex::TexFile::makeFromFIle(const std::string& aFileName) noexcept
+str::String
+tex::TexFile::makeFromFIle(const str::String& aFileName) noexcept
 {
     mData += " \\begin{document}\n";
 

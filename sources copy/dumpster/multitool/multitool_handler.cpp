@@ -1,6 +1,6 @@
 #include "multitool_handler.hpp"
 
-std::string
+str::String
 mult::MultiHandler::process(const crow::request& aReq) noexcept
 {
     return "ERROR!";

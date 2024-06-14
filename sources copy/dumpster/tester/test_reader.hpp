@@ -15,14 +15,14 @@ namespace test
 class TestReader
 {
 public:
-    TestReader(const std::string& aTestPath, int aTestCount) noexcept;
+    TestReader(const str::String& aTestPath, int aTestCount) noexcept;
     TestLibMessage getTest() noexcept;
     bool hasTest() noexcept;
 
 public:
     int mTestNum;
     int mTestCount;
-    std::string mTestPath;
+    str::String mTestPath;
     std::mutex mMutex;
 };
 } // namespace test

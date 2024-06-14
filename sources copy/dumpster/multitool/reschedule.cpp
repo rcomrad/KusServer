@@ -1,16 +1,17 @@
 #include "reschedule.hpp"
 
+#include "server/request_unpacker.hpp"
+
 #include "database/connection_manager.hpp"
 
 #include "post/journal_handler.hpp"
-#include "server/request_unpacker.hpp"
 
 //--------------------------------------------------------------------------------
 
-std::string
+str::String
 mult::Reschedule::process(const crow::request& aReq) noexcept
 {
-    std::string result;
+    str::String result;
 
     crow::multipart::message msg(aReq);
     auto nameOpt = serv::RequestUnpacker::getPart(msg, "name");

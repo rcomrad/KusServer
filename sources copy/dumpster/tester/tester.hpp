@@ -32,12 +32,12 @@ public:
     void run(data::Submission&& aSubmission) noexcept;
 
     std::shared_ptr<proc::Process> prepareFile(
-        const std::string& aFileName,
-        const std::string& aOutputFileName) const noexcept;
+        const str::String& aFileName,
+        const str::String& aOutputFileName) const noexcept;
 
     void check(TestReader& aTestReader) noexcept;
 
-    std::string verdictTostring(
+    str::String verdictTostring(
         const Test::TestVerdict& aVerdict) const noexcept;
 
 private:

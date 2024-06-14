@@ -7,8 +7,9 @@ cmake_minimum_required(VERSION 3.21.3)
 include(${CMAKE_CURRENT_SOURCE_DIR}/vcpkg_path.cmake)
 set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
 
-project(KusServer)
-# project(KusSystem)
+project(KusSystem)
+
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
 #-------------------------------------------------------------------------------
 #                              Detect operating system

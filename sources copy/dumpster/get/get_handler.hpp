@@ -19,14 +19,15 @@ namespace get
 class GetHandler
 {
 public:
-    static crow::json::wvalue singlGet(const std::string& aRequest,
-                                       const std::string& aCondition) noexcept;
+    static crow::json::wvalue singlGet(const str::String& aRequest,
+                                       const str::String& aCondition) noexcept;
 
     static crow::json::wvalue multiplelGet(
-        const std::string& aRequest, const std::string& aCondition) noexcept;
+        const str::String& aRequest,
+        const str::String& aCondition) noexcept;
 
-    static crow::json::wvalue mainGet(const std::string& aRequest,
-                                      const std::string& aCondition) noexcept;
+    static crow::json::wvalue mainGet(const str::String& aRequest,
+                                      const str::String& aCondition) noexcept;
 
     template <typename T>
     static crow::json::wvalue process(
@@ -41,14 +42,14 @@ public:
 
     // TODO: better switch
     template <typename T>
-    static std::string dump() noexcept
+    static str::String dump() noexcept
     {
         auto connection = data::ConnectionManager::getUserConnection();
         return getDataAsDMP<T>();
     }
 
     template <typename T>
-    static std::string getDataAsDMP() noexcept
+    static str::String getDataAsDMP() noexcept
     {
         data::DataArray<T> table;
         {
@@ -56,7 +57,7 @@ public:
             table           = connection.val.getDataArray<T>();
         }
 
-        std::string result = table.getTableName() + "\n";
+        str::String result = table.getTableName() + "\n";
         for (auto& i : table)
         {
             result.push_back('\t');

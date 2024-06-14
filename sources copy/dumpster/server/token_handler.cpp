@@ -4,10 +4,11 @@
 
 #include "domain/date_and_time.hpp"
 
-#include "database/connection_manager.hpp"
-
 #include "core/role.hpp"
 #include "core/variable_storage.hpp"
+
+#include "database/connection_manager.hpp"
+
 #include "file_data/file.hpp"
 #include "file_data/parser.hpp"
 #include "file_data/path.hpp"
@@ -67,9 +68,9 @@ serv::TokenHandler::getInstance() noexcept
 
 //--------------------------------------------------------------------------------
 
-std::string
+str::String
 serv::TokenHandler::generate(const data::User& aUser,
-                             const std::string& aIP) noexcept
+                             const str::String& aIP) noexcept
 {
     static TokenHandler& instance = getInstance();
     return instance.generateNonstatic(aUser, aIP);
@@ -82,11 +83,11 @@ serv::TokenHandler::process(const crow::request& aReq) noexcept
     return instance.processNonstatic(aReq);
 }
 
-std::string
+str::String
 serv::TokenHandler::generateNonstatic(const data::User& aUser,
-                                      const std::string& aIP) noexcept
+                                      const str::String& aIP) noexcept
 {
-    std::string result;
+    str::String result;
 
     auto connection = data::ConnectionManager::getUserConnection();
     auto token =
@@ -136,10 +137,8 @@ serv::TokenHandler::processNonstatic(const crow::request& aReq) noexcept
 {
     serv::UserDataPtr result;
 
-    static std::unordered_set<std::string> withoutAuthentication = {
-        "/api/login", 
-        "/api/registration",
-        "/api/confirm",
+    static std::unordered_set<str::String> withoutAuthentication = {
+        "/api/login", "/api/registration", "/api/confirm",
         // "/api/get/if/competition",
         // "/api/get_question",
         // "/api/post/answer",
@@ -168,10 +167,10 @@ serv::TokenHandler::processNonstatic(const crow::request& aReq) noexcept
 
 //--------------------------------------------------------------------------------
 
-std::string
+str::String
 serv::TokenHandler::doAction(const Command& aCommand) noexcept
 {
-    std::string res = "No token command applied.";
+    str::String res = "No token command applied.";
     if (aCommand.argument == "turn_off")
     {
         res = "Tokens turned OFF!";
@@ -210,7 +209,7 @@ serv::TokenHandler::doAction(const Command& aCommand) noexcept
 void
 serv::TokenHandler::printAutorisation() const noexcept
 {
-    std::string data;
+    str::String data;
     for (auto& i : mAutorisation)
     {
         data += i.first + " " + dom::toString(i.second) + "\n";
@@ -236,7 +235,7 @@ serv::TokenHandler::printAutorisation() const noexcept
 //     return result;
 // }
 
-// std::unordered_set<std::string>
+// std::unordered_set<str::String>
 // serv::TokenHandler::getRoleName(const crow::request& aReq) noexcept
 // {
 //     return core::Role::getRoles(getRoleID(aReq));
@@ -251,9 +250,9 @@ serv::TokenHandler::printAutorisation() const noexcept
 //--------------------------------------------------------------------------------
 
 serv::UserDataPtr
-serv::TokenHandler::check(const std::string& aToken,
-                          const std::string& aURL,
-                          const std::string& aIP) noexcept
+serv::TokenHandler::check(const str::String& aToken,
+                          const str::String& aURL,
+                          const str::String& aIP) noexcept
 {
     serv::UserDataPtr result;
 
@@ -294,8 +293,8 @@ serv::TokenHandler::check(const std::string& aToken,
 }
 
 serv::UserDataPtr
-serv::TokenHandler::apply(const std::string& aToken,
-                          const std::string& aURL) noexcept
+serv::TokenHandler::apply(const str::String& aToken,
+                          const str::String& aURL) noexcept
 {
     serv::UserDataPtr result;
     auto userOpt = getUserDataByToken(aToken);
@@ -315,7 +314,7 @@ serv::TokenHandler::apply(const std::string& aToken,
 //--------------------------------------------------------------------------------
 
 boost::optional<serv::UserData&>
-serv::TokenHandler::getUserDataByToken(const std::string& aToken) noexcept
+serv::TokenHandler::getUserDataByToken(const str::String& aToken) noexcept
 {
     boost::optional<UserData&> result;
 
@@ -329,7 +328,7 @@ serv::TokenHandler::getUserDataByToken(const std::string& aToken) noexcept
 }
 
 int
-serv::TokenHandler::getUserNum(const std::string& aToken) noexcept
+serv::TokenHandler::getUserNum(const str::String& aToken) noexcept
 {
     int result = 0;
 
@@ -347,18 +346,18 @@ serv::TokenHandler::getUserNum(const std::string& aToken) noexcept
     return result;
 }
 
-std::string
-serv::TokenHandler::urlDedaction(const std::string& aUrl) noexcept
+str::String
+serv::TokenHandler::urlDedaction(const str::String& aUrl) noexcept
 {
-    std::string result = aUrl;
+    str::String result = aUrl;
     while (true)
     {
         auto num = result.rfind("/");
-        if (num == std::string::npos) break;
+        if (num == str::String::npos) break;
         else
         {
             if (std::isdigit(result[num + 1]) ||
-                result.find("=", num) != std::string::npos)
+                result.find("=", num) != str::String::npos)
             {
                 result.resize(num);
             }

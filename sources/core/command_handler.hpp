@@ -19,10 +19,10 @@ class CommandHandler
 public:
     HOLY_TRINITY_SINGLE(CommandHandler);
     static void scanCommand() noexcept;
-    static void pushCommand(Command&& aCommand) noexcept;
+    static Command& requestCommandCell() noexcept;
     static void handlCommand() noexcept;
 
-    static const str::string CALLBACK_VOLUME_COMMAND_HANDLER;
+    inline static const str::String CALLBACK_VOLUME_COMMAND_HANDLER = "command";
 
 private:
     CommandHandler() noexcept;

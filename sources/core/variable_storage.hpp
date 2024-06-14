@@ -23,7 +23,7 @@
 namespace core
 {
 
-using VariableSettings = std::unordered_map<str::string, FPIntGlobVarToInt>;
+using VariableSettings = std::unordered_map<str::String, FPIntGlobVarToInt>;
 
 class VariableStorage
 {
@@ -42,7 +42,7 @@ private:
     static CallbackRegister mCommandHandlerCallback;
 
     std::vector<IntGlobVar> mVariables;
-    std::unordered_map<std::string, int> mVariableNames;
+    std::unordered_map<str::String, int> mVariableNames;
 
     VariableStorage() noexcept;
     static VariableStorage& getInstance() noexcept;

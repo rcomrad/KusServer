@@ -3,7 +3,7 @@
 #include "domain/date_and_time.hpp"
 
 #include "file_data/path.hpp"
-// std::string get::CompetitionHandler::mProblemPath =
+// str::String get::CompetitionHandler::mProblemPath =
 //     dom::Path::getInstance().getPath("problem").value();
 
 std::unordered_map<int, boost::posix_time::ptime>
@@ -59,8 +59,8 @@ get::CompetitionHandler::process(const std::unordered_set<int>& aColumn,
     // std::vector<data::Table<data::Submission>> submissions;
 
     // {
-    //     std::vector<std::string> empty;
-    //     std::vector<std::string> probV = {"3", "4", " 5"};
+    //     std::vector<str::String> empty;
+    //     std::vector<str::String> probV = {"3", "4", " 5"};
     //     auto connection = data::ConnectionManager::getUserConnection();
 
     //     competition = connection.val.select<data::Competition>(

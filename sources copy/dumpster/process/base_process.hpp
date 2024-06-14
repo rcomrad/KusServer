@@ -35,7 +35,7 @@ public:
     BaseProcess& operator=(BaseProcess&& other) noexcept = default;
 
     virtual void setComand(
-        const std::vector<std::string>& aParameters) noexcept = 0;
+        const std::vector<str::String>& aParameters) noexcept = 0;
 
     /*
     \brief Create a child process with the specified parameters.
@@ -65,8 +65,8 @@ public:
 
     virtual std::optional<Limits> runWithLimits() noexcept = 0;
 
-    virtual void writeData(const std::string& aMessage) noexcept = 0;
-    virtual void readData(std::string& aMessage) noexcept        = 0;
+    virtual void writeData(const str::String& aMessage) noexcept = 0;
+    virtual void readData(str::String& aMessage) noexcept        = 0;
 
 protected:
     uint64_t mTimeLimit;

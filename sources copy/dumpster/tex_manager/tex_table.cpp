@@ -4,7 +4,7 @@
 
 #include "file_data/parser.hpp"
 
-std::unordered_map<tex::ColumnType, std::string> tex::TexTable::gPosition = {
+std::unordered_map<tex::ColumnType, str::String> tex::TexTable::gPosition = {
     {tex::ColumnType::Nun,            "" },
     {tex::ColumnType::Left,           "l"},
     {tex::ColumnType::Centr,          "c"},
@@ -16,7 +16,7 @@ std::unordered_map<tex::ColumnType, std::string> tex::TexTable::gPosition = {
 
 tex::TexTable::TexTable(
     const std::vector<Column>& aSettings,
-    std::unordered_map<std::string, std::vector<std::string>>*
+    std::unordered_map<str::String, std::vector<str::String>>*
         aVariables) noexcept
     : TexBase(aVariables), mSize(0), mCurColumn(1)
 {
@@ -41,8 +41,8 @@ tex::TexTable::TexTable(
 }
 
 tex::TexTable::TexTable(
-    const std::vector<std::string>& aData,
-    std::unordered_map<std::string, std::vector<std::string>>*
+    const std::vector<str::String>& aData,
+    std::unordered_map<str::String, std::vector<str::String>>*
         aVariables) noexcept
     : TexBase(aVariables), mSize(0), mCurColumn(1)
 {
@@ -50,7 +50,7 @@ tex::TexTable::TexTable(
 }
 
 void
-tex::TexTable::fromRawData(const std::vector<std::string>& aData) noexcept
+tex::TexTable::fromRawData(const std::vector<str::String>& aData) noexcept
 {
     mData += "\\begin{tabular}{ " + aData[1] + "}\n";
     std::replace(mData.begin(), mData.end(), 'R', 'p');
@@ -92,14 +92,14 @@ tex::TexTable::fromRawData(const std::vector<std::string>& aData) noexcept
     // mData += "\\end{tabular}\n";
 }
 
-std::string
+str::String
 tex::TexTable::get() const noexcept
 {
     return mData;
 }
 
 void
-tex::TexTable::add(const std::string& aData) noexcept
+tex::TexTable::add(const str::String& aData) noexcept
 {
     mData += aData;
 }

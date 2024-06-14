@@ -5,7 +5,7 @@
 #include "file_data/file.hpp"
 #include "get/get_router.hpp"
 
-std::unordered_map<std::string, std::string> get::RequestParser::mActualNames =
+std::unordered_map<str::String, str::String> get::RequestParser::mActualNames =
     {
         {"methodist", "user"},
         {"teacher",   "user"},
@@ -19,9 +19,9 @@ get::RequestParser::DataRequest::operator[](int num) const noexcept
     return tables[num];
 }
 
-std::string
+str::String
 get::RequestParser::DataRequest::getFullStatement(
-    const std::string& aCondition) const noexcept
+    const str::String& aCondition) const noexcept
 {
     // TODO: auto schema
     return rowStatement +
@@ -31,7 +31,7 @@ get::RequestParser::DataRequest::getFullStatement(
 }
 
 get::RequestParser::DataRequest
-get::RequestParser::process(const std::string& aRequest) noexcept
+get::RequestParser::process(const str::String& aRequest) noexcept
 {
     RequestParser instance;
 
@@ -58,10 +58,10 @@ get::RequestParser::process(const std::string& aRequest) noexcept
     return result;
 }
 
-std::string
+str::String
 get::RequestParser::getTables() const noexcept
 {
-    std::string result = "journal." + mTables[0] + " ";
+    str::String result = "journal." + mTables[0] + " ";
     for (size_t i = 1; i < mTables.size(); ++i)
     {
         result += "inner join journal." + mTables[i] + " on journal." +
@@ -71,10 +71,10 @@ get::RequestParser::getTables() const noexcept
     return result;
 }
 
-std::string
+str::String
 get::RequestParser::getColumns() const noexcept
 {
-    std::string result;
+    str::String result;
 
     for (size_t i = 0; i < mColumnNames.size(); ++i)
     {
@@ -90,7 +90,7 @@ get::RequestParser::getColumns() const noexcept
 }
 
 void
-get::RequestParser::parse(const std::string& aRequest) noexcept
+get::RequestParser::parse(const str::String& aRequest) noexcept
 {
     int curPrev     = 0;
     int last        = 0;
@@ -157,7 +157,7 @@ get::RequestParser::arrangeActualNames() noexcept
 void
 get::RequestParser::arrangeColumns() noexcept
 {
-    std::vector<std::unordered_set<std::string>> uniqueNames;
+    std::vector<std::unordered_set<str::String>> uniqueNames;
     for (size_t i = 0; i < mColumnNames.size(); ++i)
     {
         auto& column = uniqueNames.emplace_back(mColumnNames[i].begin(),
@@ -169,7 +169,7 @@ get::RequestParser::arrangeColumns() noexcept
         else if (column.empty() || column.count("*"))
         {
             auto& temp = get::GetRouter::columnNamesRouter(mTables[i]);
-            column = std::unordered_set<std::string>(temp.begin(), temp.end());
+            column = std::unordered_set<str::String>(temp.begin(), temp.end());
         }
     }
 
@@ -205,7 +205,7 @@ get::RequestParser::arrangeColumns() noexcept
 void
 get::RequestParser::pushTable(int iter,
                               int& last,
-                              const std::string& aRequest,
+                              const str::String& aRequest,
                               int aOffset) noexcept
 {
     if (iter - last > 1)
@@ -223,7 +223,7 @@ get::RequestParser::pushTable(int iter,
 void
 get::RequestParser::pushName(int iter,
                              int& last,
-                             const std::string& aRequest,
+                             const str::String& aRequest,
                              int curPrev) noexcept
 {
     if (iter - last >= 1)

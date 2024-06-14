@@ -2,9 +2,10 @@
 
 #include "domain/url_wrapper.hpp"
 
+#include "core/variable_storage.hpp"
+
 #include "database/connection_manager.hpp"
 
-#include "core/variable_storage.hpp"
 #include "file_data/file.hpp"
 #include "file_data/parser.hpp"
 #include "file_data/path.hpp"
@@ -16,14 +17,14 @@ mod::CompetitionManager::CompetitionManager() noexcept
 {
 }
 
-std::string
+str::String
 mod::CompetitionManager::doAction(const Command& aComman) noexcept
 {
     return userComp(aComman.argument);
 }
 
-std::string
-mod::CompetitionManager::userComp(const std::string aValue) noexcept
+str::String
+mod::CompetitionManager::userComp(const str::String aValue) noexcept
 {
     auto connection = data::ConnectionManager::getUserConnection();
 
@@ -40,7 +41,7 @@ mod::CompetitionManager::userComp(const std::string aValue) noexcept
     auto questions = connection.val.getDataArray<data::Question>();
     for (auto& q : questions)
     {
-        if (q.nickname.find(questionPref) != std::string::npos)
+        if (q.nickname.find(questionPref) != str::String::npos)
         {
             data::CompetitionQuestion c;
             c.competitionID = comp.id;

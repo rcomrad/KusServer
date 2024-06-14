@@ -19,7 +19,7 @@ post::JournalHandler::process(
 {
     auto& journal = aReq.data;
 
-    std::string temp = journal.id ? journal.schedule : "";
+    str::String temp = journal.id ? journal.schedule : "";
     {
         auto connection = data::ConnectionManager::getUserConnection();
         connection.val.write(journal);
@@ -114,7 +114,7 @@ post::JournalHandler::makeSchedule(data::JournalTable& aJournal) noexcept
         j++;
     }
 
-    // std::set<std::string> holidaysSet;
+    // std::set<str::String> holidaysSet;
     // for (auto& i : holidays)
     // {
     //     holidaysSet.insert(i.dateVal);
@@ -154,8 +154,8 @@ post::JournalHandler::makeSchedule(data::JournalTable& aJournal) noexcept
 
 void
 post::JournalHandler::remakeSchedule(data::JournalTable& aJournal,
-                                     const std::string& fromID,
-                                     const std::string& toVal) noexcept
+                                     const str::String& fromID,
+                                     const str::String& toVal) noexcept
 {
     auto connection = data::ConnectionManager::getUserConnection();
 

@@ -10,7 +10,7 @@
 namespace core
 {
 
-typedef int (*FPIntGlobVarToInt)(const str::string&);
+typedef int (*FPIntGlobVarToInt)(const str::String&);
 
 struct IntGlobVar
 {
