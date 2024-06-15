@@ -49,26 +49,11 @@ core::CallbackStorage::getNonstatic(const char* aVolumeName,
 {
     void* result = nullptr;
 
-    auto it1 = mMap.find(aVolumeName);
-    if (it1 != mMap.end())
+    auto callback = m_map.get(aVolumeName, aNodeName);
+    // TODO: default callback
+    if (callback)
     {
-        auto it2 = it1->second.find(aNodeName);
-        if (it2 != it1->second.end())
-        {
-            result = it2->second;
-            LOG_INFO("Return callback node (", "volume:", aVolumeName,
-                     "node:", aNodeName, ")");
-        }
-        else
-        {
-            // TODO: default callback
-            LOG_ERROR("No such callback node (", "volume:", aVolumeName,
-                      "node:", aNodeName, ")");
-        }
-    }
-    else
-    {
-        LOG_ERROR("No such callback volume (", aVolumeName, ")");
+        result = callback.getValue();
     }
 
     return result;
@@ -76,29 +61,36 @@ core::CallbackStorage::getNonstatic(const char* aVolumeName,
 
 //------------------------------------------------------------------------------
 
-const std::unordered_map<str::String, void*>&
-core::CallbackStorage::getVolumeCallbacks(const char* aVolumeName) noexcept
+// const decltype(*m_map.get(NUN_NAME).getPtr())&
+// core::CallbackStorage::getVolumeCallbacks(
+//     const char* aVolumeName) const noexcept
+// {
+//     return getInstance().getVolumeCallbacksNonstatic(aVolumeName);
+// }
+
+const core::CallbackStorage::VolumeType&
+core::CallbackStorage::getVolumeCallbacks(
+    const char* aVolumeName) noexcept
 {
     return getInstance().getVolumeCallbacksNonstatic(aVolumeName);
 }
 
-const std::unordered_map<str::String, void*>&
+const core::CallbackStorage::VolumeType&
 core::CallbackStorage::getVolumeCallbacksNonstatic(
-    const char* aVolumeName) noexcept
+    const char* aVolumeName) const noexcept
 {
-    auto it = mMap.find(aVolumeName);
-    if (it != mMap.end() && !aVolumeName.empty())
+    auto volume = m_map.get(aVolumeName);
+    if (volume)
     {
-        return it->second;
         LOG_INFO("Return callback volume (", aVolumeName, ")");
     }
     else
     {
         LOG_ERROR("No such callback volume (", aVolumeName, ")");
-        it = mMap.find(NUN_NAME);
-        return it->second;
+        volume = m_map.get(NUN_NAME);
     }
-    return {};
+
+    return *volume.getPtr();
 }
 
 //------------------------------------------------------------------------------

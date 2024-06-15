@@ -4,7 +4,8 @@
 
 #include <unordered_map>
 
-#include "hash_map_by_str.hpp"
+#include "kus_standard/double_map_by_str.hpp"
+
 #include "holy_trinity.hpp"
 
 //--------------------------------------------------------------------------------
@@ -13,6 +14,13 @@ namespace core
 {
 class CallbackStorage
 {
+private:
+    inline static const char STORAGE_NAME[] = "CallbacStorage";
+    inline static const char NUN_NAME[]     = "NUN";
+    kstd::DoubleMapByStr<STORAGE_NAME, 200, void*> m_map;
+
+    using VolumeType = decltype(*m_map.get(NUN_NAME).getPtr());
+
 public:
     HOLY_TRINITY_SINGLE(CallbackStorage);
 
@@ -22,8 +30,8 @@ public:
 
     static void* get(const char* aVolumeName, const char* aNodeName) noexcept;
 
-    static const std::unordered_map<std::string_view, void*>&
-    getVolumeCallbacks(const char* aVolumeName) noexcept;
+    static const VolumeType& getVolumeCallbacks(
+        const char* aVolumeName) noexcept;
 
 private:
     CallbackStorage() noexcept;
@@ -38,16 +46,8 @@ private:
     void* getNonstatic(const char* aVolumeName,
                        const char* aNodeName) const noexcept;
 
-    const std::unordered_map<std::string_view, void*>&
-    getVolumeCallbacksNonstatic(const char* aVolumeName) noexcept;
-
-    //----------------------------------------------------------------------------
-
-    inline static const char VOLUME_NAME[] = "CallbackVolumeStorage";
-    inline static const char NODE_NAME[]   = "CallbackNodeStorage";
-    inline static const char NUN_NAME[]    = "NUN";
-
-    HashMapByStr<VOLUME_NAME, 200, HashMapByStr<NODE_NAME, 200, void*>> m_map;
+    const VolumeType& getVolumeCallbacksNonstatic(
+        const char* aVolumeName) const noexcept;
 };
 } // namespace core
 

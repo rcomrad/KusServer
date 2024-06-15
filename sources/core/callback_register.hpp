@@ -4,8 +4,6 @@
 
 #include <vector>
 
-#include "string/kus_string.hpp"
-
 #include "holy_trinity.hpp"
 
 //--------------------------------------------------------------------------------

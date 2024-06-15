@@ -5,17 +5,19 @@
 #include <string.h>
 #include <string_view>
 
+#include "core/holy_trinity.hpp"
+
 //--------------------------------------------------------------------------------
 
-namespace core
+namespace kstd
 {
 template <const char* Name, size_t Size>
-struct CharArrayBuffer
+struct CharBuffer
 {
 public:
-    HOLY_TRINITY_SINGLE(CharArrayBuffer);
+    HOLY_TRINITY_SINGLE(CharBuffer);
 
-    CharArrayBuffer() noexcept : m_last_element_num(0)
+    CharBuffer() noexcept : m_last_element_num(0)
     {
     }
 
@@ -41,6 +43,6 @@ private:
     char m_storage[Size];
     size_t m_last_element_num;
 };
-} // namespace core
+} // namespace str
 
 //--------------------------------------------------------------------------------

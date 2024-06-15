@@ -8,7 +8,7 @@
 
 //--------------------------------------------------------------------------------
 
-namespace str
+namespace kstd
 {
 
 struct String : public std::string

@@ -1,8 +1,7 @@
 #pragma once
 
 #include <stdio.h>
-
-#include "string/kus_string.hpp"
+#include <utility>
 
 #include "holy_trinity.hpp"
 
@@ -34,7 +33,7 @@ public:
 
     static void setLogLevel(LogLevel aLogLevel) noexcept;
     static void setOutputType(OutputType aOutputType,
-                              const str::String& aFileName = "") noexcept;
+                              const char* aFileName = "") noexcept;
 
     //--------------------------------------------------------------------------
 
@@ -71,7 +70,7 @@ private:
     //--------------------------------------------------------------------------
 
     void setOutputTypeNonstatic(OutputType aOutputType,
-                                const str::String& aFileName) noexcept;
+                                const char* aFileName) noexcept;
 
     //--------------------------------------------------------------------------
 
@@ -128,7 +127,6 @@ private:
 
     void writeArg(int arg) noexcept;
     void writeArg(double arg) noexcept;
-    void writeArg(const str::String& arg) noexcept;
     void writeArg(const char* arg) noexcept;
 
     void writeEnd() noexcept;

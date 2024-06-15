@@ -5,8 +5,6 @@
 #include <mutex>
 #include <queue>
 
-#include "string/kus_string.hpp"
-
 #include "command.hpp"
 #include "holy_trinity.hpp"
 
@@ -22,7 +20,7 @@ public:
     static Command& requestCommandCell() noexcept;
     static void handlCommand() noexcept;
 
-    inline static const str::String CALLBACK_VOLUME_COMMAND_HANDLER = "command";
+    inline static const char CALLBACK_VOLUME_COMMAND_HANDLER[] = "command";
 
 private:
     CommandHandler() noexcept;

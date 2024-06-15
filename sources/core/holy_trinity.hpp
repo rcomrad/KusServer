@@ -33,3 +33,10 @@
     NAME& operator=(const NAME&) noexcept  = delete;  \
     NAME(NAME&& other) noexcept            = delete;  \
     NAME& operator=(NAME&& other) noexcept = delete;
+
+// TODO:
+#define HOLY_TRINITY_NO_RELEASE_COPY(NAME)            \
+    NAME(const NAME&) noexcept             = delete;  \
+    NAME& operator=(const NAME&) noexcept  = delete;  \
+    NAME(NAME&& other) noexcept            = default; \
+    NAME& operator=(NAME&& other) noexcept = default;

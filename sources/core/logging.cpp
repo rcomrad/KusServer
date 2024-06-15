@@ -1,5 +1,6 @@
 #include "logging.hpp"
 
+#include <cstdio>
 #include <cstring>
 
 //------------------------------------------------------------------------------
@@ -12,16 +13,16 @@ core::Logging::setLogLevel(core::Logging::LogLevel aOutputType) noexcept
 
 void
 core::Logging::setOutputType(core::Logging::OutputType aOutputType,
-                             const str::String& aFileName) noexcept
+                             const char* aFileName) noexcept
 {
     getInstance().setOutputTypeNonstatic(aOutputType, aFileName);
 }
 
 void
 core::Logging::setOutputTypeNonstatic(core::Logging::OutputType aOutputType,
-                                      const str::String& aFileName) noexcept
+                                      const char* aFileName) noexcept
 {
-    if (aOutputType == OutputType::FILE && aFileName.empty())
+    if (OutputType::FILE == aOutputType && '\0' == aFileName[0])
     {
         LOG_ERROR("The name of the log buffer file is not specified, \
             no changes are applied");
@@ -40,7 +41,7 @@ core::Logging::setOutputTypeNonstatic(core::Logging::OutputType aOutputType,
             LOG_INFO("Log buffer changed to stderr");
             break;
         case OutputType::FILE:
-            mStream       = std::fopen(aFileName.c_str(), "w");
+            mStream       = std::fopen(aFileName, "w");
             mIsFileOutput = true;
             LOG_INFO("Log buffer changed to ", aFileName, " file");
             break;
@@ -146,12 +147,6 @@ void
 core::Logging::writeArg(double arg) noexcept
 {
     std::fprintf(mStream, "%lf ", arg);
-}
-
-void
-core::Logging::writeArg(const str::String& arg) noexcept
-{
-    std::fprintf(mStream, "%s ", arg.c_str());
 }
 
 void
