@@ -1,27 +1,21 @@
-#--------------------------------------------------------------------------------
+file(GLOB
+    module_folders
+    CONFIGURE_DEPENDS    
+    "${CMAKE_CURRENT_LIST_DIR}/*"
+)
 
-macro(get_sources SOURCE_LIST DIR)
+FOREACH(module ${module_folders})
+    IF(NOT IS_DIRECTORY ${module})
+        continue()
+    ENDIF()
 
-    set(FOLDER_NAMES 
-
-    code 
-    core 
-    database 
-    domain 
-    file_data 
-    get 
-    module 
-    multitool 
-    post 
-    process 
-    router 
-    server 
-    tester 
-    tex_manager
-    
+    file(GLOB
+        module_src
+        CONFIGURE_DEPENDS    
+        "${module}/*.cpp"
+        "${module}/*.hpp"
     )
 
-    add_sources(${SOURCE_LIST} "${DIR}/sources" "${FOLDER_NAMES}")
-endmacro()
-
-#--------------------------------------------------------------------------------
+    target_sources(${EXE_NAME} PRIVATE ${module_src})
+    target_include_directories(${EXE_NAME} PRIVATE "sources/")
+ENDFOREACH()

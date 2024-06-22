@@ -1,23 +1,26 @@
-#ifndef SERVER_HPP
-#define SERVER_HPP
+#pragma once
 
-#include "crow/middlewares/cors.h"
+//--------------------------------------------------------------------------------
 
-#include "crow.h"
-#include "middleware.hpp"
+#include "core/holy_trinity.hpp"
+#include "core/module.hpp"
+
+//--------------------------------------------------------------------------------
 
 namespace serv
 {
 class Server
 {
 public:
-    Server() noexcept;
-    static const serv::Middleware::context& getContext(
-        const crow::request& aReq) noexcept;
+    static void start() noexcept;
 
 private:
-    static crow::App<crow::CORSHandler, serv::Middleware> mApp;
+    HOLY_TRINITY_NOCOPY(Server);
+    Server() noexcept;
+    Server& getInstace() noexcept;
+
+    static void registerVariables() noexcept;
 };
 } // namespace serv
 
-#endif // !SERVER_HPP
+//--------------------------------------------------------------------------------

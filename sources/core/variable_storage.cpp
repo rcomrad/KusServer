@@ -1,17 +1,27 @@
 #include "variable_storage.hpp"
 
-#include <thread>
-#include <utility>
+#include "core/logging.hpp"
 
-#include "file_data/file.hpp"
-#include "file_data/parser.hpp"
-#include "file_data/path.hpp"
+#include "file_system/file_read.hpp"
+#include "file_system/path.hpp"
+
+#include "string/parser.hpp"
+#include "string/separators.hpp"
+
+#include "command_handler.hpp"
 
 //--------------------------------------------------------------------------------
 
-core::VariableStorage::VariableStorage() noexcept : mMutexFlag(false)
+const int core::VariableStorage::CORRUPTED_VALUE = -100;
+
+core::CallbackRegister core::VariableStorage::mCommandHandlerCallback(
+    {core::CommandHandler::CALLBACK_VOLUME_COMMAND_HANDLER, "set",
+     (void*)core::VariableStorage::setCommandHandler});
+
+//--------------------------------------------------------------------------------
+
+core::VariableStorage::VariableStorage() noexcept
 {
-    reloadSettings();
 }
 
 core::VariableStorage&
@@ -21,156 +31,123 @@ core::VariableStorage::getInstance() noexcept
     return instance;
 }
 
+//--------------------------------------------------------------------------------
+
+void
+core::VariableStorage::set(int aNumber, int aValue) noexcept
+{
+    getInstance().setNonstatic(aNumber, aValue);
+}
+
+int
+core::VariableStorage::get(int aNumber) noexcept
+{
+    return getInstance().getNonstatic(aNumber);
+}
+
+void
+core::VariableStorage::setNonstatic(int aNumber, int aValue) noexcept
+{
+    mVariables[aNumber].mValue = aValue;
+}
+
+int
+core::VariableStorage::getNonstatic(int aNumber) noexcept
+{
+    return mVariables[aNumber].mValue;
+}
+
+//--------------------------------------------------------------------------------
+
 void
 core::VariableStorage::reloadSettings() noexcept
 {
-    auto settings =
-        file::Parser::getVariablesFromFile("config", "main_settings.conf");
+    getInstance().reloadSettingsNonstatic();
+}
+
+void
+core::VariableStorage::reloadSettingsNonstatic() noexcept
+{
+    auto settings = fs::FileRead::getWordsMap(
+        fs::ReadFromStoredFile("main_settings.cfg"), str::Separator::variable);
     for (auto& var : settings)
     {
-        if (var.name == "additional_path")
+        auto it = mVariableNames.find(var.first);
+        if (it != mVariableNames.end())
         {
-            file::Path::addFoldersFrom(var.value);
-            continue;
+            int num                = it->second;
+            mVariables[num].mValue = mVariables[num].mParser(var.second);
+            LOG_INFO("Variable", var.first, "set with value", var.second);
         }
-
-        switch (var.value.getType())
+        else
         {
-            case file::Value::Type::Int:
-                mInts[var.name] = var.value;
-                break;
-            case file::Value::Type::Bool:
-                mFlags[var.name] = var.value;
-                break;
-            case file::Value::Type::String:
-                mWords[var.name] = std::string(var.value);
-                break;
+            LOG_ERROR("No variable with that name have been registered (",
+                      var.first, ")");
         }
     }
 }
 
 //--------------------------------------------------------------------------------
 
-bool
-core::VariableStorage::isLocked() noexcept
+int
+core::VariableStorage::addSettings(
+    const VariableSettings& aVarSettings) noexcept
 {
-    static VariableStorage& instance = getInstance();
-    return instance.mMutexFlag;
+    return getInstance().addSettingsNonstatic(aVarSettings);
 }
 
-void
-core::VariableStorage::beginLock(std::chrono::milliseconds aSleepValue) noexcept
+int
+core::VariableStorage::addSettingsNonstatic(
+    const VariableSettings& aVarSettings) noexcept
 {
-    static VariableStorage& instance = getInstance();
-    instance.mMutexFlag              = true;
-    std::this_thread::sleep_for(aSleepValue);
-}
+    int start_num = mVariables.size();
+    mVariables.resize(start_num + aVarSettings.size());
 
-void
-core::VariableStorage::endLock() noexcept
-{
-    static VariableStorage& instance = getInstance();
-    instance.mMutexFlag              = false;
-}
-
-//--------------------------------------------------------------------------------
-
-const bool&
-core::VariableStorage::touchFlag(const std::string& aName,
-                                 bool aDefaultValu) noexcept
-{
-    static VariableStorage& instance = getInstance();
-    auto it                          = instance.mFlags.find(aName);
-    if (it != instance.mFlags.end())
+    int num = start_num;
+    for (auto& i : aVarSettings)
     {
-        return it->second;
+        mVariables[num].mParser = i.func;
+        mVariableNames[i.name] = num;
+        ++num;
     }
-    return instance.mFlags.insert({aName, aDefaultValu}).first->second;
-}
 
-const int&
-core::VariableStorage::touchInt(const std::string& aName,
-                                int aDefaultValue) noexcept
-{
-    static VariableStorage& instance = getInstance();
-    auto it                          = instance.mInts.find(aName);
-    if (it != instance.mInts.end())
-    {
-        return it->second;
-    }
-    return instance.mInts.insert({aName, aDefaultValue}).first->second;
-}
-
-const std::string&
-core::VariableStorage::touchWord(const std::string& aName,
-                                 const std::string& aDefaultValue) noexcept
-{
-    static VariableStorage& instance = getInstance();
-    auto it                          = instance.mWords.find(aName);
-    if (it != instance.mWords.end())
-    {
-        return it->second;
-    }
-    return instance.mWords.insert({aName, aDefaultValue}).first->second;
+    return start_num;
 }
 
 //--------------------------------------------------------------------------------
 
 void
-core::VariableStorage::setVariable(
-    const std::string& aName,
-    bool aValue,
-    std::chrono::milliseconds aSleepValue) noexcept
+core::VariableStorage::setCommandHandler(const Command& aCommand) noexcept
 {
-    static VariableStorage& instance = getInstance();
-    if (instance.mMutexFlag == false)
-    {
-        instance.beginLock(aSleepValue);
-        instance.mFlags[aName] = aValue;
-        instance.endLock();
-    }
-    else
-    {
-        instance.mFlags[aName] = aValue;
-    }
+    getInstance().setCommandHandlerNonstatic(aCommand);
 }
 
 void
-core::VariableStorage::setVariable(
-    const std::string& aName,
-    int aValue,
-    std::chrono::milliseconds aSleepValue) noexcept
+core::VariableStorage::setCommandHandlerNonstatic(
+    const Command& aCommand) noexcept
 {
-    static VariableStorage& instance = getInstance();
-    if (instance.mMutexFlag == false)
+    for (const auto& i : aCommand.variables)
     {
-        instance.beginLock(aSleepValue);
-        instance.mInts[aName] = aValue;
-        instance.endLock();
-    }
-    else
-    {
-        instance.mInts[aName] = aValue;
+        // TODO: in separate function
+        auto it = mVariableNames.find(i.first);
+        if (it != mVariableNames.end())
+        {
+            int num = it->second;
+            int val = mVariables[num].mParser(i.second);
+            if (CORRUPTED_VALUE != val)
+            {
+                mVariables[num].mValue = val;
+                LOG_INFO("Set variable ", i.first, "with value", i.second);
+            }
+            else
+            {
+                LOG_ERROR("Set command for variable", i.first,
+                          "failed: corrupted variable value", i.second);
+            }
+        }
+        else
+        {
+            LOG_ERROR("Set command failed: no such variable", i.first);
+        }
     }
 }
-
-// void
-// core::VariableStorage::setVariable(
-//     const std::string& aName,
-//     const std::string& aValue,
-//     std::chrono::milliseconds aSleepValue) noexcept
-// {
-//     static VariableStorage& instance = getInstance();
-//     if (instance.mMutexFlag == false)
-//     {
-//         instance.beginLock(aSleepValue);
-//         instance.mWords[aName] = aValue;
-//         instance.endLock();
-//     }
-//     else
-//     {
-//         instance.mWords[aName] = aValue;
-//     }
-// }
-
-//--------------------------------------------------------------------------------

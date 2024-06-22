@@ -107,6 +107,7 @@
         "memory_resource": "cpp",
         "numbers": "cpp",
         "semaphore": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "stdfloat": "cpp"
     }
 }

@@ -1,38 +1,15 @@
 #include "core.hpp"
 
-#include "code/generate_code.hpp"
-
-#include "file_data/path.hpp"
-
-#include "module/module_handler.hpp"
-
-#include "server/server.hpp"
-
-#include "tester/tester.hpp"
-
-#include "role.hpp"
-#include "submission_queue.hpp"
+#include "callback_storage.hpp"
+#include "command_handler.hpp"
+#include "logging.hpp"
+#include "module.hpp"
 #include "variable_storage.hpp"
 
 //--------------------------------------------------------------------------------
 
-route::RouterNode core::Core::mRouterNode(
-    "module", {"kill"}, []() { return (void*)&core::Core::doAction; });
-
-//--------------------------------------------------------------------------------
-
-core::Core::Core() noexcept : mKillFlag(false)
+core::Core::Core() noexcept
 {
-    code::CodeGenerator cg;
-    cg.makeAll();
-    cg.generate();
-
-    core::Role::getInstance();
-
-    file::Path::addContentFrom(file::Path::getPathUnsafe("resource"),
-                               file::Path::FileType::File,
-                               file::Path::LevelType::Recursive);
-    file::Path::addContentFrom(file::Path::getPathUnsafe("scripts"));
 }
 
 core::Core&
@@ -47,76 +24,50 @@ core::Core::getInstance() noexcept
 void
 core::Core::setup() noexcept
 {
-    auto restartState = VariableStorage::touchWord("restart_on_start", "nun");
-    if (restartState != "nun")
-    {
-        mod::ModuleHandler::applyCommand("restart", restartState);
-    }
+    getInstance().setupNonstatic();
 }
+
+void
+core::Core::setupNonstatic() noexcept
+{
+    Logging::setLogLevel(Logging::LogLevel::INFO);
+    Logging::setOutputType(Logging::OutputType::FILE, "kuslog.txt");
+
+    VariableStorage::addSettings({
+        {"running_flag", nullptr}
+    });
+    Module::setupModules();
+    VariableStorage::reloadSettings();
+    VariableStorage::set(0, 1);
+
+    auto modules =
+        CallbackStorage::getVolumeCallbacks(Module::CALLBACK_VOLUME_START);
+    for (const auto& i : modules)
+    {
+        const auto& module_name = i.first;
+        Module::FPModuleActions module_callback =
+            (Module::FPModuleActions)i.second;
+        mApps[module_name] = std::move(std::thread(module_callback));
+    }
+    mApps["command_scanner"] =
+        std::move(std::thread(CommandHandler::scanCommand));
+}
+
+//--------------------------------------------------------------------------------
 
 void
 core::Core::run() noexcept
 {
-    start();
-    while (!mKillFlag)
+    getInstance().runNonstatic();
+}
+
+void
+core::Core::runNonstatic() noexcept
+{
+    while (VariableStorage::get(0))
     {
-        mod::ModuleHandler::run();
+        CommandHandler::handlCommand();
     }
 }
 
 //--------------------------------------------------------------------------------
-
-std::string
-core::Core::doAction(const modul::Command& aCommand) noexcept
-{
-    return getInstance().doActionNonstatic(aCommand);
-}
-
-std::string
-core::Core::doActionNonstatic(const modul::Command& aCommand) noexcept
-{
-    std::string result;
-
-    if (aCommand.value == "kill")
-    {
-        result    = "You're monster!";
-        mKillFlag = true;
-    }
-
-    return result;
-}
-
-//--------------------------------------------------------------------------------
-
-void
-core::Core::start() noexcept
-{
-    mApps["server"] = std::move(std::thread(&Core::serverThread, this));
-    if (VariableStorage::touchFlag("submission_auto_check"))
-        mApps["tester"] = std::move(std::thread(&Core::testerThread, this));
-}
-
-void
-core::Core::serverThread() noexcept
-{
-    // TODO: without thread
-    serv::Server app;
-    while (!mKillFlag) continue;
-}
-
-void
-core::Core::testerThread() noexcept
-{
-    auto& sub = SubmissionQueue::getInstance();
-    while (!mKillFlag)
-    {
-        if (!sub.isEmpty())
-        {
-            dom::writeInfo("start_checking");
-            test::Tester tester(
-                VariableStorage::touchInt("tester_thread_count"));
-            tester.run(sub.get());
-            dom::writeInfo("end_checking");
-        }
-    }
-}

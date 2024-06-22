@@ -1,83 +1,66 @@
-#ifndef VARIABLE_STORAGE_HPP
-#define VARIABLE_STORAGE_HPP
+#pragma once
 
 //--------------------------------------------------------------------------------
 
-#include <boost/optional.hpp>
-
-#include <chrono>
-#include <mutex>
-#include <optional>
-#include <string>
+#include <atomic>
 #include <unordered_map>
+#include <vector>
 
-#include "domain/holy_trinity.hpp"
-#include "domain/metaprogramming.hpp"
+#include "string/kus_string.hpp"
 
-using namespace std::chrono_literals;
+#include "callback_register.hpp"
+#include "command.hpp"
+#include "holy_trinity.hpp"
+#include "int_glob_var.hpp"
 
+//--------------------------------------------------------------------------------
+/*
+                                Class contruct
+
+*/
 //--------------------------------------------------------------------------------
 
 namespace core
 {
+
+struct Variable
+{
+    str::string name;
+    FPIntGlobVarToInt func;
+};
+using VariableSettings = std::vector<Variable>;
+
 class VariableStorage
 {
 public:
     HOLY_TRINITY_SINGLE(VariableStorage);
 
-    static bool isLocked() noexcept;
-    static void beginLock(
-        std::chrono::milliseconds aSleepValue = 200ms) noexcept;
-    static void endLock() noexcept;
+    static int addSettings(const VariableSettings& aVarSettings) noexcept;
+    static void reloadSettings() noexcept;
 
-    static const bool& touchFlag(const std::string& aName,
-                                 bool aDefaultValue = false) noexcept;
-    static const int& touchInt(const std::string& aName,
-                               int aDefaultValue = 0) noexcept;
-    static const std::string& touchWord(
-        const std::string& aName,
-        const std::string& aDefaultValue = "") noexcept;
+    static void set(int aNumber, int aValue) noexcept;
+    static int get(int aNumber) noexcept;
 
-    static void setVariable(
-        const std::string& aName,
-        bool aValue,
-        std::chrono::milliseconds aSleepValue = 200ms) noexcept;
-    static void setVariable(
-        const std::string& aName,
-        int aValue,
-        std::chrono::milliseconds aSleepValue = 200ms) noexcept;
-
-    template <typename S, typename = dom::enableIf<dom::isString<S>>>
-    static void setVariable(
-        const std::string& aName,
-        S&& aValue,
-        std::chrono::milliseconds aSleepValue = 200ms) noexcept
-    {
-        static VariableStorage& instance = getInstance();
-        if (instance.mMutexFlag == false)
-        {
-            instance.beginLock(aSleepValue);
-            instance.mWords[aName] = std::forward<S>(aValue);
-            instance.endLock();
-        }
-        else
-        {
-            instance.mWords[aName] = std::forward<S>(aValue);
-        }
-    }
+    static const int CORRUPTED_VALUE;
 
 private:
-    bool mMutexFlag;
-    std::unordered_map<std::string, bool> mFlags;
-    std::unordered_map<std::string, int> mInts;
-    std::unordered_map<std::string, std::string> mWords;
+    static CallbackRegister mCommandHandlerCallback;
+
+    std::vector<IntGlobVar> mVariables;
+    std::unordered_map<std::string, int> mVariableNames;
 
     VariableStorage() noexcept;
     static VariableStorage& getInstance() noexcept;
-    void reloadSettings() noexcept;
+
+    int addSettingsNonstatic(const VariableSettings& aVarSet) noexcept;
+    void reloadSettingsNonstatic() noexcept;
+
+    void setNonstatic(int aNumber, int aValue) noexcept;
+    int getNonstatic(int aNumber) noexcept;
+
+    static void setCommandHandler(const Command& aCommand) noexcept;
+    void setCommandHandlerNonstatic(const Command& aCommand) noexcept;
 };
 } // namespace core
 
 //--------------------------------------------------------------------------------
-
-#endif // !VARIABLE_STORAGE_HPP

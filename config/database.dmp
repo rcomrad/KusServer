@@ -20,6 +20,8 @@ form
 	form;Автоматическая рассылка;mail;mailer;3
 	form;Загрузка базы данных;dump;admin;1
 	form;Выполнить команду;command;admin;1
+	form;Регистрация на профиль Информатика;info;admin;1
+	form;Регистрация на профиль Программирование;proga;admin;1
 END
 
 field
@@ -31,6 +33,9 @@ field
 	FILE;.dmp;Файл дампа;dump
 	INPUT;.;Команда;command
 	INPUT;.;Значение;value
+	INPUT;.;Логин;login
+	INPUT;.;Пароль;password
+	INPUT;.;Адрес электронной почты;email
 END
 
 field_form
@@ -44,4 +49,10 @@ field_form
 	7;2
 	7;3
 	8;3
+	9;4
+	10;4
+	11;4
+	9;5
+	10;5
+	11;5
 END

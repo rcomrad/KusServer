@@ -1,19 +1,15 @@
-#ifndef CORE_HPP
-#define CORE_HPP
+#pragma once
 
 //--------------------------------------------------------------------------------
 
-#include <string>
 #include <thread>
 #include <unordered_map>
 
-#include "domain/holy_trinity.hpp"
+#include "string/kus_string.hpp"
 
-#include "module/command.hpp"
+#include "holy_trinity.hpp"
 
-#include "router/router_node.hpp"
-
-//--------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 namespace core
 {
@@ -21,36 +17,21 @@ class Core
 {
 public:
     HOLY_TRINITY_SINGLE(Core);
+
+    static void setup() noexcept;
+    static void run() noexcept;
+
+private:
+    Core() noexcept;
     static Core& getInstance() noexcept;
 
-    //----------------------------------------------------------------------------
+    void setupNonstatic() noexcept;
+    void runNonstatic() noexcept;
 
-    void setup() noexcept;
-    void run() noexcept;
+    void scanCommand() noexcept;
 
-    //----------------------------------------------------------------------------
-
-public:
-    static std::string doAction(const modul::Command& aCommand) noexcept;
-
-private:
-    std::string doActionNonstatic(const modul::Command& aCommand) noexcept;
-
-    //----------------------------------------------------------------------------
-
-private:
-    static route::RouterNode mRouterNode;
-    bool mKillFlag;
-    std::unordered_map<std::string, std::thread> mApps;
-
-    Core() noexcept;
-
-    void start() noexcept;
-    void serverThread() noexcept;
-    void testerThread() noexcept;
+    std::unordered_map<str::string, std::thread> mApps;
 };
 } // namespace core
 
-//--------------------------------------------------------------------------------
-
-#endif // !CORE_HPP
+//------------------------------------------------------------------------------
