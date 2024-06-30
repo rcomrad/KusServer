@@ -16,21 +16,15 @@ namespace core
 class Core
 {
 public:
-    HOLY_TRINITY_SINGLE(Core);
+    HOLY_TRINITY_SINGLETON(Core);
 
-    static void setup() noexcept;
-    static void run() noexcept;
+    SINGL_VOID_METHOD(setup, ());
+    SINGL_VOID_METHOD(run, ());
+    SINGL_RET_METHOD(bool, isRunning, ());
 
 private:
-    Core() noexcept;
-    static Core& getInstance() noexcept;
-
-    void setupNonstatic() noexcept;
-    void runNonstatic() noexcept;
-
+    Core() noexcept = default;
     void scanCommand() noexcept;
-
-    std::unordered_map<str::string, std::thread> mApps;
 };
 } // namespace core
 

@@ -5,13 +5,6 @@
 #include "callback_storage.hpp"
 #include "logging.hpp"
 
-//--------------------------------------------------------------------------------
-
-const str::string core::CommandHandler::CALLBACK_VOLUME_COMMAND_HANDLER =
-    "command";
-
-//--------------------------------------------------------------------------------
-
 void
 core::CommandHandler::scanCommand() noexcept
 {
@@ -26,41 +19,12 @@ core::CommandHandler::scanCommand() noexcept
     }
 }
 
-//--------------------------------------------------------------------------------
-
-core::CommandHandler::CommandHandler() noexcept
-{
-}
-
-core::CommandHandler&
-core::CommandHandler::getInstance() noexcept
-{
-    static CommandHandler instance;
-    return instance;
-}
-
-//--------------------------------------------------------------------------------
-
-void
-core::CommandHandler::pushCommand(Command&& aCommand) noexcept
-{
-    getInstance().pushCommandNonstatic(std::move(aCommand));
-}
-
 void
 core::CommandHandler::pushCommandNonstatic(Command&& aCommand) noexcept
 {
     queue_lock.lock();
     mCommandQueue.push(std::move(aCommand));
     queue_lock.unlock();
-}
-
-//--------------------------------------------------------------------------------
-
-void
-core::CommandHandler::handlCommand() noexcept
-{
-    getInstance().handlCommandNonstatic();
 }
 
 void
@@ -80,7 +44,7 @@ core::CommandHandler::handlCommandNonstatic() noexcept
         CallbackStorage::get(CALLBACK_VOLUME_COMMAND_HANDLER, command.value);
     if (nullptr != temp)
     {
-        ((void (*)(const Command& aCommand))temp)(command);
+        ((CommandFPTR)temp)(command);
         LOG_INFO("Command applyed: ", command.value);
     }
     else

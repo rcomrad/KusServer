@@ -17,5 +17,4 @@ FOREACH(module ${module_folders})
     )
 
     target_sources(${EXE_NAME} PRIVATE ${module_src})
-    target_include_directories(${EXE_NAME} PRIVATE "sources/")
 ENDFOREACH()

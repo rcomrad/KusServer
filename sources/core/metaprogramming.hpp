@@ -32,6 +32,9 @@ using enableIf = typename std::enable_if_t<Arg::value>;
 template <typename T1, typename T2>
 using enableIfSame = typename std::enable_if_t<isSameWeak<T1, T2>::value>;
 
+template <typename T1, typename T2>
+using enableIfNotSame = typename std::enable_if_t<!isSameWeak<T1, T2>::value>;
+
 template <typename Base, typename Derived>
 using enableIfDerivedOf =
     typename std::enable_if_t<core::isDerivedOf<Base, Derived>::value>;

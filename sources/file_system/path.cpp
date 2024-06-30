@@ -57,13 +57,6 @@ fs::Path::Path() noexcept
     // }
 }
 
-fs::Path&
-fs::Path::getInstance() noexcept
-{
-    static Path instance;
-    return instance;
-}
-
 //--------------------------------------------------------------------------------
 //                              Get file path static
 //--------------------------------------------------------------------------------

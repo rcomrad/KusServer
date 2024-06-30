@@ -7,6 +7,7 @@
 #include "string/kus_string.hpp"
 
 #include "holy_trinity.hpp"
+#include "variable_storage.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -15,24 +16,24 @@ namespace core
 class Module
 {
 public:
-    typedef void (*FPModuleActions)();
+    Module(const char* a_name) noexcept;
+    virtual ~Module() = default;
 
-    HOLY_TRINITY_SINGLE(Module);
+    virtual void initialize() noexcept;
+    virtual void run() noexcept;
+    virtual void terminate() noexcept;
+    virtual void variableSetup(VariableInfoArray& a_set_array) noexcept;
 
-    struct ModuleSettings
-    {
-        FPModuleActions mModuleLoppFunc;
-        FPModuleActions mVariableRegister;
-    };
+    int getVatiable(int a_variable_num) noexcept;
 
-    static const str::string CALLBACK_VOLUME_SETUP;
-    static const str::string CALLBACK_VOLUME_START;
-
-    static void setupModules() noexcept;
+protected:
+    void registerVariables() noexcept;
 
 private:
-    std::unordered_map<str::string, ModuleSettings> mModules;
+    const char* m_name;
+    int m_variable_offset;
 };
+
 } // namespace core
 
 //--------------------------------------------------------------------------------

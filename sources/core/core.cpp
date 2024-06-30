@@ -1,31 +1,10 @@
 #include "core.hpp"
 
-#include "callback_storage.hpp"
 #include "command_handler.hpp"
 #include "logging.hpp"
-#include "module.hpp"
+#include "module_registry.hpp"
 #include "variable_storage.hpp"
-
-//--------------------------------------------------------------------------------
-
-core::Core::Core() noexcept
-{
-}
-
-core::Core&
-core::Core::getInstance() noexcept
-{
-    static Core instance;
-    return instance;
-}
-
-//--------------------------------------------------------------------------------
-
-void
-core::Core::setup() noexcept
-{
-    getInstance().setupNonstatic();
-}
+#include "yield.hpp"
 
 void
 core::Core::setupNonstatic() noexcept
@@ -33,41 +12,27 @@ core::Core::setupNonstatic() noexcept
     Logging::setLogLevel(Logging::LogLevel::INFO);
     Logging::setOutputType(Logging::OutputType::FILE, "kuslog.txt");
 
-    VariableStorage::addSettings({
+    VariableStorage::addVariableInfo(VariableInfoArray{
         {"running_flag", nullptr}
     });
-    Module::setupModules();
-    VariableStorage::reloadSettings();
+    VariableStorage::reloadValuesFromFile();
     VariableStorage::set(0, 1);
-
-    auto modules =
-        CallbackStorage::getVolumeCallbacks(Module::CALLBACK_VOLUME_START);
-    for (const auto& i : modules)
-    {
-        const auto& module_name = i.first;
-        Module::FPModuleActions module_callback =
-            (Module::FPModuleActions)i.second;
-        mApps[module_name] = std::move(std::thread(module_callback));
-    }
-    mApps["command_scanner"] =
-        std::move(std::thread(CommandHandler::scanCommand));
-}
-
-//--------------------------------------------------------------------------------
-
-void
-core::Core::run() noexcept
-{
-    getInstance().runNonstatic();
 }
 
 void
 core::Core::runNonstatic() noexcept
 {
-    while (VariableStorage::get(0))
+    ModuleRegistry::initModules();
+    ModuleRegistry::runModules();
+    while (isRunning())
     {
         CommandHandler::handlCommand();
+        Yield::large();
     }
 }
 
-//--------------------------------------------------------------------------------
+bool
+core::Core::isRunningNonstatic() noexcept
+{
+    return VariableStorage::get(0);
+}

@@ -20,16 +20,16 @@ public:
     }
 
     static void addVariable(
-        const std::vector<std::string>& a_name,
+        const std::vector<const char*>& a_name,
         std::unordered_map<std::string, int>& a_var_dict) noexcept
     {
-        core::VariableSettings var;
+        core::VariableInfoArray var;
         for (auto& i : a_name)
         {
             var.emplace_back(i, testToString);
         }
 
-        auto offset = core::VariableStorage::addSettings(var);
+        auto offset = core::VariableStorage::addVariableInfo(var);
         for (auto& i : a_name)
         {
             a_var_dict[i] = offset++;
@@ -39,7 +39,7 @@ public:
 
 TEST_F(UTestVariable, simpl_set_get)
 {
-    const std::string var_name = "test";
+    const char var_name[] = "test";
     std::unordered_map<std::string, int> var_dict;
     addVariable({var_name}, var_dict);
 

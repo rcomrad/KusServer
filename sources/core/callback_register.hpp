@@ -1,35 +1,35 @@
-#pragma once
+// #pragma once
 
-//--------------------------------------------------------------------------------
+// //--------------------------------------------------------------------------------
 
-#include <vector>
+// #include <vector>
 
-#include "string/kus_string.hpp"
+// #include "string/kus_string.hpp"
 
-#include "holy_trinity.hpp"
+// #include "holy_trinity.hpp"
 
-//--------------------------------------------------------------------------------
+// //--------------------------------------------------------------------------------
 
-namespace core
-{
-class CallbackRegister
-{
-public:
-    HOLY_TRINITY_SINGLE(CallbackRegister);
+// namespace core
+// {
+// class CallbackRegister
+// {
+// public:
+//     HOLY_TRINITY_SINGLE(CallbackRegister);
 
-    struct RegisterNode
-    {
-        const str::string& mVolumeName;
-        const str::string& mNodeName;
-        void* mFunc;
-    };
+//     struct RegisterNode
+//     {
+//         const str::string& mVolumeName;
+//         const str::string& mNodeName;
+//         void* mFunc;
+//     };
 
-    CallbackRegister(const RegisterNode& aNode) noexcept;
-    CallbackRegister(const std::vector<RegisterNode>& aNodeList) noexcept;
+//     CallbackRegister(const RegisterNode& aNode) noexcept;
+//     CallbackRegister(const std::vector<RegisterNode>& aNodeList) noexcept;
 
-private:
-    void registrate(const RegisterNode& aNode) noexcept;
-};
-} // namespace core
+// private:
+//     void registrate(const RegisterNode& aNode) noexcept;
+// };
+// } // namespace core
 
-//--------------------------------------------------------------------------------
+// //--------------------------------------------------------------------------------

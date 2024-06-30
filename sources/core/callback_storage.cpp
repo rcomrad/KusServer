@@ -9,23 +9,6 @@ core::CallbackStorage::CallbackStorage() noexcept
     mMap[""];
 }
 
-core::CallbackStorage&
-core::CallbackStorage::getInstance() noexcept
-{
-    static CallbackStorage instance;
-    return instance;
-}
-
-//------------------------------------------------------------------------------
-
-void
-core::CallbackStorage::add(const str::string& aVolumeName,
-                           const str::string& aNodeName,
-                           void* aFunc) noexcept
-{
-    getInstance().addNonstatic(aVolumeName, aNodeName, aFunc);
-}
-
 void
 core::CallbackStorage::addNonstatic(const str::string& aVolumeName,
                                     const str::string& aNodeName,
@@ -34,18 +17,9 @@ core::CallbackStorage::addNonstatic(const str::string& aVolumeName,
     mMap[aVolumeName][aNodeName] = aFunc;
 }
 
-//------------------------------------------------------------------------------
-
-void*
-core::CallbackStorage::get(const str::string& aVolumeName,
-                           const str::string& aNodeName) noexcept
-{
-    return getInstance().getNonstatic(aVolumeName, aNodeName);
-}
-
 void*
 core::CallbackStorage::getNonstatic(const str::string& aVolumeName,
-                                    const str::string& aNodeName) const noexcept
+                                    const str::string& aNodeName) noexcept
 {
     void* result = nullptr;
 
@@ -74,16 +48,7 @@ core::CallbackStorage::getNonstatic(const str::string& aVolumeName,
     return result;
 }
 
-//------------------------------------------------------------------------------
-
-const std::unordered_map<str::string, void*>&
-core::CallbackStorage::getVolumeCallbacks(
-    const str::string& aVolumeName) noexcept
-{
-    return getInstance().getVolumeCallbacksNonstatic(aVolumeName);
-}
-
-const std::unordered_map<str::string, void*>&
+core::CallbackStorage::VolumeDict
 core::CallbackStorage::getVolumeCallbacksNonstatic(
     const str::string& aVolumeName) noexcept
 {

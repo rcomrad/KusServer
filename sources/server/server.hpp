@@ -7,20 +7,27 @@
 
 //--------------------------------------------------------------------------------
 
+enum ServerVariables
+{
+    TOKEN_STATUS_VAR
+};
+
 namespace serv
 {
-class Server
+class Server : public core::Module
 {
 public:
-    static void start() noexcept;
+    HOLY_TRINITY_SINGLETON(Server);
+    ~Server() override = default;
+
+    void run() noexcept override;
+    void variableSetup(
+        core::VariableInfoArray& a_var_set_array) noexcept override;
 
 private:
-    HOLY_TRINITY_NOCOPY(Server);
     Server() noexcept;
-    Server& getInstace() noexcept;
-
-    static void registerVariables() noexcept;
 };
+
 } // namespace serv
 
 //--------------------------------------------------------------------------------

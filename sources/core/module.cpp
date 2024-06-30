@@ -1,29 +1,43 @@
 #include "module.hpp"
 
-#include "file_system/file_read.hpp"
+#include "module_registry.hpp"
 
-#include "callback_storage.hpp"
-
-const str::string core::Module::CALLBACK_VOLUME_SETUP = "module_setup";
-const str::string core::Module::CALLBACK_VOLUME_START = "module_start";
+core::Module::Module(const char* a_name) noexcept : m_name(a_name)
+{
+    ModuleRegistry::addModule(this);
+}
 
 void
-core::Module::setupModules() noexcept
+core::Module::initialize() noexcept
 {
-    auto moduleList =
-        fs::FileRead::getWordsSet(fs::ReadFromStoredFile("module_list.cfg"));
+    registerVariables();
+}
 
-    auto setupFuncs =
-        core::CallbackStorage::getVolumeCallbacks(CALLBACK_VOLUME_SETUP);
+void
+core::Module::run() noexcept
+{
+}
 
-    for (auto& i : setupFuncs)
-    {
-        if (moduleList.count(i.first))
-        {
-            auto settings = ((ModuleSettings(*)())i.second)();
-            settings.mVariableRegister();
-            CallbackStorage::add(CALLBACK_VOLUME_START, i.first,
-                                 (void*)settings.mModuleLoppFunc);
-        }
-    }
+void
+core::Module::terminate() noexcept
+{
+}
+
+void
+core::Module::variableSetup(VariableInfoArray& a_set_array) noexcept
+{
+}
+
+int
+core::Module::getVatiable(int a_variable_num) noexcept
+{
+    return core::VariableStorage::get(m_variable_offset + a_variable_num);
+}
+
+void
+core::Module::registerVariables() noexcept
+{
+    VariableInfoArray var;
+    variableSetup(var);
+    m_variable_offset = core::VariableStorage::addVariableInfo(var);
 }

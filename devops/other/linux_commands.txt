@@ -1,3 +1,9 @@
+sudo apt-get install virtualbox-guest-x11
+sudo VBoxClient --clipboard
+sudo apt install openssh-server
+
+
+
 ls -a
 ls -s
 la

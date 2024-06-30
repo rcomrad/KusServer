@@ -4,7 +4,7 @@
 
 #include <string>
 
-#include "core/pair.hpp"
+#include "core/types/pair.hpp"
 
 namespace str
 {

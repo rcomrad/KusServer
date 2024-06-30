@@ -83,10 +83,9 @@ private:
 
     //----------------------------------------------------------------------------
 
-    HOLY_TRINITY_SINGLE(Path);
+    HOLY_TRINITY_SINGLETON(Path);
 
     Path() noexcept;
-    static Path& getInstance() noexcept;
 
     //----------------------------------------------------------------------------
 

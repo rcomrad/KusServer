@@ -1,6 +1,8 @@
 /bin
 /build
-/.vscode
+
+/.vscode/settings.json
+/.vscode/browse.vc.db
 
 **.pdb
 **.obj

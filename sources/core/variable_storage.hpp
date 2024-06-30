@@ -3,15 +3,13 @@
 //--------------------------------------------------------------------------------
 
 #include <atomic>
+#include <string_view>
 #include <unordered_map>
 #include <vector>
 
-#include "string/kus_string.hpp"
+#include "command_register.hpp"
 
-#include "callback_register.hpp"
-#include "command.hpp"
 #include "holy_trinity.hpp"
-#include "int_glob_var.hpp"
 
 //--------------------------------------------------------------------------------
 /*
@@ -23,43 +21,46 @@
 namespace core
 {
 
-struct Variable
+typedef int (*FPIntGlobVarToInt)(const str::string&);
+
+struct VariableInfo
 {
-    str::string name;
+    const char* name;
     FPIntGlobVarToInt func;
 };
-using VariableSettings = std::vector<Variable>;
+using VariableInfoArray = std::vector<VariableInfo>;
 
-class VariableStorage
+class VariableStorage : public CommandRegister
 {
 public:
-    HOLY_TRINITY_SINGLE(VariableStorage);
+    HOLY_TRINITY_SINGLETON(VariableStorage);
 
-    static int addSettings(const VariableSettings& aVarSettings) noexcept;
-    static void reloadSettings() noexcept;
+    SINGL_RET_METHOD(int,
+                     addVariableInfo,
+                     (const VariableInfoArray& aVarSettings));
+    SINGL_VOID_METHOD(reloadValuesFromFile, ());
 
-    static void set(int aNumber, int aValue) noexcept;
-    static int get(int aNumber) noexcept;
+    SINGL_VOID_METHOD(set, (int aNumber, int aValue));
+    SINGL_RET_METHOD(int, get, (int aNumber));
 
     static const int CORRUPTED_VALUE;
 
 private:
-    static CallbackRegister mCommandHandlerCallback;
+    struct Variable
+    {
+        std::atomic<int> value   = 0;
+        FPIntGlobVarToInt parser = nullptr;
 
-    std::vector<IntGlobVar> mVariables;
-    std::unordered_map<std::string, int> mVariableNames;
+        // Variable& operator=(constVariable& other) noexcept;
+        Variable() noexcept = default;
+        Variable(const Variable& other) noexcept;
+    };
+
+    std::vector<Variable> m_variables;
+    std::unordered_map<std::string_view, int> m_name_to_var_dict;
 
     VariableStorage() noexcept;
-    static VariableStorage& getInstance() noexcept;
-
-    int addSettingsNonstatic(const VariableSettings& aVarSet) noexcept;
-    void reloadSettingsNonstatic() noexcept;
-
-    void setNonstatic(int aNumber, int aValue) noexcept;
-    int getNonstatic(int aNumber) noexcept;
-
-    static void setCommandHandler(const Command& aCommand) noexcept;
-    void setCommandHandlerNonstatic(const Command& aCommand) noexcept;
+    COMMAND_METHOD_NONSTATIC(setCommandHandler);
 };
 } // namespace core
 

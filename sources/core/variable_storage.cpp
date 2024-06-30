@@ -8,75 +8,75 @@
 #include "string/parser.hpp"
 #include "string/separators.hpp"
 
-#include "command_handler.hpp"
-
 //--------------------------------------------------------------------------------
 
 const int core::VariableStorage::CORRUPTED_VALUE = -100;
 
-core::CallbackRegister core::VariableStorage::mCommandHandlerCallback(
-    {core::CommandHandler::CALLBACK_VOLUME_COMMAND_HANDLER, "set",
-     (void*)core::VariableStorage::setCommandHandler});
-
-//--------------------------------------------------------------------------------
-
 core::VariableStorage::VariableStorage() noexcept
 {
+    registerCommand("set", setCommandHandler);
 }
 
-core::VariableStorage&
-core::VariableStorage::getInstance() noexcept
+// core::VariableStorage::Variable&
+// core::VariableStorage::Variable::operator=(const Variable& other) noexcept
+// {
+//     value  = int(other.value);
+//     parser = other.parser;
+//     return *this;
+// }
+
+core::VariableStorage::Variable::Variable(const Variable& other) noexcept
 {
-    static VariableStorage instance;
-    return instance;
+    value  = int(other.value);
+    parser = other.parser;
 }
 
 //--------------------------------------------------------------------------------
 
 void
-core::VariableStorage::set(int aNumber, int aValue) noexcept
+core::VariableStorage::setNonstatic(int a_number, int a_value) noexcept
 {
-    getInstance().setNonstatic(aNumber, aValue);
+    m_variables[a_number].value = a_value;
 }
 
 int
-core::VariableStorage::get(int aNumber) noexcept
+core::VariableStorage::getNonstatic(int a_number) noexcept
 {
-    return getInstance().getNonstatic(aNumber);
-}
-
-void
-core::VariableStorage::setNonstatic(int aNumber, int aValue) noexcept
-{
-    mVariables[aNumber].mValue = aValue;
-}
-
-int
-core::VariableStorage::getNonstatic(int aNumber) noexcept
-{
-    return mVariables[aNumber].mValue;
+    return m_variables[a_number].value;
 }
 
 //--------------------------------------------------------------------------------
 
-void
-core::VariableStorage::reloadSettings() noexcept
+int
+core::VariableStorage::addVariableInfoNonstatic(
+    const VariableInfoArray& aVarSettings) noexcept
 {
-    getInstance().reloadSettingsNonstatic();
+    int start_num = m_variables.size();
+    m_variables.resize(start_num + aVarSettings.size());
+
+    int num = start_num;
+    for (auto& i : aVarSettings)
+    {
+        m_variables[num].parser    = i.func;
+        m_name_to_var_dict[i.name] = num;
+        ++num;
+    }
+
+    return start_num;
 }
 
 void
-core::VariableStorage::reloadSettingsNonstatic() noexcept
+core::VariableStorage::reloadValuesFromFileNonstatic() noexcept
 {
     auto settings = fs::FileRead::getWordsMap(
         fs::ReadFromStoredFile("main_settings.cfg"), str::Separator::variable);
     for (auto& var : settings)
     {
-        auto it = mVariableNames.find(var.first);
-        if (it != mVariableNames.end())
+        auto it = m_name_to_var_dict.find(var.first);
+        if (it != m_name_to_var_dict.end())
         {
             int num                = it->second;
-            mVariables[num].mValue = mVariables[num].mParser(var.second);
+            m_variables[num].value = m_variables[num].parser(var.second);
             LOG_INFO("Variable", var.first, "set with value", var.second);
         }
         else
@@ -89,39 +89,6 @@ core::VariableStorage::reloadSettingsNonstatic() noexcept
 
 //--------------------------------------------------------------------------------
 
-int
-core::VariableStorage::addSettings(
-    const VariableSettings& aVarSettings) noexcept
-{
-    return getInstance().addSettingsNonstatic(aVarSettings);
-}
-
-int
-core::VariableStorage::addSettingsNonstatic(
-    const VariableSettings& aVarSettings) noexcept
-{
-    int start_num = mVariables.size();
-    mVariables.resize(start_num + aVarSettings.size());
-
-    int num = start_num;
-    for (auto& i : aVarSettings)
-    {
-        mVariables[num].mParser = i.func;
-        mVariableNames[i.name] = num;
-        ++num;
-    }
-
-    return start_num;
-}
-
-//--------------------------------------------------------------------------------
-
-void
-core::VariableStorage::setCommandHandler(const Command& aCommand) noexcept
-{
-    getInstance().setCommandHandlerNonstatic(aCommand);
-}
-
 void
 core::VariableStorage::setCommandHandlerNonstatic(
     const Command& aCommand) noexcept
@@ -129,14 +96,14 @@ core::VariableStorage::setCommandHandlerNonstatic(
     for (const auto& i : aCommand.variables)
     {
         // TODO: in separate function
-        auto it = mVariableNames.find(i.first);
-        if (it != mVariableNames.end())
+        auto it = m_name_to_var_dict.find(i.first);
+        if (it != m_name_to_var_dict.end())
         {
             int num = it->second;
-            int val = mVariables[num].mParser(i.second);
+            int val = m_variables[num].parser(i.second);
             if (CORRUPTED_VALUE != val)
             {
-                mVariables[num].mValue = val;
+                m_variables[num].value = val;
                 LOG_INFO("Set variable ", i.first, "with value", i.second);
             }
             else

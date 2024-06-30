@@ -14,7 +14,7 @@ namespace core
 class Logging
 {
 public:
-    HOLY_TRINITY_SINGLE(Logging);
+    HOLY_TRINITY_SINGLETON(Logging);
 
     enum class LogLevel
     {
@@ -33,27 +33,36 @@ public:
     };
 
     static void setLogLevel(LogLevel aLogLevel) noexcept;
-    static void setOutputType(OutputType aOutputType,
-                              const str::string& aFileName = "") noexcept;
+    SINGL_VOID_METHOD(setOutputType,
+                      (OutputType aOutputType, const str::string& aFileName));
 
     //--------------------------------------------------------------------------
 
     template <typename... Args>
-    static void writeInfo(Args&&... args) noexcept
+    void writeInfo(Args&&... args) noexcept
     {
-        getInstance().writeInfoNonstatic(std::forward<Args>(args)...);
+        if (mLogLevel == LogLevel::INFO)
+        {
+            write("info", std::forward<Args>(args)...);
+        }
     }
 
     template <typename... Args>
-    static void writeWarning(Args&&... args) noexcept
+    void writeWarning(Args&&... args) noexcept
     {
-        getInstance().writeWarningNonstatic(std::forward<Args>(args)...);
+        if (mLogLevel <= LogLevel::WARNING)
+        {
+            write("WARN", std::forward<Args>(args)...);
+        }
     }
 
     template <typename... Args>
-    static void writeError(Args&&... args) noexcept
+    void writeError(Args&&... args) noexcept
     {
-        getInstance().writeErrorNonstatic(std::forward<Args>(args)...);
+        if (mLogLevel <= LogLevel::ERROR)
+        {
+            write("ERROR!", std::forward<Args>(args)...);
+        }
     }
 
 private:
@@ -66,41 +75,6 @@ private:
     Logging() noexcept;
     ~Logging();
     void clear() noexcept;
-    static Logging& getInstance() noexcept;
-
-    //--------------------------------------------------------------------------
-
-    void setOutputTypeNonstatic(OutputType aOutputType,
-                                const str::string& aFileName) noexcept;
-
-    //--------------------------------------------------------------------------
-
-    template <typename... Args>
-    void writeInfoNonstatic(Args&&... args) noexcept
-    {
-        if (mLogLevel == LogLevel::INFO)
-        {
-            write("info", std::forward<Args>(args)...);
-        }
-    }
-
-    template <typename... Args>
-    void writeWarningNonstatic(Args&&... args) noexcept
-    {
-        if (mLogLevel <= LogLevel::WARNING)
-        {
-            write("WARN", std::forward<Args>(args)...);
-        }
-    }
-
-    template <typename... Args>
-    void writeErrorNonstatic(Args&&... args) noexcept
-    {
-        if (mLogLevel <= LogLevel::ERROR)
-        {
-            write("ERROR!", std::forward<Args>(args)...);
-        }
-    }
 
     //--------------------------------------------------------------------------
 
@@ -137,9 +111,9 @@ private:
 };
 
 // clang-format off
-#define LOG_INFO(...)     core::Logging::writeInfo    (__FILE__, __LINE__, __func__, __VA_ARGS__)
-#define LOG_WARNING(...)  core::Logging::writeWarning (__FILE__, __LINE__, __func__, __VA_ARGS__)
-#define LOG_ERROR(...)    core::Logging::writeError   (__FILE__, __LINE__, __func__, __VA_ARGS__)
+#define LOG_INFO(...)     core::Logging::getInstance().writeInfo    (__FILE__, __LINE__, __func__, __VA_ARGS__)
+#define LOG_WARNING(...)  core::Logging::getInstance().writeWarning (__FILE__, __LINE__, __func__, __VA_ARGS__)
+#define LOG_ERROR(...)    core::Logging::getInstance().writeError   (__FILE__, __LINE__, __func__, __VA_ARGS__)
 // clang-format on
 
 } // namespace core

@@ -10,28 +10,20 @@
 
 namespace serv
 {
-enum ServerVariables
-{
-    TOKEN_STATUS_VAR,
-    STATUS_VAR_END
-};
 
-enum TokenStatus
-{
-    NUN,
-    TURN_OFF,
-    TURN_ON,
-    MEMORY,
-    PRINT
-};
-
-class ServerVariableHandlers
+class Token
 {
 public:
-    static int getTokenStatus(const str::string& aVar) noexcept;
+    enum Status
+    {
+        NUN,
+        TURN_OFF,
+        TURN_ON,
+        MEMORY,
+        PRINT
+    };
 
-private:
-    HOLY_TRINITY_NO_OBJECT(ServerVariableHandlers);
+    static int getTokenStatus(const str::string& aVar) noexcept;
 };
 
 } // namespace serv

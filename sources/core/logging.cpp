@@ -11,13 +11,6 @@ core::Logging::setLogLevel(core::Logging::LogLevel aOutputType) noexcept
 }
 
 void
-core::Logging::setOutputType(core::Logging::OutputType aOutputType,
-                             const str::string& aFileName) noexcept
-{
-    getInstance().setOutputTypeNonstatic(aOutputType, aFileName);
-}
-
-void
 core::Logging::setOutputTypeNonstatic(core::Logging::OutputType aOutputType,
                                       const str::string& aFileName) noexcept
 {
@@ -87,13 +80,6 @@ core::Logging::clear() noexcept
         mStream       = nullptr;
         mIsFileOutput = false;
     }
-}
-
-core::Logging&
-core::Logging::getInstance() noexcept
-{
-    static Logging instance;
-    return instance;
 }
 
 //------------------------------------------------------------------------------

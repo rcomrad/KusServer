@@ -14,36 +14,29 @@ namespace core
 {
 class CallbackStorage
 {
+private:
+    using VolumeDict = const std::unordered_map<str::string, void*>&;
+
 public:
-    HOLY_TRINITY_SINGLE(CallbackStorage);
+    HOLY_TRINITY_SINGLETON(CallbackStorage);
 
-    static void add(const str::string& aVolumeName,
-                    const str::string& aNodeName,
-                    void* aFunc) noexcept;
+    SINGL_VOID_METHOD(add,
+                      (const str::string& aVolumeName,
+                       const str::string& aNodeName,
+                       void* aFunc));
 
-    static void* get(const str::string& aVolumeName,
-                     const str::string& aNodeName) noexcept;
+    // TODO: const
+    SINGL_RET_METHOD(void*,
+                     get,
+                     (const str::string& aVolumeName,
+                      const str::string& aNodeName));
 
-    static const std::unordered_map<str::string, void*>& getVolumeCallbacks(
-        const str::string& aVolumeName) noexcept;
+    SINGL_RET_METHOD(VolumeDict,
+                     getVolumeCallbacks,
+                     (const str::string& aVolumeName));
 
 private:
     CallbackStorage() noexcept;
-    static CallbackStorage& getInstance() noexcept;
-
-    //----------------------------------------------------------------------------
-
-    void addNonstatic(const str::string& aVolumeName,
-                      const str::string& aNodeName,
-                      void* aFunc) noexcept;
-
-    void* getNonstatic(const str::string& aVolumeName,
-                       const str::string& aNodeName) const noexcept;
-
-    const std::unordered_map<str::string, void*>& getVolumeCallbacksNonstatic(
-        const str::string& aVolumeName) noexcept;
-
-    //----------------------------------------------------------------------------
 
     std::unordered_map<str::string, std::unordered_map<str::string, void*>>
         mMap;
