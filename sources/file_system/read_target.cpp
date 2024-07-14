@@ -53,7 +53,7 @@ fs::ReadFromStoredFile(const str::string& aFileName)
     }
     else
     {
-        LOG_ERROR("Can't find file (", aFileName, ")");
+        LOG_ERROR("Can't find file '%s'", aFileName);
         return {str::EMPTY_STRING, ReadTarget::Type::NUN};
     }
 }
@@ -69,8 +69,8 @@ fs::ReadFromStoredFile(const str::string& aFolderName,
     }
     else
     {
-        LOG_ERROR("Can't find file (Folder:", aFolderName, "Name:", aFileName,
-                  ")");
+        LOG_ERROR("Can't find file. Folder: '%s', file name: '%s'", aFolderName,
+                  aFileName);
         return {str::string(str::EMPTY_STRING), ReadTarget::Type::NUN};
     }
 }

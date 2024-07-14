@@ -1,10 +1,18 @@
 #pragma once
 
+#include <cstdarg>
+#include <iostream>
+#include <mutex>
 #include <stdio.h>
+#include <string.h>
 
 #include "string/kus_string.hpp"
 
+#include "types/types.hpp"
+
+#include "define_for_each.hpp"
 #include "holy_trinity.hpp"
+#include "logging_functors.hpp"
 
 //------------------------------------------------------------------------------
 
@@ -36,84 +44,52 @@ public:
     SINGL_VOID_METHOD(setOutputType,
                       (OutputType aOutputType, const str::string& aFileName));
 
-    //--------------------------------------------------------------------------
-
-    template <typename... Args>
-    void writeInfo(Args&&... args) noexcept
+    void writeLog(char* tee, size_t tee_size, const char* format, ...)
     {
-        if (mLogLevel == LogLevel::INFO)
+        if (tee)
         {
-            write("info", std::forward<Args>(args)...);
+            va_list args_for_str;
+            va_start(args_for_str, format);
+            vsnprintf(tee, tee_size, format, args_for_str);
+            va_end(args_for_str);
         }
-    }
 
-    template <typename... Args>
-    void writeWarning(Args&&... args) noexcept
-    {
-        if (mLogLevel <= LogLevel::WARNING)
-        {
-            write("WARN", std::forward<Args>(args)...);
-        }
-    }
+        const std::lock_guard lock(m_write_mutex);
 
-    template <typename... Args>
-    void writeError(Args&&... args) noexcept
-    {
-        if (mLogLevel <= LogLevel::ERROR)
-        {
-            write("ERROR!", std::forward<Args>(args)...);
-        }
+        va_list args;
+        va_start(args, format);
+        vfprintf(mStream, format, args);
+        va_end(args);
+        fflush(mStream);
     }
 
 private:
     bool mIsFileOutput;
     LogLevel mLogLevel;
     FILE* mStream;
-
-    //--------------------------------------------------------------------------
+    std::mutex m_write_mutex;
 
     Logging() noexcept;
     ~Logging();
     void clear() noexcept;
-
-    //--------------------------------------------------------------------------
-
-    template <typename... Args>
-    void write(const char* aType,
-               const char* aFile,
-               int aLine,
-               const char* aFunc,
-               Args&&... args) noexcept
-    {
-        writeDebugData(aType, 4);
-        writeFileName(aFile, 15);
-        writeDebugData(aLine);
-        writeDebugData(aFunc, 15);
-        (void)(writeArg(std::forward<Args>(args)), ...);
-        writeEnd();
-        fflush(mStream); // TODO: remove
-    }
-
-    void writeDebugData(int arg) noexcept;
-    void writeDebugData(const char* arg,
-                        int aMaxSize = 0,
-                        int aSize    = 0) noexcept;
-    void writeFileName(const char* arg, int aMaxSize = 0) noexcept;
-
-    void writeArg(int arg) noexcept;
-    void writeArg(double arg) noexcept;
-    void writeArg(const str::string& arg) noexcept;
-    void writeArg(const char* arg) noexcept;
-
-    void writeEnd() noexcept;
-
-    //--------------------------------------------------------------------------
 };
 
-// clang-format off
-#define LOG_INFO(...)     core::Logging::getInstance().writeInfo    (__FILE__, __LINE__, __func__, __VA_ARGS__)
-#define LOG_WARNING(...)  core::Logging::getInstance().writeWarning (__FILE__, __LINE__, __func__, __VA_ARGS__)
-#define LOG_ERROR(...)    core::Logging::getInstance().writeError   (__FILE__, __LINE__, __func__, __VA_ARGS__)
-// clang-format on
+#define __FILENAME__ \
+    (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+
+#define WRITE_LOG_MSG(buff_ptr, buff_size, format, type, ...)               \
+    {                                                                       \
+        core::Logging::getInstance().writeLog(                              \
+            buff_ptr, buff_size, "[%-5s] %-25s| %-30s[%-4d] " format ".\n", \
+            type, __FILENAME__, __func__, __LINE__,                         \
+            FOR_EACH(core::LoggingFunctors::convert, __VA_ARGS__) "");      \
+    }
+
+#define WRITE_LOG_MSG_BASE(type, format, ...) \
+    WRITE_LOG_MSG(NULL, 0, format, #type, __VA_ARGS__)
+
+#define LOG_INFO(...)    WRITE_LOG_MSG_BASE(INFO, __VA_ARGS__)
+#define LOG_WARNING(...) WRITE_LOG_MSG_BASE(WARN, __VA_ARGS__)
+#define LOG_ERROR(...)   WRITE_LOG_MSG_BASE(ERROR, __VA_ARGS__)
 
 } // namespace core

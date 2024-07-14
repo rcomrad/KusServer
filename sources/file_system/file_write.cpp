@@ -3,9 +3,31 @@
 #include <fstream>
 
 #include "core/logging.hpp"
+
 #include "string/separators.hpp"
 
 #include "path.hpp"
+
+fs::FileWrite::FileWrite(const str::string& aFileName,
+                         const str::string& aFolderName) noexcept
+{
+    auto path = fs::Path::getFilePath(aFileName, aFolderName);
+    m_file    = std::fopen(path.value().c_str(), "w");
+}
+
+fs::FileWrite::~FileWrite() noexcept
+{
+    std::fclose(m_file);
+}
+
+void
+fs::FileWrite::write(const char* format, ...) noexcept
+{
+    va_list args;
+    va_start(args, format);
+    vfprintf(m_file, format, args);
+    va_end(args);
+}
 
 bool
 fs::FileWrite::writeData(const std::string& aFileName,

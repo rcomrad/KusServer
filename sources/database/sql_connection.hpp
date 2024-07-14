@@ -4,6 +4,7 @@
 
 #include "core/types/types.hpp"
 
+#include "credentials.hpp"
 #include "postgresql.hpp"
 #include "struct_data.hpp"
 
@@ -14,14 +15,14 @@ class SQLConnection
 {
 public:
     HOLY_TRINITY_NOCOPY(SQLConnection);
-    SQLConnection(word_t a_credentials_id) noexcept;
+    SQLConnection(const Credentials& a_credentials) noexcept;
 
     word_t insert(void* a_result_ptr, struct_id_t a_struct_id) noexcept;
     void select(void* a_result_ptr,
                 struct_id_t a_struct_id,
                 const char* a_condition = nullptr) noexcept;
 
-    void createEnvironment(word_t a_credentials_id) noexcept;
+    void createEnvironment(const Credentials& a_credentials) noexcept;
 
     void createTable(const char* a_owner_name,
                      const char* a_table_name,

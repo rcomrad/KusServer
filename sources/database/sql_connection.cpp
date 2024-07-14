@@ -4,11 +4,10 @@
 
 #include "string/string_malloc.hpp"
 
-#include "db_credential_storage.hpp"
 #include "struct_storage.hpp"
 
-data::SQLConnection::SQLConnection(word_t a_credentials_id) noexcept
-    : m_db_conn(a_credentials_id)
+data::SQLConnection::SQLConnection(const Credentials& a_credentials) noexcept
+    : m_db_conn(a_credentials)
 {
 }
 
@@ -116,16 +115,17 @@ data::SQLConnection::select(void* a_result_ptr,
 }
 
 void
-data::SQLConnection::createEnvironment(word_t a_credentials_id) noexcept
+data::SQLConnection::createEnvironment(
+    const Credentials& a_credentials) noexcept
 {
     MALLOC_STR(statement, 200);
     auto cur_char_ptr = statement;
 
-    auto& dbc          = DBCredentialStorage::getCredentials(a_credentials_id);
-    auto database_name = dbc.name;
-    auto user_name     = dbc.user;
-    auto password      = dbc.password;
-    auto shame         = dbc.shame;
+    const auto& cred          = a_credentials.m_credentials.fields;
+    const auto& database_name = cred.name;
+    const auto& user_name     = cred.user;
+    const auto& password      = cred.password;
+    const auto& shame         = cred.shame;
 
     SPRINTF(cur_char_ptr,
             "CREATE DATABASE %s  WITH ENCODING 'ISO_8859_5' "

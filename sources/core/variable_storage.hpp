@@ -8,7 +8,6 @@
 #include <vector>
 
 #include "command_register.hpp"
-
 #include "holy_trinity.hpp"
 
 //--------------------------------------------------------------------------------
@@ -51,7 +50,6 @@ private:
         std::atomic<int> value   = 0;
         FPIntGlobVarToInt parser = nullptr;
 
-        // Variable& operator=(constVariable& other) noexcept;
         Variable() noexcept = default;
         Variable(const Variable& other) noexcept;
     };
@@ -60,7 +58,8 @@ private:
     std::unordered_map<std::string_view, int> m_name_to_var_dict;
 
     VariableStorage() noexcept;
-    COMMAND_METHOD_NONSTATIC(setCommandHandler);
+    COMMAND_HANDLER_NONSTATIC(setCommandHandler);
+    COMMAND_HANDLER_NONSTATIC(showVarCommandHandler);
 };
 } // namespace core
 

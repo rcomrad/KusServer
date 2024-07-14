@@ -76,6 +76,7 @@
         "cinttypes": "cpp",
         "pqxx": "cpp",
         "any": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "typeindex": "cpp"
     }
 }

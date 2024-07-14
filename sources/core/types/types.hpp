@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cstdint>
+#include <stddef.h>
+
 using word_t = long;
 
 enum class CPPTypeEnum

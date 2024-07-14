@@ -7,6 +7,8 @@
 
 #include "pqxx/pqxx"
 
+#include "credentials.hpp"
+
 //--------------------------------------------------------------------------------
 
 namespace data
@@ -16,7 +18,7 @@ class PostgreSQL
 {
 public:
     HOLY_TRINITY_NOCOPY(PostgreSQL);
-    PostgreSQL(word_t a_credentials_id);
+    PostgreSQL(const Credentials& a_credentials);
 
     //----------------------------------------------------------------------------
 

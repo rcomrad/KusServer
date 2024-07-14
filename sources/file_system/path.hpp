@@ -18,6 +18,8 @@ namespace fs
 class Path
 {
 public:
+    HOLY_TRINITY_SINGLETON(Path);
+
     enum class FileType
     {
         Nun    = 0,
@@ -82,8 +84,6 @@ private:
     std::unordered_map<str::string, str::string> mFolderPaths;
 
     //----------------------------------------------------------------------------
-
-    HOLY_TRINITY_SINGLETON(Path);
 
     Path() noexcept;
 

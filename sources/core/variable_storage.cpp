@@ -8,6 +8,8 @@
 #include "string/parser.hpp"
 #include "string/separators.hpp"
 
+SINGLETON_DEFINITOR(core, VariableStorage);
+
 //--------------------------------------------------------------------------------
 
 const int core::VariableStorage::CORRUPTED_VALUE = -100;
@@ -15,15 +17,8 @@ const int core::VariableStorage::CORRUPTED_VALUE = -100;
 core::VariableStorage::VariableStorage() noexcept
 {
     registerCommand("set", setCommandHandler);
+    registerCommand("show_var", showVarCommandHandler);
 }
-
-// core::VariableStorage::Variable&
-// core::VariableStorage::Variable::operator=(const Variable& other) noexcept
-// {
-//     value  = int(other.value);
-//     parser = other.parser;
-//     return *this;
-// }
 
 core::VariableStorage::Variable::Variable(const Variable& other) noexcept
 {
@@ -77,12 +72,13 @@ core::VariableStorage::reloadValuesFromFileNonstatic() noexcept
         {
             int num                = it->second;
             m_variables[num].value = m_variables[num].parser(var.second);
-            LOG_INFO("Variable", var.first, "set with value", var.second);
+            LOG_INFO("Variable '%s' was set with value '%s'", var.first,
+                     var.second);
         }
         else
         {
-            LOG_ERROR("No variable with that name have been registered (",
-                      var.first, ")");
+            LOG_ERROR("No variable with name '%s' have been registered",
+                      var.first);
         }
     }
 }
@@ -91,8 +87,18 @@ core::VariableStorage::reloadValuesFromFileNonstatic() noexcept
 
 void
 core::VariableStorage::setCommandHandlerNonstatic(
-    const Command& aCommand) noexcept
+    core::Command& aCommand) noexcept
 {
+    if (aCommand.variables.empty())
+    {
+        COMMAND_RETURN_ERROR(aCommand, "No variable values specified");
+    }
+    if (!aCommand.arguments.empty())
+    {
+        COMMAND_RETURN_ERROR(aCommand, "There is unrecognised word '%s'",
+                             *aCommand.arguments.begin());
+    }
+
     for (const auto& i : aCommand.variables)
     {
         // TODO: in separate function
@@ -104,17 +110,41 @@ core::VariableStorage::setCommandHandlerNonstatic(
             if (CORRUPTED_VALUE != val)
             {
                 m_variables[num].value = val;
-                LOG_INFO("Set variable ", i.first, "with value", i.second);
+                COMMAND_RETURN_MSG(
+                    aCommand,
+                    "Successfuly assigned value '%s' to variable '%s'",
+                    i.second, i.first);
             }
             else
             {
-                LOG_ERROR("Set command for variable", i.first,
-                          "failed: corrupted variable value", i.second);
+                COMMAND_RETURN_ERROR(aCommand,
+                                     "Unable to set value for '%s' variable: "
+                                     "corrupted variable value '%s'",
+                                     i.first, i.second);
             }
         }
         else
         {
-            LOG_ERROR("Set command failed: no such variable", i.first);
+            COMMAND_RETURN_ERROR(
+                aCommand,
+                "Unable to set value for '%s' variable: no such variable",
+                i.first);
         }
     }
+}
+
+void
+core::VariableStorage::showVarCommandHandlerNonstatic(
+    core::Command& aCommand) noexcept
+{
+    std::string result;
+    for (const auto& i : m_name_to_var_dict)
+    {
+        result += "\t'";
+        result += i.first;
+        result += "' = ";
+        result += std::to_string(m_variables[i.second].value);
+        result += "\n";
+    }
+    COMMAND_RETURN_MSG(aCommand, "\nVariable list:\n%sList end", result);
 }

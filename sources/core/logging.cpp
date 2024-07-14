@@ -2,6 +2,8 @@
 
 #include <cstring>
 
+SINGLETON_DEFINITOR(core, Logging);
+
 //------------------------------------------------------------------------------
 
 void
@@ -16,8 +18,8 @@ core::Logging::setOutputTypeNonstatic(core::Logging::OutputType aOutputType,
 {
     if (aOutputType == OutputType::FILE && aFileName.empty())
     {
-        LOG_ERROR("The name of the log buffer file is not specified, \
-            no changes are applied");
+        LOG_ERROR("The name of the log buffer file is not specified, no "
+                  "changes are applied");
         return;
     }
 
@@ -35,7 +37,7 @@ core::Logging::setOutputTypeNonstatic(core::Logging::OutputType aOutputType,
         case OutputType::FILE:
             mStream       = std::fopen(aFileName.c_str(), "w");
             mIsFileOutput = true;
-            LOG_INFO("Log buffer changed to ", aFileName, " file");
+            LOG_INFO("Log buffer changed to '%s' file", aFileName);
             break;
         default:
             if (mStream == nullptr)
@@ -80,74 +82,4 @@ core::Logging::clear() noexcept
         mStream       = nullptr;
         mIsFileOutput = false;
     }
-}
-
-//------------------------------------------------------------------------------
-
-void
-core::Logging::writeDebugData(int arg) noexcept
-{
-    // TODO: constexpr
-    const int maxSize = 2;
-    const int size    = (arg > 10 ? (arg > 100 ? 3 : 2) : 1) / 2;
-    std::fprintf(mStream, "[%*d%*s] ", maxSize + size, arg, maxSize - size, "");
-}
-
-void
-core::Logging::writeDebugData(const char* arg, int aMaxSize, int aSize) noexcept
-{
-    if (!aSize)
-    {
-        aSize = std::strlen(arg);
-    }
-    aSize /= 2;
-    std::fprintf(mStream, "[%*s%*s] ", aMaxSize + aSize, arg, aMaxSize - aSize,
-                 "");
-}
-
-void
-core::Logging::writeFileName(const char* arg, int aMaxSize) noexcept
-{
-    int size = std::strlen(arg);
-    int num  = size;
-    int cnt  = 0;
-    while (num > 0 && cnt < 2)
-    {
-        if (arg[num] == '/' || arg[num] == '\\')
-        {
-            ++cnt;
-        }
-        --num;
-    }
-    writeDebugData(arg + num + 1, aMaxSize, size - num);
-}
-
-void
-core::Logging::writeArg(int arg) noexcept
-{
-    std::fprintf(mStream, "%d ", arg);
-}
-
-void
-core::Logging::writeArg(double arg) noexcept
-{
-    std::fprintf(mStream, "%lf ", arg);
-}
-
-void
-core::Logging::writeArg(const str::string& arg) noexcept
-{
-    std::fprintf(mStream, "%s ", arg.c_str());
-}
-
-void
-core::Logging::writeArg(const char* arg) noexcept
-{
-    std::fprintf(mStream, "%s ", arg);
-}
-
-void
-core::Logging::writeEnd() noexcept
-{
-    std::fprintf(mStream, "\n");
 }
