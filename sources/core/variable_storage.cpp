@@ -15,6 +15,7 @@ const int core::VariableStorage::CORRUPTED_VALUE = -100;
 core::VariableStorage::VariableStorage() noexcept
 {
     registerCommand("set", setCommandHandler);
+    registerCommand("token", tokenCommandHandler);
 }
 
 // core::VariableStorage::Variable&
@@ -72,17 +73,19 @@ core::VariableStorage::reloadValuesFromFileNonstatic() noexcept
         fs::ReadFromStoredFile("main_settings.cfg"), str::Separator::variable);
     for (auto& var : settings)
     {
-        auto it = m_name_to_var_dict.find(var.first);
+        auto it            = m_name_to_var_dict.find(var.first);
+        str::string first  = str::string(var.first);
+        str::string second = str::string(var.second);
         if (it != m_name_to_var_dict.end())
         {
             int num                = it->second;
-            m_variables[num].value = m_variables[num].parser(var.second);
-            LOG_INFO("Variable", var.first, "set with value", var.second);
+            m_variables[num].value = m_variables[num].parser(second);
+            LOG_INFO("Variable", first, "set with value", second);
         }
         else
         {
             LOG_ERROR("No variable with that name have been registered (",
-                      var.first, ")");
+                      first, ")");
         }
     }
 }
@@ -117,4 +120,18 @@ core::VariableStorage::setCommandHandlerNonstatic(
             LOG_ERROR("Set command failed: no such variable", i.first);
         }
     }
+}
+
+void
+core::VariableStorage::tokenCommandHandlerNonstatic(
+    const core::Command& aCommand) noexcept
+{
+    if (aCommand.arguments.size() != 1)
+    {
+        LOG_ERROR("Can't parse token arguments. Usage: \"token "
+                  "turn_off/turn_on/memory/print\" ");
+        return;
+    }
+    core::CommandHandler::pushCommand(core::Command(
+        "set token_state=" + str::string(*aCommand.arguments.begin())));
 }

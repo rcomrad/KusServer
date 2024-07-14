@@ -42,26 +42,26 @@ class FileRead
 public:
     FileRead() noexcept = delete;
 
-    static const str::string& getData(const DataTarget& aTarget) noexcept;
-    static str::string getData(const FilenameRefTarget& aTarget) noexcept;
+    static const std::string& getData(const DataTarget& aTarget) noexcept;
+    static std::string getData(const FilenameRefTarget& aTarget) noexcept;
 
-    static std::vector<str::string> getLines(
+    static std::vector<std::string_view> getLines(
         const ReadTarget& aTarget) noexcept;
 
-    static std::vector<std::vector<str::string>> getWords(
+    static std::vector<std::vector<std::string_view>> getWords(
         const ReadTarget& aTarget,
         FPSeparator aSepFunc = str::Separator::newWord) noexcept;
 
-    static std::unordered_map<str::string, str::string> getWordsMap(
+    static std::unordered_map<std::string_view, std::string_view> getWordsMap(
         const ReadTarget& aTarget,
         FPSeparator aSepFunc = str::Separator::newWord) noexcept;
 
-    static std::unordered_set<str::string> getWordsSet(
+    static std::unordered_set<std::string_view> getWordsSet(
         const ReadTarget& aTarget,
         FPSeparator aSepFunc = str::Separator::newWord) noexcept;
 
 private:
-    static str::string readFile(const str::string& aPath) noexcept;
+    static std::string readFile(const str::string& aPath) noexcept;
 };
 
 } // namespace fs

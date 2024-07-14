@@ -7,8 +7,8 @@
 #include <unordered_map>
 #include <vector>
 
-#include "variable.hpp"
 #include "kus_string.hpp"
+#include "variable.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -25,10 +25,11 @@ public:
     // static std::vector<Variable> getVariablesFromFile(
     //     const str::string aFilename) noexcept;
     // static std::vector<Variable> getVariablesFromFile(
-    //     const str::string& aFolderName, const str::string aFilename) noexcept;
+    //     const str::string& aFolderName, const str::string aFilename)
+    //     noexcept;
 
-    static std::vector<str::string> slice(
-        const str::string& aStr,
+    static std::vector<std::string_view> slice(
+        const std::string_view& aStr,
         const str::string& aDelimiters,
         const str::string& aErase = "") noexcept;
 
@@ -42,6 +43,6 @@ public:
     static str::string normalize(const str::string& aStr, Type aType) noexcept;
 };
 
-} // namespace file
+} // namespace str
 
 //--------------------------------------------------------------------------------

@@ -3,6 +3,7 @@
 #include <fstream>
 
 #include "core/logging.hpp"
+
 #include "string/separators.hpp"
 
 #include "path.hpp"
@@ -15,13 +16,13 @@ fs::FileRead::getData(const DataTarget& aTarget) noexcept
     return {aTarget.mData};
 }
 
-str::string
+std::string
 fs::FileRead::getData(const FilenameRefTarget& aTarget) noexcept
 {
     return readFile(aTarget.mData);
 }
 
-str::string
+std::string
 fs::FileRead::readFile(const str::string& aPath) noexcept
 {
     str::string result;
@@ -40,7 +41,7 @@ fs::FileRead::readFile(const str::string& aPath) noexcept
 
 //--------------------------------------------------------------------------------
 
-std::vector<std::string>
+std::vector<std::string_view>
 fs::FileRead::getLines(const ReadTarget& aTarget) noexcept
 {
     std::string data_storage;
@@ -59,7 +60,7 @@ fs::FileRead::getLines(const ReadTarget& aTarget) noexcept
     }
     const std::string& data = *data_ptr;
 
-    std::vector<std::string> result;
+    std::vector<std::string_view> result;
     int last = -1;
     for (int i = 0; i < data.size() + 1; ++i)
     {
@@ -76,11 +77,11 @@ fs::FileRead::getLines(const ReadTarget& aTarget) noexcept
     return result;
 }
 
-std::vector<std::vector<str::string>>
+std::vector<std::vector<std::string_view>>
 fs::FileRead::getWords(const ReadTarget& aTarget, FPSeparator aSepFunc) noexcept
 {
     auto lines = getLines(aTarget);
-    std::vector<std::vector<str::string>> result;
+    std::vector<std::vector<std::string_view>> result;
     for (auto& line : lines)
     {
         result.emplace_back();
@@ -100,12 +101,12 @@ fs::FileRead::getWords(const ReadTarget& aTarget, FPSeparator aSepFunc) noexcept
     return result;
 }
 
-std::unordered_map<str::string, str::string>
+std::unordered_map<std::string_view, std::string_view>
 fs::FileRead::getWordsMap(const ReadTarget& aTarget,
                           FPSeparator aSepFunc) noexcept
 {
     auto words = getWords(aTarget, aSepFunc);
-    std::unordered_map<str::string, str::string> result;
+    std::unordered_map<std::string_view, std::string_view> result;
     for (auto& i : words)
     {
         if (i.size() != 2)
@@ -115,7 +116,7 @@ fs::FileRead::getWordsMap(const ReadTarget& aTarget,
         }
         else
         {
-            result.insert({std::move(i[0]), std::move(i[1])});
+            result.insert({i[0], i[1]});
         }
     }
 
@@ -124,17 +125,17 @@ fs::FileRead::getWordsMap(const ReadTarget& aTarget,
     return result;
 }
 
-std::unordered_set<str::string>
+std::unordered_set<std::string_view>
 fs::FileRead::getWordsSet(const ReadTarget& aTarget,
                           FPSeparator aSepFunc) noexcept
 {
     auto words = getWords(aTarget, aSepFunc);
-    std::unordered_set<str::string> result;
+    std::unordered_set<std::string_view> result;
     for (auto&& i : words)
     {
         for (auto&& j : i)
         {
-            result.insert(std::move(j));
+            result.insert(j);
         }
     }
 

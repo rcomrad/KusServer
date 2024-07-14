@@ -5,7 +5,7 @@
 core::Command::Command(const str::string& aStr) noexcept
 {
     auto args = str::Parser::slice(aStr, "; \n\t");
-    value     = std::move(args[0]);
+    value     = args[0];
     args.erase(args.begin());
 
     for (auto& i : args)
@@ -13,11 +13,11 @@ core::Command::Command(const str::string& aStr) noexcept
         auto temp = str::Parser::slice(i, "=");
         if (temp.size() == 1)
         {
-            arguments.insert(std::move(temp[0]));
+            arguments.insert(str::string(temp[0]));
         }
         else
         {
-            variables[std::move(temp[0])] = std::move(temp[1]);
+            variables[str::string(temp[0])] = temp[1];
         }
     }
 }

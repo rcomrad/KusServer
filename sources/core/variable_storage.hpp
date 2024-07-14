@@ -8,7 +8,6 @@
 #include <vector>
 
 #include "command_register.hpp"
-
 #include "holy_trinity.hpp"
 
 //--------------------------------------------------------------------------------
@@ -61,6 +60,7 @@ private:
 
     VariableStorage() noexcept;
     COMMAND_METHOD_NONSTATIC(setCommandHandler);
+    COMMAND_METHOD_NONSTATIC(tokenCommandHandler);
 };
 } // namespace core
 

@@ -1,6 +1,7 @@
 #include "parser.hpp"
 
 #include "core/logging.hpp"
+
 #include "string/separators.hpp"
 
 // #include "file.hpp"
@@ -55,45 +56,64 @@
 //         core::Path::getFilePathUnsafe(aFolderName, aFilename));
 // }
 
-std::vector<str::string>
-str::Parser::slice(const str::string& aStr,
+std::vector<std::string_view>
+str::Parser::slice(const std::string_view& aStr,
                    const str::string& aDelimiters,
                    const str::string& aErase) noexcept
 {
-    std::vector<str::string> result(1);
+    std::vector<std::string_view> result;
+    size_t start    = 0;
+    size_t char_pos = 0;
 
-    for (auto i : aStr)
+    auto is_erase_char = [&](char c)
+    { return aErase.find(c) != str::string::npos; };
+
+    auto is_delimiter_char = [&](char c)
+    { return aDelimiters.find(c) != str::string::npos; };
+
+    for (char c : aStr)
     {
-        if (aErase.find(i) != str::string::npos)
+        if (is_erase_char(c))
         {
             continue;
         }
 
-        if (aDelimiters.find(i) == str::string::npos)
+        if (!is_delimiter_char(c))
         {
-            // TODO: unicode
-            //  if (!(std::isspace(i) && result.back().empty()))
-            if (!(str::Separator::space(i) && result.back().empty()))
+            if (!(str::Separator::space(c) && char_pos == 0))
             {
-                result.back().push_back(i);
+                ++char_pos;
             }
         }
-        else if (!result.back().empty())
+        else if (char_pos > 0)
         {
-            while (!result.back().empty() &&
-                   str::Separator::space(result.back().back()))
+            while (char_pos > 0 &&
+                   str::Separator::space(aStr[start + char_pos - 1]))
             {
-                result.back().pop_back();
+                --char_pos;
             }
-            result.emplace_back();
+            result.emplace_back(aStr.data() + start, char_pos);
+            start += char_pos + 1;
+            char_pos = 0;
+        }
+        else
+        {
+            ++start;
         }
     }
 
-    if (!result.empty() && result.back().empty())
+    if (char_pos > 0)
     {
-        result.pop_back();
+        while (char_pos > 0 &&
+               str::Separator::space(aStr[start + char_pos - 1]))
+        {
+            --char_pos;
+        }
+        if (char_pos > 0)
+        {
+            result.emplace_back(aStr.data() + start, char_pos);
+        }
     }
-
     return result;
 }
 
