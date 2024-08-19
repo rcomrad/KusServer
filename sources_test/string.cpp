@@ -1,20 +1,19 @@
+#include "utility/string/parser.hpp"
+#include "utility/string/slicer.hpp"
+
 #include "fixture.hpp"
-#include "string/parser.hpp"
-#include "file_system/read_target.hpp"
-#include "file_system/data_read.hpp"
 
 namespace kustest
 {
-class UTestString : public Fixture {};
+class UTestString : public Fixture
+{
+};
 
 TEST_F(UTestString, test_slice_empty_input)
 {
     char s[] = "";
     char buffer[256];
-    std::string delimiters = ", ";
-    std::string erase = "!";
-
-    auto result = str::Parser::parse_in_new(s, buffer, delimiters, erase);
+    auto result = util::Slicer::safeProcess(s, buffer, ", ", "!");
     EXPECT_EQ(result.size(), 0);
 }
 
@@ -22,10 +21,8 @@ TEST_F(UTestString, test_slice_empty_output)
 {
     std::string_view s = ",!,,, ,,!";
     char buffer[256];
-    std::string delimiters = ", ";
-    std::string erase = "!";
 
-    auto result = str::Parser::parse_in_new(s, buffer, delimiters, erase);
+    auto result = util::Slicer::safeProcess(s, buffer, ", ", "!");
     EXPECT_EQ(result.size(), 0);
 }
 
@@ -33,22 +30,19 @@ TEST_F(UTestString, test_slice_simple)
 {
     std::string_view s = "Hello, world!";
     char buffer[256];
-    std::string delimiters = ", ";
-    std::string erase = "!";
 
-    auto result = str::Parser::parse_in_new(s, buffer, delimiters, erase);
+    auto result = util::Slicer::safeProcess(s, buffer, ", ", "!");
     EXPECT_EQ(result.size(), 2);
     EXPECT_EQ(result[0], "Hello");
     EXPECT_EQ(result[1], "world");
 }
 
-TEST_F(UTestString, test_slice_repeated_delimiters) {
+TEST_F(UTestString, test_slice_repeated_delimiters)
+{
     std::string_view s = "!Hello!, ,world!!,,  , , !!";
     char buffer[256];
-    std::string delimiters = ", ";
-    std::string erase = "!";
 
-    auto result = str::Parser::parse_in_new(s, buffer, delimiters, erase);
+    auto result = util::Slicer::safeProcess(s, buffer, ", ", "!");
     EXPECT_EQ(result.size(), 2);
     EXPECT_EQ(result[0], "Hello");
     EXPECT_EQ(result[1], "world");
@@ -56,11 +50,8 @@ TEST_F(UTestString, test_slice_repeated_delimiters) {
 
 TEST_F(UTestString, test_slice_into_old_buffer)
 {
-    std::string s = "appleA Zorange.\t.banana!grape!!pear--peach";;
-    std::string delimiters = "AZ,.- !";
-    std::string erase;
-
-    auto result = str::Parser::parse_in_current(s, delimiters, erase);
+    std::string s = "appleA Zorange.\t.banana!grape!!pear--peach";
+    auto result   = util::Slicer::process(s, "AZ,.- !");
     EXPECT_EQ(result.size(), 7);
     EXPECT_EQ(result[0], "apple");
     EXPECT_EQ(result[1], "orange");
@@ -74,7 +65,7 @@ TEST_F(UTestString, test_slice_into_old_buffer)
 TEST_F(UTestString, get_lines)
 {
     std::string data = "line1\nline2\nline3";
-    auto lines = fs::DataRead::getLines(data);
+    auto lines       = util::Parser::getLines(data);
     EXPECT_EQ(lines.size(), 3);
     EXPECT_EQ(lines[0], "line1");
     EXPECT_EQ(lines[1], "line2");
@@ -83,8 +74,8 @@ TEST_F(UTestString, get_lines)
 
 TEST_F(UTestString, get_words)
 {
-    std::string data = "word1;word2\nword3 word4";
-    auto words = fs::DataRead::getWords(data, str::Separator::newWord);
+    std::string data = "word1 word2\nword3 word4";
+    auto words       = util::Parser::getWords(data);
     EXPECT_EQ(words.size(), 2);
     EXPECT_EQ(words[0].size(), 2);
     EXPECT_EQ(words[0][0], "word1");
@@ -97,7 +88,7 @@ TEST_F(UTestString, get_words)
 TEST_F(UTestString, get_words_map)
 {
     std::string data = "key1 value1\nkey2 value2";
-    auto wordsMap = fs::DataRead::getWordsMap(data, str::Separator::space);
+    auto wordsMap    = util::Parser::getWordsMap(data);
     EXPECT_EQ(wordsMap.size(), 2);
     EXPECT_EQ(wordsMap["key1"], "value1");
     EXPECT_EQ(wordsMap["key2"], "value2");
@@ -106,10 +97,10 @@ TEST_F(UTestString, get_words_map)
 TEST_F(UTestString, get_words_set)
 {
     std::string data = "word1; word2 ;word3";
-    auto wordsSet = fs::DataRead::getWordsSet(data, str::Separator::newWord);
+    auto wordsSet    = util::Parser::getWordsSet(data, ";");
     EXPECT_EQ(wordsSet.size(), 3);
     EXPECT_TRUE(wordsSet.find("word1") != wordsSet.end());
-    EXPECT_TRUE(wordsSet.find("word2") != wordsSet.end());
+    EXPECT_TRUE(wordsSet.find(" word2 ") != wordsSet.end());
     EXPECT_TRUE(wordsSet.find("word3") != wordsSet.end());
 }
 

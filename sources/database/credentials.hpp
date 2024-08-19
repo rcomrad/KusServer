@@ -1,61 +1,62 @@
-#pragma once
+// #pragma once
 
-#include <string>
-#include <vector>
+// #include <string>
+// #include <vector>
 
-#include "core/table_print_helper.hpp"
-#include "core/types/types.hpp"
+// #include "core/logging/table_print_helper.hpp"
 
-#include "file_system/file_write.hpp"
+// #include "file_system/file_write.hpp"
 
-namespace data
-{
+// #include "utility/type/base.hpp"
 
-struct CredentialsFields
-{
-    char name[10];
-    char user[10];
-    char password[15];
-    char hostaddr[10];
-    char port[8];
-    char shame[10];
-};
-constexpr auto CREDENTIAL_MEMORY_SIZE = sizeof(CredentialsFields);
+// namespace data
+// {
 
-union CredentialsUnion
-{
-    CredentialsFields fields;
-    char combined_str[CREDENTIAL_MEMORY_SIZE] = {0};
-};
+// struct CredentialsFields
+// {
+//     char name[10];
+//     char user[10];
+//     char password[15];
+//     char hostaddr[10];
+//     char port[8];
+//     char shame[10];
+// };
+// constexpr auto CREDENTIAL_MEMORY_SIZE = sizeof(CredentialsFields);
 
-static_assert(CREDENTIAL_MEMORY_SIZE == sizeof(CredentialsUnion),
-              "Database Credentials struct s ill-formed ");
+// union CredentialsUnion
+// {
+//     CredentialsFields fields;
+//     char combined_str[CREDENTIAL_MEMORY_SIZE] = {0};
+// };
 
-class Credentials
-{
-public:
-    Credentials(const Credentials&) noexcept            = delete;
-    Credentials& operator=(const Credentials&) noexcept = delete;
-    Credentials(Credentials&& other) noexcept;
-    Credentials& operator=(Credentials&& other) noexcept;
+// static_assert(CREDENTIAL_MEMORY_SIZE == sizeof(CredentialsUnion),
+//               "Database Credentials struct s ill-formed ");
 
-    Credentials(const char* name,
-                const char* user,
-                const char* password,
-                const char* hostaddr,
-                const char* port,
-                const char* shame) noexcept;
-    uint64_t calculateHash() const noexcept;
+// class Credentials
+// {
+// public:
+//     Credentials(const Credentials&) noexcept            = delete;
+//     Credentials& operator=(const Credentials&) noexcept = delete;
+//     Credentials(Credentials&& other) noexcept;
+//     Credentials& operator=(Credentials&& other) noexcept;
 
-    static void setDefault(std::vector<std::string>& a_credentials) noexcept;
+//     Credentials(const char* name,
+//                 const char* user,
+//                 const char* password,
+//                 const char* hostaddr,
+//                 const char* port,
+//                 const char* shame) noexcept;
+//     uint64_t calculateHash() const noexcept;
 
-    void printData(char** a_ptr, core::TablePrintHelper& table) const noexcept;
-    static void configurateTable(core::TablePrintHelper& table) noexcept;
+//     static void setDefault(std::vector<std::string>& a_credentials) noexcept;
 
-    void dumpCredentialsToFIle(fs::FileWrite& a_file) const noexcept;
+//     void printData(char** a_ptr, core::TablePrintHelper& table) const noexcept;
+//     static void configurateTable(core::TablePrintHelper& table) noexcept;
 
-    // TODO: const
-    CredentialsUnion m_credentials;
-};
+//     void dumpCredentialsToFIle(fs::FileWrite& a_file) const noexcept;
 
-} // namespace data
+//     // TODO: const
+//     CredentialsUnion m_credentials;
+// };
+
+// } // namespace data

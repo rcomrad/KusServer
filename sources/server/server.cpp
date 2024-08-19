@@ -1,7 +1,6 @@
 #include "server.hpp"
 
-#include "core/core.hpp"
-#include "core/yield.hpp"
+#include "utility/common/yield.hpp"
 
 #include "token.hpp"
 
@@ -11,32 +10,23 @@ serv::Server::Server() noexcept : core::Module("server")
 {
 }
 
-void serv::Server::initialize() noexcept
+bool
+serv::Server::loopBody() noexcept
 {
-    registerCommand("token", tokenCommandHandler);
+    // TODO: do we need small yeild? maybe "instante"
+    util::Yield::small();
+    return true;
 }
 
 void
-serv::Server::run() noexcept
+serv::Server::commandSetup() const noexcept
 {
-    while (core::Core::isRunning())
-    {
-        // TODO: do we need small yeild? maybe "instante"
-        core::Yield::small();
-    }
+    // registerCommand("token", tokenCommandHandler);
 }
 
 void
-serv::Server::variableSetup(core::VariableInfoArray& a_set_array) noexcept
+serv::Server::variableSetup() const noexcept
 {
-    a_set_array.emplace_back("token_state", serv::Token::getTokenStatus);
-}
-
-void
-serv::Server::tokenCommandHandlerNonstatic(
-        core::Command& aCommand) noexcept
-{
-    core::Command comm("set token_state=" + *aCommand.arguments.begin(), {});
-    core::CommandHandler::pushCommand(std::move(comm));
-    COMMAND_RETURN_MSG(aCommand, "Token state changed");
+    registerVariable("token_status", serv::Token::getTokenStatus,
+                     {"turn_off", "turn_on", "memory", "print"});
 }

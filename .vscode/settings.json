@@ -77,6 +77,12 @@
         "pqxx": "cpp",
         "any": "cpp",
         "set": "cpp",
-        "typeindex": "cpp"
+        "typeindex": "cpp",
+        "*.inc": "cpp",
+        "coroutine": "cpp",
+        "csignal": "cpp",
+        "future": "cpp",
+        "shared_mutex": "cpp",
+        "*.ipp": "cpp"
     }
 }

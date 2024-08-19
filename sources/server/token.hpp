@@ -2,9 +2,12 @@
 
 //--------------------------------------------------------------------------------
 
-#include "core/holy_trinity.hpp"
+#include <optional>
+#include <string>
 
-#include "string/kus_string.hpp"
+#include "core/variable/variable.hpp"
+
+#include "utility/common/holy_trinity.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -23,7 +26,7 @@ public:
         PRINT
     };
 
-    static int getTokenStatus(const str::string& aVar) noexcept;
+    VARIABLE_PARSER(getTokenStatus);
 };
 
 } // namespace serv

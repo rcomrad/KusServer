@@ -1,22 +1,22 @@
-#ifndef VARIABLE_HPP
-#define VARIABLE_HPP
+// #ifndef VARIABLE_HPP
+// #define VARIABLE_HPP
 
-#include <string>
-#include <unordered_map>
+// #include <string>
+// #include <unordered_map>
 
-#include "value.hpp"
+// #include "value.hpp"
 
-namespace str
-{
+// namespace str
+// {
 
-struct Variable
-{
-    std::string name;
-    Value value;
-};
+// struct Variable
+// {
+//     std::string name;
+//     Value value;
+// };
 
-using VariableArray = std::unordered_map<std::string, Value>;
+// using VariableArray = std::unordered_map<std::string, Value>;
 
-} // namespace file
+// } // namespace file
 
-#endif // !VARIABLE_HPP
+// #endif // !VARIABLE_HPP

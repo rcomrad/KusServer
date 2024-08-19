@@ -1,60 +1,62 @@
-#pragma once
+// #pragma once
 
-#include <set>
-#include <vector>
+// #include <set>
+// #include <vector>
 
-#include "core/command.hpp"
-#include "core/command_register.hpp"
-#include "core/holy_trinity.hpp"
-#include "core/module.hpp"
-#include "core/table_print_helper.hpp"
-#include "core/types/types.hpp"
+// #include "core/command/command.hpp"
+// #include "core/command/register.hpp"
+// #include "core/module/module.hpp"
+// #include "core/logging/table_print_helper.hpp"
 
-#include "connection_pool.hpp"
+// #include "utility/common/holy_trinity.hpp"
+// #include "utility/type/base.hpp"
 
-namespace data
-{
+// #include "connection_pool.hpp"
 
-class Database : public core::Module
-{
-public:
-    HOLY_TRINITY_SINGLETON(Database);
+// namespace data
+// {
 
-    SINGL_RET_METHOD(DatabaseConnection, getConnection, (size_t a_pool_id));
-    SINGL_VOID_METHOD(putConnection,
-                      (SQLConnection * a_sql_conn, size_t a_pool_id));
+// class Database : public core::Module
+// {
+// public:
+//     HOLY_TRINITY_SINGLETON(Database);
 
-    void initialize() noexcept override;
+//     SINGL_RET_METHOD(DatabaseConnection, getConnection, (size_t a_pool_id));
+//     SINGL_VOID_METHOD(putConnection,
+//                       (SQLConnection * a_sql_conn, size_t a_pool_id));
 
-protected:
-    void commandSetup() noexcept override;
+//     void initialize() noexcept override;
 
-private:
-    std::vector<ConnectionPool> m_conn_storage;
-    DatabaseConnection m_obtained_connection;
+// protected:
+//     void commandSetup() const noexcept override;
 
-    Database() noexcept;
+// private:
+//     std::vector<ConnectionPool> m_conn_storage;
+//     DatabaseConnection m_obtained_connection;
 
-    bool addCredentials(const char* name,
-                        const char* user,
-                        const char* password,
-                        const char* hostaddr,
-                        const char* port,
-                        const char* shame) noexcept;
-    bool removeCredentials(size_t a_num) noexcept;
-    void dumpCredentialsToFIle() const noexcept;
+//     Database() noexcept;
 
-    COMMAND_HANDLER_NONSTATIC(addCredentials);
-    COMMAND_HANDLER_NONSTATIC(addBaseCredentials);
-    COMMAND_HANDLER_NONSTATIC(removeCredentials);
-    COMMAND_HANDLER_NONSTATIC(showCredentials);
+//     bool addCredentials(const char* name,
+//                         const char* user,
+//                         const char* password,
+//                         const char* hostaddr,
+//                         const char* port,
+//                         const char* shame) noexcept;
+//     bool removeCredentials(size_t a_num) noexcept;
+//     void dumpCredentialsToFIle() const noexcept;
 
-    COMMAND_HANDLER_NONSTATIC(obtainConnection);
-    COMMAND_HANDLER_NONSTATIC(returnConnection);
-    COMMAND_HANDLER_NONSTATIC(currentConnection);
+//     COMMAND_HANDLER_NONSTATIC(addCredentials);
+//     COMMAND_HANDLER_NONSTATIC(addBaseCredentials);
+//     COMMAND_HANDLER_NONSTATIC(removeCredentials);
+//     COMMAND_HANDLER_NONSTATIC(showCredentials);
 
-    static core::TablePrintHelper configurateShowTable() noexcept;
-    static core::TablePrintHelper configurateCurTable() noexcept;
-};
+//     COMMAND_HANDLER_NONSTATIC(obtainConnection);
+//     COMMAND_HANDLER_NONSTATIC(returnConnection);
+//     COMMAND_HANDLER_NONSTATIC(currentConnection);
+//     COMMAND_HANDLER_NONSTATIC(executeConnection);
 
-} // namespace data
+//     static core::TablePrintHelper configurateShowTable() noexcept;
+//     static core::TablePrintHelper configurateCurTable() noexcept;
+// };
+
+// } // namespace data

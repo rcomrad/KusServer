@@ -1,37 +1,37 @@
 
-#ifndef VALUE_HPP
-#define VALUE_HPP
+// #ifndef VALUE_HPP
+// #define VALUE_HPP
 
-#include <string>
+// #include <string>
 
-#include "core/types/pair.hpp"
+// #include "utility/type/pair.hpp"
 
-namespace str
-{
-struct Value
-{
-    std::string str;
+// namespace str
+// {
+// struct Value
+// {
+//     std::string str;
 
-    operator int() const noexcept;
-    operator float() const noexcept;
-    operator bool() const noexcept;
+//     operator int() const noexcept;
+//     operator float() const noexcept;
+//     operator bool() const noexcept;
 
-    operator std::string() const noexcept;
+//     operator std::string() const noexcept;
 
-    operator core::Pair<float>() const noexcept;
+//     operator core::Pair<float>() const noexcept;
 
-    enum class Type
-    {
-        Nun,
-        Int,
-        Float,
-        Bool,
-        String,
-        PairInt,
-        PairFloat
-    };
-    Type getType() const noexcept;
-};
-} // namespace str
+//     enum class Type
+//     {
+//         Nun,
+//         Int,
+//         Float,
+//         Bool,
+//         String,
+//         PairInt,
+//         PairFloat
+//     };
+//     Type getType() const noexcept;
+// };
+// } // namespace str
 
-#endif // !VALUE_HPP
+// #endif // !VALUE_HPP

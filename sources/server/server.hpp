@@ -2,15 +2,14 @@
 
 //--------------------------------------------------------------------------------
 
-#include "core/holy_trinity.hpp"
-#include "core/module.hpp"
+#include "core/module/module.hpp"
+
+#include "utility/common/holy_trinity.hpp"
+#include "utility/string/slicer.hpp"
+
+#include "token.hpp"
 
 //--------------------------------------------------------------------------------
-
-enum ServerVariables
-{
-    TOKEN_STATUS_VAR
-};
 
 namespace serv
 {
@@ -20,14 +19,17 @@ public:
     HOLY_TRINITY_SINGLETON(Server);
     ~Server() override = default;
 
-    void initialize() noexcept override;
-    void run() noexcept override;
-    void variableSetup(
-        core::VariableInfoArray& a_var_set_array) noexcept override;
+    bool loopBody() noexcept override;
+    void commandSetup() const noexcept override;
+    void variableSetup() const noexcept override;
 
 private:
     Server() noexcept;
     COMMAND_HANDLER_NONSTATIC(tokenCommandHandler);
+
+// #define ENUM_NAME ServerVariables
+// #define VAR_FILE  "server/server_vars.inc"
+// #include "core/variable/var_unpack.inc"
 };
 
 } // namespace serv

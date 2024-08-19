@@ -1,25 +1,31 @@
+//--------------------------------------------------------------------------------
+
 #include <iostream>
 
-#include "core/core.hpp"
+#include "core/logging/printer.hpp"
+#include "core/module/registry.hpp"
+
+#include "utility/common/yield.hpp"
 
 //--------------------------------------------------------------------------------
 
-#include "database/database.hpp"
-#include "database/database_structures.hpp"
 int
 main(int argc, char* argv[])
 {
     std::cout << "LAMPA\n";
+    fflush(stdout);
     // TODO: write time
 
-    core::Core::setup();
-    core::Core::run();
+    core::Printer::setOutputType(core::Printer::OutputType::FILE, "logs.txt");
 
-    // data::ConnectionPool::create(0);
-    // auto& conn = data::ConnectionPool::get();
-    // conn.populateDatabse();
-
-    // data::ConnectionPool::put(conn);
+    core::ModuleRegistry::initModules();
+    core::ModuleRegistry::runModules();
+    // TODO: isExit()
+    while (core::ModuleRegistry::isRunning())
+    {
+        util::Yield::large();
+    }
+    core::ModuleRegistry::termModules();
 
     return 0;
 }

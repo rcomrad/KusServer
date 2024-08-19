@@ -1,55 +1,57 @@
-#pragma once
+// #pragma once
 
-#include <optional>
-#include <string>
-#include <vector>
+// #include <optional>
+// #include <string>
+// #include <vector>
 
-#include "core/table_print_helper.hpp"
+// #include "core/logging/table_print_helper.hpp"
 
-#include "database_connection.hpp"
+// #include "database_connection.hpp"
 
-#include "credentials.hpp"
-#include "sql_connection.hpp"
+// #include "credentials.hpp"
+// #include "sql_connection.hpp"
 
-namespace data
-{
+// namespace data
+// {
 
-class ConnectionPool
-{
-public:
-    // TODO: remove
-    ConnectionPool() noexcept = default;
+// class ConnectionPool
+// {
+// public:
+//     // TODO: remove
+//     ConnectionPool() noexcept = default;
 
-    ConnectionPool(const ConnectionPool&) noexcept            = delete;
-    ConnectionPool& operator=(const ConnectionPool&) noexcept = delete;
-    ConnectionPool(ConnectionPool&& other) noexcept;
-    ConnectionPool& operator=(ConnectionPool&& other) noexcept;
+//     ConnectionPool(const ConnectionPool&) noexcept            = delete;
+//     ConnectionPool& operator=(const ConnectionPool&) noexcept = delete;
+//     ConnectionPool(ConnectionPool&& other) noexcept;
+//     ConnectionPool& operator=(ConnectionPool&& other) noexcept;
 
-    // TODO: implement destruction
-    ~ConnectionPool();
+//     // TODO: implement destruction
+//     ~ConnectionPool();
 
-    // TODO: RVO check
-    static std::optional<ConnectionPool> create(
-        const std::vector<std::string>& a_credentials_array) noexcept;
+//     // TODO: RVO check
+//     static std::optional<ConnectionPool> create(
+//         const std::vector<std::string>& a_credentials_array) noexcept;
 
-    DatabaseConnection get(size_t a_pool_id) noexcept;
-    void put(SQLConnection* a_sql_conn) noexcept;
+//     DatabaseConnection get(size_t a_pool_id) noexcept;
+//     void put(SQLConnection* a_sql_conn) noexcept;
 
-    void printData(char** a_ptr,
-                   core::TablePrintHelper& table,
-                   bool a_if_add_poll) const noexcept;
-    static void configurateTable(core::TablePrintHelper& table,
-                                 bool a_if_add_poll) noexcept;
+//     const Credentials& getCredentials() const noexcept;
 
-    void dumpCredentialsToFIle(fs::FileWrite& a_file) const noexcept;
+//     void printData(char** a_ptr,
+//                    core::TablePrintHelper& table,
+//                    bool a_if_add_poll) const noexcept;
+//     static void configurateTable(core::TablePrintHelper& table,
+//                                  bool a_if_add_poll) noexcept;
 
-private:
-    uint64_t m_hash;
-    Credentials m_credentials;
-    int m_max_conn_count;
-    std::vector<SQLConnection> m_connections;
+//     void dumpCredentialsToFIle(fs::FileWrite& a_file) const noexcept;
 
-    ConnectionPool(uint64_t a_hash, Credentials&& a_credentials) noexcept;
-};
+// private:
+//     uint64_t m_hash;
+//     Credentials m_credentials;
+//     int m_max_conn_count;
+//     std::vector<SQLConnection> m_connections;
 
-} // namespace data
+//     ConnectionPool(uint64_t a_hash, Credentials&& a_credentials) noexcept;
+// };
+
+// } // namespace data
