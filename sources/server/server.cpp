@@ -1,6 +1,6 @@
 #include "server.hpp"
 
-#include <iostream>
+#include <unordered_set>
 
 #include "core/core.hpp"
 #include "core/yield.hpp"
@@ -11,6 +11,11 @@ SINGLETON_DEFINITOR(serv, Server)
 
 serv::Server::Server() noexcept : core::Module("server")
 {
+}
+
+void serv::Server::initialize() noexcept
+{
+    registerCommand("token", tokenCommandHandler);
 }
 
 void
@@ -26,5 +31,15 @@ serv::Server::run() noexcept
 void
 serv::Server::variableSetup(core::VariableInfoArray& a_set_array) noexcept
 {
-    a_set_array.emplace_back("token_state", serv::Token::getTokenStatus);
+    core::VariableInfo varInfo = {"token_state", &serv::Token::getTokenStatus};
+    a_set_array.emplace_back(varInfo);
+}
+
+void
+serv::Server::tokenCommandHandlerNonstatic(
+        core::Command& aCommand) noexcept
+{
+    core::Command comm("set token_state=" + *aCommand.arguments.begin(), {});
+    core::CommandHandler::pushCommand(std::move(comm));
+    COMMAND_RETURN_MSG(aCommand, "Token state changed");
 }

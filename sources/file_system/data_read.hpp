@@ -37,31 +37,27 @@ namespace fs
 
 typedef bool (*FPSeparator)(char);
 
-class FileRead
+class DataRead
 {
 public:
-    FileRead() noexcept = delete;
-
-    static const std::string& getData(const DataTarget& aTarget) noexcept;
-    static std::string getData(const FilenameRefTarget& aTarget) noexcept;
+    DataRead() noexcept = delete;
 
     static std::vector<std::string_view> getLines(
-        const ReadTarget& aTarget) noexcept;
+        const std::string_view& aData) noexcept;
 
     static std::vector<std::vector<std::string_view>> getWords(
-        const ReadTarget& aTarget,
+        const std::string_view& aData,
         FPSeparator aSepFunc = str::Separator::newWord) noexcept;
 
     static std::unordered_map<std::string_view, std::string_view> getWordsMap(
-        const ReadTarget& aTarget,
+        const std::string_view& aData,
         FPSeparator aSepFunc = str::Separator::newWord) noexcept;
 
     static std::unordered_set<std::string_view> getWordsSet(
-        const ReadTarget& aTarget,
+        const std::string_view& aData,
         FPSeparator aSepFunc = str::Separator::newWord) noexcept;
 
-private:
-    static std::string readFile(const str::string& aPath) noexcept;
+    static str::string readFile(const str::string& aPath) noexcept;
 };
 
 } // namespace fs

@@ -2,11 +2,13 @@
 
 #include "core/logging.hpp"
 
-#include "file_system/file_read.hpp"
+#include "file_system/data_read.hpp"
 #include "file_system/path.hpp"
 
 #include "string/parser.hpp"
 #include "string/separators.hpp"
+
+SINGLETON_DEFINITOR(core, VariableStorage);
 
 //--------------------------------------------------------------------------------
 
@@ -16,16 +18,7 @@ core::VariableStorage::VariableStorage() noexcept
 {
     registerCommand("set", setCommandHandler);
     registerCommand("show_var", showVarCommandHandler);
-    registerCommand("token", tokenCommandHandler);
 }
-
-// core::VariableStorage::Variable&
-// core::VariableStorage::Variable::operator=(const Variable& other) noexcept
-// {
-//     value  = int(other.value);
-//     parser = other.parser;
-//     return *this;
-// }
 
 core::VariableStorage::Variable::Variable(const Variable& other) noexcept
 {
@@ -70,21 +63,22 @@ core::VariableStorage::addVariableInfoNonstatic(
 void
 core::VariableStorage::reloadValuesFromFileNonstatic() noexcept
 {
-    auto settings = fs::FileRead::getWordsMap(
-        fs::ReadFromStoredFile("main_settings.cfg"), str::Separator::variable);
+    std::string settings_data = fs::DataRead::readFile(fs::Path::getFilePath("main_settings.cfg").value());
+    auto settings = fs::DataRead::getWordsMap(settings_data, str::Separator::variable);
     for (auto& var : settings)
     {
         auto it = m_name_to_var_dict.find(var.first);
         if (it != m_name_to_var_dict.end())
         {
             int num                = it->second;
-            m_variables[num].value = m_variables[num].parser(var.second);
-            LOG_INFO("Variable", var.first, "set with value", var.second);
+            m_variables[num].value = m_variables[num].parser(str::string(var.second));
+            LOG_INFO("Variable '%s' was set with value '%s'", str::string(var.first),
+                     str::string(var.second));
         }
         else
         {
-            LOG_ERROR("No variable with that name have been registered (",
-                      var.first, ")");
+            LOG_ERROR("No variable with name '%s' have been registered",
+                      str::string(var.first));
         }
     }
 }
@@ -95,6 +89,16 @@ void
 core::VariableStorage::setCommandHandlerNonstatic(
     core::Command& aCommand) noexcept
 {
+    if (aCommand.variables.empty())
+    {
+        COMMAND_RETURN_ERROR(aCommand, "No variable values specified");
+    }
+    if (!aCommand.arguments.empty())
+    {
+        COMMAND_RETURN_ERROR(aCommand, "There is unrecognised word '%s'",
+                             *aCommand.arguments.begin());
+    }
+
     for (const auto& i : aCommand.variables)
     {
         // TODO: in separate function
@@ -108,7 +112,7 @@ core::VariableStorage::setCommandHandlerNonstatic(
                 m_variables[num].value = val;
                 COMMAND_RETURN_MSG(
                     aCommand,
-                    "Successfuly assigned value '%s' to variable '%s'",
+                    "Successfully assigned value '%s' to variable '%s'",
                     i.second, i.first);
             }
             else
@@ -143,18 +147,4 @@ core::VariableStorage::showVarCommandHandlerNonstatic(
         result += "\n";
     }
     COMMAND_RETURN_MSG(aCommand, "\nVariable list:\n%sList end", result);
-}
-
-void
-core::VariableStorage::tokenCommandHandlerNonstatic(
-    const core::Command& aCommand) noexcept
-{
-    if (aCommand.arguments.size() != 1)
-    {
-        LOG_ERROR("Can't parse token arguments. Usage: \"token "
-                  "turn_off/turn_on/memory/print\" ");
-        return;
-    }
-    core::CommandHandler::pushCommand(core::Command(
-        "set token_state=" + str::string(*aCommand.arguments.begin())));
 }

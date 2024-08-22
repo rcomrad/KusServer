@@ -28,10 +28,16 @@ public:
     //     const str::string& aFolderName, const str::string aFilename)
     //     noexcept;
 
-    static std::vector<std::string_view> slice(
+    static std::vector<std::string_view> parse_in_current(
         const std::string_view& aStr,
-        const str::string& aDelimiters,
-        const str::string& aErase = "") noexcept;
+        const std::string_view& aDelimiters,
+        const std::string_view& aErase = "") noexcept;
+
+    static std::vector<std::string_view> parse_in_new(
+            const std::string_view& aStr,
+            char* writer,
+            const std::string_view& aDelimiters,
+            const std::string_view& aErase = "") noexcept;
 
     enum class Type
     {
@@ -41,6 +47,13 @@ public:
     };
     static void normalize(str::string& aStr, Type aType) noexcept;
     static str::string normalize(const str::string& aStr, Type aType) noexcept;
+
+private:
+    static std::vector<std::string_view> slice(
+            const std::string_view& aStr,
+            char* aWriter,
+            const std::string_view& aDelimiters,
+            const std::string_view& aErase) noexcept;
 };
 
 } // namespace str
