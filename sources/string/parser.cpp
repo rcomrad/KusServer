@@ -56,65 +56,88 @@
 //         core::Path::getFilePathUnsafe(aFolderName, aFilename));
 // }
 
-std::vector<std::string_view>
-str::Parser::slice(const std::string_view& aStr,
-                   const str::string& aDelimiters,
-                   const str::string& aErase) noexcept
+struct ASCIIBox
 {
-    std::vector<std::string_view> result;
-    size_t start    = 0;
-    size_t char_pos = 0;
+    uint64_t data[4];
 
-    auto is_erase_char = [&](char c)
-    { return aErase.find(c) != str::string::npos; };
-
-    auto is_delimiter_char = [&](char c)
-    { return aDelimiters.find(c) != str::string::npos; };
-
-    for (char c : aStr)
+    ASCIIBox()
     {
-        if (is_erase_char(c))
-        {
-            continue;
-        }
+        data[0] = data[1] = data[2] = data[3] = 0;
+    }
 
-        if (!is_delimiter_char(c))
+    ASCIIBox(const char* str) : ASCIIBox()
+    {
+        set(str);
+    }
+
+    void set(int num)
+    {
+        if (num >= 0 && num < 64)
         {
-            if (!(str::Separator::space(c) && char_pos == 0))
-            {
-                ++char_pos;
-            }
+            data[0] |= 1ULL << num;
         }
-        else if (char_pos > 0)
+        else if (num >= 64 && num < 128)
         {
-            while (char_pos > 0 &&
-                   str::Separator::space(aStr[start + char_pos - 1]))
-            {
-                --char_pos;
-            }
-            result.emplace_back(aStr.data() + start, char_pos);
-            start += char_pos + 1;
-            char_pos = 0;
-        }
-        else
-        {
-            ++start;
+            data[1] |= 1ULL << (num - 64);
         }
     }
 
-    if (char_pos > 0)
+    void set(const char* str)
     {
-        while (char_pos > 0 &&
-               str::Separator::space(aStr[start + char_pos - 1]))
+        while (*str)
         {
-            --char_pos;
-        }
-        if (char_pos > 0)
-        {
-            result.emplace_back(aStr.data() + start, char_pos);
+            set(static_cast<unsigned char>(*str));
+            ++str;
         }
     }
-    return result;
+
+    bool get(int num)
+    {
+        if (num >= 0 && num < 64)
+        {
+            return data[0] & (1ULL << num);
+        } else if (num >= 64 && num < 128)
+        {
+            return data[1] & (1ULL << (num - 64));
+        }
+        return false;
+    }
+};
+
+std::vector<std::string_view> str::Parser::slice(const std::string_view& aStr,
+                                                 char* aWriter,
+                                                 const std::string_view& aDelimiters,
+                                                 const std::string_view& aErase) noexcept
+{
+    std::vector<std::string_view> answer;
+
+    ASCIIBox delimiters(aDelimiters.data());
+    ASCIIBox erasors(aErase.data());
+
+    auto writer_beg = 0;
+    auto writer_end = 0;
+    for (const char& sym : aStr)
+    {
+        if (delimiters.get(sym))
+        {
+            if (writer_beg != writer_end)
+            {
+                answer.emplace_back(aWriter + writer_beg, writer_end - writer_beg);
+                writer_beg = writer_end;
+            }
+        }
+        else if (!erasors.get(sym))
+        {
+            aWriter[writer_end] = sym;
+            ++writer_end;
+        }
+    }
+    if (writer_beg != writer_end)
+    {
+        answer.emplace_back(aWriter + writer_beg, writer_end - writer_beg);
+    }
+
+    return answer;
 }
 
 void

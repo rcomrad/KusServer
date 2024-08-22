@@ -78,13 +78,14 @@ core::VariableStorage::reloadValuesFromFileNonstatic() noexcept
         if (it != m_name_to_var_dict.end())
         {
             int num                = it->second;
-            m_variables[num].value = m_variables[num].parser(var.second);
-            LOG_INFO("Variable", var.first, "set with value", var.second);
+            m_variables[num].value = m_variables[num].parser(str::string(var.second));
+            LOG_INFO("Variable '%s' was set with value '%s'", str::string(var.first),
+                     str::string(var.second));
         }
         else
         {
-            LOG_ERROR("No variable with that name have been registered (",
-                      var.first, ")");
+            LOG_ERROR("No variable with name '%s' have been registered",
+                      str::string(var.first));
         }
     }
 }
@@ -147,7 +148,7 @@ core::VariableStorage::showVarCommandHandlerNonstatic(
 
 void
 core::VariableStorage::tokenCommandHandlerNonstatic(
-    const core::Command& aCommand) noexcept
+    core::Command& aCommand) noexcept
 {
     if (aCommand.arguments.size() != 1)
     {
@@ -155,6 +156,6 @@ core::VariableStorage::tokenCommandHandlerNonstatic(
                   "turn_off/turn_on/memory/print\" ");
         return;
     }
-    core::CommandHandler::pushCommand(core::Command(
-        "set token_state=" + str::string(*aCommand.arguments.begin())));
+    core::CommandHandler::pushCommand(std::move(core::Command(
+        "set token_state=" + str::string(*aCommand.arguments.begin()), nullptr)));
 }

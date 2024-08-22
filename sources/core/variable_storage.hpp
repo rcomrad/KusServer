@@ -60,7 +60,7 @@ private:
     VariableStorage() noexcept;
     COMMAND_HANDLER_NONSTATIC(setCommandHandler);
     COMMAND_HANDLER_NONSTATIC(showVarCommandHandler);
-    COMMAND_METHOD_NONSTATIC(tokenCommandHandler);
+    COMMAND_HANDLER_NONSTATIC(tokenCommandHandler);
 };
 } // namespace core
 

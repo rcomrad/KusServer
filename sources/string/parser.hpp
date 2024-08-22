@@ -30,8 +30,9 @@ public:
 
     static std::vector<std::string_view> slice(
         const std::string_view& aStr,
-        const str::string& aDelimiters,
-        const str::string& aErase = "") noexcept;
+        char* aWriter,
+        const std::string_view& aDelimiters,
+        const std::string_view& aErase = "") noexcept;
 
     enum class Type
     {
