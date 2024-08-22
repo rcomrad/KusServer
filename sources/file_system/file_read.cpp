@@ -29,12 +29,12 @@ fs::FileRead::readFile(const str::string& aPath) noexcept
     std::ifstream ios(aPath);
     if (!ios.is_open())
     {
-        LOG_ERROR("No such file (", aPath, ")");
+        LOG_ERROR("No such file '%s'", aPath.c_str());
     }
     else
     {
         std::getline(ios, result, '\0');
-        LOG_INFO("Extracting file (", aPath, ")");
+        LOG_INFO("Extracting file '%s'", aPath.c_str());
     }
     return result;
 }

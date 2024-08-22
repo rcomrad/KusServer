@@ -2,6 +2,8 @@
 
 #include "logging.hpp"
 
+SINGLETON_DEFINITOR(core, CallbackStorage);
+
 //------------------------------------------------------------------------------
 
 core::CallbackStorage::CallbackStorage() noexcept
@@ -9,12 +11,29 @@ core::CallbackStorage::CallbackStorage() noexcept
     mMap[""];
 }
 
+// void
+// core::CallbackStorage::addNonstatic(
+//     const CallbackdSettings& a_settings) noexcept
+// {
+//     mMap[a_settings.volume_ame][a_settings.node_name] = a_settings.func;
+// }
+
 void
-core::CallbackStorage::addNonstatic(const str::string& aVolumeName,
-                                    const str::string& aNodeName,
-                                    void* aFunc) noexcept
+core::CallbackStorage::addNonstatic(const str::string& a_volume_ame,
+                                    const str::string& a_node_name,
+                                    void* a_func) noexcept
 {
-    mMap[aVolumeName][aNodeName] = aFunc;
+    mMap[a_volume_ame][a_node_name] = a_func;
+}
+
+void
+core::CallbackStorage::addNonstatic(
+    const CallBackSettingArray& a_settings) noexcept
+{
+    for (const auto& i : a_settings)
+    {
+        addNonstatic(i.volume_ame, i.node_name, i.func);
+    }
 }
 
 void*
@@ -30,19 +49,19 @@ core::CallbackStorage::getNonstatic(const str::string& aVolumeName,
         if (it2 != it1->second.end())
         {
             result = it2->second;
-            LOG_INFO("Return callback node (", "volume:", aVolumeName,
-                     "node:", aNodeName, ")");
+            LOG_INFO("Return callback node '%s' from volume '%s'", aVolumeName,
+                     aNodeName);
         }
         else
         {
             // TODO: default callback
-            LOG_ERROR("No such callback node (", "volume:", aVolumeName,
-                      "node:", aNodeName, ")");
+            LOG_ERROR("No '%s' callback node in '%s' volume", aNodeName,
+                      aVolumeName);
         }
     }
     else
     {
-        LOG_ERROR("No such callback volume (", aVolumeName, ")");
+        LOG_ERROR("No '%s' callback volume ", aVolumeName);
     }
 
     return result;
@@ -56,11 +75,11 @@ core::CallbackStorage::getVolumeCallbacksNonstatic(
     if (it != mMap.end() && !aVolumeName.empty())
     {
         return it->second;
-        LOG_INFO("Return callback volume (", aVolumeName, ")");
+        LOG_INFO("Return '%s' callback volume", aVolumeName);
     }
     else
     {
-        LOG_ERROR("No such callback volume (", aVolumeName, ")");
+        LOG_ERROR("No '%s' callback volume ", aVolumeName);
         it = mMap.find("");
         return it->second;
     }

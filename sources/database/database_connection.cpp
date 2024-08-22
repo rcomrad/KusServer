@@ -2,12 +2,60 @@
 
 #include "string/string_malloc.hpp"
 
+#include "database.hpp"
+
 #include "struct_storage.hpp"
 
-data::DatabaseConnection::DatabaseConnection(word_t a_credentials_id,
-                                             word_t a_connection_id) noexcept
-    : m_sql_conn(a_credentials_id), m_connection_id(a_connection_id)
+data::DatabaseConnection::DatabaseConnection(SQLConnection* a_sql_conn,
+                                             size_t a_pool_id) noexcept
+    : m_sql_conn(a_sql_conn), m_pool_id(a_pool_id)
 {
+}
+
+data::DatabaseConnection::~DatabaseConnection()
+{
+    release();
+}
+
+data::DatabaseConnection::DatabaseConnection(
+    DatabaseConnection&& other) noexcept
+{
+    *this = std::move(other);
+}
+
+data::DatabaseConnection&
+data::DatabaseConnection::operator=(DatabaseConnection&& other) noexcept
+{
+    release();
+
+    m_pool_id = other.m_pool_id;
+
+    m_sql_conn       = other.m_sql_conn;
+    other.m_sql_conn = nullptr;
+
+    return *this;
+}
+
+void
+data::DatabaseConnection::release() noexcept
+{
+    if (nullptr != m_sql_conn)
+    {
+        Database::putConnection(m_sql_conn, m_pool_id);
+        m_sql_conn = nullptr;
+    }
+}
+
+size_t
+data::DatabaseConnection::getPollId() const noexcept
+{
+    return m_pool_id;
+}
+
+bool
+data::DatabaseConnection::hasValue() const noexcept
+{
+    return m_sql_conn != nullptr;
 }
 
 void
@@ -40,6 +88,6 @@ data::DatabaseConnection::populateDatabse() noexcept
             }
         }
         *(--body_ptr) = '\0';
-        m_sql_conn.createTable("rcomrad", struct_data.name, table_body);
+        m_sql_conn->createTable("rcomrad", struct_data.name, table_body);
     }
 }

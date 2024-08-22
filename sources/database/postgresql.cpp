@@ -8,23 +8,23 @@
 
 #include "pqxx/nontransaction"
 
-#include "db_credential_storage.hpp"
-
 #define LOG_POSTGRES_QUERIES 1
 
-data::PostgreSQL::PostgreSQL(word_t a_credentials_id)
+data::PostgreSQL::PostgreSQL(const Credentials& a_credentials)
 {
     MALLOC_STR(statement, 200);
     auto cur_char_ptr = statement;
 
-    auto& dbc = DBCredentialStorage::getCredentials(a_credentials_id);
+    const auto& cred = a_credentials.m_credentials.fields;
     SPRINTF(cur_char_ptr,
-            "dbname = %s user = %s password = %s hpsaddr = %s port = %s",
-            dbc.name, dbc.user, dbc.password, dbc.hostaddr, dbc.port);
+            // "dbname = %s user = %s password = %s hpsaddr = %s port = %s",
+            // cred.name, cred.user, cred.password, cred.hostaddr, cred.port);
+            "user = %s password = %s host = %s port = %s dbname = %s ",
+            cred.user, cred.password, cred.hostaddr, cred.port, cred.name);
 
     //--------------------------------------------------------------------------------
 
-    LOG_INFO("Creating PostgreSQL connection");
+    LOG_INFO("Creating PostgreSQL connection with stament '%s'", statement);
     try
     {
         m_pqxx_connection_ptr = std::make_unique<pqxx::connection>(statement);
@@ -84,7 +84,7 @@ void
 data::PostgreSQL::exec(const char* a_statment) noexcept
 {
 #if LOG_POSTGRES_QUERIES
-    LOG_INFO(a_statment);
+    LOG_INFO("%s", a_statment);
 #endif
 
     closeStatement();
@@ -99,7 +99,8 @@ data::PostgreSQL::exec(const char* a_statment) noexcept
     catch (const pqxx::sql_error& e)
     {
         // TODO: cyrilic
-        LOG_ERROR(e.what(), "req:", a_statment);
+        LOG_ERROR("Exception in pqxxlib: '%s'. Request: '%s'.", e.what(),
+                  a_statment);
     }
 }
 
@@ -117,7 +118,7 @@ void
 data::PostgreSQL::nontransaction(const char* a_statment) noexcept
 {
 #if LOG_POSTGRES_QUERIES
-    LOG_INFO(a_statment);
+    LOG_INFO("%s", a_statment);
 #endif
 
     try
@@ -128,8 +129,9 @@ data::PostgreSQL::nontransaction(const char* a_statment) noexcept
     }
     catch (const pqxx::sql_error& e)
     {
-        std::string s(e.what());
-        LOG_ERROR(s, "req:", a_statment);
+        // TODO: cyrilic
+        LOG_ERROR("Exception in pqxxlib: '%s'. Request: '%s'.", e.what(),
+                  a_statment);
     }
 }
 

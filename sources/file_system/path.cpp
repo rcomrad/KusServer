@@ -7,6 +7,8 @@
 #include "string/kus_string.hpp"
 #include "string/parser.hpp"
 
+SINGLETON_DEFINITOR(fs, Path);
+
 // #include "file.hpp"
 
 //--------------------------------------------------------------------------------
@@ -67,7 +69,7 @@ fs::Path::getFilePath(const str::string& aFileName) noexcept
     auto path = getInstance().getPath(getInstance().mFilesPaths, aFileName);
     if (!path.has_value())
     {
-        LOG_WARNING("No such file(", aFileName, ")");
+        LOG_WARNING("No '%s' file", aFileName);
     }
     return path;
 }
@@ -79,8 +81,8 @@ fs::Path::getFilePath(const str::string& aFolderName,
     auto path = getInstance().getPath(aFolderName, aFileName);
     if (!path.has_value())
     {
-        LOG_WARNING("Can't reach file", aFileName, "- no such folder(",
-                    aFolderName, ")");
+        LOG_WARNING("Can't reach file '%s' - no '%s' folder", aFileName,
+                    aFolderName);
     }
     return path;
 }
@@ -99,7 +101,7 @@ fs::Path::getFilePathUnsafe(const str::string& aFileName) noexcept
     }
     else
     {
-        LOG_ERROR("No such file(", aFileName, ")");
+        LOG_ERROR("No '%s' file", aFileName);
         return str::EMPTY_STRING;
     }
 }
@@ -114,8 +116,7 @@ fs::Path::getFilePathUnsafe(const str::string& aFolderName,
         return path.value();
     }
 
-    LOG_ERROR("Can't reach file", aFileName, "- no such folder(", aFolderName,
-              ")");
+    LOG_ERROR("Can't reach file '%s' - no '%s' folder", aFileName, aFolderName);
     return str::EMPTY_STRING;
 }
 
@@ -129,7 +130,7 @@ fs::Path::getFolderPath(const str::string& aFolderName) noexcept
     auto path = getInstance().getPath(getInstance().mFolderPaths, aFolderName);
     if (!path.has_value())
     {
-        LOG_WARNING("No such folder(", aFolderName, ")");
+        LOG_WARNING("No '%s' folder", aFolderName);
     }
     return path;
 }
@@ -144,8 +145,7 @@ fs::Path::getFolderPathUnsafe(const str::string& aFolderName) noexcept
     }
     else
     {
-        LOG_ERROR("Can't reach file", aFolderName, "- no such folder(",
-                  aFolderName, ")");
+        LOG_ERROR("No '%s' folder", aFolderName);
         return str::EMPTY_STRING;
     }
 }

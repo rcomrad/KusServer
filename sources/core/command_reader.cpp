@@ -8,7 +8,7 @@
 #include "command_handler.hpp"
 #include "yield.hpp"
 
-TRIGGER_SINGLETON_ENTRY_POINT(core::CommandReader);
+SINGLETON_DEFINITOR(core, CommandReader);
 
 core::CommandReader::CommandReader() noexcept : Module("command_reader")
 {
@@ -21,9 +21,21 @@ core::CommandReader::run() noexcept
     while (Core::isRunning())
     {
         std::getline(std::cin, inp);
-        CommandHandler::pushCommand(inp);
+        CommandHandler::pushCommand(Command{inp, stdoutOutput});
 
         // TODO: do we even need yield?
         Yield::large();
     }
+}
+
+void
+core::CommandReader::stdoutOutput(const char* a_buff) noexcept
+{
+    if (a_buff == nullptr)
+    {
+        LOG_ERROR("Empty command result buffer");
+        return;
+    }
+    fprintf(stdout, "%s", a_buff);
+    fflush(stdout);
 }

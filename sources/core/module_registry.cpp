@@ -1,5 +1,7 @@
 #include "module_registry.hpp"
 
+SINGLETON_DEFINITOR(core, ModuleRegistry);
+
 void
 core::ModuleRegistry::addModuleNonstatic(Module* a_module_ptr) noexcept
 {
@@ -11,7 +13,7 @@ core::ModuleRegistry::initModulesNonstatic() noexcept
 {
     for (auto& i : m_module_storage)
     {
-        i->initialize();
+        i->trigger_initialization();
     }
 }
 

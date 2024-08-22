@@ -65,7 +65,8 @@ TEST_F(UTestVariable, use_set_command)
     {
         int num         = rand_r(&seed);
         values[i.first] = num;
-        core::Command comm("set " + i.first + "=" + std::to_string(num));
+        core::Command comm("set " + i.first + "=" + std::to_string(num),
+                           nullptr);
         core::CommandHandler::pushCommand(std::move(comm));
         core::CommandHandler::handlCommand();
     }

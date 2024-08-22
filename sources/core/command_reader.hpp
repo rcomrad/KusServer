@@ -2,8 +2,8 @@
 
 //--------------------------------------------------------------------------------
 
-#include "module.hpp"
 #include "holy_trinity.hpp"
+#include "module.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -15,6 +15,9 @@ public:
     HOLY_TRINITY_SINGLETON(CommandReader);
     CommandReader() noexcept;
     void run() noexcept override;
+
+private:
+    static void stdoutOutput(const char* a_buff) noexcept;
 };
 } // namespace core
 

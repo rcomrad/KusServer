@@ -22,21 +22,24 @@
     NAME(NAME&& other) noexcept            = default; \
     NAME& operator=(NAME&& other) noexcept = default;
 
-#define SINGLETON_ENTRY_POINT                           \
-private:                                                \
-    struct SingletonEntryPoint                          \
-    {                                                   \
-        inline SingletonEntryPoint()                    \
-        {                                               \
-            getInstance();                              \
-        }                                               \
-    };                                                  \
-    static SingletonEntryPoint g_singleton_entry_point; \
-                                                        \
-public:
-
-#define TRIGGER_SINGLETON_ENTRY_POINT(ClassName) \
-    ClassName::SingletonEntryPoint ClassName::g_singleton_entry_point;
+#define SINGLETON_DEFINITOR(NameSpace, ClassName)                      \
+    NameSpace::ClassName& NameSpace::ClassName::getInstance() noexcept \
+    {                                                                  \
+        static ClassName instance;                                     \
+        return instance;                                               \
+    }                                                                  \
+    namespace                                                          \
+    {                                                                  \
+    struct SingletonEntryPoint##NameSpace##ClassName                   \
+    {                                                                  \
+        SingletonEntryPoint##NameSpace##ClassName()                    \
+        {                                                              \
+            NameSpace::ClassName::getInstance();                       \
+        }                                                              \
+    };                                                                 \
+    SingletonEntryPoint##NameSpace##ClassName                          \
+        g_singleton_entry_point_for##NameSpace##ClassName;             \
+    }
 
 #define HOLY_TRINITY_SINGLETON(NAME)                 \
     NAME(const NAME&) noexcept             = delete; \
@@ -44,18 +47,13 @@ public:
     NAME(NAME&& other) noexcept            = delete; \
     NAME& operator=(NAME&& other) noexcept = delete; \
                                                      \
-    static inline NAME& getInstance() noexcept       \
-    {                                                \
-        static NAME instance;                        \
-        return instance;                             \
-    }                                                \
-    SINGLETON_ENTRY_POINT
+    static NAME& getInstance() noexcept;
 
 #define HOLY_EMPTINESS
 
 #define SINGL_METHOD(public_def, private_def, result, name, params, action) \
     template <typename... Args>                                             \
-    static inline result name(Args... args) noexcept                        \
+    static inline result name(Args&&... args) noexcept                      \
     {                                                                       \
         action getInstance().name##Nonstatic(std::forward<Args>(args)...);  \
     }                                                                       \

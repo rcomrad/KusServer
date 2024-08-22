@@ -5,19 +5,7 @@
 #include "callback_storage.hpp"
 #include "logging.hpp"
 
-void
-core::CommandHandler::scanCommand() noexcept
-{
-    while (true)
-    {
-        str::string inp;
-        std::getline(std::cin, inp);
-        if (!inp.empty())
-        {
-            pushCommand(Command(inp));
-        }
-    }
-}
+SINGLETON_DEFINITOR(core, CommandHandler);
 
 void
 core::CommandHandler::pushCommandNonstatic(Command&& aCommand) noexcept
@@ -45,11 +33,15 @@ core::CommandHandler::handlCommandNonstatic() noexcept
     if (nullptr != temp)
     {
         ((CommandFPTR)temp)(command);
-        LOG_INFO("Command applyed: ", command.value);
+        LOG_INFO("Applyed command: '%s'", command.value);
     }
     else
     {
-        LOG_ERROR("Command don't applyed: can't call nulptr, command: ",
-                  command.value);
+        COMMAND_RETURN_ERROR(
+            command,
+            "Unable to apply command '%s'. No suitable command handler",
+            command.value);
     }
+
+    command.callOutputFunc();
 }

@@ -18,9 +18,13 @@ namespace fs
 class FileWrite
 {
 public:
-    FileWrite() noexcept = delete;
+    FileWrite(const str::string& aFileName,
+              const str::string& aFolderName) noexcept;
+    ~FileWrite();
 
-    static bool writeData(const str::string& aFileName,
+    void write(const char* format, ...) noexcept;
+
+    static bool writeData(const std::string& aFileName,
                           const str::string& aData) noexcept;
     // static std::optional<str::string> writeData(
     //     const str::string& aFolderName,
@@ -28,7 +32,7 @@ public:
     //     const str::string& aData) noexcept;
 
 private:
-    static str::string readFile(const str::string& aPath) noexcept;
+    FILE* m_file;
 };
 
 } // namespace fs

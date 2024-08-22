@@ -8,9 +8,16 @@ core::Module::Module(const char* a_name) noexcept : m_name(a_name)
 }
 
 void
+core::Module::trigger_initialization() noexcept
+{
+    loadVariables();
+    commandSetup();
+    initialize();
+}
+
+void
 core::Module::initialize() noexcept
 {
-    registerVariables();
 }
 
 void
@@ -28,6 +35,11 @@ core::Module::variableSetup(VariableInfoArray& a_set_array) noexcept
 {
 }
 
+void
+core::Module::commandSetup() noexcept
+{
+}
+
 int
 core::Module::getVatiable(int a_variable_num) noexcept
 {
@@ -35,7 +47,7 @@ core::Module::getVatiable(int a_variable_num) noexcept
 }
 
 void
-core::Module::registerVariables() noexcept
+core::Module::loadVariables() noexcept
 {
     VariableInfoArray var;
     variableSetup(var);

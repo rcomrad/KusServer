@@ -6,6 +6,8 @@
 #include "variable_storage.hpp"
 #include "yield.hpp"
 
+SINGLETON_DEFINITOR(core, Core);
+
 void
 core::Core::setupNonstatic() noexcept
 {
@@ -15,6 +17,7 @@ core::Core::setupNonstatic() noexcept
     VariableStorage::addVariableInfo(VariableInfoArray{
         {"running_flag", nullptr}
     });
+    ModuleRegistry::initModules();
     VariableStorage::reloadValuesFromFile();
     VariableStorage::set(0, 1);
 }
@@ -22,7 +25,6 @@ core::Core::setupNonstatic() noexcept
 void
 core::Core::runNonstatic() noexcept
 {
-    ModuleRegistry::initModules();
     ModuleRegistry::runModules();
     while (isRunning())
     {
