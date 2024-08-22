@@ -19,14 +19,6 @@ core::VariableStorage::VariableStorage() noexcept
     registerCommand("token", tokenCommandHandler);
 }
 
-// core::VariableStorage::Variable&
-// core::VariableStorage::Variable::operator=(const Variable& other) noexcept
-// {
-//     value  = int(other.value);
-//     parser = other.parser;
-//     return *this;
-// }
-
 core::VariableStorage::Variable::Variable(const Variable& other) noexcept
 {
     value  = int(other.value);
