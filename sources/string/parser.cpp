@@ -110,7 +110,6 @@ std::vector<std::string_view> str::Parser::slice(const std::string_view& aStr,
                                                  const std::string_view& aErase) noexcept
 {
     std::vector<std::string_view> answer;
-
     ASCIIBox delimiters(aDelimiters.data());
     ASCIIBox erasors(aErase.data());
 
