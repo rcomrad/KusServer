@@ -96,6 +96,16 @@ void
 core::VariableStorage::setCommandHandlerNonstatic(
     core::Command& aCommand) noexcept
 {
+    if (aCommand.variables.empty())
+    {
+        COMMAND_RETURN_ERROR(aCommand, "No variable values specified");
+    }
+    if (!aCommand.arguments.empty())
+    {
+        COMMAND_RETURN_ERROR(aCommand, "There is unrecognised word '%s'",
+                             *aCommand.arguments.begin());
+    }
+
     for (const auto& i : aCommand.variables)
     {
         // TODO: in separate function

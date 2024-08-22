@@ -42,8 +42,8 @@ class FileRead
 public:
     FileRead() noexcept = delete;
 
-    static const std::string& getData(const DataTarget& aTarget) noexcept;
-    static std::string getData(const FilenameRefTarget& aTarget) noexcept;
+    static const str::string& getData(const DataTarget& aTarget) noexcept;
+    static str::string getData(const FilenameRefTarget& aTarget) noexcept;
 
     static std::vector<std::string_view> getLines(
         const ReadTarget& aTarget) noexcept;
@@ -61,7 +61,7 @@ public:
         FPSeparator aSepFunc = str::Separator::newWord) noexcept;
 
 private:
-    static std::string readFile(const str::string& aPath) noexcept;
+    static str::string readFile(const str::string& aPath) noexcept;
 };
 
 } // namespace fs

@@ -16,13 +16,13 @@ fs::FileRead::getData(const DataTarget& aTarget) noexcept
     return {aTarget.mData};
 }
 
-std::string
+str::string
 fs::FileRead::getData(const FilenameRefTarget& aTarget) noexcept
 {
     return readFile(aTarget.mData);
 }
 
-std::string
+str::string
 fs::FileRead::readFile(const str::string& aPath) noexcept
 {
     str::string result;
