@@ -68,7 +68,7 @@ fs::FileRead::getLines(const ReadTarget& aTarget) noexcept
         {
             if (i - last > 1)
             {
-                result.emplace_back(data.substr(last + 1, i - last - 1));
+                result.emplace_back(&data[last + 1], i - last - 1);
             }
             last = i;
         }
@@ -92,7 +92,7 @@ fs::FileRead::getWords(const ReadTarget& aTarget, FPSeparator aSepFunc) noexcept
             while (line.size() > indx && aSepFunc(line[indx])) indx++;
             int from = indx;
             while (line.size() > indx && !aSepFunc(line[indx])) indx++;
-            result.back().emplace_back(line.substr(from, indx - from));
+            result.back().emplace_back(&line[from], indx - from);
             indx += 1;
         }
         if (result.back().empty()) result.pop_back();
