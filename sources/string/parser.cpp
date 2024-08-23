@@ -58,11 +58,11 @@
 
 struct ASCIIBox
 {
-    uint64_t data[4];
+    int64_t data[2];
 
     ASCIIBox()
     {
-        data[0] = data[1] = data[2] = data[3] = 0;
+        data[0] = data[1] = 0;
     }
 
     ASCIIBox(const char* str) : ASCIIBox()
@@ -137,6 +137,21 @@ std::vector<std::string_view> str::Parser::slice(const std::string_view& aStr,
     }
 
     return answer;
+}
+
+std::vector<std::string_view> str::Parser::parse_in_current(const std::string_view &aStr,
+                                                            const std::string_view &aDelimiters,
+                                                            const std::string_view &aErase) noexcept
+{
+    return slice(aStr, (char*)aStr.data(), aDelimiters, aErase);
+}
+
+std::vector<std::string_view> str::Parser::parse_in_new(const std::string_view &aStr,
+                                                        char *writer,
+                                                        const std::string_view &aDelimiters,
+                                                        const std::string_view &aErase) noexcept
+{
+    return slice(aStr, writer, aDelimiters, aErase);
 }
 
 void

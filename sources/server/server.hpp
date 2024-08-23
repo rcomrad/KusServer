@@ -26,6 +26,7 @@ public:
 
 private:
     Server() noexcept;
+    COMMAND_HANDLER_NONSTATIC(tokenCommandHandler);
 };
 
 } // namespace serv

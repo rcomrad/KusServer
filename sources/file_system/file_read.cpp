@@ -131,9 +131,9 @@ fs::FileRead::getWordsSet(const ReadTarget& aTarget,
 {
     auto words = getWords(aTarget, aSepFunc);
     std::unordered_set<std::string_view> result;
-    for (auto&& i : words)
+    for (auto& i : words)
     {
-        for (auto&& j : i)
+        for (auto& j : i)
         {
             result.insert(j);
         }

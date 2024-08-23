@@ -5,13 +5,25 @@ namespace kustest
 {
 class UTestString : public Fixture {};
 
+TEST_F(UTestString, test_slice_empty)
+{
+    std::string_view s = ",!,,, ,,!";
+    char buffer[256];
+    std::string delimiters = ", ";
+    std::string erase = "!";
+
+    auto result = str::Parser::parse_in_new(s, buffer, delimiters, erase);
+    ASSERT_EQ(result.size(), 0);
+}
+
 TEST_F(UTestString, test_slice_simple)
 {
     std::string_view s = "Hello, world!";
     char buffer[256];
     std::string delimiters = ", ";
     std::string erase = "!";
-    auto result = str::Parser::slice(s, buffer, delimiters, erase);
+
+    auto result = str::Parser::parse_in_new(s, buffer, delimiters, erase);
     ASSERT_EQ(result.size(), 2);
     ASSERT_EQ(result[0], "Hello");
     ASSERT_EQ(result[1], "world");
@@ -22,21 +34,20 @@ TEST_F(UTestString, test_slice_repeated_delimiters) {
     char buffer[256];
     std::string delimiters = ", ";
     std::string erase = "!";
-    auto result = str::Parser::slice(s, buffer, delimiters, erase);
+
+    auto result = str::Parser::parse_in_new(s, buffer, delimiters, erase);
     ASSERT_EQ(result.size(), 2);
     ASSERT_EQ(result[0], "Hello");
     ASSERT_EQ(result[1], "world");
 }
 
-TEST_F(UTestString, test_slice_complex_case)
+TEST_F(UTestString, test_slice_into_old_buffer)
 {
-    std::string_view s = "apple,,,orange...banana!grape!!pear--peach";
-    char buffer[256];
+    std::string s = "apple,,,orange...banana!grape!!pear--peach";
     std::string delimiters = ",.- !";
     std::string erase = "!";
 
-    auto result = str::Parser::slice(s, buffer, delimiters, erase);
-
+    auto result = str::Parser::parse_in_current(s, delimiters, erase);
     ASSERT_EQ(result.size(), 6);
     ASSERT_EQ(result[0], "apple");
     ASSERT_EQ(result[1], "orange");

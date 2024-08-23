@@ -3,11 +3,11 @@
 #include "core/logging.hpp"
 
 #include "file_system/file_read.hpp"
-#include "file_system/path.hpp"
 
 #include "string/parser.hpp"
 #include "string/separators.hpp"
 
+SINGLETON_DEFINITOR(core, VariableStorage);
 //--------------------------------------------------------------------------------
 
 const int core::VariableStorage::CORRUPTED_VALUE = -100;
@@ -16,7 +16,6 @@ core::VariableStorage::VariableStorage() noexcept
 {
     registerCommand("set", setCommandHandler);
     registerCommand("show_var", showVarCommandHandler);
-    registerCommand("token", tokenCommandHandler);
 }
 
 core::VariableStorage::Variable::Variable(const Variable& other) noexcept
@@ -111,7 +110,7 @@ core::VariableStorage::setCommandHandlerNonstatic(
                 m_variables[num].value = val;
                 COMMAND_RETURN_MSG(
                     aCommand,
-                    "Successfuly assigned value '%s' to variable '%s'",
+                    "Successfully assigned value '%s' to variable '%s'",
                     i.second, i.first);
             }
             else
@@ -146,18 +145,4 @@ core::VariableStorage::showVarCommandHandlerNonstatic(
         result += "\n";
     }
     COMMAND_RETURN_MSG(aCommand, "\nVariable list:\n%sList end", result);
-}
-
-void
-core::VariableStorage::tokenCommandHandlerNonstatic(
-    core::Command& aCommand) noexcept
-{
-    if (aCommand.arguments.size() != 1)
-    {
-        LOG_ERROR("Can't parse token arguments. Usage: \"token "
-                  "turn_off/turn_on/memory/print\" ");
-        return;
-    }
-    core::CommandHandler::pushCommand(std::move(core::Command(
-        "set token_state=" + str::string(*aCommand.arguments.begin()), nullptr)));
 }
