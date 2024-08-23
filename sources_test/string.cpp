@@ -90,8 +90,8 @@ TEST_F(UTestString, get_words)
 
 TEST_F(UTestString, get_words_map)
 {
-    fs::DataTarget target("k1 v1\nk2; v2");
-    auto wordsMap = fs::FileRead::getWordsMap(target, str::Separator::newWord);
+    fs::DataTarget target("k1 v1\nk2 v2");
+    auto wordsMap = fs::FileRead::getWordsMap(target, str::Separator::space);
     EXPECT_EQ(wordsMap.size(), 2);
     EXPECT_EQ(wordsMap["k1"], "v1");
     EXPECT_EQ(wordsMap["k2"], "v2");
@@ -99,8 +99,8 @@ TEST_F(UTestString, get_words_map)
 
 TEST_F(UTestString, get_words_set)
 {
-    fs::DataTarget target("word1 word2 word3");
-    auto wordsSet =fs::FileRead::getWordsSet(target, str::Separator::space);
+    fs::DataTarget target("word1; word2 ;word3");
+    auto wordsSet =fs::FileRead::getWordsSet(target, str::Separator::newWord);
     EXPECT_EQ(wordsSet.size(), 3);
     EXPECT_TRUE(wordsSet.find("word1") != wordsSet.end());
     EXPECT_TRUE(wordsSet.find("word2") != wordsSet.end());
