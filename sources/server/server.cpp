@@ -27,7 +27,8 @@ serv::Server::run() noexcept
 void
 serv::Server::variableSetup(core::VariableInfoArray& a_set_array) noexcept
 {
-    a_set_array.emplace_back("token_state", serv::Token::getTokenStatus);
+    core::VariableInfo varInfo = {"token_state", &serv::Token::getTokenStatus};
+    a_set_array.emplace_back(varInfo);
 }
 
 void
@@ -46,7 +47,7 @@ serv::Server::tokenCommandHandlerNonstatic(
 
     if (token_states.find(state_val) == token_states.end())
     {
-        COMMAND_RETURN_ERROR(aCommand, "Incorrent token state value: '%s'", state_val);
+        COMMAND_RETURN_ERROR(aCommand, "Incorrect token state value: '%s'", state_val);
     }
     else {
         core::Command command = core::Command(
