@@ -59,13 +59,13 @@ TEST_F(UTestString, test_slice_into_old_buffer)
     ASSERT_EQ(result[5], "peach");
 }
 
-TEST_F(UTestString, GetData)
+TEST_F(UTestString, get_data)
 {
     fs::DataTarget target("test data");
     EXPECT_EQ(fs::FileRead::getData(target), "test data");
 }
 
-TEST_F(UTestString, GetLines)
+TEST_F(UTestString, get_lines)
 {
     fs::DataTarget target("line1\nline2\nline3");
     auto lines = fs::FileRead::getLines(target);
@@ -75,26 +75,29 @@ TEST_F(UTestString, GetLines)
     EXPECT_EQ(lines[2], "line3");
 }
 
-TEST_F(UTestString, GetWords)
+TEST_F(UTestString, get_words)
 {
-    fs::DataTarget target("word1 word2; word3");
+    fs::DataTarget target("w1;w2\nw3 w4");
     auto words = fs::FileRead::getWords(target, str::Separator::newWord);
-    EXPECT_EQ(words.size(), 1);
-    EXPECT_EQ(words[0].size(), 3);
-    EXPECT_EQ(words[0][0], "word1");
-    EXPECT_EQ(words[0][1], "word2");
-    EXPECT_EQ(words[0][2], "word3");
+    EXPECT_EQ(words.size(), 2);
+    EXPECT_EQ(words[0].size(), 2);
+    EXPECT_EQ(words[0][0], "w1");
+    EXPECT_EQ(words[0][1], "w2");
+    EXPECT_EQ(words[1].size(), 2);
+    EXPECT_EQ(words[1][0], "w3");
+    EXPECT_EQ(words[1][1], "w4");
 }
 
-TEST_F(UTestString, GetWordsMap)
+TEST_F(UTestString, get_words_map)
 {
-    fs::DataTarget target("key1 value1");
-    auto wordsMap = fs::FileRead::getWordsMap(target, str::Separator::space);
-    EXPECT_EQ(wordsMap.size(), 1);
-    EXPECT_EQ(wordsMap["key1"], "value1");
+    fs::DataTarget target("k1 v1\nk2; v2");
+    auto wordsMap = fs::FileRead::getWordsMap(target, str::Separator::newWord);
+    EXPECT_EQ(wordsMap.size(), 2);
+    EXPECT_EQ(wordsMap["k1"], "v1");
+    EXPECT_EQ(wordsMap["k2"], "v2");
 }
 
-TEST_F(UTestString, GetWordsSet)
+TEST_F(UTestString, get_words_set)
 {
     fs::DataTarget target("word1 word2 word3");
     auto wordsSet =fs::FileRead::getWordsSet(target, str::Separator::space);
