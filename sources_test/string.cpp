@@ -7,7 +7,18 @@ namespace kustest
 {
 class UTestString : public Fixture {};
 
-TEST_F(UTestString, test_slice_empty)
+TEST_F(UTestString, test_slice_empty_input)
+{
+    std::string_view s;
+    char buffer[256];
+    std::string delimiters = ", ";
+    std::string erase = "!";
+
+    auto result = str::Parser::parse_in_new(s, buffer, delimiters, erase);
+    ASSERT_EQ(result.size(), 0);
+}
+
+TEST_F(UTestString, test_slice_empty_output)
 {
     std::string_view s = ",!,,, ,,!";
     char buffer[256];
