@@ -52,6 +52,6 @@ serv::Server::tokenCommandHandlerNonstatic(
     else {
         core::Command command = core::Command(
                 "set token_state=" + state_val, {});
-        COMMAND_RETURN_MSG(aCommand, "Successfully assigned value '%s' to variable: token", state_val);
+        COMMAND_RETURN_MSG(aCommand, "Successfully assigned value '%s' to variable: token_state", state_val);
     }
 }
