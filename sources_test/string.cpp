@@ -67,7 +67,8 @@ TEST_F(UTestString, get_data)
 
 TEST_F(UTestString, get_lines)
 {
-    fs::DataTarget target("line1\nline2\nline3");
+    std::string data = "line1\nline2\nline3";
+    fs::DataTarget target(data);
     auto lines = fs::FileRead::getLines(target);
     EXPECT_EQ(lines.size(), 3);
     EXPECT_EQ(lines[0], "line1");
@@ -77,29 +78,32 @@ TEST_F(UTestString, get_lines)
 
 TEST_F(UTestString, get_words)
 {
-    fs::DataTarget target("w1;w2\nw3 w4");
+    std::string data = "word1;word2\nword3 word4";
+    fs::DataTarget target(data);
     auto words = fs::FileRead::getWords(target, str::Separator::newWord);
     EXPECT_EQ(words.size(), 2);
     EXPECT_EQ(words[0].size(), 2);
-    EXPECT_EQ(words[0][0], "w1");
-    EXPECT_EQ(words[0][1], "w2");
+    EXPECT_EQ(words[0][0], "word1");
+    EXPECT_EQ(words[0][1], "word2");
     EXPECT_EQ(words[1].size(), 2);
-    EXPECT_EQ(words[1][0], "w3");
-    EXPECT_EQ(words[1][1], "w4");
+    EXPECT_EQ(words[1][0], "word3");
+    EXPECT_EQ(words[1][1], "word4");
 }
 
 TEST_F(UTestString, get_words_map)
 {
-    fs::DataTarget target("k1 v1\nk2 v2");
+    std::string data = "key1 value1\nkey2 value2";
+    fs::DataTarget target(data);
     auto wordsMap = fs::FileRead::getWordsMap(target, str::Separator::space);
     EXPECT_EQ(wordsMap.size(), 2);
-    EXPECT_EQ(wordsMap["k1"], "v1");
-    EXPECT_EQ(wordsMap["k2"], "v2");
+    EXPECT_EQ(wordsMap["key1"], "value1");
+    EXPECT_EQ(wordsMap["key2"], "value2");
 }
 
 TEST_F(UTestString, get_words_set)
 {
-    fs::DataTarget target("word1; word2 ;word3");
+    std::string data = "word1; word2 ;word3";
+    fs::DataTarget target(data);
     auto wordsSet =fs::FileRead::getWordsSet(target, str::Separator::newWord);
     EXPECT_EQ(wordsSet.size(), 3);
     EXPECT_TRUE(wordsSet.find("word1") != wordsSet.end());
