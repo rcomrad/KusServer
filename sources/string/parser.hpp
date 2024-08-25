@@ -53,7 +53,7 @@ private:
             const std::string_view& aStr,
             char* aWriter,
             const std::string_view& aDelimiters,
-            const std::string_view& aErase = "") noexcept;
+            const std::string_view& aErase) noexcept;
 };
 
 } // namespace str

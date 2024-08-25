@@ -2,12 +2,14 @@
 
 #include "core/logging.hpp"
 
-#include "file_system/file_read.hpp"
+#include "file_system/data_read.hpp"
+#include "file_system/path.hpp"
 
 #include "string/parser.hpp"
 #include "string/separators.hpp"
 
 SINGLETON_DEFINITOR(core, VariableStorage);
+
 //--------------------------------------------------------------------------------
 
 const int core::VariableStorage::CORRUPTED_VALUE = -100;
@@ -61,8 +63,8 @@ core::VariableStorage::addVariableInfoNonstatic(
 void
 core::VariableStorage::reloadValuesFromFileNonstatic() noexcept
 {
-    auto settings = fs::FileRead::getWordsMap(
-        fs::ReadFromStoredFile("main_settings.cfg"), str::Separator::variable);
+    std::string settings_data = fs::DataRead::readFile(fs::Path::getFilePath("main_settings.cfg").value());
+    auto settings = fs::DataRead::getWordsMap(settings_data, str::Separator::variable);
     for (auto& var : settings)
     {
         auto it = m_name_to_var_dict.find(var.first);

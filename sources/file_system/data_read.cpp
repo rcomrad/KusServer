@@ -1,4 +1,4 @@
-#include "file_read.hpp"
+#include "data_read.hpp"
 
 #include <fstream>
 
@@ -6,24 +6,10 @@
 
 #include "string/separators.hpp"
 
-#include "path.hpp"
-
 //--------------------------------------------------------------------------------
 
-const str::string&
-fs::FileRead::getData(const DataTarget& aTarget) noexcept
-{
-    return {aTarget.mData};
-}
-
 str::string
-fs::FileRead::getData(const FilenameRefTarget& aTarget) noexcept
-{
-    return readFile(aTarget.mData);
-}
-
-str::string
-fs::FileRead::readFile(const str::string& aPath) noexcept
+fs::DataRead::readFile(const str::string& aPath) noexcept
 {
     str::string result;
     std::ifstream ios(aPath);
@@ -42,45 +28,24 @@ fs::FileRead::readFile(const str::string& aPath) noexcept
 //--------------------------------------------------------------------------------
 
 std::vector<std::string_view>
-fs::FileRead::getLines(const ReadTarget& aTarget) noexcept
+fs::DataRead::getLines(const std::string_view& aData) noexcept
 {
-    std::string data_storage;
-    const std::string* data_ptr = &data_storage;
-
-    switch (aTarget.mType)
-    {
-        case fs::ReadTarget::DATA:
-            data_ptr = &getData(static_cast<const DataTarget&>(aTarget));
-            break;
-        case fs::ReadTarget::FILE_NAME:
-        case fs::ReadTarget::FILE_NAME_REF:
-            data_storage =
-                getData(static_cast<const FilenameRefTarget&>(aTarget));
-            break;
-    }
-    const std::string& data = *data_ptr;
-
     std::vector<std::string_view> result;
-    int last = -1;
-    for (int i = 0; i < data.size() + 1; ++i)
+    auto start = aData.begin();
+    while (start != aData.end())
     {
-        if (str::Separator::newLine(data[i]))
-        {
-            if (i - last > 1)
-            {
-                result.emplace_back(&data[last + 1], i - last - 1);
-            }
-            last = i;
-        }
+        auto end = std::find(start, aData.end(), '\n');
+        result.emplace_back(&*start, std::distance(start, end));
+        start = end != aData.end() ? end + 1 : aData.end();
     }
     LOG_INFO("Line parsing finished");
     return result;
 }
 
 std::vector<std::vector<std::string_view>>
-fs::FileRead::getWords(const ReadTarget& aTarget, FPSeparator aSepFunc) noexcept
+fs::DataRead::getWords(const std::string_view& aData, FPSeparator aSepFunc) noexcept
 {
-    auto lines = getLines(aTarget);
+    auto lines = getLines(aData);
     std::vector<std::vector<std::string_view>> result;
     for (auto& line : lines)
     {
@@ -102,10 +67,10 @@ fs::FileRead::getWords(const ReadTarget& aTarget, FPSeparator aSepFunc) noexcept
 }
 
 std::unordered_map<std::string_view, std::string_view>
-fs::FileRead::getWordsMap(const ReadTarget& aTarget,
+fs::DataRead::getWordsMap(const std::string_view& aData,
                           FPSeparator aSepFunc) noexcept
 {
-    auto words = getWords(aTarget, aSepFunc);
+    auto words = getWords(aData, aSepFunc);
     std::unordered_map<std::string_view, std::string_view> result;
     for (auto& i : words)
     {
@@ -126,10 +91,10 @@ fs::FileRead::getWordsMap(const ReadTarget& aTarget,
 }
 
 std::unordered_set<std::string_view>
-fs::FileRead::getWordsSet(const ReadTarget& aTarget,
+fs::DataRead::getWordsSet(const std::string_view& aData,
                           FPSeparator aSepFunc) noexcept
 {
-    auto words = getWords(aTarget, aSepFunc);
+    auto words = getWords(aData, aSepFunc);
     std::unordered_set<std::string_view> result;
     for (auto& i : words)
     {

@@ -16,7 +16,7 @@ core::Command::Command(const str::string& aStr,
         auto temp = str::Parser::parse_in_current(i,  "=");
         if (temp.size() == 1)
         {
-            arguments.insert(arguments.end(), str::string(temp[0]));
+            arguments.emplace_back(temp[0]);
         }
         else
         {

@@ -11,6 +11,10 @@ SINGLETON_DEFINITOR(serv, Server)
 
 serv::Server::Server() noexcept : core::Module("server")
 {
+}
+
+void serv::Server::initialize() noexcept
+{
     registerCommand("token", tokenCommandHandler);
 }
 
@@ -35,23 +39,7 @@ void
 serv::Server::tokenCommandHandlerNonstatic(
         core::Command& aCommand) noexcept
 {
-    if (aCommand.arguments.size() != 1)
-    {
-        COMMAND_RETURN_ERROR(aCommand, "Can't parse token arguments. Usage: \"token "
-                                       "turn_off/turn_on/memory/print\" ");
-        return;
-    }
-
-    str::string state_val = str::string(*aCommand.arguments.begin());
-    std::unordered_set<str::string> token_states = {"turn_off", "turn_on", "memory", "print"};
-
-    if (token_states.find(state_val) == token_states.end())
-    {
-        COMMAND_RETURN_ERROR(aCommand, "Incorrect token state value: '%s'", state_val);
-    }
-    else {
-        core::Command command = core::Command(
-                "set token_state=" + state_val, {});
-        COMMAND_RETURN_MSG(aCommand, "Successfully assigned value '%s' to variable: token_state", state_val);
-    }
+    core::Command comm("set token_state=" + *aCommand.arguments.begin(), {});
+    core::CommandHandler::pushCommand(std::move(comm));
+    COMMAND_RETURN_MSG(aCommand, "Token state changed");
 }

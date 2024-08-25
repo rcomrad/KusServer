@@ -70,7 +70,7 @@ struct ASCIIBox
         set(str);
     }
 
-    void set(int num)
+    void set(int8_t num)
     {
         if (num >= 0 && num < 64)
         {
@@ -80,18 +80,19 @@ struct ASCIIBox
         {
             data[1] |= 1ULL << (num - 64);
         }
+        LOG_ERROR("ASCIIBox: num is out of range");
     }
 
     void set(const char* str)
     {
         while (*str)
         {
-            set(static_cast<unsigned char>(*str));
+            set(static_cast<int8_t>(*str));
             ++str;
         }
     }
 
-    bool get(int num)
+    bool get(int8_t num)
     {
         if (num >= 0 && num < 64)
         {
@@ -100,6 +101,7 @@ struct ASCIIBox
         {
             return data[1] & (1ULL << (num - 64));
         }
+        LOG_ERROR("ASCIIBox: num is out of range");
         return false;
     }
 };
