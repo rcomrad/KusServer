@@ -20,12 +20,14 @@ public:
     HOLY_TRINITY_SINGLETON(Server);
     ~Server() override = default;
 
+    void initialize() noexcept override;
     void run() noexcept override;
     void variableSetup(
         core::VariableInfoArray& a_var_set_array) noexcept override;
 
 private:
     Server() noexcept;
+    COMMAND_HANDLER_NONSTATIC(tokenCommandHandler);
 };
 
 } // namespace serv

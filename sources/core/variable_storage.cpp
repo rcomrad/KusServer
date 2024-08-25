@@ -2,7 +2,7 @@
 
 #include "core/logging.hpp"
 
-#include "file_system/file_read.hpp"
+#include "file_system/data_read.hpp"
 #include "file_system/path.hpp"
 
 #include "string/parser.hpp"
@@ -63,22 +63,22 @@ core::VariableStorage::addVariableInfoNonstatic(
 void
 core::VariableStorage::reloadValuesFromFileNonstatic() noexcept
 {
-    auto settings = fs::FileRead::getWordsMap(
-        fs::ReadFromStoredFile("main_settings.cfg"), str::Separator::variable);
+    std::string settings_data = fs::DataRead::readFile(fs::Path::getFilePath("main_settings.cfg").value());
+    auto settings = fs::DataRead::getWordsMap(settings_data, str::Separator::variable);
     for (auto& var : settings)
     {
         auto it = m_name_to_var_dict.find(var.first);
         if (it != m_name_to_var_dict.end())
         {
             int num                = it->second;
-            m_variables[num].value = m_variables[num].parser(var.second);
-            LOG_INFO("Variable '%s' was set with value '%s'", var.first,
-                     var.second);
+            m_variables[num].value = m_variables[num].parser(str::string(var.second));
+            LOG_INFO("Variable '%s' was set with value '%s'", str::string(var.first),
+                     str::string(var.second));
         }
         else
         {
             LOG_ERROR("No variable with name '%s' have been registered",
-                      var.first);
+                      str::string(var.first));
         }
     }
 }
@@ -112,7 +112,7 @@ core::VariableStorage::setCommandHandlerNonstatic(
                 m_variables[num].value = val;
                 COMMAND_RETURN_MSG(
                     aCommand,
-                    "Successfuly assigned value '%s' to variable '%s'",
+                    "Successfully assigned value '%s' to variable '%s'",
                     i.second, i.first);
             }
             else

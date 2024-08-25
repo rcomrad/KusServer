@@ -7,8 +7,8 @@
 #include <unordered_map>
 #include <vector>
 
-#include "variable.hpp"
 #include "kus_string.hpp"
+#include "variable.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -25,12 +25,19 @@ public:
     // static std::vector<Variable> getVariablesFromFile(
     //     const str::string aFilename) noexcept;
     // static std::vector<Variable> getVariablesFromFile(
-    //     const str::string& aFolderName, const str::string aFilename) noexcept;
+    //     const str::string& aFolderName, const str::string aFilename)
+    //     noexcept;
 
-    static std::vector<str::string> slice(
-        const str::string& aStr,
-        const str::string& aDelimiters,
-        const str::string& aErase = "") noexcept;
+    static std::vector<std::string_view> parse_in_current(
+        const std::string_view& aStr,
+        const std::string_view& aDelimiters,
+        const std::string_view& aErase = "") noexcept;
+
+    static std::vector<std::string_view> parse_in_new(
+            const std::string_view& aStr,
+            char* writer,
+            const std::string_view& aDelimiters,
+            const std::string_view& aErase = "") noexcept;
 
     enum class Type
     {
@@ -40,8 +47,15 @@ public:
     };
     static void normalize(str::string& aStr, Type aType) noexcept;
     static str::string normalize(const str::string& aStr, Type aType) noexcept;
+
+private:
+    static std::vector<std::string_view> slice(
+            const std::string_view& aStr,
+            char* aWriter,
+            const std::string_view& aDelimiters,
+            const std::string_view& aErase) noexcept;
 };
 
-} // namespace file
+} // namespace str
 
 //--------------------------------------------------------------------------------
