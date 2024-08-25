@@ -80,7 +80,10 @@ struct ASCIIBox
         {
             data[1] |= 1ULL << (num - 64);
         }
-        LOG_ERROR("ASCIIBox: num is out of range");
+        else
+        {
+            LOG_ERROR("ASCIIBox: num is out of range");
+        }
     }
 
     void set(const char* str)
