@@ -61,6 +61,7 @@ private:
     COMMAND_HANDLER_NONSTATIC(setCommandHandler);
     COMMAND_HANDLER_NONSTATIC(showVarCommandHandler);
 };
+
 } // namespace core
 
 //--------------------------------------------------------------------------------
