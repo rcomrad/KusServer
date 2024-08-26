@@ -6,21 +6,21 @@ core::Command::Command(const str::string& aStr,
                        OutputCallback a_outp_call) noexcept
     : m_result_buffer_size(200), m_output_callback(a_outp_call)
 {
-    auto args = str::Parser::slice(aStr, "; \n\t");
-    value     = std::move(args[0]);
+    auto args = str::Parser::parse_in_current(aStr, "; \n\t");
+    value     = args[0];
     args.erase(args.begin());
 
     for (auto& i : args)
     {
         // TODO: empty line slice bug
-        auto temp = str::Parser::slice(i, "=");
+        auto temp = str::Parser::parse_in_current(i,  "=");
         if (temp.size() == 1)
         {
-            arguments.emplace_back(std::move(temp[0]));
+            arguments.emplace_back(temp[0]);
         }
         else
         {
-            variables[std::move(temp[0])] = std::move(temp[1]);
+            variables[str::string(temp[0])] = temp[1];
         }
     }
 }

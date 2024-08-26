@@ -37,30 +37,26 @@ namespace fs
 
 typedef bool (*FPSeparator)(char);
 
-class FileRead
+class DataRead
 {
 public:
-    FileRead() noexcept = delete;
+    DataRead() noexcept = delete;
 
-    static const str::string& getData(const DataTarget& aTarget) noexcept;
-    static str::string getData(const FilenameRefTarget& aTarget) noexcept;
+    static std::vector<std::string_view> getLines(
+        const std::string_view& aData) noexcept;
 
-    static std::vector<str::string> getLines(
-        const ReadTarget& aTarget) noexcept;
-
-    static std::vector<std::vector<str::string>> getWords(
-        const ReadTarget& aTarget,
+    static std::vector<std::vector<std::string_view>> getWords(
+        const std::string_view& aData,
         FPSeparator aSepFunc = str::Separator::newWord) noexcept;
 
-    static std::unordered_map<str::string, str::string> getWordsMap(
-        const ReadTarget& aTarget,
+    static std::unordered_map<std::string_view, std::string_view> getWordsMap(
+        const std::string_view& aData,
         FPSeparator aSepFunc = str::Separator::newWord) noexcept;
 
-    static std::unordered_set<str::string> getWordsSet(
-        const ReadTarget& aTarget,
+    static std::unordered_set<std::string_view> getWordsSet(
+        const std::string_view& aData,
         FPSeparator aSepFunc = str::Separator::newWord) noexcept;
 
-private:
     static str::string readFile(const str::string& aPath) noexcept;
 };
 

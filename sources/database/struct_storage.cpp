@@ -58,12 +58,12 @@ data::StructStorage::registrateStructNonstatic(
         }
         else if (parts[0] == "char")
         {
-            size_t temp = std::stoi(parts[2]);
+            size_t temp = std::stoi(str::string(parts[2]));
             cur_var     = {CPPTypeEnum::CHAR_PTR, temp};
             data.str_max_size += temp + 2;
         }
         // TODO: safe
-        strcpy(cur_var.name, parts[1].c_str());
+        strcpy(cur_var.name, str::string(parts[1]).c_str());
 
         ++cnt;
     }
