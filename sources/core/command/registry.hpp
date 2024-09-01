@@ -25,10 +25,13 @@ public:
 
     SINGL_VOID_METHOD(listen, (InputBuffer * a_buffer));
     SINGL_VOID_METHOD(unlisten, (InputBuffer * a_buffer));
+
     SINGL_VOID_METHOD(addCommandInfo,
                       (const char* a_comm_name,
                        const char* a_help_info,
                        const char* a_help_args));
+
+    SINGL_VOID_METHOD(processCommand, (CommandExtend & a_command));
 
 protected:
     void initialize() noexcept override;

@@ -25,11 +25,6 @@ public:
 
 private:
     Server() noexcept;
-    COMMAND_HANDLER_NONSTATIC(tokenCommandHandler);
-
-// #define ENUM_NAME ServerVariables
-// #define VAR_FILE  "server/server_vars.inc"
-// #include "core/variable/var_unpack.inc"
 };
 
 } // namespace serv

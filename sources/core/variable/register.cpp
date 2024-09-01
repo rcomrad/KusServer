@@ -3,13 +3,12 @@
 #include "storage.hpp"
 
 int
-core::VariableRegister::registerVariable(
-    std::string&& a_var_name,
-    FPVariableParser a_parse_func,
-    std::vector<std::string>&& a_possable_values) noexcept
+core::VariableRegister::registerVariable(const char* a_var_name,
+                                         const char** a_values,
+                                         int a_value_count) noexcept
 {
-    return VariableStorage::addVariableInfo(std::move(a_var_name), a_parse_func,
-                                            std::move(a_possable_values));
+    return VariableStorage::addVariableInfo(a_var_name, a_values,
+                                            a_value_count);
 }
 
 int
@@ -19,8 +18,7 @@ core::VariableRegister::registerVariable(
     int result = -1;
     for (auto&& i : a_var_data_array)
     {
-        int temp = registerVariable(std::move(i.var_name), i.parse_func,
-                                    std::move(i.possable_values));
+        int temp = registerVariable(i.var_name, i.values, i.value_count);
         if (result == -1)
         {
             result = temp;

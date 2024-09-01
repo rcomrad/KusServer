@@ -55,14 +55,12 @@ core::VariableStorage::getNonstatic(int a_number) noexcept
 //--------------------------------------------------------------------------------
 
 int
-core::VariableStorage::addVariableInfoNonstatic(
-    std::string&& a_var_name,
-    FPVariableParser a_func,
-    std::vector<std::string>&& a_possable_values) noexcept
+core::VariableStorage::addVariableInfoNonstatic(const char* a_var_name,
+                                                const char** a_values,
+                                                int a_value_count) noexcept
 {
     int retult = m_variables.size();
-    m_variables.emplace_back(std::move(a_var_name), a_func,
-                             std::move(a_possable_values));
+    m_variables.emplace_back(a_var_name, a_values, a_value_count);
     m_name_to_var_dict[m_variables.back().name] = retult;
     return retult;
 }
@@ -82,14 +80,14 @@ core::VariableStorage::setCommandHandlerNonstatic(
         {
             int num = it->second;
             // TODO: multiple output
-            auto val = m_variables[num].parser(i.second);
-            if (val.has_value())
+            auto val_it = m_variables[num].value_map.find(i.second);
+            if (val_it != m_variables[num].value_map.end())
             {
-                m_variables[num].value = val.value();
+                m_variables[num].value = val_it->second;
                 PRINT_CMD_MSG(
                     a_command,
-                    "Successfully assigned value '%s' to variable '%s'",
-                    i.second, i.first);
+                    "Successfully assigned value '%s' (%d) to variable '%s'",
+                    i.second, val_it->second, i.first);
             }
             else
             {
@@ -97,6 +95,7 @@ core::VariableStorage::setCommandHandlerNonstatic(
                               "Unable to set value for '%s' variable: "
                               "corrupted variable value '%s'",
                               i.first, i.second);
+                return;
             }
         }
         else
@@ -155,9 +154,9 @@ core::VariableStorage::varHelpCommandHandlerNonstatic(
             PRINT_CMD_ERR(a_command, "There is no variable named '%s'.", i);
             return;
         }
-        for (auto& j : m_variables[it->second].possable_values)
+        for (auto& j : m_variables[it->second].value_map)
         {
-            result += "'" + j + "' | ";
+            result += "'" + std::string(j.first) + "' | ";
         }
         result.pop_back();
         result.back() = '\n';

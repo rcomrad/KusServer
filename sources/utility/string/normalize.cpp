@@ -5,7 +5,7 @@
 void
 util::Normalize::notation(char* a_str, Type a_type) noexcept
 {
-    bool (*check)(char c) = a_type == Type::UPPER ? isUpper : isLower;
+    bool (*check)(char c) = a_type == Type::UPPER ? isLower : isUpper;
     char (*proc)(char)    = a_type == Type::UPPER ? toUpper : toLower;
 
     while (*a_str)

@@ -30,9 +30,9 @@ public:
 
     SINGL_RET_METHOD(int,
                      addVariableInfo,
-                     (std::string && a_var_name,
-                      FPVariableParser a_func,
-                      std::vector<std::string>&& a_possable_values));
+                     (const char* a_var_name,
+                      const char** a_values,
+                      int a_value_count));
 
     SINGL_VOID_METHOD(set, (int aNumber, int aValue));
     SINGL_RET_METHOD(int, get, (int aNumber));

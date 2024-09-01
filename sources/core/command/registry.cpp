@@ -48,6 +48,28 @@ core::CommandHandler::terminate() noexcept
     InputSTDIN::unlisten();
 }
 
+void
+core::CommandHandler::processCommandNonstatic(CommandExtend& a_command) noexcept
+{
+    auto temp =
+        CallbackStorage::get(CALLBACK_VOLUME_COMMAND_HANDLER, a_command.value);
+    if (nullptr != temp)
+    {
+        LOG_INFO("Apply command '%s'", a_command.value);
+        reinterpret_cast<FP_CommandHandler>(temp)(a_command);
+        LOG_INFO("      command '%s' was applied", a_command.value);
+    }
+    else
+    {
+        PRINT_CMD_ERR(
+            a_command,
+            "Unable to apply command '%s'. No suitable command handler",
+            a_command.value);
+    }
+
+    a_command.callResultFunc();
+}
+
 // TODO: yield
 bool
 core::CommandHandler::loopBody() noexcept
@@ -65,25 +87,7 @@ core::CommandHandler::loopBody() noexcept
     {
         return true;
     }
-    CommandExtend& command = *cmd_opt.value();
-
-    auto temp =
-        CallbackStorage::get(CALLBACK_VOLUME_COMMAND_HANDLER, command.value);
-    if (nullptr != temp)
-    {
-        LOG_INFO("Apply command '%s'", command.value);
-        reinterpret_cast<FP_CommandHandler>(temp)(command);
-        LOG_INFO("      command '%s' was applied", command.value);
-    }
-    else
-    {
-        PRINT_CMD_ERR(
-            command,
-            "Unable to apply command '%s'. No suitable command handler",
-            command.value);
-    }
-
-    command.callResultFunc();
+    processCommandNonstatic(*cmd_opt.value());
 
     return true;
 }

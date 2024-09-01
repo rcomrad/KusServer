@@ -2,12 +2,7 @@
 
 //--------------------------------------------------------------------------------
 
-#include <optional>
-#include <string>
-
-#include "core/variable/variable.hpp"
-
-#include "utility/common/holy_trinity.hpp"
+#include "core/command/command_extend.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -17,16 +12,11 @@ namespace serv
 class Token
 {
 public:
-    enum Status
-    {
-        NUN,
-        TURN_OFF,
-        TURN_ON,
-        MEMORY,
-        PRINT
-    };
+    COMMAND_HANDLER(tokenCommandHandler);
 
-    VARIABLE_PARSER(getTokenStatus);
+#define ENUM_NAME Status
+#define VAR_FILE  "server/token_var.inc"
+#include "core/variable/var_unpack.inc"
 };
 
 } // namespace serv

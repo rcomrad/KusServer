@@ -5,6 +5,7 @@
 #include <atomic>
 #include <optional>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "core/command/command.hpp"
@@ -14,22 +15,20 @@
 namespace core
 {
 
-using FPVariableParser = std::optional<int> (*)(const std::string_view&);
-#define VARIABLE_PARSER(name) \
-    static std::optional<int> name(const std::string_view& a_value) noexcept;
-
 struct Variable
 {
-    std::string name;
-    std::vector<std::string> possable_values;
+    std::string_view name;
+    std::unordered_map<std::string_view, int> value_map;
     std::atomic<int> value;
-    FPVariableParser parser;
 
     Variable() noexcept;
-    Variable(std::string&& a_name,
-             FPVariableParser a_parser,
-             std::vector<std::string>&& a_possable_values) noexcept;
+    Variable(const char* a_var_name,
+             const char** a_values,
+             int a_value_count) noexcept;
     Variable(const Variable& other) noexcept;
+
+private:
+    std::vector<std::string> value_array;
 };
 
 } // namespace core

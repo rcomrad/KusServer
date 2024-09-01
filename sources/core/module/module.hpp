@@ -37,10 +37,9 @@ protected:
     void setVariable(int a_variable_num, int a_variable_value) const noexcept;
     int getVariable(int a_variable_num) const noexcept;
 
-    void registerVariable(
-        std::string&& a_var_name,
-        FPVariableParser a_parse_func,
-        std::vector<std::string>&& a_possable_values) const noexcept;
+    void registerVariable(const char* a_var_name,
+                          const char** a_values,
+                          int a_value_count) const noexcept;
     void registerVariable(VariableInfoArray&& a_var_data_array) const noexcept;
 
 private:

@@ -100,13 +100,12 @@ core::Module::getVariable(int a_variable_num) const noexcept
 //------------------------------------------------------------------------------
 
 void
-core::Module::registerVariable(
-    std::string&& a_var_name,
-    FPVariableParser a_parse_func,
-    std::vector<std::string>&& a_possable_values) const noexcept
+core::Module::registerVariable(const char* a_var_name,
+                               const char** a_values,
+                               int a_value_count) const noexcept
 {
-    m_variable_offset = VariableRegister::registerVariable(
-        std::move(a_var_name), a_parse_func, std::move(a_possable_values));
+    m_variable_offset =
+        VariableRegister::registerVariable(a_var_name, a_values, a_value_count);
 }
 
 void

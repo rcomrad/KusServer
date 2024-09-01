@@ -21,12 +21,13 @@ serv::Server::loopBody() noexcept
 void
 serv::Server::commandSetup() const noexcept
 {
-    // registerCommand("token", tokenCommandHandler);
+    registerCommand("token", Token::tokenCommandHandler,
+                    "Sets token handling status.", "");
 }
 
 void
 serv::Server::variableSetup() const noexcept
 {
-    registerVariable("token_status", serv::Token::getTokenStatus,
-                     {"turn_off", "turn_on", "memory", "print"});
+    registerVariable("token_status", serv::Token::VariableStrValues,
+                     int(serv::Token::Status::MAX) - 1);
 }
