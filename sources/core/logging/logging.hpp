@@ -46,4 +46,20 @@
 #define CONTEXT_ERROR(context, ...) \
     WRITE_LOG_MSG_BASE(ERROR, context, __VA_ARGS__)
 
+// TODO: more use of LOG_CATCH
+#define LOG_CATCH(func, cotext, msg, ...)                                      \
+    try                                                                        \
+    {                                                                          \
+        func;                                                                  \
+    }                                                                          \
+    catch (const std::exception& e)                                            \
+    {                                                                          \
+        CONTEXT_ERROR(cotext, msg " Exception: '%s'.", __VA_ARGS__, e.what()); \
+    }                                                                          \
+    catch (...)                                                                \
+    {                                                                          \
+                                                                               \
+        CONTEXT_ERROR(cotext, msg " Unknown exception.", __VA_ARGS__);         \
+    }
+
 //------------------------------------------------------------------------------

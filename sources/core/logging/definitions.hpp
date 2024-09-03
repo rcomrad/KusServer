@@ -9,7 +9,7 @@ enum class LogLevel
     NUN,
     INFO,
     CMD,
-    WARNING,
+    WARN,
     ERROR
 };
 

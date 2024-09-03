@@ -20,6 +20,8 @@ core::VariableStorage::VariableStorage() noexcept
                     "If the variable names are not specified, "
                     "print all the variable and their possible values.",
                     "[variable_name]...");
+
+    setCommandStateType("var_set", StateStorage::StateType::COMMAND_VARS);
 }
 
 //--------------------------------------------------------------------------------

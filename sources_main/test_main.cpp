@@ -9,7 +9,7 @@ main(int argc, char** argv)
     ::testing::InitGoogleTest(&argc, argv);
     ::testing::InitGoogleMock(&argc, argv);
 
-    core::Printer::setLogLevel(core::LogLevel::WARNING);
+    core::Printer::setLogLevel(core::LogLevel::WARN);
 
     return RUN_ALL_TESTS();
 }

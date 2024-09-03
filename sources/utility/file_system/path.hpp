@@ -1,144 +1,60 @@
-// #pragma once
+#pragma once
 
-// //--------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-// #include <boost/optional.hpp>
+#include <string>
+#include <string_view>
 
-// #include <optional>
-// #include <unordered_map>
+#include "core/logging/logging.hpp"
 
-// #include "string/kus_string.hpp"
+#include "utility/common/holy_trinity.hpp"
 
-// #include "utility/common/holy_trinity.hpp"
+static inline constexpr const char PATH_SEPARATOR = '/';
 
-// //--------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-// namespace fs
-// {
-// class Path
-// {
-// public:
-//     HOLY_TRINITY_SINGLETON(Path);
+namespace util
+{
+class Path
+{
+public:
+    HOLY_TRINITY_NO_OBJECT(Path);
 
-//     enum class FileType
-//     {
-//         Nun    = 0,
-//         File   = 1,
-//         Folder = 2,
-//         All    = 3
-//     };
-//     enum class LevelType
-//     {
-//         Nun,
-//         Current,
-//         Recursive
-//     };
+public:
+    template <typename... Args>
+    static std::string combine(bool is_folder, Args... args) noexcept
+    {
+        return combineImpl(is_folder, std::string_view(args)...);
+    }
 
-//     //----------------------------------------------------------------------------
+    static std::string getName(std::string_view a_path,
+                               const core::Context& a_context) noexcept;
 
-//     static boost::optional<const str::string&> getFilePath(
-//         const str::string& aFileName) noexcept;
-//     static std::optional<str::string> getFilePath(
-//         const str::string& aFolderName,
-//         const str::string& aFileName) noexcept;
+    static std::string normalizeFolderPath(std::string_view a_path,
+                                           bool sep_postfix) noexcept;
 
-//     static const str::string& getFilePathUnsafe(
-//         const str::string& aFileName) noexcept;
-//     static const str::string& getFilePathUnsafe(
-//         const str::string& aFolderName,
-//         const str::string& aFileName) noexcept;
+    static std::string getRelativeToApp(std::string_view a_path, bool is_folder) noexcept;
 
-//     //----------------------------------------------------------------------------
+private:
+    template <typename... Args>
+    static std::string combineImpl(bool is_folder, Args... args) noexcept
+    {
+        std::string result;
+        size_t result_size = (args.size() + ...);
+        result.reserve(result_size);
+        ((result += args, result.back() == PATH_SEPARATOR
+                              ? void()
+                              : result.push_back(PATH_SEPARATOR)),
+         ...);
+        if (!is_folder && !result.empty())
+        {
+            result.pop_back();
+        }
+        return result;
+    }
+};
+} // namespace util
 
-//     static boost::optional<const str::string&> getFolderPath(
-//         const str::string& aFolderName) noexcept;
-//     static const str::string& getFolderPathUnsafe(
-//         const str::string& aFolderName) noexcept;
+#define GET_PATH_LAST_NAME(a_path) util::Path::getName(a_path, LOCAL_CONTEXT)
 
-//     //----------------------------------------------------------------------------
-
-//     static std::optional<str::string> touchFolder(
-//         const str::string& aFolderParentPath,
-//         const str::string& aFolderName) noexcept;
-//     static bool clearFolder(const str::string& aFolderName) noexcept;
-
-//     //----------------------------------------------------------------------------
-
-//     static void addContentToPaths(const str::string& aPath,
-//                                   FileType aFIleType,
-//                                   LevelType aLevelType) noexcept;
-
-//     static std::vector<str::string> getContent(const str::string& aPath,
-//                                                FileType aFIleType,
-//                                                LevelType aLevelType) noexcept;
-
-//     static std::unordered_map<str::string, str::string> getContentMap(
-//         const str::string& aPath,
-//         FileType aFIleType,
-//         LevelType aLevelType) noexcept;
-
-//     //----------------------------------------------------------------------------
-
-// private:
-//     std::unordered_map<str::string, str::string> mFilesPaths;
-//     std::unordered_map<str::string, str::string> mFolderPaths;
-
-//     //----------------------------------------------------------------------------
-
-//     Path() noexcept;
-
-//     //----------------------------------------------------------------------------
-
-//     boost::optional<const str::string&> getPath(
-//         const std::unordered_map<str::string, str::string>& aStorage,
-//         const str::string& aName) noexcept;
-
-//     std::optional<str::string> getPath(const str::string& aFolderName,
-//                                        const str::string& aFileName) noexcept;
-
-//     //----------------------------------------------------------------------------
-
-//     std::optional<str::string> touchFolderNonstatic(
-//         const str::string& aFolderParentPath,
-//         const str::string& aFolderName) noexcept;
-
-//     //----------------------------------------------------------------------------
-
-//     void addContentToPathsNonstatic(const str::string& aPath,
-//                                     FileType aFIleType,
-//                                     LevelType aLevelType) noexcept;
-
-//     void addContentToMap(
-//         const str::string& aPath,
-//         FileType aType,
-//         LevelType aLevelType,
-//         std::unordered_map<str::string, str::string>& aPathMap) noexcept;
-
-//     template <typename PathIterator>
-//     static std::vector<str::string> getContent(const PathIterator& aPath,
-//                                                FileType aFIleType) noexcept
-//     {
-//         std::vector<str::string> result;
-//         for (const auto& entry : aPath)
-//         {
-//             if (entry.is_directory() ? 2 : 1 & int(aFIleType))
-//             {
-//                 str::string path = entry.path().string();
-
-//                 // #ifdef BILL_WINDOWS
-//                 //                 std::replace(path.begin(), path.end(), '\\',
-//                 //                 '/');
-//                 // #endif
-
-//                 if (entry.is_directory()) path.push_back('/');
-
-//                 result.emplace_back(std::move(path));
-//             }
-//         }
-//         return result;
-//     }
-// };
-
-// } // namespace fs
-
-// //--------------------------------------------------------------------------------
+//------------------------------------------------------------------------------

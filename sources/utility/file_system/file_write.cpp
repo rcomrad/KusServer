@@ -1,66 +1,48 @@
-// #include "file_write.hpp"
+#include "file_write.hpp"
 
-// #include <fstream>
+#include <cstdio>
 
-// #include "core/logging/logging.hpp"
+#include "core/logging/logging.hpp"
 
-// #include "string/separators.hpp"
+#include "path_storage.hpp"
 
-// #include "path.hpp"
+util::FileWrite::FileWrite(const core::Context& a_context,
+                           const str::string& a_file_name) noexcept
+    : m_is_print_error_msg(false)
+{
+    GET_FILE_PATH(file_path, a_file_name, &a_context);
+    m_file = std::fopen(file_path.data(), "w");
+    if (!m_file)
+    {
+        CONTEXT_ERROR(a_context,
+                      "Can't open file for write. Name: '%s', path: '%s'.",
+                      a_file_name, file_path);
+    }
+}
 
-// fs::FileWrite::FileWrite(const str::string& aFileName,
-//                          const str::string& aFolderName) noexcept
-// {
-//     auto path = fs::Path::getFilePath(aFileName, aFolderName);
-//     m_file    = std::fopen(path.value().c_str(), "w");
-// }
+util::FileWrite::~FileWrite() noexcept
+{
+    if (m_file != nullptr)
+    {
+        std::fclose(m_file);
+    }
+}
 
-// fs::FileWrite::~FileWrite() noexcept
-// {
-//     std::fclose(m_file);
-// }
+void
+util::FileWrite::write(const char* format, ...) noexcept
+{
+    if (m_file == nullptr)
+    {
+        if (!m_is_print_error_msg)
+        {
+            m_is_print_error_msg = true;
+            LOG_ERROR("Unable to write in broken file.");
+        }
+        return;
+    }
 
-// void
-// fs::FileWrite::write(const char* format, ...) noexcept
-// {
-//     va_list args;
-//     va_start(args, format);
-//     vfprintf(m_file, format, args);
-//     va_end(args);
-// }
-
-// bool
-// fs::FileWrite::writeData(const std::string& aFileName,
-//                          const std::string& aData) noexcept
-// {
-//     bool result = false;
-//     std::ofstream out(aFileName);
-//     if (out.is_open())
-//     {
-//         out << aData;
-//         out.close();
-//         result = true;
-//     }
-//     else
-//     {
-//         LOG_ERROR("Can't create file", aFileName);
-//     }
-//     return result;
-// }
-
-// // std::optional<std::string>
-// // file::File::writeData(const std::string& aFolderName,
-// //                       const std::string& aFileName,
-// //                       const std::string& aData) noexcept
-// // {
-// //     std::optional<std::string> result;
-
-// //     auto path = core::Path::touchFolder(aFolderName);
-// //     if (path.has_value())
-// //     {
-// //         result = path.value() + aFileName;
-// //         writeData(result.value(), aData);
-// //     }
-
-// //     return result;
-// // }
+    va_list args;
+    va_start(args, format);
+    vfprintf(m_file, format, args);
+    va_end(args);
+}

@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "core/callback/storage.hpp"
+#include "core/module/state_storage.hpp"
 
 #include "utility/string/slicer.hpp"
 
@@ -39,13 +40,13 @@ core::CommandHandler::addCommandInfoNonstatic(const char* a_comm_name,
 void
 core::CommandHandler::initialize() noexcept
 {
-    InputSTDIN::listen();
+    // InputSTDIN::listen();
 }
 
 void
 core::CommandHandler::terminate() noexcept
 {
-    InputSTDIN::unlisten();
+    // InputSTDIN::unlisten();
 }
 
 void
@@ -57,6 +58,10 @@ core::CommandHandler::processCommandNonstatic(CommandExtend& a_command) noexcept
     {
         LOG_INFO("Apply command '%s'", a_command.value);
         reinterpret_cast<FP_CommandHandler>(temp)(a_command);
+        if (!a_command.execResultIsError())
+        {
+            StateStorage::process(&a_command);
+        }
         LOG_INFO("      command '%s' was applied", a_command.value);
     }
     else

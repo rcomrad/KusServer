@@ -1,40 +1,38 @@
-// #pragma once
+#pragma once
 
-// //--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
 
-// #include <map>
-// #include <optional>
-// #include <unordered_set>
+#include <map>
+#include <optional>
+#include <unordered_set>
 
-// #include "string/kus_string.hpp"
+#include "core/logging/context.hpp"
 
-// #include "read_target.hpp"
+#include "string/kus_string.hpp"
 
-// //--------------------------------------------------------------------------------
+#include "read_target.hpp"
 
-// namespace fs
-// {
+//--------------------------------------------------------------------------------
 
-// class FileWrite
-// {
-// public:
-//     FileWrite(const str::string& aFileName,
-//               const str::string& aFolderName) noexcept;
-//     ~FileWrite();
+namespace util
+{
 
-//     void write(const char* format, ...) noexcept;
+class FileWrite
+{
+public:
+    FileWrite(const core::Context& a_context,
+              const str::string& a_file_name) noexcept;
+    ~FileWrite();
 
-//     static bool writeData(const std::string& aFileName,
-//                           const str::string& aData) noexcept;
-//     // static std::optional<str::string> writeData(
-//     //     const str::string& aFolderName,
-//     //     const str::string& aFileName,
-//     //     const str::string& aData) noexcept;
+    void write(const char* format, ...) noexcept;
 
-// private:
-//     FILE* m_file;
-// };
+private:
+    FILE* m_file;
+    bool m_is_print_error_msg;
+};
 
-// } // namespace fs
+} // namespace util
 
-// //--------------------------------------------------------------------------------
+#define FILE_WRITER(name, ...) util::FileWrite name(LOCAL_CONTEXT, __VA_ARGS__);
+
+//--------------------------------------------------------------------------------

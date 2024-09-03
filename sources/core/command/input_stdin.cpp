@@ -14,17 +14,18 @@ core::InputSTDIN::InputSTDIN() noexcept
     m_read_thread.detach();
 }
 
-void
-core::InputSTDIN::listenNonstatic() noexcept
-{
-    CommandHandler::listen(&m_buffer);
-}
+// TODO: unlisten (destroy regestry)
+// void
+// core::InputSTDIN::listenNonstatic() noexcept
+// {
 
-void
-core::InputSTDIN::unlistenNonstatic() noexcept
-{
-    CommandHandler::unlisten(&m_buffer);
-}
+// }
+
+// void
+// core::InputSTDIN::unlistenNonstatic() noexcept
+// {
+
+// }
 
 void
 core::InputSTDIN::readLoop() noexcept

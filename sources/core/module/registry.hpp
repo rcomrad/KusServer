@@ -18,7 +18,6 @@ class ModuleRegistry
 {
 public:
     HOLY_TRINITY_SINGLETON(ModuleRegistry);
-    ModuleRegistry() noexcept = default;
 
     SINGL_VOID_METHOD(addModule, (Module * a_module_ptr))
 
@@ -31,6 +30,9 @@ public:
 private:
     std::vector<Module*> m_module_storage;
     std::vector<std::thread> m_apps;
+
+    ModuleRegistry() noexcept;
+    void mainSetup() noexcept;
 };
 } // namespace core
 

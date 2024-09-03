@@ -22,3 +22,11 @@ core::CommandRegister::registerCommand(
         registerCommand(i.comm_name, i.func_ptr, i.help_info, i.help_args);
     }
 }
+
+void
+core::CommandRegister::setCommandStateType(
+    const char* a_comm_name,
+    StateStorage::StateType a_type) noexcept
+{
+    StateStorage::setStateType(a_comm_name, a_type);
+}

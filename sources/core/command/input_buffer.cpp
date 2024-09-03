@@ -4,10 +4,12 @@
 
 core::InputBuffer::InputBuffer() noexcept : m_command(nullptr)
 {
+    CommandHandler::listen(this);
 }
 
 core::InputBuffer::~InputBuffer() noexcept
 {
+    CommandHandler::unlisten(this);
 }
 
 std::unique_ptr<char[]>&&
