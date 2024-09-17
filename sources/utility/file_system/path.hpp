@@ -33,7 +33,8 @@ public:
     static std::string normalizeFolderPath(std::string_view a_path,
                                            bool sep_postfix) noexcept;
 
-    static std::string getRelativeToApp(std::string_view a_path, bool is_folder) noexcept;
+    static std::string getRelativeToApp(std::string_view a_path,
+                                        bool is_folder) noexcept;
 
 private:
     template <typename... Args>

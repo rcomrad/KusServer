@@ -1,237 +1,174 @@
-// #include "database.hpp"
+#include "database.hpp"
 
-// #include <cstring>
+#include <cstring>
 
-// // #include "file_system/file_read.hpp"
-// #include "file_system/file_write.hpp"
-// #include "file_system/path.hpp"
-// #include "file_system/read_target.hpp"
+#include "core/logging/table_printer.hpp"
 
-// // GRANT CREATE DATABASE TO maxroach;
+//-----------------------------------------------------------------------------
 
-// //-----------------------------------------------------------------------------
+#define CREDENTIALS_FOLDER "bin"
+#define CREDENTIALS_FILE   "db_credentials.txt"
 
-// #define CREDENTIALS_FOLDER "bin"
-// #define CREDENTIALS_FILE   "db_credentials.txt"
+//-----------------------------------------------------------------------------
+// Module setup
+//-----------------------------------------------------------------------------
 
-// #define GET_CONN_POOL_INDX(name, arg_num)                               \
-//     int name;                                                           \
-//     aCommand.getArgumentAsNumber(name, arg_num, m_conn_storage.size()); \
-//     name -= 1;
+SINGLETON_DEFINITOR(data, Database);
 
-// //-----------------------------------------------------------------------------
+data::Database::Database() noexcept : Module("database")
+{
+}
 
-// SINGLETON_DEFINITOR(data, Database);
+data::DatabaseConnection
+data::Database::getConnectionNonstatic(size_t a_pool_id) noexcept
+{
+    // TODO: check?
+    return DatabaseConnection(m_conn_storage[a_pool_id].obj.get(), a_pool_id);
+}
 
-// data::Database::Database() noexcept
-//     : Module("credential_storage"), m_obtained_connection(nullptr, 0)
-// {
-// }
+void
+data::Database::putConnectionNonstatic(InternalConnection& a_sql_conn,
+                                       size_t a_pool_id) noexcept
+{
+    m_conn_storage[a_pool_id].obj.put(a_sql_conn);
+}
 
-// void
-// data::Database::initialize() noexcept
-// {
-//     auto path = fs::Path::getFilePath(CREDENTIALS_FOLDER, CREDENTIALS_FILE);
-//     if (path.has_value())
-//     {
-//         // auto credential =
-//         //     fs::FileRead::getWords(fs::ReadFromFilePath(path.value()));
+void
+data::Database::commandSetup() const noexcept
+{
+    registerCommand("data_add", addCredentials,
+                    "Adding database credentials to the repository.",
+                    "name1 name2 name3");
+    registerCommand("data_remove", removeCredentials,
+                    "Deleting database credentials from the repository.",
+                    "credential_number");
+    registerCommand("data_show", showCredentials,
+                    "Show the database credentials stored in the repository.");
 
-//         // for (auto& i : credential)
-//         // {
-//         //     auto conn = ConnectionPool::create(i);
-//         //     if (conn.has_value())
-//         //     {
-//         //         m_conn_storage.emplace_back(std::move(conn.value()));
-//         //     }
-//         // }
-//     }
-// }
+    registerCommand(
+        "conn_obtain", obtainConnection,
+        "Obtain database connection from the repository for console usage.",
+        "credential_number");
+    registerCommand("conn_return", returnConnection,
+                    "Release obtained database connection.");
+    registerCommand("conn_cur", currentConnection,
+                    "Print obtained database connection credentials.");
+    registerCommand(
+        "conn_exec", currentConnection,
+        "Use obtained connection to execute specified database command.",
+        "command");
 
-// data::DatabaseConnection
-// data::Database::getConnectionNonstatic(size_t a_pool_id) noexcept
-// {
-//     return m_conn_storage[a_pool_id].get(a_pool_id);
-// }
+    setCommandStateType("data_add",
+                        core::StateStorage::StateType::COMMAND_ARGS);
+}
 
-// void
-// data::Database::putConnectionNonstatic(SQLConnection* a_sql_conn,
-//                                        size_t a_pool_id) noexcept
-// {
-//     m_conn_storage[a_pool_id].put(a_sql_conn);
-// }
+//-----------------------------------------------------------------------------
+// Add/Remove connection (credential) commands
+//-----------------------------------------------------------------------------
 
-// void
-// data::Database::commandSetup() const noexcept
-// {
-//     // registerCommand("data_add", addCredentials);
-//     // registerCommand("data_add_base", addBaseCredentials);
-//     // registerCommand("data_remove", removeCredentials);
-//     // registerCommand("data_show", showCredentials);
+void
+data::Database::addCredentialsNonstatic(core::CommandExtend& a_command) noexcept
+{
+    // CMD_ASSERT(argCount({2, 6}).noVars());
+    CMD_ASSERT(argCount(6).noVars());
 
-//     // registerCommand("conn_obtain", obtainConnection);
-//     // registerCommand("conn_return", returnConnection);
-//     // registerCommand("conn_cur", currentConnection);
-//     // registerCommand("conn_exec", currentConnection);
-// }
+    if (ConnectionPool::create(m_conn_storage.emplace_back(),
+                               a_command.arguments))
+    {
+        PRINT_CMD_MSG(a_command, "Credentials successfully added");
+    }
+    else
+    {
+        m_conn_storage.pop_back();
+        PRINT_CMD_ERR(a_command, "Credentials already exist");
+    }
+}
 
-// //-----------------------------------------------------------------------------
-// // Add/Remove commands
-// //-----------------------------------------------------------------------------
+void
+data::Database::removeCredentialsNonstatic(
+    core::CommandExtend& a_command) noexcept
+{
+    CMD_ASSERT(argCount(1).noVars());
+    auto num = CMD_GET_ARG_AS_NUM(0, m_conn_storage.size());
+    m_conn_storage.erase(m_conn_storage.begin() + num);
+    PRINT_CMD_MSG(a_command, "Deleted %lu credential", num + 1);
+}
 
-// void
-// data::Database::addCredentialsNonstatic(core::Command& aCommand) noexcept
-// {
-//     ARGUMENT_SIZE_CHECK(6);
+//-----------------------------------------------------------------------------
+// Print databse information
+//-----------------------------------------------------------------------------
 
-//     auto conn = ConnectionPool::create(aCommand.arguments);
-//     if (conn.has_value())
-//     {
+void
+data::Database::showCredentialsNonstatic(
+    core::CommandExtend& a_command) noexcept
+{
+    CMD_ASSERT(noArgs().noVars());
 
-//         m_conn_storage.emplace_back(std::move(conn.value()));
-//         dumpCredentialsToFIle();
-//         COMMAND_RETURN_MSG(aCommand, "Credentials successfully added");
-//     }
-//     else
-//     {
-//         COMMAND_RETURN_ERROR(aCommand, "Credentials already exist");
-//     }
-// }
+    auto info = core::TablePrinter::print(
+        m_conn_storage, {"id", "name", "surname", "weight", "high",
+                         "building_numder", "x", "y", "street_name"});
 
-// void
-// data::Database::addBaseCredentialsNonstatic(core::Command& aCommand) noexcept
-// {
-//     ARGUMENT_SIZE_CHECK(1);
-//     Credentials::setDefault(aCommand.arguments);
-//     addCredentialsNonstatic(aCommand);
-// }
+    PRINT_CMD_MSG(a_command, "Database connection info:\n%Ы", info);
+}
 
-// void
-// data::Database::removeCredentialsNonstatic(core::Command& aCommand) noexcept
-// {
-//     GET_CONN_POOL_INDX(num, 0);
-//     m_conn_storage.erase(m_conn_storage.begin() + num);
-//     dumpCredentialsToFIle();
-//     COMMAND_RETURN_MSG(aCommand, "Deleted %lu credential", num + 1);
-// }
+//-----------------------------------------------------------------------------
+// Obtained connection management
+//-----------------------------------------------------------------------------
 
-// //-----------------------------------------------------------------------------
-// // Print databse information
-// //-----------------------------------------------------------------------------
+void
+data::Database::obtainConnectionNonstatic(
+    core::CommandExtend& a_command) noexcept
+{
+    CMD_ASSERT(argCount(1).noVars());
+    auto num = a_command.getArgumentAsNumber(0);
+    m_obtained_connection.create(m_conn_storage[num].obj.get(), num);
+    PRINT_CMD_MSG(a_command,
+                  "Successfully obtain connection from pool number %d",
+                  num + 1);
+}
 
-// void
-// data::Database::showCredentialsNonstatic(core::Command& aCommand) noexcept
-// {
-//     static auto table = configurateShowTable();
+void
+data::Database::returnConnectionNonstatic(
+    core::CommandExtend& a_command) noexcept
+{
+    CMD_ASSERT(noArgs().noVars());
+    auto pool_id = m_obtained_connection.obj.getPollId();
+    m_obtained_connection.destroy();
+    PRINT_CMD_MSG(a_command,
+                  "Successfully release connection from pool number %d",
+                  pool_id + 1);
+}
 
-//     const char command_head[]        = "Database credentials:\n";
-//     constexpr auto command_head_size = std::size(command_head);
+void
+data::Database::currentConnectionNonstatic(
+    core::CommandExtend& a_command) noexcept
+{
+    CMD_ASSERT(noArgs().noVars());
 
-//     aCommand.setResultBufferSize(table.getSize() *
-//                                      (m_conn_storage.size() * 2 + 3) +
-//                                  command_head_size + 10);
-//     char* cur_ptr = aCommand.getResultBuffer();
+    if (!m_obtained_connection.hasValue())
+    {
+        PRINT_CMD_ERR(a_command, "No connection obtained at the moment");
+        return;
+    }
 
-//     cur_ptr += sprintf(cur_ptr, command_head);
-//     table.printHead(&cur_ptr);
+    auto pool_id = m_obtained_connection.obj.getPollId();
+    auto cred    = core::TablePrinter::printRow(m_conn_storage[pool_id], {""});
+    PRINT_CMD_MSG(a_command, "Currently obtained connetion credentials:\n%s",
+                  cred);
+}
 
-//     for (int i = 0; i < m_conn_storage.size(); ++i)
-//     {
-//         table.printData(&cur_ptr, i + 1);
-//         m_conn_storage[i].printData(&cur_ptr, table, true);
-//     }
-// }
+void
+data::Database::executeConnectionNonstatic(
+    core::CommandExtend& a_command) noexcept
+{
+    CMD_ASSERT(argCount(1).noVars());
+    auto& comm = a_command.arguments[0];
+    if (comm == "recreate")
+    {
+        // GET_CONN_POOL_INDX(num, 1);
+        // m_obtained_connection.createEnvironment(
+        //     m_conn_storage[num].getCredentials());
+    }
+}
 
-// core::TablePrintHelper
-// data::Database::configurateShowTable() noexcept
-// {
-//     core::TablePrintHelper a_table; // For define
-//     PUSH_COMBINED_COLUMN(Database, m_conn_storage.size(), 3, "#");
-//     ConnectionPool::configurateTable(a_table, true);
-//     return a_table;
-// }
-
-// //-----------------------------------------------------------------------------
-
-// void
-// data::Database::obtainConnectionNonstatic(core::Command& aCommand) noexcept
-// {
-//     GET_CONN_POOL_INDX(num, 0);
-//     m_obtained_connection = std::move(m_conn_storage[num].get(num));
-//     COMMAND_RETURN_MSG(aCommand,
-//                        "Successfully obtain connection from pool number %d",
-//                        num + 1);
-// }
-
-// void
-// data::Database::returnConnectionNonstatic(core::Command& aCommand) noexcept
-// {
-//     ARGUMENT_SIZE_CHECK(0);
-//     auto pool_id = m_obtained_connection.getPollId();
-//     m_obtained_connection.release();
-//     COMMAND_RETURN_MSG(aCommand,
-//                        "Successfully release connection from pool number %d",
-//                        pool_id + 1);
-// }
-
-// void
-// data::Database::currentConnectionNonstatic(core::Command& aCommand) noexcept
-// {
-//     ARGUMENT_SIZE_CHECK(0);
-//     static auto table = configurateCurTable();
-
-//     const char command_head[]  = "Currently obtained connetion credentials:\n";
-//     const char no_connection[] = "No connection obtained at the moment";
-//     constexpr auto command_head_size =
-//         std::max(std::size(command_head), std::size(no_connection));
-
-//     aCommand.setResultBufferSize(table.getSize() * 5 + command_head_size + 10);
-//     char* cur_ptr = aCommand.getResultBuffer();
-
-//     if (!m_obtained_connection.hasValue())
-//     {
-//         COMMAND_RETURN_ERROR(aCommand, "%s", no_connection);
-//         return;
-//     }
-
-//     cur_ptr += sprintf(cur_ptr, command_head);
-//     table.printHead(&cur_ptr);
-
-//     auto pool_id = m_obtained_connection.getPollId();
-//     m_conn_storage[pool_id].printData(&cur_ptr, table, false);
-// }
-
-// core::TablePrintHelper
-// data::Database::configurateCurTable() noexcept
-// {
-//     core::TablePrintHelper a_table; // For define
-//     ConnectionPool::configurateTable(a_table, false);
-//     return a_table;
-// }
-
-// void
-// data::Database::executeConnectionNonstatic(core::Command& aCommand) noexcept
-// {
-//     ARGUMENT_SIZE_CHECK(1);
-//     auto& comm = aCommand.arguments[0];
-//     if (comm == "recreate")
-//     {
-//         GET_CONN_POOL_INDX(num, 1);
-//         m_obtained_connection.createEnvironment(
-//             m_conn_storage[num].getCredentials());
-//     }
-// }
-
-// //-----------------------------------------------------------------------------
-
-// //-----------------------------------------------------------------------------
-
-// void
-// data::Database::dumpCredentialsToFIle() const noexcept
-// {
-//     fs::FileWrite file(CREDENTIALS_FOLDER, CREDENTIALS_FILE);
-//     for (const auto& i : m_conn_storage)
-//     {
-//         i.dumpCredentialsToFIle(file);
-//     }
-// }
+//-----------------------------------------------------------------------------

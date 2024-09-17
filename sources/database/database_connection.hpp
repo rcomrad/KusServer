@@ -1,33 +1,33 @@
-// #pragma once
+#pragma once
 
-// #include "utility/common/holy_trinity.hpp"
+#include "utility/common/holy_trinity.hpp"
+#include "internal_connection.hpp"
 
-// #include "sql_connection.hpp"
+namespace data
+{
 
-// namespace data
-// {
+class DatabaseConnection
+{
+public:
+    // DatabaseConnection(const DatabaseConnection&) noexcept            =
+    // delete; DatabaseConnection& operator=(const DatabaseConnection&) noexcept
+    // = delete; DatabaseConnection(DatabaseConnection&& other) noexcept;
+    // DatabaseConnection& operator=(DatabaseConnection&& other) noexcept;
+    HOLY_TRINITY_NOCOPY(DatabaseConnection);
 
-// class DatabaseConnection
-// {
-// public:
-//     DatabaseConnection(const DatabaseConnection&) noexcept            = delete;
-//     DatabaseConnection& operator=(const DatabaseConnection&) noexcept = delete;
-//     DatabaseConnection(DatabaseConnection&& other) noexcept;
-//     DatabaseConnection& operator=(DatabaseConnection&& other) noexcept;
+    DatabaseConnection(InternalConnection& a_db_conn, int a_pool_id) noexcept;
+    ~DatabaseConnection();
 
-//     DatabaseConnection(SQLConnection* a_sql_conn, size_t a_pool_id) noexcept;
-//     ~DatabaseConnection();
+    void populateDatabse() noexcept;
+    void release() noexcept;
+    void createEnvironment(const data::Credentials& a_credentials) noexcept;
 
-//     void populateDatabse() noexcept;
-//     void release() noexcept;
-//     void createEnvironment(const data::Credentials& a_credentials) noexcept;
+    size_t getPollId() const noexcept;
+    bool hasValue() const noexcept;
 
-//     size_t getPollId() const noexcept;
-//     bool hasValue() const noexcept;
+private:
+    int m_pool_id;
+    InternalConnection& m_db_conn;
+};
 
-// private:
-//     size_t m_pool_id;
-//     SQLConnection* m_sql_conn;
-// };
-
-// } // namespace data
+} // namespace data

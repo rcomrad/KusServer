@@ -1,142 +1,93 @@
-// #include "connection_pool.hpp"
+#include "connection_pool.hpp"
 
-// #include <mutex>
-// #include <unordered_set>
+#include <mutex>
+#include <unordered_set>
 
-// #include "core/logging/logging.hpp"
+#include "core/logging/logging.hpp"
 
-// #include "utility/common/holy_trinity.hpp"
+#include "utility/common/holy_trinity.hpp"
 
-// namespace
-// {
-// struct CredentialsHashStorage
-// {
-// public:
-//     HOLY_TRINITY_SINGLETON(CredentialsHashStorage);
+//-----------------------------------------------------------------------------
+// Connection pool creation
+//-----------------------------------------------------------------------------
 
-//     std::unordered_set<uint64_t> storage;
-//     std::mutex mutex;
+std::unordered_set<std::string> data::ConnectionPool::m_all_cred_combined;
 
-// private:
-//     CredentialsHashStorage() = default;
-// };
-// } // namespace
+data::ConnectionPool::ConnectionPool(
+    const std::vector<std::string_view>& a_credentials_array) noexcept
+    : m_credentials(a_credentials_array),
+      m_cur_conn_count(0),
+      m_max_conn_count(0)
+{
+    // m_available_conn.reserve(MAX_CONNECTIONS_COUNT);
+}
 
-// SINGLETON_DEFINITOR(, CredentialsHashStorage)
+bool
+data::ConnectionPool::create(
+    util::LifecycleManager<ConnectionPool>& a_poll_addr,
+    const std::vector<std::string_view>& a_credentials_array) noexcept
+{
+    bool result = false;
+    a_poll_addr.create(a_credentials_array);
+    auto combined = a_poll_addr.obj.m_credentials.getCombined();
+    if (!m_all_cred_combined.count(combined))
+    {
+        a_poll_addr.obj.setConnectionCount(1);
+        m_all_cred_combined.insert(combined);
+        result = true;
+    }
+    return result;
+}
 
-// data::ConnectionPool::ConnectionPool(uint64_t a_hash,
-//                                      Credentials&& a_credentials) noexcept
-//     : m_hash(a_hash),
-//       m_credentials(std::move(a_credentials)),
-//       m_max_conn_count(0)
-// {
-// }
+//-----------------------------------------------------------------------------
+// Database obtaining
+//-----------------------------------------------------------------------------
 
-// data::ConnectionPool::ConnectionPool(ConnectionPool&& other) noexcept
-//     : m_credentials("", "", "", "", "", "")
-// {
-//     *this = std::move(other);
-// }
+data::InternalConnection&
+data::ConnectionPool::get() noexcept
+{
+    std::shared_lock lock(m_resize_mutex);
+    m_available_semaphore.obj.acquire();
+    auto& result = m_available_conn.back();
+    m_available_conn.pop_back();
+    return result;
+}
 
-// data::ConnectionPool&
-// data::ConnectionPool::operator=(ConnectionPool&& other) noexcept
-// {
-//     m_hash           = other.m_hash;
-//     m_max_conn_count = other.m_max_conn_count;
-//     m_credentials    = std::move(other.m_credentials);
-//     m_connections    = std::move(m_connections);
+void
+data::ConnectionPool::put(InternalConnection& a_sql_conn) noexcept
+{
+    std::shared_lock lock(m_resize_mutex);
+    m_available_conn.emplace_back(a_sql_conn);
+    m_available_semaphore.obj.release();
+}
 
-//     other.m_hash = 0;
+//-----------------------------------------------------------------------------
+// Connection resizers
+//-----------------------------------------------------------------------------
 
-//     return *this;
-// }
+void
+data::ConnectionPool::setConnectionCount(size_t a_count) noexcept
+{
+    std::unique_lock lock(m_resize_mutex);
 
-// data::ConnectionPool::~ConnectionPool()
-// {
-//     auto& hash_storage = CredentialsHashStorage::getInstance();
-//     // const std::lock_guard<std::mutex> lock(hash_storage.mutex);
-//     hash_storage.storage.erase(m_hash);
-// }
+    for (int i = 0; i < m_cur_conn_count; ++i)
+    {
+        m_available_semaphore.obj.acquire();
+    }
+    m_available_semaphore.destroy();
 
-// std::optional<data::ConnectionPool>
-// data::ConnectionPool::create(
-//     const std::vector<std::string>& a_credentials_array) noexcept
-// {
-//     std::optional<ConnectionPool> result;
+    m_cur_conn_count = a_count;
+    m_connections.resize(m_cur_conn_count, m_credentials);
 
-//     Credentials credentials(
-//         a_credentials_array[0].c_str(), a_credentials_array[1].c_str(),
-//         a_credentials_array[2].c_str(), a_credentials_array[3].c_str(),
-//         a_credentials_array[4].c_str(), a_credentials_array[5].c_str());
-//     auto hash = credentials.calculateHash();
+    m_available_conn.clear();
+    for (auto& i : m_connections)
+    {
+        m_available_conn.emplace_back(i);
+    }
 
-//     auto& hash_storage = CredentialsHashStorage::getInstance();
-//     // const std::lock_guard<std::mutex> lock(hash_storage.mutex);
-//     if (!hash_storage.storage.count(hash))
-//     {
-//         ConnectionPool pool(hash, std::move(credentials));
-//         hash_storage.storage.insert(hash);
-//         result = std::move(pool);
-//     }
-//     else
-//     {
-//         LOG_ERROR("Hash '%lu' already present", hash);
-//     }
-
-//     return result;
-// }
-
-// const data::Credentials&
-// data::ConnectionPool::getCredentials() const noexcept
-// {
-//     return m_credentials;
-// }
-
-// data::DatabaseConnection
-// data::ConnectionPool::get(size_t a_pool_id) noexcept
-// {
-//     if (m_connections.size() < 1)
-//     {
-//         m_connections.emplace_back(m_credentials);
-//     }
-//     return DatabaseConnection(&m_connections[0], a_pool_id);
-// }
-
-// void
-// data::ConnectionPool::put(SQLConnection* a_sql_conn) noexcept
-// {
-// }
-
-// void
-// data::ConnectionPool::printData(char** a_ptr,
-//                                 core::TablePrintHelper& a_table,
-//                                 bool a_if_add_poll) const noexcept
-// {
-//     if (a_if_add_poll)
-//     {
-//         a_table.printData(a_ptr, m_hash);
-//         a_table.printData(a_ptr, m_connections.size());
-//         a_table.printData(a_ptr, m_max_conn_count);
-//     }
-//     m_credentials.printData(a_ptr, a_table);
-// }
-
-// void
-// data::ConnectionPool::configurateTable(core::TablePrintHelper& a_table,
-//                                        bool a_if_add_poll) noexcept
-// {
-//     if (a_if_add_poll)
-//     {
-//         PUSH_COMBINED_COLUMN(ConnectionPool, m_hash, 18, "hash");
-//         PUSH_COMBINED_COLUMN(ConnectionPool, m_connections.size(), 3, "cur");
-//         PUSH_COMBINED_COLUMN(ConnectionPool, m_max_conn_count, 3, "max");
-//     }
-//     Credentials::configurateTable(a_table);
-// }
-
-// void
-// data::ConnectionPool::dumpCredentialsToFIle(
-//     fs::FileWrite& a_file) const noexcept
-// {
-//     m_credentials.dumpCredentialsToFIle(a_file);
-// }
+    m_available_semaphore.create(m_cur_conn_count);
+    for (int i = 0; i < m_cur_conn_count; ++i)
+    {
+        m_available_semaphore.obj.release();
+    }
+}

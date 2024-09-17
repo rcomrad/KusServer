@@ -8,7 +8,7 @@
 
 //--------------------------------------------------------------------------------
 
-namespace core
+namespace util
 {
 
 union DateTime
@@ -56,6 +56,6 @@ union DateTime
     str::string getAll(char aDelimiter = '_') const noexcept;
 };
 
-} // namespace core
+} // namespace util
 
 //--------------------------------------------------------------------------------

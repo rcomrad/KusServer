@@ -7,7 +7,7 @@ sudo chmod 600 /swapfile
 sudo mkswap /swapfile
 sudo swapon /swapfile
 
-sudo -S apt install gcc g++ make curl zip unzip tar pkg-config autoconf postgresql net-tools cmake build-essential gnumeric -y
+sudo -S apt install gcc g++ make curl zip unzip tar pkg-config autoconf postgresql net-tools cmake build-essential gnumeric bison flex -y
 sudo -S apt install texlive texinfo texlive-fonts-recommended texlive-latex-extra texlive-lang-cyrillic latex-cjk-all -y
 
 # pascal compiler and python
@@ -27,6 +27,7 @@ sudo -H -u $2 git clone https://github.com/Microsoft/vcpkg.git
 cd ./vcpkg
 sudo -H -u $2 ./bootstrap-vcpkg.sh
 sudo -H -u $2 ./vcpkg install boost-filesystem:x64-linux
+sudo -H -u $2 ./vcpkg install boost-date-time:x64-linux
 sudo -H -u $2 ./vcpkg install crow:x64-linux
 sudo -H -u $2 ./vcpkg install libpqxx:x64-linux
 sudo -H -u $2 ./vcpkg install mailio:x64-linux

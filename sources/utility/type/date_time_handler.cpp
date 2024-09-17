@@ -10,8 +10,8 @@
 
 //--------------------------------------------------------------------------------
 
-core::DateTime
-core::DateTimeHandler::getCurentTime() noexcept
+util::DateTime
+util::DateTimeHandler::getCurentTime() noexcept
 {
     DateTime result;
 
@@ -33,14 +33,14 @@ core::DateTimeHandler::getCurentTime() noexcept
 //--------------------------------------------------------------------------------
 
 bool
-core::DateTimeHandler::dateTimeHasPassed(const DateTime& aTimeMoment) noexcept
+util::DateTimeHandler::dateTimeHasPassed(const DateTime& aTimeMoment) noexcept
 {
     static DateTime nullMoment;
     return durationHasPassed(aTimeMoment, nullMoment);
 }
 
 bool
-core::DateTimeHandler::durationHasPassed(const DateTime& aTimeFrom,
+util::DateTimeHandler::durationHasPassed(const DateTime& aTimeFrom,
                                          const DateTime& aDuration) noexcept
 {
     auto currentTime = getCurentTime();

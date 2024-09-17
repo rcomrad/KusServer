@@ -55,7 +55,6 @@ endmacro()
 #-------------------------------------------------------------------------------
 
 # Compile options
-set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Libraries include
@@ -67,10 +66,12 @@ find_package(GTest CONFIG REQUIRED)
 
 # Sources include
 add_executable(${PROJECT_NAME} "sources_main/main.cpp")
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23)
 create_exe(${PROJECT_NAME})
 
 set(TEST_EXE_NAME "${PROJECT_NAME}_test")
 add_executable(${TEST_EXE_NAME} "sources_main/test_main.cpp")
+target_compile_features(${TEST_EXE_NAME} PRIVATE cxx_std_23)
 target_include_directories("${PROJECT_NAME}_test" PUBLIC "sources_test/")
 create_exe(${TEST_EXE_NAME})
 include(sources_test/sources.cmake)

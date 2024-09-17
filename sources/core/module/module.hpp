@@ -22,6 +22,7 @@ public:
     Module(const char* a_name) noexcept;
     virtual ~Module() = default;
 
+    // final
     void init() noexcept;
     void term() noexcept;
     void run() noexcept;

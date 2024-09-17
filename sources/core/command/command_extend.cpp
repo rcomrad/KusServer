@@ -121,15 +121,30 @@ core::CommandExtend::argCount(int a_size) noexcept
 core::CommandExtend&
 core::CommandExtend::varCount(int a_size) noexcept
 {
-    if (variables.size() != a_size)
+    return argCount({a_size});
+}
+
+core::CommandExtend&
+core::CommandExtend::argCount(const std::set<int>& a_sizes) noexcept
+{
+    if (!a_sizes.count(arguments.size()))
     {
+        std::string expect;
+        for (auto i : a_sizes)
+        {
+            if (!expect.empty())
+            {
+                expect += " or ";
+            }
+            expect += std::to_string(i);
+        }
         m_check_result = false;
         PRINT_CMD_CONTEXT_ERR(
             *this, m_context,
             "The number of arguments for '%s' command is incorrect. "
-            "The expected number of arguments is %d, "
+            "The expected number of arguments is %s, "
             "the actual number of arguments is %lu.",
-            value, a_size, variables.size());
+            value, expect, arguments.size());
     }
     return *this;
 }
@@ -172,7 +187,7 @@ core::CommandExtend::getArgumentAsNumberBase(int a_arg_num,
             m_check_result = false;
         }
 
-        if (a_max_check_flag && result <= a_max_val)
+        if (a_max_check_flag && result >= a_max_val)
         {
             PRINT_CMD_CONTEXT_ERR(*this, m_context,
                                   "Too large argument number."

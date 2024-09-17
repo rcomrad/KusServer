@@ -1,3 +1,3 @@
-// #define DATABASE_STRUCTURE_CPP_FILE
+#define DATABASE_STRUCTURE_CPP_FILE
 
-// #include "database_structures.hpp"
+#include "database_structures.hpp"

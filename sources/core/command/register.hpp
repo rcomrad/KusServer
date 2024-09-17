@@ -31,8 +31,8 @@ protected:
                                 const char* a_help_args = "") noexcept;
     static void registerCommand(
         std::unordered_set<Info>&& a_cmd_data_array) noexcept;
-    void setCommandStateType(const char* a_comm_name,
-                             StateStorage::StateType a_type) noexcept;
+    static void setCommandStateType(const char* a_comm_name,
+                                    StateStorage::StateType a_type) noexcept;
 };
 
 } // namespace core

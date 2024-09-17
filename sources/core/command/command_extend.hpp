@@ -2,6 +2,8 @@
 
 //------------------------------------------------------------------------------
 
+#include <set>
+
 #include "core/logging/logging.hpp"
 
 #include "command.hpp"
@@ -31,6 +33,8 @@ struct CommandExtend : public Command
 
     CommandExtend& argCount(int a_size) noexcept;
     CommandExtend& varCount(int a_size) noexcept;
+
+    CommandExtend& argCount(const std::set<int>& a_sizes) noexcept;
 
     int getArgumentAsNumber(int a_arg_num) noexcept;
     int getArgumentAsNumber(int a_arg_num, int a_max_val) noexcept;
@@ -92,7 +96,7 @@ using FP_CommandHandler = void (*)(CommandExtend&);
         return;                                           \
     }
 
-#define CMD_GET_ARG_AS_NUM(...)                                           \
+#define CMD_GET_ARG_AS_NUM(name, ...)                                     \
     a_command.setContext(LOCAL_CONTEXT).getArgumentAsNumber(__VA_ARGS__); \
     if (!a_command)                                                       \
     {                                                                     \
