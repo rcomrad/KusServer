@@ -42,6 +42,7 @@ private:
         std::string result;
         size_t result_size = (args.size() + ...);
         result.reserve(result_size);
+
         ((result += args, result.back() == PATH_SEPARATOR
                               ? void()
                               : result.push_back(PATH_SEPARATOR)),
