@@ -33,7 +33,8 @@ public:
     static std::string normalizeFolderPath(std::string_view a_path,
                                            bool sep_postfix) noexcept;
 
-    static std::string getRelativeToApp(std::string_view a_path, bool is_folder) noexcept;
+    static std::string getRelativeToApp(std::string_view a_path,
+                                        bool is_folder) noexcept;
 
 private:
     template <typename... Args>
@@ -42,7 +43,6 @@ private:
         std::string result;
         size_t result_size = (args.size() + ...);
         result.reserve(result_size);
-
         ((result += args, result.back() == PATH_SEPARATOR
                               ? void()
                               : result.push_back(PATH_SEPARATOR)),

@@ -2,162 +2,101 @@
 
 #include <gtest/gtest.h>
 
-TEST(PathCombine, test_combine_file_3_words)
-{
-
-    std::string path = util::Path::combine<std::string_view>(
-        false, "user", "Desktop", "kus.png");
-
-    EXPECT_STREQ(path.c_str(), "user/Desktop/kus.png");
-}
-TEST(PathCombine, test_combine_folder_3_words)
-{
-    std::string path =
-        util::Path::combine<std::string_view>(true, "user", "Desktop", "kus");
-
-    EXPECT_STREQ(path.c_str(), "user/Desktop/kus/");
-}
-
-TEST(PathCombine, test_combine_file_1_word)
-{
-
-    std::string path =
-        util::Path::combine<std::string_view>(false, "us!!dD  Der.png");
-
-    EXPECT_STREQ(path.c_str(), "us!!dD  Der.png");
-}
-TEST(PathCombine, test_combine_folder_1_word)
-{
-    std::string path =
-        util::Path::combine<std::string_view>(true, "useR  WQr/");
-
-    EXPECT_STREQ(path.c_str(), "useR  WQr/");
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-TEST(PathGetName, test_get_name_file)
+#include "utility/file_system/path_storage.hpp"
+#include "utility/file_system/path_values.hpp"
+// Simple tests for PathCombine and PathGetName
+//------------------------------------------------------------------------------
+TEST(PathCombineAndGetName, test_combine_and_getName_3_words)
 {
     DECLARE_LOCAL_CONTEXT;
 
-    std::string path = util::Path::combine<std::string_view>(
-        false, "user", "Desktop", "kus.png");
-
-    ASSERT_STREQ(path.c_str(), "user/Desktop/kus.png");
-
+    std::string path = util::Path::combine(false, "user", "Desktop", "kus.png");
+    ASSERT_EQ(path, "user/Desktop/kus.png");
     std::string name = util::Path::getName(path, context_local);
+    EXPECT_EQ(name, "kus.png");
 
-    EXPECT_STREQ(name.c_str(), "kus.png");
+    path = util::Path::combine(true, "user", "Desktop", "kus");
+    ASSERT_EQ(path, "user/Desktop/kus/");
+    name = util::Path::getName(path, context_local);
+    EXPECT_EQ(name, "kus");
 }
-
-TEST(PathGetName, test_get_name_folder)
+//------------------------------------------------------------------------------
+// Difficult tests for PathCombine
+//------------------------------------------------------------------------------
+TEST(PathCombineAndGetName, test_combine_and_getName_1_word)
 {
     DECLARE_LOCAL_CONTEXT;
 
-    std::string path =
-        util::Path::combine<std::string_view>(true, "user", "Desktop", "kus");
-
-    ASSERT_STREQ(path.c_str(), "user/Desktop/kus/");
-
+    std::string path = util::Path::combine(false, "us!!dD  Der.png");
+    ASSERT_EQ(path, "us!!dD  Der.png");
     std::string name = util::Path::getName(path, context_local);
+    EXPECT_EQ(name, "us!!dD  Der.png");
 
-    EXPECT_STREQ(name.c_str(), "kus");
+    path = util::Path::combine(true, "useR  WQr/");
+    ASSERT_EQ(path, "useR  WQr/");
+    name = util::Path::getName(path, context_local);
+    EXPECT_EQ(name, "useR  WQr");
 }
+//------------------------------------------------------------------------------
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-TEST(PathNormalizeFolderPath, test_normalize_folder_path_with_sep_postfix)
+// Simple tests for PathNormalizeFolderPath
+//------------------------------------------------------------------------------
+TEST(PathNormalizeFolderPath,
+     test_normalize_folder_path_with_sep_postfix_in_initial_path)
 {
-    DECLARE_LOCAL_CONTEXT;
-
-    std::string path =
-        util::Path::combine<std::string_view>(true, "user", "Desktop", "kus");
-
-    ASSERT_STREQ(path.c_str(), "user/Desktop/kus/");
-
+    std::string path = "user/Desktop/kus/";
     std::string normalize_folder_path =
         util::Path::normalizeFolderPath(path, true);
+    EXPECT_EQ(normalize_folder_path, "user/Desktop/kus/");
 
-    EXPECT_STREQ(normalize_folder_path.c_str(), "user/Desktop/kus/");
+    normalize_folder_path = util::Path::normalizeFolderPath(path, false);
+    EXPECT_EQ(normalize_folder_path, "user/Desktop/kus");
 }
 
-TEST(PathNormalizeFolderPath, test_normalize_folder_path_without_sep_postfix)
+TEST(PathNormalizeFolderPath,
+     test_normalize_folder_path_without_sep_postfix_in_initial_path)
 {
-    DECLARE_LOCAL_CONTEXT;
-
-    std::string path =
-        util::Path::combine<std::string_view>(true, "user", "Desktop", "kus");
-
-    ASSERT_STREQ(path.c_str(), "user/Desktop/kus/");
-
-    std::string normalize_folder_path =
-        util::Path::normalizeFolderPath(path, false);
-
-    EXPECT_STREQ(normalize_folder_path.c_str(), "user/Desktop/kus");
-}
-
-TEST(PathNormalizeFolderPath, test_normalize_folder_path_with_sep_postfix_2)
-{
-    DECLARE_LOCAL_CONTEXT;
-
     std::string path = "user/Desktop/kus";
-
     std::string normalize_folder_path =
         util::Path::normalizeFolderPath(path, true);
+    EXPECT_EQ(normalize_folder_path, "user/Desktop/kus/");
 
-    EXPECT_STREQ(normalize_folder_path.c_str(), "user/Desktop/kus/");
+    normalize_folder_path = util::Path::normalizeFolderPath(path, false);
+    EXPECT_EQ(normalize_folder_path, "user/Desktop/kus");
 }
+//------------------------------------------------------------------------------
 
-TEST(PathNormalizeFolderPath, test_normalize_folder_path_without_sep_postfix_2)
-{
-    DECLARE_LOCAL_CONTEXT;
-
-    std::string path = "user/Desktop/kus";
-
-    std::string normalize_folder_path =
-        util::Path::normalizeFolderPath(path, false);
-
-    EXPECT_STREQ(normalize_folder_path.c_str(), "user/Desktop/kus");
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+// Simple tests for PathGetRelativeToApp
+//------------------------------------------------------------------------------
 TEST(PathGetRelativeToApp, test_get_relative_to_app_folder)
 {
+
+    std::string path = "fi??rst/se con d/thi!!rd/";
+
     DECLARE_LOCAL_CONTEXT;
+    
+    auto app_path =
+        util::PathStorage::getFolderPath(util::APP_PATH_NAME, &context_local);
 
-    std::string path = util::Path::combine<std::string_view>(
-        true, "fi??rst", "se con d", "thi!!rd");
+    std::string full_path = app_path.value().data();
+    full_path += "fi??rst/se con d/thi!!rd/";
 
-    ASSERT_STREQ(path.c_str(), "fi??rst/se con d/thi!!rd/");
-
-    std::string normalize_folder_path =
-        util::Path::normalizeFolderPath(path, true);
-
-    ASSERT_STREQ(normalize_folder_path.c_str(), "fi??rst/se con d/thi!!rd/");
-
-    std::string full_path =
-        "/home/arsen/Desktop/KusServer/fi??rst/se con d/thi!!rd/";
-
-    // /home/arsen/Desktop/KusServer/
-    EXPECT_STREQ(
-        util::Path::getRelativeToApp(normalize_folder_path, true).c_str(),
-        full_path.c_str());
+    EXPECT_EQ(util::Path::getRelativeToApp(path, true), full_path);
 }
 
 TEST(PathGetRelativeToApp, test_get_relative_to_app_file)
 {
+
+    std::string path = "fi??rst/se con d/thi!!rd.png";
+
     DECLARE_LOCAL_CONTEXT;
 
-    std::string path = util::Path::combine<std::string_view>(
-        false, "fi??rst", "se con d", "thi!!rd.png");
+    auto app_path =
+        util::PathStorage::getFolderPath(util::APP_PATH_NAME, &context_local);
 
-    ASSERT_STREQ(path.c_str(), "fi??rst/se con d/thi!!rd.png");
+    std::string full_path = app_path.value().data();
+    full_path += "fi??rst/se con d/thi!!rd.png";
 
-    std::string full_path =
-        "/home/arsen/Desktop/KusServer/fi??rst/se con d/thi!!rd.png";
-
-    // /home/arsen/Desktop/KusServer/
-    EXPECT_STREQ(util::Path::getRelativeToApp(path, false).c_str(),
-                 full_path.c_str());
+    EXPECT_EQ(util::Path::getRelativeToApp(path, false), full_path);
 }
+//------------------------------------------------------------------------------
