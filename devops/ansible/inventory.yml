@@ -1,0 +1,49 @@
+---
+# webservers:
+#   hosts:
+#     foo.example.com:
+#         http_port: 3022
+#     bar.example.com:
+# dbservers:
+#   hosts:
+#     one.example.com:
+#     two.example.com:
+#     three.example.com
+development:
+  hosts:  
+    local:
+      ansible_connection=local
+# all:
+#   development:
+#     hosts:
+#       local:
+#         ansible_host: 127.0.0.1
+#         ansible_port: 3333
+#         ansible_user: user
+        # ansible_ssh_private_key_file: /path/to/private/key
+
+# development:
+#   hosts:
+#     local:
+#       ansible_host: 127.0.0.1
+#       ansible_port: 3333
+#       ansible_user: user
+#       # ansible_ssh_private_key_file: /path/to/private/key
+
+
+# all:
+#   hosts:
+#     vm1.example.com:
+#       ansible_host: 192.168.1.10
+#       ansible_user: your_username
+#       ansible_ssh_private_key_file: /path/to/private/key
+#     vm2.example.com:
+#       ansible_host: 192.168.1.11
+#       ansible_user: your_username
+#       ansible_ssh_private_key_file: /path/to/private/key
+
+#   children:
+#     my_vms:
+#       hosts:
+#         vm1.example.com:
+#         vm2.example.com:

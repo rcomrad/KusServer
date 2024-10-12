@@ -19,4 +19,7 @@
 **.out
 vcpkg_path.cmake
 
+id_rsa
+id_rsa.pub
+
 git update-index --assume-unchanged ./.vscode/*
