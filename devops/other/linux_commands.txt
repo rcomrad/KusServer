@@ -1,9 +1,10 @@
 sudo apt-get install virtualbox-guest-x11
 sudo VBoxClient --clipboard
-sudo apt install openssh-server
+sudo apt install -y openssh-server
 
 # no vim in git branch
 git config --global pager.branch 'false'
+git config --global core.editor "nano"
 
 ls -a
 ls -s

@@ -3,9 +3,8 @@
 #include <optional>
 #include <string>
 
-#include "../command.hpp"
-
 #include "node.hpp"
+#include "type.hpp"
 
 namespace onto
 {
@@ -14,22 +13,9 @@ class Function;
 
 struct Variable : public Node
 {
-    Variable(const Command& a_command) noexcept;
-    Variable(const std::string_view& a_dump) noexcept;
+    Variable(const std::string_view& a_dump, Type& a_type) noexcept;
 
     void is_argument(Function& a_func) noexcept;
-
-    // enum Kind
-    // {
-    //     BASIC,
-    //     CONTAINER
-    // };
-    // enum Owner
-    // {
-    //     STD,
-    //     SELF
-    // };
-    // std::optional<Type*> subtype;
 };
 
 } // namespace onto

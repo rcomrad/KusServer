@@ -1,35 +1,41 @@
 #include "web_base.hpp"
 
-// #include <iostream>
-// #include <sstream>
+#include <stdexcept>
 
-#include "core/logging/logging.hpp"
+#include "nodes/node.hpp"
 
-boost::optional<onto::Node&>
-onto::WebBase::get_node(const std::string_view& a_name) const noexcept
+void
+onto::WebBase::registrateNode(const std::string_view& a_name,
+                              Node& a_obj) noexcept
 {
-    auto it = m_storage.find(a_name);
-    boost::optional<onto::Node&> result;
-    if (it != m_storage.end())
+    if (m_storage.count(a_name))
     {
-        result = *it->second;
+        // TODO: catch
+        throw std::runtime_error("The node named '" + std::string(a_name) +
+                                 "' has already been registered.");
     }
-    else
+    m_storage[a_name] = &a_obj;
+}
+
+std::string
+onto::WebBase::print() const noexcept
+{
+    std::string result;
+    for (auto& i : m_storage)
     {
-        LOG_WARNING("No '%s' node.", a_name);
+        result += i.second->print();
+        result.push_back('\n');
     }
     return result;
 }
 
-// void
-// onto::WebBase::createNode(const std::string& a_type,
-//                           const std::string& a_name) noexcept
-// {
-// }
-
-// void
-// onto::Web::connect(const std::string_view& a_node_name_1,
-//                    const std::string_view& a_node_name_2,
-//                    Relation a_relation) noexcept
-// {
-// }
+void
+onto::WebBase::clearNotUsedNodes() noexcept
+{
+    std::erase_if(m_storage,
+                  [](const auto& item)
+                  {
+                      auto const& [key, value] = item;
+                      return value->isLonelyNode();
+                  });
+}

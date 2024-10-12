@@ -1,6 +1,6 @@
 #include "slicer.hpp"
 
-#include "ascii_box.hpp"
+#include "utility/datastructs/ascii_box.hpp"
 
 std::vector<std::string_view>
 util::Slicer::process(StringCaster a_str,
@@ -37,7 +37,7 @@ util::Slicer::baseProcess(StringCaster a_from_str,
     while (true)
     {
         auto from_cur = *from_str;
-        auto& to_cur   = *to_str;
+        auto& to_cur  = *to_str;
 
         if (!erasors.get(from_cur))
         {

@@ -2,6 +2,10 @@
 
 //------------------------------------------------------------------------------
 
+#include "utility/common/src_path.hpp"
+
+//------------------------------------------------------------------------------
+
 namespace core
 {
 
@@ -13,11 +17,6 @@ struct Context
 };
 
 } // namespace core
-
-#include <string.h>
-
-#define __FILENAME__ \
-    (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 
 #define LOCAL_CONTEXT                                                          \
     core::Context                                                              \

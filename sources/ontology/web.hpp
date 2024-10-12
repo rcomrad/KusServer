@@ -1,22 +1,13 @@
 #pragma once
 
-#include <boost/optional/optional.hpp>
-
 #include <string>
 #include <string_view>
 #include <unordered_map>
 #include <unordered_set>
+#include <utility>
 
-#include "core/logging/logging.hpp"
+#include "nodes/node_include.hpp"
 
-#include "nodes/function.hpp"
-#include "nodes/node.hpp"
-#include "nodes/operator.hpp"
-#include "nodes/type.hpp"
-#include "nodes/variable.hpp"
-
-#include "command.hpp"
-#include "relation.hpp"
 #include "web_base.hpp"
 
 namespace onto
@@ -25,49 +16,36 @@ namespace onto
 class Web : public WebBase
 {
 public:
-    Web() noexcept;
-
-    void applyDump(std::string&& a_dump) noexcept;
-    void applyData(const std::string& a_data) noexcept;
-
-#define NODE_MACROS(type, storage)                                    \
-    template <typename T>                                             \
-    type& create##type(T& arg) noexcept                               \
-    {                                                                 \
-        return createNode(storage, Command::getNodeName(args), args); \
+#define NODE_MACROS(_, type, storage)                                          \
+    template <typename... Args>                                                \
+    type& create##type(const std::string_view& a_name, Args&&... arg) noexcept \
+    {                                                                          \
+        auto [it, inserted] = m_##storage##s.try_emplace(                      \
+            std::string(a_name), a_name, std::forward<Args>(arg)...);          \
+        registrateNode(it->first, it->second);                                 \
+        return it->second;                                                     \
     }
-#include "./nodes/all_node_macro_call.ini"
+#include "./nodes/node.ini"
 
-#define NODE_MACROS(type, ...) \
+#define NODE_MACROS(_, type, ...) \
     type& get##type(const std::string_view& a_name) noexcept;
-#include "./nodes/all_node_macro_call.ini"
+#include "./nodes/node.ini"
+
+    Node& createNode(const std::string_view& a_type,
+                     const std::string_view& a_name);
+
+#define ONLY_SIMPLE_NODS
+#define NODE_MACROS(_, type, ...) \
+    void populate##type(          \
+        const std::unordered_set<std::string_view>& a_names) noexcept;
+#include "./nodes/node.ini"
 
 private:
-#define NODE_MACROS(type, storage) NodeContainer<type> name;
-#include "./nodes/all_node_macro_call.ini"
+    template <class T>
+    using NodeContainer = std::unordered_map<std::string, T>;
 
-    // template <typename T>
-    // void populate(NodeContainer<T>& a_storage,
-    //               const std::unordered_set<std::string_view>& a_names)
-    //               noexcept
-    // {
-    //     for (const auto& name : a_names)
-    //     {
-    //         Command c;
-    //         c.m_name = name;
-    //         createNode(a_storage, c);
-    //     }
-    // }
-
-    // template <typename T, typename... Args>
-    // T& createNode(NodeContainer<T>& a_storage, Args... args) noexcept
-    // {
-    //     auto it = a_storage.emplace(a_command.m_name, T(args...)).first;
-    //     m_storage[it->first] = dynamic_cast<Node*>(&it->second);
-    //     return it->second;
-    // }
-    void createNode(const std::string& a_type,
-                    const std::string& a_name) noexcept;
+#define NODE_MACROS(_, type, storage) NodeContainer<type> m_##storage##s;
+#include "./nodes/node.ini"
 }; // namespace onto
 
 } // namespace onto

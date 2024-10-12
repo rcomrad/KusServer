@@ -105,23 +105,24 @@ core::CommandExtend::varMinCount(int a_size) noexcept
 core::CommandExtend&
 core::CommandExtend::argCount(int a_size) noexcept
 {
-    if (arguments.size() != a_size)
-    {
-        m_check_result = false;
-        PRINT_CMD_CONTEXT_ERR(
-            *this, m_context,
-            "The number of arguments for '%s' command is incorrect. "
-            "The expected number of arguments is %d, "
-            "the actual number of arguments is %lu.",
-            value, a_size, arguments.size());
-    }
-    return *this;
+    std::set<int> args_cnt{a_size};
+    return argCount(args_cnt);
 }
 
 core::CommandExtend&
 core::CommandExtend::varCount(int a_size) noexcept
 {
-    return argCount({a_size});
+    if (variables.size() != a_size)
+    {
+        m_check_result = false;
+        PRINT_CMD_CONTEXT_ERR(
+            *this, m_context,
+            "The number of variables for '%s' command is incorrect. "
+            "The expected number of variables is %d, "
+            "the actual number of variables is %lu.",
+            value, a_size, variables.size());
+    }
+    return *this;
 }
 
 core::CommandExtend&

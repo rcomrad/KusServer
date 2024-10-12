@@ -1,0 +1,10 @@
+[Unit]
+Description=VBoxClient clipboard service
+After=display-manager.service
+
+[Service]
+ExecStart=/usr/bin/VBoxClient --clipboard
+Restart=always
+
+[Install]
+WantedBy=default.target

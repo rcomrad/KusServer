@@ -7,6 +7,9 @@ namespace util
 
 // TODO: inline?
 
+// TODO: operator=
+// convertion to T
+
 template <typename T>
 union LifecycleManager
 {
@@ -14,6 +17,12 @@ public:
     LifecycleManager() noexcept
     {
         is_freed.value = true;
+    }
+
+    template <typename... Args>
+    LifecycleManager(Args&&... args) noexcept
+    {
+        create(args...);
     }
 
     ~LifecycleManager()
@@ -44,6 +53,7 @@ public:
     }
 
     T obj;
+    // TODO: remove data - use struct is_freed
     char data[sizeof(T)];
 
 private:

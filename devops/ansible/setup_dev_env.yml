@@ -1,0 +1,311 @@
+---
+- name: Setup development environment
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Update and upgrade apt packages
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install common packages
+      ansible.builtin.apt:
+        name:
+          - git
+          - nano
+          - tar
+          - wget
+          - openssh-server
+          - libssl-dev
+        state: present
+
+    - name: No vim for git branch
+      ansible.builtin.shell: git config --global pager.branch 'false'
+
+    - name: Set nano as default git redactor
+      ansible.builtin.shell: git config --global core.editor "nano"
+
+    - name: Install C++ packages
+      ansible.builtin.apt:
+        name:
+          - gcc
+          - g++
+          - make
+          - cmake
+          - build-essential
+        state: present
+
+    - name: Install vcpkg dependencies
+      ansible.builtin.apt:
+        name:
+          - curl
+          - zip
+          - unzip
+          - tar
+          - pkg-config
+          - autoconf
+          - net-tools
+          - gnumeric
+          - bison
+          - flex
+        state: present
+
+    - name: Install PostgreSQL
+      ansible.builtin.apt:
+        name:
+          - postgresql
+        state: present
+
+- name: Install zsh
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Install zsh package
+      ansible.builtin.apt:
+        name: zsh
+        state: present
+
+    - name: Get all users
+      # TODO: too many users, select only "real" one - done
+      # TODO: make it pretty 
+      ansible.builtin.shell: 'getent passwd | awk -F: ''($3 >= 1000 || $1 == "root") && $1 != "nobody" {print $1}'''
+      register: user_list
+
+    - name: Install Oh My Zsh
+      become: yes
+      become_user: "{{ item }}"
+      ansible.builtin.shell: |
+        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+      loop: "{{ user_list.stdout_lines }}"
+      ignore_errors: yes # TODO: Already present
+
+    - name: Change default shell to zsh
+      user:
+        name: "{{ item }}"
+        ansible.builtin.shell: /bin/zsh
+      loop: "{{ user_list.stdout_lines }}"
+      ignore_errors: yes # TODO: Already done?
+
+    - name: Create default .zshrc file
+      copy:
+        src: .zshrc
+        dest: "{{ '/root/.zshrc' if item == 'root' else '/home/' + item + '/.zshrc' }}"
+        owner: "{{ item }}"
+        group: "{{ item }}"
+        mode: '0644'
+      loop: "{{ user_list.stdout_lines }}"
+
+- name: Setup VBoxClient clipboard
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Install VirtualBox packages
+      ansible.builtin.apt:
+        name:
+          - virtualbox-guest-x11
+        state: present
+
+    - name: Create systemd service for VBoxClient clipboard
+      copy:
+        src: vboxclient-clipboard.service
+        dest: /etc/systemd/system/vboxclient-clipboard.service
+      notify: reload_systemd
+
+    - name: Enable VBoxClient clipboard service
+      systemd:
+        name: vboxclient-clipboard.service
+        enabled: yes
+        state: started
+
+  handlers:
+    - name: reload_systemd
+      systemd:
+        daemon_reload: yes
+
+
+  tasks:
+    - name: Install VirtualBox packages
+      ansible.builtin.apt:
+        name:
+          - virtualbox-guest-x11
+        state: present
+
+    - name: Create systemd service for VBoxClient clipboard
+      copy:
+        src: vboxclient-clipboard.service
+        dest: /etc/systemd/system/vboxclient-clipboard.service
+      notify: reload_systemd
+
+    - name: Enable VBoxClient clipboard service
+      systemd:
+        name: vboxclient-clipboard.service
+        enabled: yes
+        state: started
+
+  handlers:
+    - name: reload_systemd
+      systemd:
+        daemon_reload: yes
+
+- name: Install vcpkg
+  hosts: localhost
+  become: yes
+  become_user: "{{ username }}"
+  gather_facts: false
+
+  vars:
+    username: "user"
+    vcpkg_path: "/home/{{ username }}/vcpkg" 
+    libraries:
+      - boost-filesystem:x64-linux
+      - boost-date-time:x64-linux
+      - crow:x64-linux
+      - libpqxx:x64-linux
+      - mailio:x64-linux
+      - gtest:x64-linux
+      - boost-locale:x64-linux
+
+  tasks:
+    - name: Clone repository
+      git:
+        repo: https://github.com/microsoft/vcpkg.git
+        dest: "{{ vcpkg_path }}"
+        version: master
+
+    - name: Bootstrap vcpkg
+      ansible.builtin.shell: ./bootstrap-vcpkg.sh
+      args:
+        chdir: "{{ vcpkg_path }}"
+
+    - name: Create vcpkg alias
+      lineinfile:
+        path: /home/{{ username }}/.zshrc
+        line: 'alias vcpkg="{{ vcpkg_path }}/vcpkg"'
+        state: present
+
+    - name: Install libraries
+      command: ./vcpkg install "{{ item }}"
+      args:
+        chdir: "{{ vcpkg_path }}"
+      with_items: "{{ libraries }}"
+
+# - name: Install CMake from source
+#   hosts: localhost
+#   vars:
+#     cmake_version: "3.27.8"
+#     cmake_tar: "cmake-{{ cmake_version }}.tar.gz"
+#     cmake_dir: "cmake-{{ cmake_version }}"
+
+#   tasks:
+#     - name: Download CMake
+#       get_url:
+#         url: "https://github.com/Kitware/CMake/releases/download/v{{ cmake_version }}/{{ cmake_tar }}"
+#         dest: "/tmp/{{ cmake_tar }}"
+
+#     - name: Extract CMake
+#       unarchive:
+#         src: "/tmp/{{ cmake_tar }}"
+#         dest: "/tmp/"
+#         remote_src: yes
+
+#     - name: Build
+#       command: ./bootstrap
+#       args:
+#         chdir: "/tmp/{{ cmake_dir }}"
+
+#     - name: Compile
+#       command: make -j "{{ ansible_processor_cores }}"
+#       args:
+#         chdir: "/tmp/{{ cmake_dir }}"
+
+#     - name: Install
+#       command: make install
+#       args:
+#         chdir: "/tmp/{{ cmake_dir }}"
+
+#     - name: Clean up
+#       file:
+#         path: "/tmp/{{ item }}"
+#         state: absent
+#       loop:
+#         - "{{ cmake_dir }}"
+#         - "{{ cmake_tar }}"
+
+# - name: Install GCC from source
+#   hosts: localhost
+#   become: yes
+#   vars:
+#     gcc_version: "{{ version }}"  # Use a variable for the version
+#     gcc_tar: "gcc-{{ gcc_version }}.tar.gz"
+#     gcc_dir: "gcc-{{ gcc_version }}"
+#     obj_dir: "obj.gcc-{{ gcc_version }}"
+
+#   tasks:
+#     - name: Install required packages
+#       apt:
+#         name:
+#           - build-essential
+#           - wget
+#         state: present
+
+#     - name: Download GCC
+#       get_url:
+#         url: "https://ftp.gnu.org/gnu/gcc/gcc-{{ gcc_version }}/{{ gcc_tar }}"
+#         dest: "/tmp/{{ gcc_tar }}"
+
+#     - name: Extract GCC
+#       unarchive:
+#         src: "/tmp/{{ gcc_tar }}"
+#         dest: "/tmp/"
+#         remote_src: yes
+
+#     - name: Create build directory
+#       file:
+#         path: "/tmp/{{ obj_dir }}"
+#         state: directory
+
+#     - name: Configure GCC
+#       command: "../{{ gcc_dir }}/configure --prefix=/usr/local/gcc-{{ gcc_version }} --disable-multilib --enable-language=c,c++"
+#       args:
+#         chdir: "/tmp/{{ obj_dir }}"
+
+#     - name: Compile GCC
+#       command: make -j "{{ ansible_processor_cores }}"
+#       args:
+#         chdir: "/tmp/{{ obj_dir }}"
+
+#     - name: Install GCC
+#       command: make install
+#       args:
+#         chdir: "/tmp/{{ obj_dir }}"
+
+#     - name: Clean up
+#       file:
+#         path: "/tmp/{{ item }}"
+#         state: absent
+#       loop:
+#         - "{{ gcc_dir }}"
+#         - "{{ gcc_tar }}"
+#         - "{{ obj_dir }}"
+
+- name: Clone KusServer
+  hosts: localhost
+  become: yes
+  become_user: "{{ username }}"
+
+  vars:
+    username: "user"
+    project_dir: "/home/projects/{{ username }}/KusServer"
+    repo_url: https://github.com/rcomrad/KusServer.git
+    branch: version_5
+
+  tasks:
+    - name: Clone KusServer repository
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ project_dir }}"
+        version: "{{ branch }}"
+        update: yes  # Ensure the repo is updated if it already exists

@@ -2,8 +2,9 @@
 
 #include <string>
 #include <unordered_set>
+#include <vector>
 
-#include "command.hpp"
+#include "context.hpp"
 #include "web.hpp"
 
 namespace onto
@@ -12,15 +13,36 @@ namespace onto
 class Decoder
 {
 public:
-    // void process(const std::string& a_str) noexcept;
-    static std::string process(Web& a_web,
-                               const std::string& a_data) noexcept;
+    Decoder() = delete;
+
+    static void process(Web& a_web, const std::string& a_data) noexcept;
 
 private:
-    static void processWord(Web& a_web,
-                            Command& a_command,
-                            const std::string& a_word) noexcept;
-    // std::string m_command_buffer;
+    // static Node* collapse(std::vector<Context>& context_stuck,
+    //                       Node* a_parent_node) noexcept;
+
+    // bool hasPattern(const std::vector<Context>& a_data,
+    //                 const std::vector<Type>& a_pattern) noexcept;
+
+    // struct Context
+    // {
+    //     enum State
+    //     {
+    //         NUN,
+    //         EMPTY,
+    //         TYPE,
+    //         MAX
+    //     };
+    //     Node* node;
+    //     State state;
+    // };
+    // std::vector<Context> m_context_stuck;
+
+    // void process(const std::string& a_str) noexcept;
+    // static void processNonstatic(Web& a_web,
+    //                              const std::string& a_data) noexcept;
+
+    // static void processWord(Web& a_web, const std::string& a_word) noexcept;
 };
 
 } // namespace onto

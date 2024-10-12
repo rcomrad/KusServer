@@ -22,24 +22,40 @@
     NAME(NAME&& other) noexcept            = default; \
     NAME& operator=(NAME&& other) noexcept = default;
 
-#define SINGLETON_DEFINITOR(NameSpace, ClassName)                      \
-    NameSpace::ClassName& NameSpace::ClassName::getInstance() noexcept \
-    {                                                                  \
-        static ClassName instance;                                     \
-        return instance;                                               \
-    }                                                                  \
-    namespace                                                          \
-    {                                                                  \
-    struct SingletonEntryPoint##NameSpace##ClassName                   \
-    {                                                                  \
-        SingletonEntryPoint##NameSpace##ClassName()                    \
-        {                                                              \
-            NameSpace::ClassName::getInstance();                       \
-        }                                                              \
-    };                                                                 \
-    SingletonEntryPoint##NameSpace##ClassName                          \
-        g_singleton_entry_point_for##NameSpace##ClassName;             \
+// TODO: remove redandant
+// SINGLETON_INITIALIZER
+#define SINGLETON_DEFINITOR(NameSpace, ClassName)          \
+    namespace                                              \
+    {                                                      \
+    struct SingletonEntryPoint##NameSpace##ClassName       \
+    {                                                      \
+        SingletonEntryPoint##NameSpace##ClassName()        \
+        {                                                  \
+            NameSpace::ClassName::getInstance();           \
+        }                                                  \
+    };                                                     \
+    SingletonEntryPoint##NameSpace##ClassName              \
+        g_singleton_entry_point_for##NameSpace##ClassName; \
     }
+
+// #define SINGLETON_DEFINITOR(NameSpace, ClassName)                      \
+//     NameSpace::ClassName& NameSpace::ClassName::getInstance() noexcept \
+//     {                                                                  \
+//         static ClassName instance;                                     \
+//         return instance;                                               \
+//     }                                                                  \
+//     namespace                                                          \
+//     {                                                                  \
+//     struct SingletonEntryPoint##NameSpace##ClassName                   \
+//     {                                                                  \
+//         SingletonEntryPoint##NameSpace##ClassName()                    \
+//         {                                                              \
+//             NameSpace::ClassName::getInstance();                       \
+//         }                                                              \
+//     };                                                                 \
+//     SingletonEntryPoint##NameSpace##ClassName                          \
+//         g_singleton_entry_point_for##NameSpace##ClassName;             \
+//     }
 
 #define HOLY_TRINITY_SINGLETON(NAME)                 \
     NAME(const NAME&) noexcept             = delete; \
@@ -47,7 +63,11 @@
     NAME(NAME&& other) noexcept            = delete; \
     NAME& operator=(NAME&& other) noexcept = delete; \
                                                      \
-    static NAME& getInstance() noexcept;
+    static inline NAME& getInstance() noexcept       \
+    {                                                \
+        static NAME instance;                        \
+        return instance;                             \
+    }
 
 #define HOLY_EMPTINESS
 
