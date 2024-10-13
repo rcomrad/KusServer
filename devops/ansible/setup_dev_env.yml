@@ -165,6 +165,8 @@
       - crow:x64-linux
       - libpqxx:x64-linux
       - mailio:x64-linux
+      - gtest:x64-linux
+      - boost-locale:x64-linux
 
   tasks:
     - name: Clone repository
