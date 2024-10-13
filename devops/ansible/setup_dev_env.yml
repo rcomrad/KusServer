@@ -20,6 +20,12 @@
           - libssl-dev
         state: present
 
+    - name: No vim for git branch
+      ansible.builtin.shell: git config --global pager.branch 'false'
+
+    - name: Set nano as default git redactor
+      ansible.builtin.shell: git config --global core.editor "nano"
+
     - name: Install C++ packages
       ansible.builtin.apt:
         name:

@@ -4,6 +4,7 @@ sudo apt install -y openssh-server
 
 # no vim in git branch
 git config --global pager.branch 'false'
+git config --global core.editor "nano"
 
 ls -a
 ls -s
