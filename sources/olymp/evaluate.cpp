@@ -8,16 +8,40 @@
 
 #include "utility/string/parser.hpp"
 
-int
-to_int(const std::string_view& a_str)
-{
-    return std::stoi(std::string(a_str));
+std::string customTransliterate(const std::string& input, const std::map<char, std::string>& mapping) {
+    std::string output;
+    for (char ch : input) {
+        auto it = mapping.find(ch);
+        if (it != mapping.end()) {
+            output += it->second; // Append mapped value
+        } else {
+            output += ch; // Append original character if no mapping found
+        }
+    }
+    return output;
 }
 
-int
-to_double(const std::string_view& a_str)
-{
-    return std::stod(std::string(a_str));
+int main() {
+    // Define your custom mapping
+    std::map<char, std::string> mapping = {
+        {'А', "A"}, {'Б', "B"}, {'В', "V"}, {'Г', "G"},
+        {'Д', "D"}, {'Е', "E"}, {'Ё', "Yo"}, {'Ж', "Zh"},
+        {'З', "Z"}, {'И', "I"}, {'Й', "Y"}, {'К', "K"},
+        {'Л', "L"}, {'М', "M"}, {'Н', "N"}, {'О', "O"},
+        {'П', "P"}, {'Р', "R"}, {'С', "S"}, {'Т', "T"},
+        {'У', "U"}, {'Ф', "F"}, {'Х', "Kh"}, {'Ц', "Ts"},
+        {'Ч', "Ch"}, {'Ш', "Sh"}, {'Щ', "Shch"}, {'Ъ', ""}, 
+        {'Ы', "Y"}, {'Ь', ""}, {'Э', "E"}, {'Ю', "Yu"},
+        {'Я', "Ya"}
+    };
+
+    std::string input = "Привет"; // Input string in Cyrillic
+    std::string output = customTransliterate(input, mapping);
+
+    std::cout << "Original: " << input << std::endl;
+    std::cout << "Transliterated: " << output << std::endl;
+
+    return 0;
 }
 
 struct Answer
@@ -68,6 +92,68 @@ struct Question
     }
 };
 
+int
+to_int(const std::string_view& a_str)
+{
+    return std::stoi(std::string(a_str));
+}
+
+int
+to_double(const std::string_view& a_str)
+{
+    return std::stod(std::string(a_str));
+}
+
+void
+setVerdict(Answer& answer, bool verdict)
+{
+    if (verdict)
+    {
+        answer.verdict = 'T';
+    }
+    else
+    {
+        answer.verdict = 'F';
+    }
+}
+
+void
+boolCheck(const Question& question, Answer& answer)
+{
+    if (answer.value == "нет" || answer.value == "неверно" ||
+        answer.value == "НЕВЕРНО" || answer.value == "неверно " ||
+        answer.value == "Неверно" || answer.value == "НЕТ" ||
+        answer.value == " нет" || answer.value == "нет " ||
+        answer.value == "НЕТ " || answer.value == "НКЕТ" ||
+        answer.value == "Нет " || answer.value == "НЕT" ||
+        answer.value == " НЕТ" || answer.value == "HET" ||
+        answer.value == "Нет" || answer.value == "No" || answer.value == "no" ||
+        answer.value == "väärin" || answer.value == "не" ||
+        answer.value == "väärin " || answer.value == "virheellinen")
+    {
+        answer.value = "false";
+    }
+    if (answer.value == "да" || answer.value == "верно" ||
+        answer.value == "ВЕРНО" || answer.value == "ДАТ" ||
+        answer.value == "Д" || answer.value == "А" || answer.value == "а" ||
+        answer.value == "ДА" || answer.value == "Да" || answer.value == "да " ||
+        answer.value == "ВЕРНО " || answer.value == "yes" ||
+        answer.value == "Yes" || answer.value == "Да " ||
+        answer.value == "ДА " || answer.value == " ДА" ||
+        answer.value == "Верно" || answer.value == "oikein" ||
+        answer.value == "oikea")
+    {
+        answer.value = "true";
+    }
+
+    setVerdict(answer, answer.value == question.jury_answer);
+}
+
+void
+matchCheck(const Question& question, Answer& answer)
+{
+}
+
 void
 olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
 {
@@ -80,7 +166,7 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
     auto words = util::Parser::getWords(data, ";\t\"\'");
 
     std::vector<Answer> answers;
-    std::vector<Question> question;
+    std::vector<Question> question(1);
 
     int num = 0;
     for (auto& i : words)
@@ -115,36 +201,15 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
 
     for (auto& i : answers)
     {
-        if (i.value == "нет" || i.value == "неверно" || i.value == "НЕВЕРНО" ||
-            i.value == "неверно " || i.value == "Неверно" || i.value == "НЕТ" ||
-            i.value == " нет" || i.value == "нет " || i.value == "НЕТ " ||
-            i.value == "НКЕТ" || i.value == "Нет " || i.value == "НЕT" ||
-            i.value == " НЕТ" || i.value == "HET" || i.value == "Нет" ||
-            i.value == "No" || i.value == "no" || i.value == "väärin" ||
-            i.value == "не" || i.value == "väärin " ||
-            i.value == "virheellinen")
-        {
-            i.value = "false";
-        }
-        if (i.value == "да" || i.value == "верно" || i.value == "ВЕРНО" ||
-            i.value == "ДАТ" || i.value == "Д" || i.value == "А" ||
-            i.value == "а" || i.value == "ДА" || i.value == "Да" ||
-            i.value == "да " || i.value == "ВЕРНО " || i.value == "yes" ||
-            i.value == "Yes" || i.value == "Да " || i.value == "ДА " ||
-            i.value == " ДА" || i.value == "Верно" || i.value == "oikein" ||
-            i.value == "oikea")
-        {
-            i.value = "true";
-        }
     }
 
     std::vector<std::set<std::string>> wrong(question.size());
     for (auto& i : answers)
     {
-        int id = i.question_id - 1;
-        if (i.value != question[id].jury_answer)
+        int id = i.question_id;
+        if (answer.value != question[id].jury_answer)
         {
-            wrong[id].insert(i.value);
+            wrong[id].insert(answer.value);
         }
     }
 
@@ -156,10 +221,13 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
         {
             std::cout << "[" << j << "]" << " ";
         }
+        else
+        {
+        }
         std::cout << std::endl;
     }
     //     for (auto& i : answers)
     //     {
-    //         std::cout << i.value << std::endl;
+    //         std::cout << answer.value << std::endl;
     //     }
 }
