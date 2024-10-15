@@ -229,7 +229,7 @@ struct User
     int status;
     int role_id;
 
-    bool cl11 = false;
+    int cl11 = false;
 
     std::vector<int> tasks;
 
@@ -333,6 +333,18 @@ boolCheck(const Question& question, Answer& answer)
 }
 
 void
+singlCheck(const Question& question, Answer& answer)
+{
+    answer.verdict = 0;
+    if (answer.value == question.jury_answer)
+    {
+        answer.verdict = 1;
+    }
+
+    // setVerdict(answer, answer.value == question.jury_answer);
+}
+
+void
 countCheck(const Question& question, Answer& answer)
 {
     int res = 0;
@@ -377,7 +389,7 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
     std::getline(file, data, '\0');
     auto words = util::Parser::getWords(data, ";\t\"\'");
 
-    std::vector<User> users(1);
+    std::vector<User> users(2000);
     std::vector<Answer> answers(1);
     std::vector<Question> question(1);
 
@@ -419,7 +431,7 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
                 flag = question.back().type != "stat";
                 break;
             case 3:
-                users.emplace_back(i);
+                users[std::stoi(std::string(i[0]))] = User(i);
                 break;
         }
         if (ptr && flag)
@@ -497,7 +509,30 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
         auto& q = question[id];
         auto& u = users[i.user_id];
 
+        // if (u.login == "GIDLA-911-02")
+        // {
+        //     int yy = 0;
+        //     yy++;
+        // }
+
+        if (u.id == 97 || u.id == 94|| u.id == 333)
+        {
+            continue;
+        }
+
+        // if (u.id != 132)
+        // if (u.id != 308)
+        // {
+        //     continue;
+        // }
+
+        std::cout << ">>>" << u.login << "\n";
+
         if (q.type == "singl")
+        {
+            singlCheck(q, i);
+        }
+        if (q.type == "bool")
         {
             boolCheck(q, i);
         }
@@ -517,16 +552,26 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
 
         if (id < 47) continue;
 
+        // if (u.cl11 == 11 && id > )
+        // {
+        // }
+
         if (id > 92)
         {
             id -= 93;
-            u.cl11 = true;
+            id += 20 + 11;
+            u.cl11 = 11;
+            // continue;
         }
         else
         {
-            id -= 47;
+            id -= 46;
         }
-        if (u.tasks.size() <= id) u.tasks.resize(id + 1);
+        if (u.tasks.size() <= id) u.tasks.resize(id + 1, -1);
+        if (u.tasks[id] != -1)
+        {
+            exit(0);
+        }
         u.tasks[id] = i.verdict;
 
         // int id = i.question_id;
@@ -557,13 +602,15 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
     {
         if (u.tasks.size())
         {
-            if (u.cl11)
+            if (u.cl11 == 11)
             {
                 std::cout << "9 ";
+                u.tasks.erase(u.tasks.begin(), u.tasks.begin() + 11);
             }
             else
             {
                 std::cout << "7 ";
+                u.tasks.erase(u.tasks.begin());
             }
 
             std::cout << u.login << " ";
