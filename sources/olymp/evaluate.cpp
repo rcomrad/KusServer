@@ -515,7 +515,12 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
         //     yy++;
         // }
 
-        if (u.id == 97 || u.id == 94|| u.id == 333)
+        if (u.id == 97 || u.id == 94 || u.id == 333)
+        {
+            continue;
+        }
+
+        if (i.time.size() && util::Slicer::process(i.time, ":- ")[3] == "13")
         {
             continue;
         }
@@ -622,6 +627,7 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
         }
     }
 
+    std::cout << "FIN" << std::endl;
     //     for (auto& i : answers)
     //     {
     //         std::cout << answer.value << std::endl;
