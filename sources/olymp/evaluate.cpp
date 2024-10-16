@@ -249,6 +249,7 @@ struct User
         key        = (a_data[8]);
         status     = to_int(a_data[9]);
         role_id    = to_int(a_data[10]);
+        // std::cout <<" >>>>>>" << a_data[1] << "\n";
     }
 };
 
@@ -396,7 +397,14 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
     int num = 0;
     for (auto& i : words)
     {
+    //   if (i.size())  std::cout << i[0] << std::endl;
+        // continue;
+
         if (i.empty()) continue;
+
+        // for (auto& j : i) std::cout << j << " ";
+        // std::cout << std::endl;
+        // continue;
 
         if (i[0] == "user")
         {
@@ -495,9 +503,11 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
         }
     }
 
-    for (auto& i : answers)
-    {
-    }
+    // for (auto& i : users)
+    // {
+    //     std::cout << i.login << std::endl;
+    // }
+    // return ;
     std::cout << "=========================================" << "\n";
     std::vector<std::set<std::string>> wrong(question.size());
 
@@ -520,8 +530,9 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
             continue;
         }
 
-        if (i.time.size() && util::Slicer::process(i.time, ":- ")[3] == "13")
+        if (i.time.size() && util::Slicer::process(i.time, " -:")[3] == "13")
         {
+            std::cout << "timr!!!! :" << i.time << "\n";
             continue;
         }
 
@@ -531,7 +542,7 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
         //     continue;
         // }
 
-        std::cout << ">>>" << u.login << "\n";
+        std::cout << ">>>" << "log: " << "-" << u.login << "-\n";
 
         if (q.type == "singl")
         {
@@ -618,12 +629,20 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
                 u.tasks.erase(u.tasks.begin());
             }
 
-            std::cout << u.login << " ";
+            std::cout << u.login << " " << u.password << " ";
+            int s = 0;
             for (auto& i : u.tasks)
             {
-                std::cout << i << " ";
+                if (i == -1) std::cout << "# ";
+                else 
+                {
+                    std::cout << i << " ";
+                    s += i;
+                }
             }
-            std::cout << "\n";
+
+
+            std::cout << s << "\n";
         }
     }
 
