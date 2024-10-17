@@ -397,7 +397,7 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
     int num = 0;
     for (auto& i : words)
     {
-    //   if (i.size())  std::cout << i[0] << std::endl;
+        //   if (i.size())  std::cout << i[0] << std::endl;
         // continue;
 
         if (i.empty()) continue;
@@ -433,6 +433,7 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
             case 1:
                 ptr  = &answers.emplace_back(i).value;
                 flag = question[answers.back().question_id].type != "stat";
+                if (answers.back().question_id > 45) answers.pop_back();
                 break;
             case 2:
                 ptr  = &question.emplace_back(i).jury_answer;
@@ -634,13 +635,12 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
             for (auto& i : u.tasks)
             {
                 if (i == -1) std::cout << "# ";
-                else 
+                else
                 {
                     std::cout << i << " ";
                     s += i;
                 }
             }
-
 
             std::cout << s << "\n";
         }
