@@ -392,10 +392,10 @@ wordCheck(const Question& question, Answer& answer)
 
     int res = 0;
     std::unordered_set<std::string> ans;
-    for (auto& i : ans_v) ans.insert(std::string(i));
+    for (auto& i : ans_v) ans.insert(translitor(std::string(i)));
     for (auto& i : part)
     {
-        if (ans.count(std::string(i)))
+        if (ans.count(translitor(std::string(i))))
         {
             res++;
             answer.good.insert(std::string(i));
@@ -437,13 +437,10 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
     std::ifstream file(file_name.data());
     std::string data;
     std::getline(file, data, '\0');
-    std::cout << "SUS:" << std::endl;
     auto words = util::Parser::getWords(data, ";\t\"\'");
-    std::cout << "SUS:" << std::endl;
     std::vector<User> users(2000);
     std::vector<Answer> answers(1);
     std::vector<Question> question(1);
-
     int num = 0;
     for (auto& i : words)
     {
@@ -453,7 +450,12 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
         if (i.empty()) continue;
 
         // for (auto& j : i) std::cout << j << " ";
-        std::cout << i[0] << " " << i[1] << std::endl;
+        // if (i.size() > 1) std::cout << i[0] << " " << i[1] << std::endl;
+        // if (i[0] == "749")
+        // {
+        //     int yy = 0;
+        //     yy++;
+        // }
         // continue;
 
         if (i[0] == "user")
@@ -477,7 +479,7 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
         }
 
         std::string* ptr = nullptr;
-        bool flag        = true;
+        bool flag        = false;
         switch (num)
         {
             case 1:
@@ -506,23 +508,23 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
                 users[std::stoi(std::string(i[0]))] = User(i);
                 break;
         }
-        if (ptr && flag)
-        {
-            inplace_translitor(*ptr);
-            auto word = util::Slicer::process(*ptr, "", " )");
-            if (word.size() > 1)
-            {
-                std::cout << *ptr << "\n";
-                // std::flush(stdout);
-                // exit(0);
-            }
-            if (word.size())
-            {
-                *ptr = std::string(word[0]);
-            }
+        // if (ptr && flag)
+        // {
+        //     inplace_translitor(*ptr);
+        //     auto word = util::Slicer::process(*ptr, "", " )");
+        //     if (word.size() > 1)
+        //     {
+        //         std::cout << *ptr << "\n";
+        //         // std::flush(stdout);
+        //         // exit(0);
+        //     }
+        //     if (word.size())
+        //     {
+        //         *ptr = std::string(word[0]);
+        //     }
 
-            // if (*ptr == "B1991") *ptr = "B";
-        }
+        //     // if (*ptr == "B1991") *ptr = "B";
+        // }
     }
 
     // for (auto& i : users)
@@ -530,14 +532,22 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
     //     std::cout << i.login << std::endl;
     // }
     // return ;
-    std::cout << "=========================================" << "\n";
+    std::cout << "=========================================" << std::endl;
     std::vector<std::unordered_set<std::string>> wrong(question.size());
     std::vector<std::unordered_set<std::string>> good(question.size());
 
     std::vector<std::vector<int>> table(users.size(), std::vector<int>());
 
+    answers[0].id          = 0;
+    answers[0].question_id = 0;
+    answers[0].time        = "2024-10-10 17:00:00";
+    answers[0].verdict     = 0;
+    question[0].id         = 0;
+    question[0].type       = "NUN";
     for (auto& i : answers)
     {
+        // std::cout << i.id << " " << i.value << std::endl;
+
         int id  = i.question_id;
         auto& q = question[id];
         auto& u = users[i.user_id];
