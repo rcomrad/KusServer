@@ -1,13 +1,18 @@
 #include "evaluate.hpp"
 
+#include <boost/locale.hpp>
+
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <set>
 #include <string>
 #include <string_view>
+#include <unordered_set>
 #include <vector>
 
 #include "utility/string/parser.hpp"
+#include "utility/string/slicer.hpp"
 
 std::string
 translitor(const std::string& a_str)
@@ -112,7 +117,8 @@ translitor(const std::string& a_str)
 void
 inplace_translitor(std::string& a_str)
 {
-    a_str = translitor(a_str);
+    // std::cout << a_str << std::endl;
+    // a_str = translitor(a_str);
 }
 
 std::string
@@ -149,7 +155,6 @@ foo()
     return 0;
 }
 
-#include <boost/locale.hpp>
 // std::u16string
 // utf8_to_utf16(const std::string& utf8_str)
 // {
@@ -199,6 +204,8 @@ struct Answer
     char verdict;
     double weight;
     std::string value;
+    std::unordered_set<std::string> good;
+    std::unordered_set<std::string> bad;
 
     Answer()
     {
@@ -212,6 +219,7 @@ struct Answer
         verdict     = a_data[4][0];
         weight      = to_double(a_data[5]);
         value       = a_data[6];
+        if (a_data.size() != 7) exit(0);
     }
 };
 
@@ -292,10 +300,13 @@ setVerdict(Answer& answer, bool verdict)
 void
 boolCheck(const Question& question, Answer& answer)
 {
+    answer.value = translitor(answer.value);
+
     if (answer.value == "нет" || answer.value == "неверно" ||
-        answer.value == "НЕВЕРНО" || answer.value == "неверно " ||
-        answer.value == "Неверно" || answer.value == "НЕТ" ||
-        answer.value == "NET" || answer.value == "No" || answer.value == "NO" ||
+        answer.value == "NEBERNO" || answer.value == "НЕВЕРНО" ||
+        answer.value == "неверно " || answer.value == "Неверно" ||
+        answer.value == "НЕТ" || answer.value == "NET" ||
+        answer.value == "No" || answer.value == "NO" ||
         answer.value == " нет" || answer.value == "нет " ||
         answer.value == "НЕТ " || answer.value == "НКЕТ" ||
         answer.value == "Нет " || answer.value == "НЕT" ||
@@ -303,29 +314,36 @@ boolCheck(const Question& question, Answer& answer)
         answer.value == "NKET" || answer.value == "Нет" ||
         answer.value == "No" || answer.value == "no" ||
         answer.value == "väärin" || answer.value == "не" ||
-        answer.value == "väärin " || answer.value == "virheellinen")
+        answer.value == "väärin " || answer.value == "VIRHEELLINEN" ||
+        answer.value == "Väärin" || answer.value == "virheellinen")
     {
         answer.value = "FALSE";
     }
     else if (answer.value == "да" || answer.value == "верно" ||
-             answer.value == "ВЕРНО" || answer.value == "ДАТ" ||
-             answer.value == "Yes" || answer.value == "Д" ||
-             answer.value == "А" || answer.value == "а" ||
-             answer.value == "ДА" || answer.value == "Да" ||
-             answer.value == "да " || answer.value == "ВЕРНО " ||
-             answer.value == "yes" || answer.value == "Yes" ||
-             answer.value == "Да " || answer.value == "ДА " ||
-             answer.value == "DAT" || answer.value == " ДА" ||
-             answer.value == " DA" || answer.value == "DA" ||
-             answer.value == "D" || answer.value == "A" ||
-             answer.value == "YES" || answer.value == "Верно" ||
-             answer.value == "oikein" || answer.value == "oikea")
+             answer.value == "BERNO" || answer.value == "ВЕРНО" ||
+             answer.value == "OIKEA" || answer.value == "OIKEIN" ||
+             answer.value == "ДАТ" || answer.value == "Yes" ||
+             answer.value == "Д" || answer.value == "А" ||
+             answer.value == "а" || answer.value == "ДА" ||
+             answer.value == "Да" || answer.value == "да " ||
+             answer.value == "ВЕРНО " || answer.value == "yes" ||
+             answer.value == "Yes" || answer.value == "Да " ||
+             answer.value == "ДА " || answer.value == "DAT" ||
+             answer.value == " ДА" || answer.value == " DA" ||
+             answer.value == "DA" || answer.value == "D" ||
+             answer.value == "A" || answer.value == "YES" ||
+             answer.value == "Верно" || answer.value == "oikein" ||
+             answer.value == "oikea")
     {
         answer.value = "TRUE";
     }
+    else
+    {
+        std::cout << "=============" << answer.value << std::endl;
+    }
 
     answer.verdict = 0;
-    if (answer.value == question.jury_answer)
+    if (answer.value == translitor(question.jury_answer))
     {
         answer.verdict = 1;
     }
@@ -361,7 +379,36 @@ countCheck(const Question& question, Answer& answer)
     }
     answer.verdict = res;
 }
-#include "utility/string/slicer.hpp"
+
+void
+wordCheck(const Question& question, Answer& answer)
+{
+    std::string ans_str{question.jury_answer};
+    std::string part_str{answer.value};
+    // answer.value.clear();
+
+    auto ans_v = util::Slicer::process(ans_str, ", \t.;");
+    auto part  = util::Slicer::process(part_str, ", \t.;");
+
+    int res = 0;
+    std::unordered_set<std::string> ans;
+    for (auto& i : ans_v) ans.insert(std::string(i));
+    for (auto& i : part)
+    {
+        if (ans.count(std::string(i)))
+        {
+            res++;
+            answer.good.insert(std::string(i));
+        }
+        else
+        {
+            std::cout << "???????????? " << i << std::endl;
+            answer.bad.insert(std::string(i));
+        }
+    }
+    answer.verdict = res;
+}
+
 void
 dublCheck(const Question& question, Answer& answer)
 {
@@ -382,14 +429,17 @@ matchCheck(const Question& question, Answer& answer)
 void
 olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
 {
+    int border = 45;
+
     CMD_ASSERT(argCount(1).noVars());
     auto& file_name = a_command.arguments[0];
 
     std::ifstream file(file_name.data());
     std::string data;
     std::getline(file, data, '\0');
+    std::cout << "SUS:" << std::endl;
     auto words = util::Parser::getWords(data, ";\t\"\'");
-
+    std::cout << "SUS:" << std::endl;
     std::vector<User> users(2000);
     std::vector<Answer> answers(1);
     std::vector<Question> question(1);
@@ -403,7 +453,7 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
         if (i.empty()) continue;
 
         // for (auto& j : i) std::cout << j << " ";
-        // std::cout << std::endl;
+        std::cout << i[0] << " " << i[1] << std::endl;
         // continue;
 
         if (i[0] == "user")
@@ -431,13 +481,26 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
         switch (num)
         {
             case 1:
-                ptr  = &answers.emplace_back(i).value;
-                flag = question[answers.back().question_id].type != "stat";
-                if (answers.back().question_id > 45) answers.pop_back();
+                ptr = &answers.emplace_back(i).value;
+                // flag = question[answers.back().question_id].type != "stat";
+                flag = question[answers.back().question_id].type == "singl" ||
+                       question.back().type == "count";
+                if (answers.back().id == 14398)
+                {
+                    int yy = 0;
+                    yy++;
+                }
+                if (answers.back().question_id > border)
+                {
+                    answers.pop_back();
+                    flag = false;
+                }
                 break;
             case 2:
-                ptr  = &question.emplace_back(i).jury_answer;
-                flag = question.back().type != "stat";
+                ptr = &question.emplace_back(i).jury_answer;
+                // flag = question.back().type != "stat";
+                flag = question.back().type == "singl" ||
+                       question.back().type == "count";
                 break;
             case 3:
                 users[std::stoi(std::string(i[0]))] = User(i);
@@ -458,49 +521,7 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
                 *ptr = std::string(word[0]);
             }
 
-            if (*ptr == "B1991") *ptr = "B";
-            if (*ptr == "1991") *ptr = "B";
-            if (*ptr == "RASTRELLI") *ptr = "B";
-            if (*ptr == "BK.B.RASTRELLI") *ptr = "B";
-            if (*ptr == "BRONZA") *ptr = "A";
-            if (*ptr == "BM.M.sEMaKIN") *ptr = "A";
-            if (*ptr == "M.M.sEMaKIN") *ptr = "A";
-            if (*ptr == "sEMaKIN") *ptr = "A";
-            if (*ptr == "V") *ptr = "B";
-
-            if (*ptr == "USyPALьная") *ptr = translitor("Усыпальница");
-            if (*ptr == "USyPAL'NICA") *ptr = translitor("Усыпальница");
-
-            if (*ptr == "KAFEDRy") *ptr = translitor("Кафедра");
-            if (*ptr == "KFEDRA") *ptr = translitor("Кафедра");
-
-            if (*ptr == "BANUA") *ptr = translitor("Бенуа");
-            if (*ptr == "BENUAR") *ptr = translitor("Бенуа");
-            if (*ptr == "BINUAR") *ptr = translitor("Бенуа");
-
-            if (*ptr == "KARELьён") *ptr = translitor("Карильон");
-            if (*ptr == "KARELьон") *ptr = translitor("Карильон");
-            if (*ptr == "KARIL'ON") *ptr = translitor("Карильон");
-            if (*ptr == "KARILION") *ptr = translitor("Карильон");
-            if (*ptr == "KARILьона") *ptr = translitor("Карильон");
-            if (*ptr == "KARILьонн") *ptr = translitor("Карильон");
-
-            if (*ptr == "KURATAN") *ptr = translitor("Куранты");
-            if (*ptr == "KURANTyPETROPAVLOVSKOGOSOBORA")
-                *ptr = translitor("Куранты");
-
-            if (*ptr == "sPIL'") *ptr = translitor("Шпиль");
-            if (*ptr == "sTILь") *ptr = translitor("Шпиль");
-
-            if (*ptr == ".TELUsKIN") *ptr = translitor("Телушкин");
-
-            if (*ptr == "ZARUDNOY") *ptr = translitor("Зарудный");
-            if (*ptr == "TERZINI") *ptr = translitor("Трезини");
-            if (*ptr == "TREZINE") *ptr = translitor("Трезини");
-            if (*ptr == "TREZININ") *ptr = translitor("Трезини");
-            if (*ptr == "TREZINNI") *ptr = translitor("Трезини");
-            if (*ptr == "TREZZINI") *ptr = translitor("Трезини");
-            if (*ptr == "TRIZINI") *ptr = translitor("Трезини");
+            // if (*ptr == "B1991") *ptr = "B";
         }
     }
 
@@ -510,7 +531,8 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
     // }
     // return ;
     std::cout << "=========================================" << "\n";
-    std::vector<std::set<std::string>> wrong(question.size());
+    std::vector<std::unordered_set<std::string>> wrong(question.size());
+    std::vector<std::unordered_set<std::string>> good(question.size());
 
     std::vector<std::vector<int>> table(users.size(), std::vector<int>());
 
@@ -519,6 +541,11 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
         int id  = i.question_id;
         auto& q = question[id];
         auto& u = users[i.user_id];
+        if (i.id == 1600)
+        {
+            int yy = 0;
+            yy++;
+        }
 
         // if (u.login == "GIDLA-911-02")
         // {
@@ -526,15 +553,21 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
         //     yy++;
         // }
 
-        if (u.id == 97 || u.id == 94 || u.id == 333)
+        // if (u.id == 97 || u.id == 94 || u.id == 333)
+        // {
+        //     continue;
+        // }
+
+        auto time = util::Slicer::process(i.time, " -:");
+        if (i.time.size() &&
+            std::stoi(std::string(time[3]) + std::string(time[4])) >= 1330)
         {
+            std::cout << "timr!!!! :" << time[3] << ":" << time[4] << "\n";
             continue;
         }
-
-        if (i.time.size() && util::Slicer::process(i.time, " -:")[3] == "13")
+        else if (i.time.size())
         {
-            std::cout << "timr!!!! :" << i.time << "\n";
-            continue;
+            std::cout << "timr~~~ :" << time[3] << ":" << time[4] << "\n";
         }
 
         // if (u.id != 132)
@@ -543,7 +576,7 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
         //     continue;
         // }
 
-        std::cout << ">>>" << "log: " << "-" << u.login << "-\n";
+        // std::cout << ">>>" << "log: " << "-" << u.login << "-\n";
 
         if (q.type == "singl")
         {
@@ -561,29 +594,30 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
         {
             dublCheck(q, i);
         }
-
-        if (i.verdict == 0)
+        else if (q.type == "word")
         {
-            wrong[id].insert(i.value);
+            wordCheck(q, i);
+            wrong[id].insert(i.bad.begin(), i.bad.end());
+            good[id].insert(i.good.begin(), i.good.end());
         }
 
-        if (id < 47) continue;
-
-        // if (u.cl11 == 11 && id > )
-        // {
-        // }
-
-        if (id > 92)
+        if (q.type != "word")
         {
-            id -= 93;
-            id += 20 + 11;
-            u.cl11 = 11;
-            // continue;
+            if (i.verdict == 0)
+            {
+                wrong[id].insert(i.value);
+                if (id == 1)
+                {
+                    int yy = 0;
+                    yy++;
+                }
+            }
+            else
+            {
+                good[id].insert(i.value);
+            }
         }
-        else
-        {
-            id -= 46;
-        }
+
         if (u.tasks.size() <= id) u.tasks.resize(id + 1, -1);
         if (u.tasks[id] != -1)
         {
@@ -603,12 +637,18 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
     }
 
     int cnt = 0;
-    for (auto& i : wrong)
+    for (int num = 0; num < border; ++num)
     {
+        auto& i = wrong[num];
         std::cout << cnt++ << " ";
         for (auto& j : i)
         {
             std::cout << "[" << j << "]" << " ";
+        }
+        std::cout << " | ";
+        for (auto& j : good[num])
+        {
+            std::cout << "->" << j << "<-" << " ";
         }
         std::cout << std::endl;
     }
