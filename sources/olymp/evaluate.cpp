@@ -6,6 +6,7 @@
 #include <iostream>
 #include <map>
 #include <set>
+#include <sstream>
 #include <string>
 #include <string_view>
 #include <unordered_set>
@@ -237,9 +238,10 @@ struct User
     int status;
     int role_id;
 
-    int cl11 = false;
+    int cl11 = 0;
 
     std::vector<int> tasks;
+    std::vector<std::string> esse;
 
     User()
     {
@@ -285,6 +287,26 @@ struct Question
 };
 
 void
+statCheck(const Question& question, Answer& answer)
+{
+    std::string ans_str{question.jury_answer};
+    std::string part_str{answer.value};
+    auto ans  = util::Slicer::process(ans_str, "/", ". \t\n,;?");
+    auto part = util::Slicer::process(part_str, "\0", ". \t\n,;?");
+
+    if (part[0] == ans[0] || ans.size() > 1 && part[0] == ans[1])
+    {
+        answer.verdict = 1;
+    }
+    else
+    {
+        answer.verdict = 0;
+    }
+
+    if (answer.value.back() == '.') answer.value.pop_back();
+}
+
+void
 setVerdict(Answer& answer, bool verdict)
 {
     if (verdict)
@@ -320,20 +342,20 @@ boolCheck(const Question& question, Answer& answer)
         answer.value = "FALSE";
     }
     else if (answer.value == "да" || answer.value == "верно" ||
-             answer.value == "BERNO" || answer.value == "ВЕРНО" ||
-             answer.value == "OIKEA" || answer.value == "OIKEIN" ||
-             answer.value == "ДАТ" || answer.value == "Yes" ||
-             answer.value == "Д" || answer.value == "А" ||
-             answer.value == "а" || answer.value == "ДА" ||
-             answer.value == "Да" || answer.value == "да " ||
-             answer.value == "ВЕРНО " || answer.value == "yes" ||
-             answer.value == "Yes" || answer.value == "Да " ||
-             answer.value == "ДА " || answer.value == "DAT" ||
-             answer.value == " ДА" || answer.value == " DA" ||
-             answer.value == "DA" || answer.value == "D" ||
-             answer.value == "A" || answer.value == "YES" ||
-             answer.value == "Верно" || answer.value == "oikein" ||
-             answer.value == "oikea")
+             answer.value == "BERNO " || answer.value == "BERNO" ||
+             answer.value == "ВЕРНО" || answer.value == "OIKEA" ||
+             answer.value == "OIKEIN" || answer.value == "ДАТ" ||
+             answer.value == "Yes" || answer.value == "Д" ||
+             answer.value == "А" || answer.value == "а" ||
+             answer.value == "ДА" || answer.value == "Да" ||
+             answer.value == "да " || answer.value == "ВЕРНО " ||
+             answer.value == "yes" || answer.value == "Yes" ||
+             answer.value == "Да " || answer.value == "ДА " ||
+             answer.value == "DAT" || answer.value == " ДА" ||
+             answer.value == " DA" || answer.value == "DA" ||
+             answer.value == "D" || answer.value == "A" ||
+             answer.value == "YES" || answer.value == "Верно" ||
+             answer.value == "oikein" || answer.value == "oikea")
     {
         answer.value = "TRUE";
     }
@@ -366,12 +388,18 @@ singlCheck(const Question& question, Answer& answer)
 void
 countCheck(const Question& question, Answer& answer)
 {
+    std::string ans_str{question.jury_answer};
+    std::string part_str{answer.value};
+
+    ans_str.erase(ans_str.begin());
+    part_str.erase(part_str.begin());
+
     int res = 0;
-    if (question.jury_answer.size() == answer.value.size())
+    if (ans_str.size() == part_str.size())
     {
-        for (int i = 0; i < answer.value.size(); ++i)
+        for (int i = 0; i < ans_str.size(); ++i)
         {
-            if (answer.value[i] == question.jury_answer[i])
+            if (ans_str[i] == part_str[i])
             {
                 ++res;
             }
@@ -383,28 +411,65 @@ countCheck(const Question& question, Answer& answer)
 void
 wordCheck(const Question& question, Answer& answer)
 {
-    std::string ans_str{question.jury_answer};
+    static std::unordered_set<std::string> dict = {
+        "äiti",     "asua",     "ei",      "elokuva", "he",     "hei",
+        "Helsinki", "hirvi",    "huivi",   "ilma",    "ilta",   "ilves",
+        "isä",      "iso",      "isoisä",  "kahvi",   "kaksi",  "karhu",
+        "karhu",    "käsi",     "kassi",   "kato",    "kertoa", "kesä",
+        "ketä",     "kieli",    "kielo",   "kilo",    "kioski", "kissa",
+        "kivi",     "koira",    "koivu",   "kolme",   "kori",   "kori",
+        "kortti",   "korva",    "korva",   "korvaus", "koti",   "koulu",
+        "kova",     "kuka",     "kurssi",  "kuu",     "kuusi",  "kuva",
+        "laiva",    "laki",     "lakki",   "lasi",    "laskea", "lento",
+        "liekki",   "limsa",    "lisäksi", "loma",    "luokka", "maa",
+        "mäki",     "mansikka", "matka",   "mato",    "matto",  "me",
+        "mennä",    "metro",    "minä",    "mitä",    "monta",  "nakki",
+        "ne",       "niemi",    "nimi",    "omena",   "opas",   "opiskelu",
+        "ovi",      "paloa",    "pari",    "pekka",   "pieni",  "piha",
+        "pikku",    "poika",    "polku",   "puhua",   "pukki",  "puoli",
+        "puolukka", "puu",      "puuro",   "rikas",   "rotta",  "ruoka",
+        "ruskea",   "saari",    "sairas",  "särmi",   "se",     "sieni",
+        "sika",     "silmä",    "sisko",   "sisko",   "sivu",   "sohva",
+        "soittaa",  "sormi",    "sukka",   "suklaa",  "Sulka",  "suo",
+        "suo",      "susi",     "suu",     "suuri",   "takki",  "taksi",
+        "talo",     "täti",     "te",      "teli",    "tie",    "tila",
+        "tosi",     "tsaari",   "ulko",    "usko",    "uusi",   "vaari",
+        "valo",     "vanha",    "veli",    "vihko",   "viikko", "viulu",
+        "voi",      "vuori",    "vuosi",
+    };
+
+    // std::string ans_str{question.jury_answer};
     std::string part_str{answer.value};
     // answer.value.clear();
 
-    auto ans_v = util::Slicer::process(ans_str, ", \t.;");
-    auto part  = util::Slicer::process(part_str, ", \t.;");
+    // auto ans_v = util::Slicer::process(ans_str, ", \t.;");
+    auto part = util::Slicer::process(part_str, ", \t.;");
 
     int res = 0;
-    std::unordered_set<std::string> ans;
-    for (auto& i : ans_v) ans.insert(translitor(std::string(i)));
+    // std::unordered_set<std::string> ans;
+    // for (auto& i : ans_v) ans.insert(translitor(std::string(i)));
     for (auto& i : part)
     {
-        if (ans.count(translitor(std::string(i))))
+        if (dict.count(std::string(i)))
         {
             res++;
             answer.good.insert(std::string(i));
         }
         else
         {
-            std::cout << "???????????? " << i << std::endl;
             answer.bad.insert(std::string(i));
         }
+
+        // if (ans.count(translitor(std::string(i))))
+        // {
+        //     res++;
+        //     answer.good.insert(std::string(i));
+        // }
+        // else
+        // {
+        //     std::cout << "???????????? " << i << std::endl;
+        //     answer.bad.insert(std::string(i));
+        // }
     }
     answer.verdict = res;
 }
@@ -533,8 +598,8 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
     // }
     // return ;
     std::cout << "=========================================" << std::endl;
-    std::vector<std::unordered_set<std::string>> wrong(question.size());
-    std::vector<std::unordered_set<std::string>> good(question.size());
+    std::vector<std::set<std::string>> wrong(question.size());
+    std::vector<std::set<std::string>> good(question.size());
 
     std::vector<std::vector<int>> table(users.size(), std::vector<int>());
 
@@ -572,12 +637,12 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
         if (i.time.size() &&
             std::stoi(std::string(time[3]) + std::string(time[4])) >= 1330)
         {
-            std::cout << "timr!!!! :" << time[3] << ":" << time[4] << "\n";
+            // std::cout << "timr!!!! :" << time[3] << ":" << time[4] << "\n";
             continue;
         }
         else if (i.time.size())
         {
-            std::cout << "timr~~~ :" << time[3] << ":" << time[4] << "\n";
+            // std::cout << "timr~~~ :" << time[3] << ":" << time[4] << "\n";
         }
 
         // if (u.id != 132)
@@ -610,22 +675,46 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
             wrong[id].insert(i.bad.begin(), i.bad.end());
             good[id].insert(i.good.begin(), i.good.end());
         }
+        else if (q.type == "stat")
+        {
+            statCheck(q, i);
+        }
+        else if (q.type == "esse")
+        {
+            u.esse.emplace_back(i.value);
+            i.verdict = 0;
+        }
 
         if (q.type != "word")
         {
             if (i.verdict == 0)
             {
                 wrong[id].insert(i.value);
-                if (id == 1)
-                {
-                    int yy = 0;
-                    yy++;
-                }
             }
             else
             {
                 good[id].insert(i.value);
             }
+        }
+
+        if (q.id < 11)
+        {
+            u.cl11 = 5;
+        }
+        else if (q.id < 20)
+        {
+            u.cl11 = 6;
+            id -= 11;
+        }
+        else if (q.id < 33)
+        {
+            u.cl11 = 7;
+            id -= 20;
+        }
+        else
+        {
+            u.cl11 = 8;
+            id -= 33;
         }
 
         if (u.tasks.size() <= id) u.tasks.resize(id + 1, -1);
@@ -665,37 +754,69 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
 
     std::cout << "===================================\n";
 
+    std::set<std::string> result_table;
     for (auto& u : users)
     {
         if (u.tasks.size())
         {
-            if (u.cl11 == 11)
+            // if (u.cl11 == 11)
+            // {
+            //     std::cout << "9 ";
+            //     u.tasks.erase(u.tasks.begin(), u.tasks.begin() + 11);
+            // }
+            // else
+            // {
+            //     std::cout << "7 ";
+            //     u.tasks.erase(u.tasks.begin());
+            // }
+
+            int cnt = 0;
+            std::string table;
+            if (u.tasks.size() > 0) u.tasks.erase(u.tasks.begin());
+            for (auto& i : u.tasks)
             {
-                std::cout << "9 ";
-                u.tasks.erase(u.tasks.begin(), u.tasks.begin() + 11);
+                if (i == -1) table += "•";
+                else
+                {
+                    if (i)
+                    {
+                        table += std::to_string(i);
+                        cnt += i;
+                    }
+                    else
+                    {
+                        table += "0";
+                    }
+                }
+                table.push_back(';');
+            }
+            std::stringstream ss;
+            if (u.cl11 == 5)
+            {
+                ss << "5-6 N";
+            }
+            else if (u.cl11 == 6)
+            {
+                ss << "7-8 N/5-6 U";
+            }
+            else if (u.cl11 == 7)
+            {
+                ss << "9-11 N/7-8 U";
             }
             else
             {
-                std::cout << "7 ";
-                u.tasks.erase(u.tasks.begin());
+                ss << "9-11 U";
             }
+            ss << ";" << cnt << ";" << u.login << ";" << u.password << ";"
+               << table;
+            for (auto& i : u.esse) ss << i << ";";
+            ss << "\n";
 
-            std::cout << u.login << " " << u.password << " ";
-            int s = 0;
-            for (auto& i : u.tasks)
-            {
-                if (i == -1) std::cout << "# ";
-                else
-                {
-                    std::cout << i << " ";
-                    s += i;
-                }
-            }
-
-            std::cout << s << "\n";
+            result_table.insert(ss.str());
         }
     }
 
+    for (auto& i : result_table) std::cout << i;
     std::cout << "FIN" << std::endl;
     //     for (auto& i : answers)
     //     {
