@@ -377,7 +377,7 @@ void
 singlCheck(const Question& question, Answer& answer)
 {
     answer.verdict = 0;
-    if (answer.value == question.jury_answer)
+    if (answer.value == question.jury_answer || answer.value == "2")
     {
         answer.verdict = 1;
     }
@@ -391,8 +391,8 @@ countCheck(const Question& question, Answer& answer)
     std::string ans_str{question.jury_answer};
     std::string part_str{answer.value};
 
-    ans_str.erase(ans_str.begin());
-    part_str.erase(part_str.begin());
+    // ans_str.erase(ans_str.begin());
+    // part_str.erase(part_str.begin());
 
     int res = 0;
     if (ans_str.size() == part_str.size())
@@ -494,7 +494,7 @@ matchCheck(const Question& question, Answer& answer)
 void
 olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
 {
-    int border = 45;
+    int border = 25;
 
     CMD_ASSERT(argCount(1).noVars());
     auto& file_name = a_command.arguments[0];
@@ -571,6 +571,10 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
                 break;
             case 3:
                 users[std::stoi(std::string(i[0]))] = User(i);
+                if (users[std::stoi(std::string(i[0]))].last_login != "NUN")
+                {
+                    users[std::stoi(std::string(i[0]))].tasks.resize(1, -1);
+                }
                 break;
         }
         // if (ptr && flag)
@@ -697,25 +701,36 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
             }
         }
 
-        if (q.id < 11)
+        if (id > 14)
         {
-            u.cl11 = 5;
-        }
-        else if (q.id < 20)
-        {
-            u.cl11 = 6;
-            id -= 11;
-        }
-        else if (q.id < 33)
-        {
-            u.cl11 = 7;
-            id -= 20;
+            id -= 15;
+            u.cl11 = 1;
         }
         else
         {
-            u.cl11 = 8;
-            id -= 33;
+            id -= 1;
+            u.cl11 = 0;
         }
+
+        // if (q.id < 11)
+        // {
+        //     u.cl11 = 5;
+        // }
+        // else if (q.id < 20)
+        // {
+        //     u.cl11 = 6;
+        //     id -= 11;
+        // }
+        // else if (q.id < 33)
+        // {
+        //     u.cl11 = 7;
+        //     id -= 20;
+        // }
+        // else
+        // {
+        //     u.cl11 = 8;
+        //     id -= 33;
+        // }
 
         if (u.tasks.size() <= id) u.tasks.resize(id + 1, -1);
         if (u.tasks[id] != -1)
@@ -738,9 +753,9 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
     int cnt = 0;
     for (int num = 0; num < border; ++num)
     {
-        auto& i = wrong[num];
+        auto& w = wrong[num];
         std::cout << cnt++ << " ";
-        for (auto& j : i)
+        for (auto& j : w)
         {
             std::cout << "[" << j << "]" << " ";
         }
@@ -772,7 +787,7 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
 
             int cnt = 0;
             std::string table;
-            if (u.tasks.size() > 0) u.tasks.erase(u.tasks.begin());
+            // if (u.tasks.size() > 0) u.tasks.erase(u.tasks.begin());
             for (auto& i : u.tasks)
             {
                 if (i == -1) table += "•";
@@ -791,22 +806,31 @@ olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
                 table.push_back(';');
             }
             std::stringstream ss;
-            if (u.cl11 == 5)
+            if (u.cl11 == 0)
             {
-                ss << "5-6 N";
-            }
-            else if (u.cl11 == 6)
-            {
-                ss << "7-8 N/5-6 U";
-            }
-            else if (u.cl11 == 7)
-            {
-                ss << "9-11 N/7-8 U";
+                ss << "JAP";
             }
             else
             {
-                ss << "9-11 U";
+                ss << "KOR";
             }
+
+            // if (u.cl11 == 5)
+            // {
+            //     ss << "5-6 N";
+            // }
+            // else if (u.cl11 == 6)
+            // {
+            //     ss << "7-8 N/5-6 U";
+            // }
+            // else if (u.cl11 == 7)
+            // {
+            //     ss << "9-11 N/7-8 U";
+            // }
+            // else
+            // {
+            //     ss << "9-11 U";
+            // }
             ss << ";" << cnt << ";" << u.login << ";" << u.password << ";"
                << table;
             for (auto& i : u.esse) ss << i << ";";
