@@ -13,9 +13,9 @@ olymp::Olymp::Olymp() noexcept : core::Module("olymp")
 bool
 olymp::Olymp::loopBody() noexcept
 {
-    core::InputBuffer buffer;
-    auto cmd_out = buffer.execCommand("res_proc results.dmp");
-    printf("%s", cmd_out.get());
+    // core::InputBuffer buffer;
+    // auto cmd_out = buffer.execCommand("res_proc results.dmp");
+    // printf("%s", cmd_out.get());
 
     return false;
 }

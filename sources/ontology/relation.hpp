@@ -12,7 +12,10 @@ enum class Relation
 constexpr int RELATION_COUNT = (static_cast<int>(Relation::MAX) + 1);
 
 const char*
-getRelationStr(Relation a_relation) noexcept;
+getRelationName(int a_relation) noexcept;
+
+const char*
+getRelationName(Relation a_relation) noexcept;
 
 int
 getOpposite(Relation a_relation) noexcept;

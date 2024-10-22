@@ -3,20 +3,20 @@
 // #include <iostream>
 // #include <sstream>
 
-#include "core/logging/logging.hpp"
-
-boost::optional<onto::Node&>
-onto::WebBase::get_node(const std::string_view& a_name) const noexcept
+void
+onto::WebBase::registrateNode(const std::string_view& a_name,
+                              Node& a_obj) noexcept
 {
-    auto it = m_storage.find(a_name);
-    boost::optional<onto::Node&> result;
-    if (it != m_storage.end())
+    m_storage[a_name] = &a_obj;
+}
+
+std::string
+onto::WebBase::print() const noexcept
+{
+    std::string result;
+    for (auto& i : m_storage)
     {
-        result = *it->second;
-    }
-    else
-    {
-        LOG_WARNING("No '%s' node.", a_name);
+        result += i.second->print();
     }
     return result;
 }

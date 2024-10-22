@@ -4,7 +4,7 @@ file(GLOB_RECURSE
     ${CMAKE_CURRENT_LIST_DIR}/*.hpp
 )
 list(FILTER project_sources EXCLUDE REGEX "database")
-list(FILTER project_sources EXCLUDE REGEX "ontology")
+# list(FILTER project_sources EXCLUDE REGEX "ontology")
 target_sources(${EXE_NAME} PRIVATE ${project_sources})
 
 # set(filtered_sources)

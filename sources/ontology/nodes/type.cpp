@@ -14,13 +14,13 @@ onto::Type::Type(const std::string_view& a_name) noexcept
 }
 
 void
-onto::Type::returns(Function& a_func) noexcept
+onto::Type::result_for(Function& a_func) noexcept
 {
     a_func.addNeighbor(*this, Relation::RETURNS);
 }
 
 void
-onto::Type::has_type(Variable& a_var) noexcept
+onto::Type::produce_var(Variable& a_var) noexcept
 {
     a_var.addNeighbor(*this, Relation::HAS_TYPE);
 }

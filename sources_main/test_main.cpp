@@ -8,6 +8,7 @@ main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
     ::testing::InitGoogleMock(&argc, argv);
+    ::testing::GTEST_FLAG(filter) = "WebTest.*";
 
     core::Printer::setLogLevel(core::LogLevel::WARN);
 

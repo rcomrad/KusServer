@@ -1,8 +1,14 @@
 #include "relation.hpp"
 
+const char*
+onto::getRelationName(int a_relation) noexcept
+{
+    return getRelationName(Relation(a_relation));
+}
+
 #define RELATION_DECLARE(value) #value,
 const char*
-onto::getRelationStr(Relation a_relation) noexcept
+onto::getRelationName(Relation a_relation) noexcept
 {
     static const char* names[RELATION_COUNT] = {
 #include "relation.inc"

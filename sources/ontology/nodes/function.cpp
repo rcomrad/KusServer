@@ -7,7 +7,7 @@ onto::Function::Function(const Command& a_command) noexcept
 {
     // a_web
     // a_web.connect(a_command.)
-    a_command.m_type.value().returns(*this);
+    a_command.m_type.value().result_for(*this);
 }
 
 onto::Function::Function(const std::string_view& a_name) noexcept
