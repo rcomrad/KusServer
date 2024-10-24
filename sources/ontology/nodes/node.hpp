@@ -9,7 +9,7 @@
 namespace onto
 {
 
-constexpr int NEIGHBOR_SIZE = RELATION_COUNT * 2;
+// constexpr int NEIGHBOR_SIZE = RELATION_COUNT * 2;
 
 struct Node
 {
@@ -38,7 +38,7 @@ private:
     Kind m_kind;
     std::string m_name;
 
-    std::unordered_set<Node*> m_neighbor[NEIGHBOR_SIZE];
+    std::unordered_set<Node*> m_neighbor[RELATION_COUNT];
 
     size_t print(char* a_buffer, size_t a_cnt) const noexcept;
 };

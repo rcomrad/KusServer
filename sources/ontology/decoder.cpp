@@ -5,10 +5,11 @@
 std::string
 onto::Decoder::process(Web& a_web, const std::string& a_data) noexcept
 {
-    int indx = 0;
+    // int indx = 0;
     std::string word;
     Command command;
-    while (a_data[indx])
+    // while (a_data[indx])
+    for (size_t indx = 0; a_data[indx]; ++indx)
     {
         switch (a_data[indx])
         {
@@ -18,10 +19,10 @@ onto::Decoder::process(Web& a_web, const std::string& a_data) noexcept
             case ';':
             case '{':
             case '}':
+            case '\0':
                 processWord(a_web, command, word);
                 break;
-            case '\0':
-                break;
+
             default:
                 word += a_data[indx];
                 break;

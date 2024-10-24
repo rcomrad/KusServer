@@ -3,6 +3,7 @@
 #include <string>
 
 #include "ontology/web.hpp"
+#include "utility/common/src_path.hpp"
 
 #include "fixture.hpp"
 
@@ -16,7 +17,8 @@ class WebTest : public Fixture
 TEST_F(WebTest, smoke)
 {
     std::string code;
-    std::ifstream code_file("basic_declare.txt");
+    auto fff = __FOLDERNAME_STR__ + "basic_declare.txt";
+    std::ifstream code_file(__FOLDERNAME_STR__ + "basic_declare.txt");
     std::getline(code_file, code);
 
     onto::Web web_from_code;

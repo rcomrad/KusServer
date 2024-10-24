@@ -14,8 +14,8 @@
 
 onto::Web::Web() noexcept
 {
-    populateType({"int", "float", "double", "bool", "char"});
-    populateOperator({"if", "for", "while"});
+    // populateType({"int", "float", "double", "bool", "char"});
+    // populateOperator({"if", "for", "while"});
 }
 
 void

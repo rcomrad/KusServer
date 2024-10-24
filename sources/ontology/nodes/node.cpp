@@ -42,8 +42,10 @@ onto::Node::print(char* a_buffer, size_t a_cnt) const noexcept
     size_t base_ptr = reinterpret_cast<size_t>(a_buffer);
     a_buffer += snprintf(a_buffer, a_cnt, "%s\n", m_name.data());
 
-    for (int nei_num = 0; nei_num < NEIGHBOR_SIZE; ++nei_num)
+    for (int nei_num = 0; nei_num < RELATION_COUNT; ++nei_num)
     {
+        if (m_neighbor->empty()) continue;
+
         a_buffer +=
             snprintf(a_buffer, a_cnt, "\t%s:", getRelationName(nei_num));
         for (auto& nei_set : m_neighbor[nei_num])
