@@ -3,8 +3,9 @@
         {
             "name": "MEGA",
             "includePath": [
-                "${workspaceFolder}/sources/**",
-                "/home/rcomrad/projects/vcpkg/packages/**"
+                "/home/user/vcpkg/packages/gtest_x64-linux/include",
+                "/home/user/vcpkg/packages/**",
+                "${workspaceFolder}/sources/**"
             ],
             "intelliSenseMode": "linux-gcc-x64",
             "compilerPath": "/usr/bin/gcc",

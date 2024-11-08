@@ -1,6 +1,7 @@
 #include "path_storage.hpp"
 
 #include <filesystem>
+#include <iostream>
 
 #include "core/logging/logging.hpp"
 
@@ -225,8 +226,11 @@ util::PathStorage::touchFolderImpl(
     }
     else
     {
-        CONTEXT_INFO((*a_context), "Create folder with name: '%s', path '%s'.",
-                     a_folder_name, a_full_path);
+        if (a_context != nullptr)
+            CONTEXT_INFO((*a_context),
+                         "Create folder with name: '%s', path '%s'.",
+                         a_folder_name, a_full_path);
+
         result = addObject(m_folder_paths, a_folder_name, a_full_path,
                            a_context, "folder");
         LOG_CATCH(std::filesystem::create_directories(a_full_path),
@@ -246,10 +250,13 @@ util::PathStorage::removeFolderNonstatic(
     bool result = false;
 
     auto folderPath = getFolderPathNonstatic(a_folder_name);
+
     if (folderPath.has_value())
     {
-        auto& folder_path = folderPath.value();
+        std::string folder_path = folderPath.value().data();
+
         m_folder_paths.erase(a_folder_name);
+
         LOG_CATCH(result = std::filesystem::remove_all(folder_path), a_context,
                   "Failed to delete folder, name: '%s', path: '%s'.",
                   a_folder_name, folder_path);

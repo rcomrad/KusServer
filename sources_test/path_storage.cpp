@@ -241,25 +241,37 @@ TEST(PathStorageCreateAndRemoveFolder, test_add_remove_folder)
 
     std::string main_folder = "mainFolder";
 
-    std::array<std::string, 3> file_name_array   = {"file1, file3, file2"};
-    std::array<std::string, 3> folder_name_array = {"folder1, file3, file2"};
+    std::array<std::string, 3> file_name_array   = {"file0, file1, file2"};
+    std::array<std::string, 3> folder_name_array = {"folder0, file1, file2"};
 
     std::string main_folder_path =
         util::Path::getRelativeToApp(main_folder, true);
 
-    // /////////
-    // create main folder
-    auto s = util::PathStorage::touchFolder(main_folder_path);
+    /////////
+    // create main folder with some files, check that path is correct
+
+    ASSERT_TRUE(util::PathStorage::touchFolder(main_folder_path) ==
+                util::PathStorage::getFolderPath(main_folder));
+
+    for (int file_index = 0; file_index < 3; ++file_index)
+    {
+        ASSERT_TRUE(
+            util::PathStorage::touchFolder(main_folder_path + "/" +
+                                           file_name_array[file_index]) ==
+            util::PathStorage::getFolderPath(file_name_array[file_index]));
+    }
+
+    // util::PathStorage::
 
     // check that main folder exists
+
     ASSERT_TRUE(exists(main_folder_path));
 
     // remove folder
-    // util::PathStorage::removeFolder(main_folder_path, LOCAL_CONTEXT);
-    std::filesystem::remove(main_folder_path);
+    util::PathStorage::removeFolder(main_folder, LOCAL_CONTEXT);
 
     // check that main folder does not exist
     ASSERT_FALSE(exists(main_folder_path));
-    /////////
+    ///////
 }
 //------------------------------------------------------------------------------
