@@ -26,9 +26,11 @@ struct Node
     Kind getKind() const noexcept;
     const std::string& getName() const noexcept;
 
+    void clearRelationIfExist(Relation a_relation) noexcept;
     void addNeighbor(Node& a_node, Relation a_relation) noexcept;
 
     std::string print() const noexcept;
+    std::string serialize() const noexcept;
 
     bool isLonelyNode() const noexcept;
 

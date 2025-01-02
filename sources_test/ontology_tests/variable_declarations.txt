@@ -1,0 +1,10 @@
+
+int main()
+{
+    int a;
+    int z = 6;
+    int b = 7, s;
+    a = 5;
+    s = a + b;
+    
+}

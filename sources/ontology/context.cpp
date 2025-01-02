@@ -72,6 +72,9 @@ onto::Context::operator char() const noexcept
         case Type::WORD:
             result = 'w';
             break;
+        case Type::NUMERICAL:
+            result = 'n';
+            break;
         case Type::BRASE:
         case Type::DEVIDE:
         case Type::CALL:

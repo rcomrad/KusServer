@@ -21,6 +21,18 @@ onto::Node::getName() const noexcept
 }
 
 void
+onto::Node::clearRelationIfExist(Relation a_relation) noexcept
+{
+    auto neighbors        = m_neighbor[static_cast<int>(a_relation)];
+    auto oppositeRelation = getOpposite(a_relation);
+    for (auto& i : neighbors)
+    {
+        i->m_neighbor[oppositeRelation].erase(this);
+    }
+    neighbors.clear();
+}
+
+void
 onto::Node::addNeighbor(Node& a_node, Relation a_relation) noexcept
 {
     m_neighbor[static_cast<int>(a_relation)].insert(&a_node);
@@ -36,23 +48,72 @@ onto::Node::print() const noexcept
     return result;
 }
 
+std::string
+onto::Node::serialize() const noexcept
+{
+    std::string result;
+    result += getName();
+    result.push_back('[');
+    for (int i = 0; i < RELATION_COUNT; ++i)
+    {
+        auto& cur_nei = m_neighbor[i];
+        if (cur_nei.empty())
+        {
+            result.push_back('-');
+        }
+        else
+        {
+            result += std::to_string(i);
+            result.push_back(':');
+            result.push_back('{');
+            for (auto& neighbor : cur_nei)
+            {
+                result += neighbor->getName();
+                result.push_back(',');
+            }
+            result.back() = '}';
+        }
+    }
+    result.push_back(']');
+    return result;
+}
+
 size_t
 onto::Node::print(char* a_buffer, size_t a_cnt) const noexcept
 {
+    // size_t base_ptr = reinterpret_cast<size_t>(a_buffer);
+    // a_buffer += snprintf(a_buffer, a_cnt, "%s\n", m_name.data());
+
+    // for (auto& neighbors : m_neighbor)
+    // {
+    //     if (neighbors.empty()) continue;
+
+    //     a_buffer += snprintf(a_buffer, a_cnt,
+    //                          "\t%s:", getRelationName(&neighbors -
+    //                          m_neighbor));
+    //     for (auto& nei_set : neighbors)
+    //     {
+    //         a_buffer +=
+    //             snprintf(a_buffer, a_cnt, "\t\t%s",
+    //             nei_set->getName().data());
+    //     }
+    // }
+    // return reinterpret_cast<size_t>(a_buffer) - base_ptr;
+
+    const int width = 12;
+
     size_t base_ptr = reinterpret_cast<size_t>(a_buffer);
-    a_buffer += snprintf(a_buffer, a_cnt, "%s\n", m_name.data());
+    a_buffer += snprintf(a_buffer, a_cnt, "%-*s|", width, m_name.data());
 
     for (auto& neighbors : m_neighbor)
     {
-        if (neighbors.empty()) continue;
-
-        a_buffer += snprintf(a_buffer, a_cnt,
-                             "\t%s:", getRelationName(&neighbors - m_neighbor));
+        std::string temp;
         for (auto& nei_set : neighbors)
         {
-            a_buffer +=
-                snprintf(a_buffer, a_cnt, "\t\t%s", nei_set->getName().data());
+            temp += nei_set->getName();
+            temp.push_back(' ');
         }
+        a_buffer += snprintf(a_buffer, a_cnt, "%-*s|", width, temp.c_str());
     }
     return reinterpret_cast<size_t>(a_buffer) - base_ptr;
 }

@@ -41,6 +41,7 @@ private:
 
     static Node* functionDeclaration(const RouterInpData& a_data);
     static Node* variableDeclaration(const RouterInpData& a_data);
+    static Node* expression(const RouterInpData& a_data);
     static Node* basic(const RouterInpData& a_data);
 };
 

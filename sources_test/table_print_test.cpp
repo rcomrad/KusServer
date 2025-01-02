@@ -54,23 +54,24 @@ struct Adress
     }
 
 private:
-    // TABLE_REGISTER_HPP(
-    //     Adress,
-    //     .addCol(obj.building_numder, obj.x, obj.y, obj.street_name))
+    TABLE_REGISTER_HPP(
+        Adress,
+        .addCol(obj.building_numder, obj.x, obj.y, obj.street_name))
 
-    struct AdressTABLE_REGISTER
-    {
-        inline AdressTABLE_REGISTER() noexcept
-        {
-            Adress* obj_ptr = nullptr;
-            Adress& obj     = *obj_ptr;
-            core::TableInfo info(obj);
-            info.addCol(obj.building_numder, obj.x, obj.y, obj.street_name);
-            core::TableStorage::addTableInfo(std::type_index(typeid(obj)),
-                                             info);
-        }
-    };
-    static AdressTABLE_REGISTER AdressTABLE_REGISTERglobal;
+    // Expands to:
+    // struct AdressTABLE_REGISTER
+    // {
+    //     inline AdressTABLE_REGISTER() noexcept
+    //     {
+    //         Adress* obj_ptr = nullptr;
+    //         Adress& obj     = *obj_ptr;
+    //         core::TableInfo info(obj);
+    //         info.addCol(obj.building_numder, obj.x, obj.y, obj.street_name);
+    //         core::TableStorage::addTableInfo(std::type_index(typeid(obj)),
+    //                                          info);
+    //     }
+    // };
+    // static AdressTABLE_REGISTER AdressTABLE_REGISTERglobal;
 };
 
 TABLE_REGISTER_CPP(kustest, Adress);
@@ -121,12 +122,14 @@ TEST_F(UTestTablePrint, simpl_print)
     std::srand(1264970717);
     Journal j;
 
+    // TODO: turn on test
     // for (int i = 0; i < 15; ++i)
     // {
     //     j.data.emplace_back();
     //     std::cout << core::TablePrinter::print(
     //                      j.data, {"id", "name", "surname", "weight", "high",
-    //                               "building_numder", "x", "y", "street_name"})
+    //                               "building_numder", "x", "y",
+    //                               "street_name"})
     //               << std::endl;
     // }
 }

@@ -13,6 +13,7 @@ struct Context
 #include "nodes/node.ini"
         NODE,
         WORD,
+        NUMERICAL,
         BRASE,  // ( )
         DEVIDE, // ,
         CALL,   // .

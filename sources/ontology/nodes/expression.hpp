@@ -8,9 +8,15 @@
 namespace onto
 {
 
-struct Expression : public Node
+class Expression : public Node
 {
-    Expression(const std::string_view& a_name) noexcept;
+public:
+    Expression(const std::string_view& a_name,
+               const std::vector<Node*>& a_parts);
+
+private:
+    void addVariable(Node& a_var);
+    void addLiteral(Node& a_var);
 };
 
 } // namespace onto

@@ -32,6 +32,7 @@ onto::Decoder::process(Web& a_web, const std::string& a_data) noexcept
     };
 
     bool need_pop_context = false;
+    bool only_digits      = true;
     for (auto simbol : a_data)
     {
         bool word_complited                    = true;
@@ -66,6 +67,11 @@ onto::Decoder::process(Web& a_web, const std::string& a_data) noexcept
                 break;
 
             default:
+                if (!std::isdigit(simbol))
+                {
+                    only_digits = false;
+                }
+
                 word_complited = false;
                 word.push_back(simbol);
                 break;
@@ -77,7 +83,13 @@ onto::Decoder::process(Web& a_web, const std::string& a_data) noexcept
             {
                 context_stuck.emplace_back(a_web.searchNode(word), word);
                 word.clear();
+
+                if (only_digits)
+                {
+                    context_stuck.back().type = Context::Type::NUMERICAL;
+                }
             }
+            only_digits = true;
 
             sep_callback(simbol);
             sep_callback = sep_null;

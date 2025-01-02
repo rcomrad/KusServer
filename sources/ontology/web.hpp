@@ -16,6 +16,11 @@ namespace onto
 class Web : public WebBase
 {
 public:
+    std::string print() const noexcept;
+    std::string serialize() const noexcept;
+
+    void clearNotUsedNodes() noexcept;
+
 #define NODE_MACROS(_, type, storage)                                          \
     template <typename... Args>                                                \
     type& create##type(const std::string_view& a_name, Args&&... arg) noexcept \
