@@ -2,8 +2,11 @@
 #include <sys/types.h>
 
 #include <chrono>
+#include <condition_variable>
 #include <fcntl.h>
 #include <future>
+#include <mutex>
+#include <optional>
 #include <string>
 #include <thread>
 #include <unistd.h>
@@ -12,168 +15,219 @@
 
 #include "fixture.hpp"
 
-std::string SERVER_NAME = "server";
-std::string CLIENT_NAME = "client";
+const std::string SERVER_NAME = "server";
+const std::string CLIENT_NAME = "client";
 
-uint8_t MAX_PIPE_AWAITING_ITERS = 10;
-uint8_t SLEEP_INTERVAL          = 100;
-uint BUFFER_SIZE                = 1024;
+constexpr uint BUFFER_SIZE = 1024;
+constexpr uint8_t DELAY    = 10;
 
 namespace kustest
 {
 
 class PipeExample : public Fixture
 {
+};
+
+class PipeReader
+{
 public:
-    void setUp() noexcept override
+    explicit PipeReader(const std::string& a_name) : m_name(a_name), m_fd(-1)
     {
-        cleanup_pipes();
+        std::string path = "/tmp/" + a_name;
+        if (mkfifo(path.c_str(), 0666) < 0 && errno != EEXIST)
+        {
+            throw std::runtime_error("Failed to create FIFO: " + path);
+        }
     }
-    void tearDown() noexcept override
+
+    ~PipeReader()
     {
-        cleanup_pipes();
+        if (m_fd >= 0)
+        {
+            close(m_fd);
+        }
+        unlink(("/tmp/" + m_name).c_str());
+    }
+
+    std::optional<std::string> read()
+    {
+        if (m_fd < 0)
+        {
+            m_fd = open(("/tmp/" + m_name).c_str(), O_RDONLY | O_NONBLOCK);
+            if (m_fd < 0)
+            {
+                return std::nullopt;
+            }
+        }
+
+        char buffer[BUFFER_SIZE];
+        ssize_t bytes_read = ::read(m_fd, buffer, sizeof(buffer));
+
+        if (bytes_read <= 0)
+        {
+            if (errno != EAGAIN)
+            {
+                return std::nullopt;
+            }
+            return std::nullopt;
+        }
+
+        return std::string(buffer, bytes_read - 1);
     }
 
 private:
-    void cleanup_pipes()
-    {
-        unlink("/tmp/client");
-        unlink("/tmp/server");
-    }
+    std::string m_name;
+    int m_fd;
 };
 
-std::string
-pipe_communicate(const std::string& read_name,
-                 const std::string& write_name,
-                 const std::string& message)
+class PipeWriter
 {
-    std::string read_path  = "/tmp/" + read_name;
-    std::string write_path = "/tmp/" + write_name;
-
-    if (mkfifo(read_path.c_str(), 0666) < 0 && errno != EEXIST)
+public:
+    explicit PipeWriter(const std::string& a_name) : m_name(a_name), m_fd(-1)
     {
-        std::cerr << "Failed to create input FIFO: " << read_path << std::endl;
-        return "corrupted fs";
+        std::string path = "/tmp/" + a_name;
+        if (mkfifo(path.c_str(), 0666) < 0 && errno != EEXIST)
+        {
+            throw std::runtime_error("Failed to create FIFO: " + path);
+        }
     }
 
-    if (mkfifo(write_path.c_str(), 0666) < 0 && errno != EEXIST)
+    ~PipeWriter()
     {
-        std::cerr << "Failed to create output FIFO: " << read_path << std::endl;
-        return "corrupted fs";
+        if (m_fd >= 0)
+        {
+            close(m_fd);
+        }
+        unlink(("/tmp/" + m_name).c_str());
     }
 
-    int iter = 0;
-    while (true)
+    bool write(const std::string& a_data)
     {
-        iter++;
-
-        int read_fd = open(read_path.c_str(), O_RDONLY | O_NONBLOCK);
-        if (read_fd < 0)
+        if (m_fd < 0)
         {
-            std::this_thread::sleep_for(
-                std::chrono::milliseconds(SLEEP_INTERVAL));
-            continue;
-        }
-
-        int write_fd = open(write_path.c_str(), O_WRONLY | O_NONBLOCK);
-        if (write_fd < 0)
-        {
-            if (iter > MAX_PIPE_AWAITING_ITERS)
+            m_fd = open(("/tmp/" + m_name).c_str(), O_WRONLY | O_NONBLOCK);
+            if (m_fd < 0)
             {
-                return "non existing pipe";
-            }
-
-            close(read_fd);
-            std::this_thread::sleep_for(
-                std::chrono::milliseconds(SLEEP_INTERVAL));
-            continue;
-        }
-
-        write(write_fd, message.c_str(), message.size() + 1);
-
-        char buffer[BUFFER_SIZE];
-        ssize_t bytes_read = 0;
-        while (bytes_read <= 0)
-        {
-            bytes_read = read(read_fd, buffer, sizeof(buffer));
-            if (bytes_read < 0)
-            {
-                if (errno != EAGAIN)
-                {
-                    close(read_fd);
-                    close(write_fd);
-                    return "read error";
-                }
-                std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                return false;
             }
         }
 
-        close(write_fd);
-        close(read_fd);
-        return buffer;
+        ssize_t bytes_written =
+            ::write(m_fd, a_data.c_str(), a_data.size() + 1);
+        return bytes_written > 0;
     }
-    return "broken pipe";
-}
 
-TEST_F(PipeExample, ThreadCommunication)
+private:
+    std::string m_name;
+    int m_fd;
+};
+
+TEST_F(PipeExample, ThreadCommunicationClientWaitsServer)
 {
+    std::mutex mtx;
+    std::condition_variable cv;
+    bool server_ready = false;
+
     std::promise<std::string> promise;
     std::future<std::string> future = promise.get_future();
 
-    std::thread child_thread(
-        [&promise]()
+    std::thread server_thread(
+        [&]()
         {
-            std::string result =
-                pipe_communicate(SERVER_NAME, CLIENT_NAME,
-                                 "This is message from " + SERVER_NAME);
-            promise.set_value(result);
+            PipeReader server_reader(SERVER_NAME);
+            PipeWriter server_writer(CLIENT_NAME);
+
+            server_ready = true;
+            cv.notify_one();
+
+            std::optional<std::string> received_message;
+            while (!(received_message = server_reader.read()))
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds(DELAY));
+            }
+
+            server_writer.write("This is message from " + SERVER_NAME);
+            promise.set_value(*received_message);
         });
 
-    EXPECT_EQ(pipe_communicate(CLIENT_NAME, SERVER_NAME,
-                               "This is message from " + CLIENT_NAME),
-              "This is message from server");
+    {
+        std::unique_lock<std::mutex> lock(mtx);
+        cv.wait(lock, [&server_ready] { return server_ready; });
+    }
 
-    std::string child_result = future.get();
-    EXPECT_EQ(child_result, "This is message from client");
+    PipeReader client_reader(CLIENT_NAME);
+    PipeWriter client_writer(SERVER_NAME);
 
-    child_thread.join();
+    client_writer.write("This is message from " + CLIENT_NAME);
+
+    std::optional<std::string> response;
+    while (!(response = client_reader.read()))
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(DELAY));
+    }
+
+    EXPECT_EQ(*response, "This is message from " + SERVER_NAME);
+
+    std::string server_received = future.get();
+    EXPECT_EQ(server_received, "This is message from " + CLIENT_NAME);
+
+    server_thread.join();
 }
 
-TEST_F(PipeExample, MissingPipe)
+TEST_F(PipeExample, ThreadCommunicationServerWaitsClient)
 {
-    EXPECT_EQ(pipe_communicate(SERVER_NAME, "nonexisting", "Any message"),
-              "non existing pipe");
-    unlink("/tmp/nonexisting");
-}
+    std::mutex mtx;
+    std::condition_variable cv;
+    bool client_ready = false;
 
-TEST_F(PipeExample, ClosedPipe)
-{
+    PipeReader client_reader(CLIENT_NAME);
+    PipeWriter client_writer(SERVER_NAME);
+
     std::promise<std::string> promise;
     std::future<std::string> future = promise.get_future();
 
-    std::thread child_thread(
-        [&promise]()
+    std::thread server_thread(
+        [&]()
         {
-            std::string result =
-                pipe_communicate(SERVER_NAME, CLIENT_NAME,
-                                 "This is message from " + SERVER_NAME);
-            promise.set_value(result);
-            unlink("/tmp/client");
-            unlink("/tmp/server");
+            {
+                std::unique_lock<std::mutex> lock(mtx);
+                cv.wait(lock, [&client_ready] { return client_ready; });
+            }
+
+            PipeReader server_reader(SERVER_NAME);
+            PipeWriter server_writer(CLIENT_NAME);
+
+            server_writer.write("This is message from " + SERVER_NAME);
+
+            std::optional<std::string> received_message;
+            while (!(received_message = server_reader.read()))
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds(DELAY));
+            }
+
+            promise.set_value(*received_message);
         });
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_INTERVAL * 5));
-    EXPECT_EQ(pipe_communicate(CLIENT_NAME, SERVER_NAME,
-                               "This is message from " + CLIENT_NAME),
-              "This is message from server");
+    client_ready = true;
+    cv.notify_one();
 
-    std::string child_result = future.get();
-    EXPECT_EQ(child_result, "This is message from client");
+    std::optional<std::string> response;
+    while (!(response = client_reader.read()))
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(DELAY));
+    }
 
-    child_thread.join();
+    EXPECT_EQ(*response, "This is message from " + SERVER_NAME);
+
+    client_writer.write("This is message from " + CLIENT_NAME);
+
+    std::string server_received = future.get();
+    EXPECT_EQ(server_received, "This is message from " + CLIENT_NAME);
+
+    server_thread.join();
 }
 
-/*TEST_F(PipeExample, ProcessCommunication)
+TEST_F(PipeExample, ProcessCommunicationClientWaitsServer)
 {
     pid_t pid = fork();
     if (pid < 0)
@@ -182,33 +236,54 @@ TEST_F(PipeExample, ClosedPipe)
     }
     else if (pid == 0)
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_INTERVAL));
+        PipeReader server_reader(SERVER_NAME);
+        PipeWriter server_writer(CLIENT_NAME);
 
-        pipe_communicate(SERVER_NAME, CLIENT_NAME,
-                         "This is message from " + SERVER_NAME);
+        PipeWriter sync_writer("sync");
+        sync_writer.write("ready");
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_INTERVAL));
-
-        auto result = pipe_communicate(SERVER_NAME, CLIENT_NAME,
-                                       "This is message from " + SERVER_NAME);
-        if (result != "This is message from client")
+        std::optional<std::string> received_message;
+        while (!(received_message = server_reader.read()))
         {
-            std::cout << result << std::endl;
-            exit(1);
+            std::this_thread::sleep_for(std::chrono::milliseconds(DELAY));
         }
-        exit(0);
+
+        server_writer.write("This is message from " + SERVER_NAME);
+        exit(received_message == "This is message from " + CLIENT_NAME ? 0 : 1);
     }
     else
     {
-        EXPECT_EQ(pipe_communicate(CLIENT_NAME, SERVER_NAME,
-                                   "This is message from " + CLIENT_NAME),
-                  "This is message from server");
+        PipeReader sync_reader("sync");
+        std::optional<std::string> sync_msg;
+        while (!sync_msg)
+        {
+            sync_msg = sync_reader.read();
+            std::this_thread::sleep_for(std::chrono::milliseconds(DELAY));
+        }
+
+        PipeReader client_reader(CLIENT_NAME);
+        PipeWriter client_writer(SERVER_NAME);
+
+        client_writer.write("This is message from " + CLIENT_NAME);
+
+        std::optional<std::string> response;
+        while (!(response = client_reader.read()))
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(DELAY));
+        }
+
+        EXPECT_EQ(*response, "This is message from " + SERVER_NAME);
 
         int status;
         waitpid(pid, &status, 0);
         EXPECT_TRUE(WIFEXITED(status));
         EXPECT_EQ(WEXITSTATUS(status), 0);
+
+        unlink("/tmp/sync");
     }
-}*/
+}
+
+// TODO: Find out why analogical test with processes when child (server) waits
+// for parent (client) is blocking.
 
 } // namespace kustest
