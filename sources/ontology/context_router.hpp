@@ -41,8 +41,15 @@ private:
 
     static Node* functionDeclaration(const RouterInpData& a_data);
     static Node* variableDeclaration(const RouterInpData& a_data);
-    static Node* expression(const RouterInpData& a_data);
+    static Node* variable_expression(const RouterInpData& a_data);
+    static Node* deleted(const RouterInpData& a_data);
+    static Node* communication(const RouterInpData& a_data);
+    static Node* preprocessor(const RouterInpData& a_data);
     static Node* basic(const RouterInpData& a_data);
+
+    static Node* expression(const RouterInpData& a_data, int offset);
+    static Node* cinCommunication(const RouterInpData& a_data);
+    static Node* coutCommunication(const RouterInpData& a_data);
 };
 
 } // namespace onto

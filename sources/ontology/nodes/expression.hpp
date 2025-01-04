@@ -1,7 +1,7 @@
 #pragma once
 
-#include <optional>
-#include <string>
+#include <string_view>
+#include <vector>
 
 #include "node.hpp"
 
@@ -13,6 +13,8 @@ class Expression : public Node
 public:
     Expression(const std::string_view& a_name,
                const std::vector<Node*>& a_parts);
+    Expression(const std::string_view& a_name,
+               const std::vector<std::string_view>& a_parts);
 
 private:
     void addVariable(Node& a_var);

@@ -38,6 +38,9 @@ foo_print(std::string& result, const char* a_type_name, const T& storage)
     ptr += snprintf(ptr, buf_size, "%-*s|", width, a_type_name);
     for (int i = 0; i < RELATION_COUNT; ++i)
     {
+        if (i == int(Relation::NUN) || i == int(Relation::MIDDLE) ||
+            i == int(Relation::MAX))
+            continue;
         ptr += snprintf(ptr, buf_size, "%-*s|", width, getRelationName(i));
     }
     result += buffer;
@@ -92,7 +95,7 @@ onto::Web::print() const noexcept
         for (auto& i : getSorted(m_##storage##s)) \
         {                                         \
             result += i.second.serialize();       \
-            result.push_back(' ');                \
+            result.push_back(';');                \
         }                                         \
     }
 
@@ -101,11 +104,10 @@ onto::Web::serialize() const noexcept
 {
     std::string result;
 #include "./nodes/node.ini"
-    result.pop_back();
     return result;
 }
 
-#define NODE_MACROS(_, __, storage) clearNotUsedNodesImpl(m_##storage##s);
+#define NODE_MACROS(_, __, storage) clearNotUsedNodes(m_##storage##s);
 
 void
 onto::Web::clearNotUsedNodes() noexcept
@@ -126,35 +128,33 @@ onto::Web::clearNotUsedNodes() noexcept
 #include "./nodes/node.ini"
 
 // TODO: remove?
-#define ONLY_SIMPLE_NODS
-#define NODE_MACROS(_, type, ...)                            \
-    if (a_type == #type)                                     \
-    {                                                        \
-        result = &dynamic_cast<Node&>(create##type(a_name)); \
-    }
+// #define ONLY_SIMPLE_NODS
+// #define NODE_MACROS(_, type, ...)                            \
+//     if (a_type == #type)                                     \
+//     {                                                        \
+//         result = &dynamic_cast<Node&>(create##type(a_name)); \
+//     }
 
-onto::Node&
-onto::Web::createNode(const std::string_view& a_type,
-                      const std::string_view& a_name)
-{
-    onto::Node* result;
-#include "./nodes/node.ini"
-    else
-    {
-        LOG_ERROR("Cant create node with '%s' type.", a_type);
-        throw std::runtime_error("Undefined Node type.");
-    }
-    return *result;
-}
+// onto::Node&
+// onto::Web::createNode(const std::string_view& a_type,
+//                       const std::string_view& a_name)
+// {
+//     onto::Node* result;
+// #include "./nodes/node.ini"
+//     else
+//     {
+//         LOG_ERROR("Cant create node with '%s' type.", a_type);
+//         throw std::runtime_error("Undefined Node type.");
+//     }
+//     return *result;
+// }
 
 #define ONLY_SIMPLE_NODS
-#define NODE_MACROS(_, type, ...)                                     \
-    void onto::Web::populate##type(                                   \
-        const std::unordered_set<std::string_view>& a_names) noexcept \
-    {                                                                 \
-        for (auto i : a_names)                                        \
-        {                                                             \
-            create##type(i);                                          \
-        }                                                             \
+#define NODE_MACROS(_, type, ...)                             \
+    void onto::Web::populate##type(                           \
+        const std::string_view& a_name,                       \
+        const std::vector<std::string_view>& a_data) noexcept \
+    {                                                         \
+        create##type(a_name, a_data);                         \
     }
 #include "./nodes/node.ini"

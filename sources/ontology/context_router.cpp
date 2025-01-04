@@ -7,10 +7,13 @@ onto::ContextRouter::ContextRouter()
     // TODO: ^ - begining of the string $ - end of sting
     //  m_cntx_router.set({Context::Type::NONE}, ContextRouter::basic);
     //  m_router["[a-z]"] = ContextRouter::basic;
+    m_router.emplace_back(".*d.*", &ContextRouter::deleted);
+    m_router.emplace_back("^p.*", &ContextRouter::preprocessor);
     m_router.emplace_back("tw\\(\\)", &ContextRouter::functionDeclaration);
     m_router.emplace_back("t(w|w=[w,n,v])(,(w|w=[w,n,v]))*",
                           &ContextRouter::variableDeclaration);
-    m_router.emplace_back("v=[w,n,v]", &ContextRouter::expression);
+    m_router.emplace_back("^v=[w,n,v,m]*", &ContextRouter::variable_expression);
+    m_router.emplace_back("c.*", &ContextRouter::communication);
     m_router.emplace_back(".*", &ContextRouter::basic);
 }
 
@@ -22,6 +25,8 @@ onto::ContextRouter::processNonstatic(const RouterInpData& a_data) noexcept
     // {
     //     handler.value()(a_web, a_parent_node, a_context_stuck);
     // }
+
+    if (a_data.context_stuck.empty()) return nullptr;
 
     std::string cntx;
     for (const auto& i : a_data.context_stuck)
@@ -48,6 +53,93 @@ onto::ContextRouter::basic(const RouterInpData& a_data)
 {
     Node* result;
     std::cout << "basic" << std::endl;
+    throw std::runtime_error("No handler specified!");
+    return result;
+}
+
+onto::Node*
+onto::ContextRouter::deleted(const RouterInpData& a_data)
+{
+    Node* result;
+    std::cout << "deleted" << std::endl;
+    return result;
+}
+
+onto::Node*
+onto::ContextRouter::preprocessor(const RouterInpData& a_data)
+{
+    Node* result;
+    std::cout << "preprocessor" << std::endl;
+    return result;
+}
+
+onto::Node*
+onto::ContextRouter::cinCommunication(const RouterInpData& a_data)
+{
+    Node* result;
+    std::cout << "cin" << std::endl;
+
+    auto& stuck = a_data.context_stuck;
+    auto& comm  = *dynamic_cast<Communication*>(stuck[0].ptr);
+    for (int i = 2; i < stuck.size(); ++i)
+    {
+        if (stuck[i].type == Context::Type::ANGLE_BRA) continue;
+
+        if (stuck[i].type != Context::Type::VARIABLE)
+            throw std::runtime_error("Wrong user data!");
+
+        auto& var  = *dynamic_cast<Variable*>(stuck[i].ptr);
+        auto& data = a_data.web.createUserData(comm);
+        var.setValue(data);
+    }
+    return result;
+}
+
+onto::Node*
+onto::ContextRouter::coutCommunication(const RouterInpData& a_data)
+{
+    Node* result;
+    std::cout << "cout" << std::endl;
+
+    auto& stuck = a_data.context_stuck;
+    auto& comm  = *dynamic_cast<Communication*>(stuck[0].ptr);
+    for (int l = 1; l < stuck.size(); ++l)
+    {
+        while (l < stuck.size() && stuck[l].type == Context::Type::ANGLE_BRA)
+            ++l;
+        int r = l + 1;
+        while (r < stuck.size() && stuck[r].type != Context::Type::ANGLE_BRA)
+            ++r;
+
+        Node* out_data = stuck[r + 1].ptr;
+        if (r - l > 1)
+        {
+            RouterInpData data = a_data;
+            data.web           = a_data.web;
+            data.context_stuck =
+                std::vector<Context>(stuck.begin() + l, stuck.begin() + r);
+            out_data = expression(data, 0);
+        }
+
+        auto& data = a_data.web.createUserData(comm);
+        data.output(*out_data);
+
+        l = r;
+    }
+    return result;
+}
+
+onto::Node*
+onto::ContextRouter::communication(const RouterInpData& a_data)
+{
+    Node* result;
+    std::cout << "communication" << std::endl;
+
+    if (a_data.context_stuck[0].ptr->getName() == "cin")
+        cinCommunication(a_data);
+    if (a_data.context_stuck[0].ptr->getName() == "cout")
+        coutCommunication(a_data);
+
     return result;
 }
 
@@ -87,7 +179,7 @@ onto::ContextRouter::variableDeclaration(const RouterInpData& a_data)
             substuck.front().ptr  = &result;
             substuck.front().type = Context::Type::VARIABLE;
             RouterInpData expr_data(a_data.web, a_data.parent_node, substuck);
-            auto expr = expression(expr_data);
+            auto expr = variable_expression(expr_data);
             i += 2;
         }
         if (stuck[i + 1].type == Context::Type::DEVIDE)
@@ -111,7 +203,6 @@ struct PartData
     void recordCntxWord(onto::Context& a_cntx)
     {
         name += a_cntx.word;
-        name.push_back(' ');
     }
 
     void recordCntxWord()
@@ -132,7 +223,7 @@ static void
 add_expr_part_number(PartData& a_data)
 {
     PART_DATA_EXPAND;
-    auto& literal = web.createLiteral(cur_cntx.word);
+    auto& literal = web.createLiteral("lit_" + cur_cntx.word);
     a_data.recordCntxWord();
     parts.emplace_back(&literal);
 }
@@ -148,14 +239,12 @@ add_expr_part_var(PartData& a_data)
 #undef PART_DATA_EXPAND
 
 onto::Node*
-onto::ContextRouter::expression(const RouterInpData& a_data)
+onto::ContextRouter::expression(const RouterInpData& a_data, int offset)
 {
     std::cout << "expression" << std::endl;
 
-    auto& var_node = *dynamic_cast<Variable*>(a_data.context_stuck[0].ptr);
-
     auto& stuck = a_data.context_stuck;
-    int indx    = 2;
+    int indx    = offset;
     PartData part_data(a_data.web, indx, stuck);
 
     for (; indx < stuck.size(); ++indx)
@@ -171,6 +260,9 @@ onto::ContextRouter::expression(const RouterInpData& a_data)
                 break;
 
             case Context::Type::OPERATOR:
+            case Context::Type::PLUS:
+            case Context::Type::MINUS:
+                part_data.recordCntxWord(stuck[indx]);
                 break;
 
             default:
@@ -182,9 +274,19 @@ onto::ContextRouter::expression(const RouterInpData& a_data)
     }
 
     auto& result = a_data.web.createExpression(part_data.name, part_data.parts);
-    result.addNeighbor(var_node, Relation::LOCATED_IN);
 
     return &result;
+}
+
+onto::Node*
+onto::ContextRouter::variable_expression(const RouterInpData& a_data)
+{
+    std::cout << "variable_expression" << std::endl;
+
+    auto& var_node = *dynamic_cast<Variable*>(a_data.context_stuck[0].ptr);
+    auto expr      = static_cast<Expression*>(expression(a_data, 2));
+    var_node.setValue(*expr);
+    return expr;
 }
 
 // // Matches one or more digits

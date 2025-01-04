@@ -59,10 +59,18 @@ private:
     //--------------------------------------------------------------------------
 
 public:
-    SINGL_RET_METHOD(std::optional<std::string_view>,
-                     getFilePath,
-                     (std::string_view a_file_name,
-                      const core::Context* a_context = nullptr));
+    // TODO: rewrite singleton metchod generator
+
+    // SINGL_RET_METHOD(std::optional<auto>,
+    //                  getFilePath,
+    //                  (std::string_view a_file_name,
+    //                   const core::Context* a_context = nullptr));
+
+    template <typename... Args>
+    static auto getFilePath(Args... args)
+    {
+        return getInstance().getFilePathNonstatic(std::forward<Args>(args)...);
+    }
 
     SINGL_RET_METHOD(std::optional<std::string_view>,
                      getFolderPath,
@@ -70,6 +78,10 @@ public:
                       const core::Context* a_context = nullptr));
 
 private:
+    std::optional<std::string_view> getFilePathNonstatic(
+        std::string_view a_file_name,
+        const core::Context* a_context = nullptr) noexcept;
+
     std::optional<std::string> getFilePathNonstatic(
         std::string_view a_folder_name,
         std::string_view a_file_name,

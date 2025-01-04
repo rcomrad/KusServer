@@ -52,18 +52,22 @@ std::string
 onto::Node::serialize() const noexcept
 {
     std::string result;
-    result += getName();
+    result += "(" + getName() + ")";
     result.push_back('[');
-    for (int i = 0; i < RELATION_COUNT; ++i)
+    for (int i = 1; i < int(Relation::MIDDLE); ++i)
     {
-        auto& cur_nei = m_neighbor[i];
-        if (cur_nei.empty())
+        for (auto j : {i, i + int(Relation::MIDDLE)})
         {
-            result.push_back('-');
-        }
-        else
-        {
-            result += std::to_string(i);
+            auto& cur_nei = m_neighbor[j];
+            if (cur_nei.empty()) continue;
+
+            if (j > int(Relation::MIDDLE))
+            {
+                j -= int(Relation::MIDDLE);
+                j *= -1;
+            }
+            result += std::to_string(j);
+
             result.push_back(':');
             result.push_back('{');
             for (auto& neighbor : cur_nei)
@@ -107,6 +111,11 @@ onto::Node::print(char* a_buffer, size_t a_cnt) const noexcept
 
     for (auto& neighbors : m_neighbor)
     {
+        int i = &neighbors - m_neighbor;
+        if (i == int(Relation::NUN) || i == int(Relation::MIDDLE) ||
+            i == int(Relation::MAX))
+            continue;
+
         std::string temp;
         for (auto& nei_set : neighbors)
         {

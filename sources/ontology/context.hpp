@@ -14,10 +14,14 @@ struct Context
         NODE,
         WORD,
         NUMERICAL,
-        BRASE,  // ( )
-        DEVIDE, // ,
-        CALL,   // .
-        ASSIGN, // =
+        BRASE,        // ( )
+        DEVIDE,       // ,
+        CALL,         // .
+        ASSIGN,       // =
+        PREPROCESSOR, // #
+        PLUS,         // #
+        MINUS,        // #
+        ANGLE_BRA,    // < >
         MAX
     };
 

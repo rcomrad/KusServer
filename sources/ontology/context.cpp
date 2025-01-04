@@ -9,6 +9,10 @@ onto::Context::Context(char simbol)
     Type type;
     switch (simbol)
     {
+        case '<':
+        case '>':
+            type = Type::ANGLE_BRA;
+            break;
         case '(':
         case ')':
             type = Type::BRASE;
@@ -18,6 +22,15 @@ onto::Context::Context(char simbol)
             break;
         case '.':
             type = Type::CALL;
+            break;
+        case '#':
+            type = Type::PREPROCESSOR;
+            break;
+        case '+':
+            type = Type::PLUS;
+            break;
+        case '-':
+            type = Type::MINUS;
             break;
         case '=':
             type = Type::ASSIGN;
@@ -54,11 +67,17 @@ onto::Context::operator char() const noexcept
     char result;
     switch (type)
     {
+        case Type::DELETED:
+            result = 'd';
+            break;
         case Type::EXPRESSION:
             result = 'e';
             break;
         case Type::FUNCTION:
             result = 'f';
+            break;
+        case Type::COMMUNICATION:
+            result = 'c';
             break;
         case Type::OPERATOR:
             result = 'o';
@@ -75,10 +94,18 @@ onto::Context::operator char() const noexcept
         case Type::NUMERICAL:
             result = 'n';
             break;
+        case Type::PREPROCESSOR:
+            result = 'p';
+            break;
+        case Type::PLUS:
+        case Type::MINUS:
+            result = 'm';
+            break;
         case Type::BRASE:
         case Type::DEVIDE:
         case Type::CALL:
         case Type::ASSIGN:
+        case Type::ANGLE_BRA:
             result = word.front();
             break;
     }

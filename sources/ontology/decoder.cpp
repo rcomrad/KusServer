@@ -42,9 +42,14 @@ onto::Decoder::process(Web& a_web, const std::string& a_data) noexcept
         {
             case ' ':
             case '\t':
-            case '\n':
                 break;
 
+            case '\n':
+                if (context_stuck.empty() ||
+                    context_stuck.front().type != Context::Type::PREPROCESSOR)
+                {
+                    break;
+                }
             case ';':
             case '\0':
                 sep_callback = sep_collapse;
@@ -55,6 +60,11 @@ onto::Decoder::process(Web& a_web, const std::string& a_data) noexcept
             case ',':
             case '.':
             case '=':
+            case '+':
+            case '-':
+            case '#':
+            case '>':
+            case '<':
                 sep_callback = sep_real;
                 break;
 

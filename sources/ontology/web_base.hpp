@@ -40,7 +40,7 @@ protected:
     void registrateNode(const std::string_view& a_name, Node& a_obj);
 
     template <typename T>
-    void clearNotUsedNodesImpl(T& a_storage) noexcept
+    void clearNotUsedNodes(T& a_storage) noexcept
     {
         std::vector<const std::string*> to_delete;
         for (auto& i : a_storage)

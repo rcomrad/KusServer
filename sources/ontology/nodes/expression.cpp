@@ -8,7 +8,7 @@
 
 onto::Expression::Expression(const std::string_view& a_name,
                              const std::vector<Node*>& a_parts)
-    : Node(Node::Kind::EXPRESSION, a_name)
+    : Node(Node::Kind::EXPRESSION, std::string(a_name))
 {
     for (auto& i : a_parts)
     {
@@ -31,12 +31,18 @@ onto::Expression::Expression(const std::string_view& a_name,
     }
 }
 
+onto::Expression::Expression(const std::string_view& a_name,
+                             const std::vector<std::string_view>& a_parts)
+    : Node(Node::Kind::EXPRESSION, a_name)
+{
+}
+
 void
 onto::Expression::addVariable(Node& a_var)
 {
-    auto variable = dynamic_cast<Variable&>(a_var);
-    auto& value   = variable.getValue();
-    addNeighbor(value, Relation::PARTICIPATE);
+    auto& variable = dynamic_cast<Variable&>(a_var);
+    auto& value    = variable.getValue();
+    addNeighbor(value, Relation::CONSIST_OF);
 }
 
 void
