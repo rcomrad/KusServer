@@ -1,12 +1,16 @@
-set -exu
+mkdir -p ~/.ssh                                                     &&
+cat > ~/.ssh/authorized_keys                                        &&
 
-# cd to this script folder
-cd "$(dirname "${BASH_SOURCE[0]}")"
+set -o xtrace                                                       &&
 
-apt update
-apt upgrade -y
-apt install -y ansible-core
+apt update -y                                                       && 
+apt upgrade -y                                                      &&
 
-ansible-playbook ../ansible/setup_dev_env.yml
-# ansible -i ../ansible/inventory.yml -m ping local
-# ansible-playbook localhost -m ping
+apt install -y git                                                  &&
+mkdir -p ~/projects                                                 && 
+cd ~/projects                                                       && 
+git clone -b version_5 https://github.com/rcomrad/KusServer.git     &&
+
+apt install -y ansible-core                                         &&
+cd ./KusServer/devops/ansible/                                      &&
+ansible-playbook ./setup_dev_env.yml

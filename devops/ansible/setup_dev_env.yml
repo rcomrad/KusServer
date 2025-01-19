@@ -51,11 +51,47 @@
           - flex
         state: present
 
+    # TODO: separate task?
     - name: Install PostgreSQL
       ansible.builtin.apt:
         name:
           - postgresql
         state: present
+
+# https://medium.com/@haroldfinch01/ansible-create-a-user-with-sudo-privileges-82806cc6c633
+- name: Create Linux user with admin access
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Create user
+      ansible.builtin.user:
+        name: user
+        shell: /bin/bash
+        state: present
+        create_home: yes
+        password: "{{ 'user' | password_hash('sha512') }}"
+
+    - name: Add user to sudo group
+      user:
+        name: user
+        groups: sudo  # On Debian/Ubuntu; for CentOS/RHEL, use 'wheel'
+        append: yes
+
+    - name: Allow passwordless sudo for the user (Debian/Ubuntu)
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^user'
+        line: 'user ALL=(ALL) NOPASSWD:ALL'
+        validate: '/usr/sbin/visudo -cf %s'
+
+    - name: Copy SSH key
+      copy:
+        src: /root/.ssh/
+        dest: /home/user/.ssh/
+        owner: user
+        group: user
 
 - name: Install zsh
   hosts: localhost
@@ -79,12 +115,12 @@
       ansible.builtin.shell: |
         sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
       loop: "{{ user_list.stdout_lines }}"
-      ignore_errors: yes # TODO: Already present
 
+# https://serverfault.com/questions/1001235/how-can-change-shell-for-a-user-via-ansible ?
     - name: Change default shell to zsh
-      user:
+      ansible.builtin.user:
         name: "{{ item }}"
-        ansible.builtin.shell: /bin/zsh
+        shell: /bin/zsh
       loop: "{{ user_list.stdout_lines }}"
       ignore_errors: yes # TODO: Already done?
 
@@ -100,31 +136,6 @@
 - name: Setup VBoxClient clipboard
   hosts: localhost
   gather_facts: false
-
-  tasks:
-    - name: Install VirtualBox packages
-      ansible.builtin.apt:
-        name:
-          - virtualbox-guest-x11
-        state: present
-
-    - name: Create systemd service for VBoxClient clipboard
-      copy:
-        src: vboxclient-clipboard.service
-        dest: /etc/systemd/system/vboxclient-clipboard.service
-      notify: reload_systemd
-
-    - name: Enable VBoxClient clipboard service
-      systemd:
-        name: vboxclient-clipboard.service
-        enabled: yes
-        state: started
-
-  handlers:
-    - name: reload_systemd
-      systemd:
-        daemon_reload: yes
-
 
   tasks:
     - name: Install VirtualBox packages
@@ -293,12 +304,14 @@
 
 - name: Clone KusServer
   hosts: localhost
+  gather_facts: false
+
   become: yes
   become_user: "{{ username }}"
 
   vars:
     username: "user"
-    project_dir: "/home/projects/{{ username }}/KusServer"
+    project_dir: "/home/{{ username }}/projects/KusServer"
     repo_url: https://github.com/rcomrad/KusServer.git
     branch: version_5
 
@@ -309,3 +322,20 @@
         dest: "{{ project_dir }}"
         version: "{{ branch }}"
         update: yes  # Ensure the repo is updated if it already exists
+
+    - name: Create vcpkg_path.cmake (vcpkg path)
+      copy:
+        dest: "{{ project_dir }}/vcpkg_path.cmake"
+        content: |
+          set(VCPKG_ROOT "/home/{{ username }}/vcpkg")
+
+- name: Clear root directory
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Remove directory
+    
+      ansible.builtin.file:
+        state: absent
+        path: /root/projects/
