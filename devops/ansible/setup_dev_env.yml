@@ -51,11 +51,47 @@
           - flex
         state: present
 
+    # TODO: separate task?
     - name: Install PostgreSQL
       ansible.builtin.apt:
         name:
           - postgresql
         state: present
+
+# https://medium.com/@haroldfinch01/ansible-create-a-user-with-sudo-privileges-82806cc6c633
+- name: Create Linux user with admin access
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Create user
+      ansible.builtin.user:
+        name: user
+        shell: /bin/bash
+        state: present
+        create_home: yes
+        password: "{{ 'user' | password_hash('sha512') }}"
+
+    - name: Add user to sudo group
+      user:
+        name: user
+        groups: sudo  # On Debian/Ubuntu; for CentOS/RHEL, use 'wheel'
+        append: yes
+
+    - name: Allow passwordless sudo for the user (Debian/Ubuntu)
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^user'
+        line: 'user ALL=(ALL) NOPASSWD:ALL'
+        validate: '/usr/sbin/visudo -cf %s'
+
+    - name: Copy SSH key
+      copy:
+        src: /root/.ssh/
+        dest: /home/user/.ssh/
+        owner: user
+        group: user
 
 - name: Install zsh
   hosts: localhost
@@ -81,10 +117,11 @@
       loop: "{{ user_list.stdout_lines }}"
       ignore_errors: yes # TODO: Already present
 
+# https://serverfault.com/questions/1001235/how-can-change-shell-for-a-user-via-ansible ?
     - name: Change default shell to zsh
-      user:
+      ansible.builtin.user:
         name: "{{ item }}"
-        ansible.builtin.shell: /bin/zsh
+        shell: /bin/zsh
       loop: "{{ user_list.stdout_lines }}"
       ignore_errors: yes # TODO: Already done?
 
@@ -125,72 +162,47 @@
       systemd:
         daemon_reload: yes
 
+# - name: Install vcpkg
+#   hosts: localhost
+#   become: yes
+#   become_user: "{{ username }}"
+#   gather_facts: false
 
-  tasks:
-    - name: Install VirtualBox packages
-      ansible.builtin.apt:
-        name:
-          - virtualbox-guest-x11
-        state: present
+#   vars:
+#     username: "user"
+#     vcpkg_path: "/home/{{ username }}/vcpkg" 
+#     libraries:
+#       - boost-filesystem:x64-linux
+#       - boost-date-time:x64-linux
+#       - crow:x64-linux
+#       - libpqxx:x64-linux
+#       - mailio:x64-linux
+#       - gtest:x64-linux
+#       - boost-locale:x64-linux
 
-    - name: Create systemd service for VBoxClient clipboard
-      copy:
-        src: vboxclient-clipboard.service
-        dest: /etc/systemd/system/vboxclient-clipboard.service
-      notify: reload_systemd
+#   tasks:
+#     - name: Clone repository
+#       git:
+#         repo: https://github.com/microsoft/vcpkg.git
+#         dest: "{{ vcpkg_path }}"
+#         version: master
 
-    - name: Enable VBoxClient clipboard service
-      systemd:
-        name: vboxclient-clipboard.service
-        enabled: yes
-        state: started
+#     - name: Bootstrap vcpkg
+#       ansible.builtin.shell: ./bootstrap-vcpkg.sh
+#       args:
+#         chdir: "{{ vcpkg_path }}"
 
-  handlers:
-    - name: reload_systemd
-      systemd:
-        daemon_reload: yes
+#     - name: Create vcpkg alias
+#       lineinfile:
+#         path: /home/{{ username }}/.zshrc
+#         line: 'alias vcpkg="{{ vcpkg_path }}/vcpkg"'
+#         state: present
 
-- name: Install vcpkg
-  hosts: localhost
-  become: yes
-  become_user: "{{ username }}"
-  gather_facts: false
-
-  vars:
-    username: "user"
-    vcpkg_path: "/home/{{ username }}/vcpkg" 
-    libraries:
-      - boost-filesystem:x64-linux
-      - boost-date-time:x64-linux
-      - crow:x64-linux
-      - libpqxx:x64-linux
-      - mailio:x64-linux
-      - gtest:x64-linux
-      - boost-locale:x64-linux
-
-  tasks:
-    - name: Clone repository
-      git:
-        repo: https://github.com/microsoft/vcpkg.git
-        dest: "{{ vcpkg_path }}"
-        version: master
-
-    - name: Bootstrap vcpkg
-      ansible.builtin.shell: ./bootstrap-vcpkg.sh
-      args:
-        chdir: "{{ vcpkg_path }}"
-
-    - name: Create vcpkg alias
-      lineinfile:
-        path: /home/{{ username }}/.zshrc
-        line: 'alias vcpkg="{{ vcpkg_path }}/vcpkg"'
-        state: present
-
-    - name: Install libraries
-      command: ./vcpkg install "{{ item }}"
-      args:
-        chdir: "{{ vcpkg_path }}"
-      with_items: "{{ libraries }}"
+#     - name: Install libraries
+#       command: ./vcpkg install "{{ item }}"
+#       args:
+#         chdir: "{{ vcpkg_path }}"
+#       with_items: "{{ libraries }}"
 
 # - name: Install CMake from source
 #   hosts: localhost
@@ -293,12 +305,14 @@
 
 - name: Clone KusServer
   hosts: localhost
+  gather_facts: false
+
   become: yes
   become_user: "{{ username }}"
 
   vars:
     username: "user"
-    project_dir: "/home/projects/{{ username }}/KusServer"
+    project_dir: "/home/{{ username }}/projects/KusServer"
     repo_url: https://github.com/rcomrad/KusServer.git
     branch: version_5
 
@@ -309,3 +323,20 @@
         dest: "{{ project_dir }}"
         version: "{{ branch }}"
         update: yes  # Ensure the repo is updated if it already exists
+
+    - name: Create vcpkg.cmake (vcpkg path)
+      copy:
+        dest: "{{ project_dir }}/vcpkg.cmake"
+        content: |
+          "set(VCPKG_ROOT ""/home/{{ username }}/vcpkg")"
+
+- name: Clear root directory
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Remove directory
+    
+      ansible.builtin.file:
+        state: absent
+        path: /root/projects/
