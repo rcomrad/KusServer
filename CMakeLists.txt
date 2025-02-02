@@ -40,6 +40,9 @@ macro(create_exe NAME)
     target_link_libraries(${EXE_NAME} PRIVATE libpqxx::pqxx)
     target_link_libraries(${EXE_NAME} PRIVATE Crow::Crow)
     target_link_libraries(${EXE_NAME} PRIVATE ${Boost_LIBRARIES})
+    target_link_libraries(${EXE_NAME} PRIVATE Vulkan::Vulkan)
+    # target_link_libraries(${EXE_NAME} PRIVATE Vulkan::glslang)
+    # target_link_libraries(${EXE_NAME} PRIVATE Vulkan::dxc)
     # target_link_libraries(${EXE_NAME} PRIVATE mailio)
 
     # Output file name settings
@@ -63,6 +66,7 @@ find_package(libpqxx CONFIG REQUIRED)
 find_package(Crow CONFIG REQUIRED)
 find_package(Boost REQUIRED system filesystem)
 find_package(GTest CONFIG REQUIRED)
+find_package(Vulkan REQUIRED)
 
 # Sources include
 add_executable(${PROJECT_NAME} "sources_main/main.cpp")

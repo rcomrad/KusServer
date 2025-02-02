@@ -1,0 +1,47 @@
+---
+- name: Setup development environment
+  hosts: localhost
+  gather_facts: false
+
+- name: Install vcpkg
+  hosts: localhost
+  become: yes
+  become_user: "{{ username }}"
+  gather_facts: false
+
+  vars:
+    username: "user"
+    vcpkg_path: "/home/{{ username }}/vcpkg" 
+    libraries:
+      - boost-filesystem:x64-linux
+      - boost-date-time:x64-linux
+      - boost-locale:x64-linux
+      - crow:x64-linux
+      - libpqxx:x64-linux
+      - mailio:x64-linux
+      - gtest:x64-linux
+      - vulkan-sdk-components:x64-linux
+
+  tasks:
+    - name: Clone repository
+      git:
+        repo: https://github.com/microsoft/vcpkg.git
+        dest: "{{ vcpkg_path }}"
+        version: master
+
+    - name: Bootstrap vcpkg
+      ansible.builtin.shell: ./bootstrap-vcpkg.sh
+      args:
+        chdir: "{{ vcpkg_path }}"
+
+    - name: Create vcpkg alias
+      lineinfile:
+        path: /home/{{ username }}/.zshrc
+        line: 'alias vcpkg="{{ vcpkg_path }}/vcpkg"'
+        state: present
+
+    - name: Install libraries
+      command: ./vcpkg install "{{ item }}"
+      args:
+        chdir: "{{ vcpkg_path }}"
+      with_items: "{{ libraries }}"

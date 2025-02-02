@@ -13,6 +13,7 @@
       ansible.builtin.apt:
         name:
           - git
+          - gitk
           - nano
           - tar
           - wget
@@ -49,6 +50,15 @@
           - gnumeric
           - bison
           - flex
+          # vulkan
+          - libtool
+          # - xcb
+          - libxcb1-dev
+          - libx11-dev
+          - libxrandr-dev
+          # - xorg-dev
+          # build-essential libvulkan-dev libx11-dev libxrandr-dev libxcb1-dev libwayland-dev
+
         state: present
 
     # TODO: separate task?
@@ -115,6 +125,7 @@
       ansible.builtin.shell: |
         sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
       loop: "{{ user_list.stdout_lines }}"
+      ignore_errors: yes # TODO: Already present
 
 # https://serverfault.com/questions/1001235/how-can-change-shell-for-a-user-via-ansible ?
     - name: Change default shell to zsh
@@ -173,11 +184,12 @@
     libraries:
       - boost-filesystem:x64-linux
       - boost-date-time:x64-linux
+      - boost-locale:x64-linux
       - crow:x64-linux
       - libpqxx:x64-linux
       - mailio:x64-linux
       - gtest:x64-linux
-      - boost-locale:x64-linux
+      - vulkan-sdk-components:x64-linux
 
   tasks:
     - name: Clone repository
@@ -323,11 +335,11 @@
         version: "{{ branch }}"
         update: yes  # Ensure the repo is updated if it already exists
 
-    - name: Create vcpkg_path.cmake (vcpkg path)
+    - name: Create vcpkg.cmake (vcpkg path)
       copy:
-        dest: "{{ project_dir }}/vcpkg_path.cmake"
+        dest: "{{ project_dir }}/vcpkg.cmake"
         content: |
-          set(VCPKG_ROOT "/home/{{ username }}/vcpkg")
+          "set(VCPKG_ROOT ""/home/{{ username }}/vcpkg")"
 
 - name: Clear root directory
   hosts: localhost

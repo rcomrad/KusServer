@@ -14,6 +14,7 @@ main(int argc, char** argv)
     // ::testing::GTEST_FLAG(filter) = "UTestTablePrint.*";
     // ::testing::GTEST_FLAG(filter) = "NumPrefixTreeTest.*";
     // ::testing::GTEST_FLAG(filter) = "PipeExample.*";
+    ::testing::GTEST_FLAG(filter) = "EngineTest.*";
 
     core::Printer::setLogLevel(core::LogLevel::WARN);
 
