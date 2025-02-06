@@ -2,11 +2,10 @@
 
 #include <vector>
 
-#include "core/command/command_extend.hpp"
-#include "core/module/module.hpp"
-
-#include "utility/common/holy_trinity.hpp"
-#include "utility/type/lifecycle_manager.hpp"
+#include "kernel/framework/command/command_extend.hpp"
+#include "kernel/framework/module/module.hpp"
+#include "kernel/utility/common/holy_trinity.hpp"
+#include "kernel/utility/type/lifecycle_manager.hpp"
 
 #include "connection_pool.hpp"
 

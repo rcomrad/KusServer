@@ -1,15 +1,15 @@
 #include "token.hpp"
 
-#include "core/command/registry.hpp"
+#include "kernel/framework/command/registry.hpp"
 
 void
-serv::Token::tokenCommandHandler(core::CommandExtend& a_command) noexcept
+serv::Token::tokenCommandHandler(core::Command& a_command) noexcept
 {
     CMD_ASSERT(noVars().argCount(1));
 
     std::string subcommand = "var_set token_status=";
     subcommand += *a_command.arguments.begin();
-    core::CommandExtend sub_command(subcommand, nullptr, nullptr);
+    core::Command sub_command(subcommand, nullptr, nullptr);
     core::CommandHandler::processCommand(sub_command);
     a_command.m_result_buffer = std::move(sub_command.m_result_buffer);
 

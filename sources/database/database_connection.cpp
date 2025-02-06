@@ -3,9 +3,9 @@
 #include <string>
 #include <unordered_map>
 
-#include "string/string_malloc.hpp"
-
 #include "database.hpp"
+
+#include "kernel/string/string_malloc.hpp"
 
 #include "struct_storage.hpp"
 

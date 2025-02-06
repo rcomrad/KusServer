@@ -2,8 +2,8 @@
 
 #include <fstream>
 
-#include "utility/file_system/path_storage.hpp"
-#include "utility/string/parser.hpp"
+#include "kernel/utility/file_system/path_storage.hpp"
+#include "kernel/utility/kernel/string/parser.hpp"
 
 #include "decoder.hpp"
 

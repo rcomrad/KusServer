@@ -1,6 +1,6 @@
 #include "olymp.hpp"
 
-#include "core/command/input_buffer.hpp"
+#include "kernel/framework/command/input_buffer.hpp"
 
 #include "evaluate.hpp"
 

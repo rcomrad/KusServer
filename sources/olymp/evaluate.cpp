@@ -12,8 +12,8 @@
 #include <unordered_set>
 #include <vector>
 
-#include "utility/string/parser.hpp"
-#include "utility/string/slicer.hpp"
+#include "kernel/utility/kernel/string/parser.hpp"
+#include "kernel/utility/kernel/string/slicer.hpp"
 
 std::string
 translitor(const std::string& a_str)
@@ -376,7 +376,7 @@ boolCheck(const Question& question, Answer& answer)
 void
 singlCheck(const Question& question, Answer& answer)
 {
-    auto val = util::Slicer::process(answer.value, "", " _- ,.;)(и&`'\"");
+    auto val       = util::Slicer::process(answer.value, "", " _- ,.;)(и&`'\"");
     answer.verdict = 0;
     if (val.empty()) return;
     if (std::string(val[0]) == question.jury_answer)
@@ -619,9 +619,9 @@ rusoCheck(const Question& question, Answer& answer)
     answer.verdict = v;
 }
 
-#include "utility/string/slicer.hpp"
+#include "kernel/utility/kernel/string/slicer.hpp"
 void
-olymp::Evaluate::processResults(core::CommandExtend& a_command) noexcept
+olymp::Evaluate::processResults(core::Command& a_command) noexcept
 {
     int border = 49;
 

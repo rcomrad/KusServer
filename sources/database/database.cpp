@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-#include "core/logging/table_printer.hpp"
+#include "kernel/framework/logging/table_printer.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -67,7 +67,7 @@ data::Database::commandSetup() const noexcept
 //-----------------------------------------------------------------------------
 
 void
-data::Database::addCredentialsNonstatic(core::CommandExtend& a_command) noexcept
+data::Database::addCredentialsNonstatic(core::Command& a_command) noexcept
 {
     // CMD_ASSERT(argCount({2, 6}).noVars());
     CMD_ASSERT(argCount(6).noVars());
@@ -85,8 +85,7 @@ data::Database::addCredentialsNonstatic(core::CommandExtend& a_command) noexcept
 }
 
 void
-data::Database::removeCredentialsNonstatic(
-    core::CommandExtend& a_command) noexcept
+data::Database::removeCredentialsNonstatic(core::Command& a_command) noexcept
 {
     CMD_ASSERT(argCount(1).noVars());
     auto num = CMD_GET_ARG_AS_NUM(0, m_conn_storage.size());
@@ -99,8 +98,7 @@ data::Database::removeCredentialsNonstatic(
 //-----------------------------------------------------------------------------
 
 void
-data::Database::showCredentialsNonstatic(
-    core::CommandExtend& a_command) noexcept
+data::Database::showCredentialsNonstatic(core::Command& a_command) noexcept
 {
     CMD_ASSERT(noArgs().noVars());
 
@@ -116,8 +114,7 @@ data::Database::showCredentialsNonstatic(
 //-----------------------------------------------------------------------------
 
 void
-data::Database::obtainConnectionNonstatic(
-    core::CommandExtend& a_command) noexcept
+data::Database::obtainConnectionNonstatic(core::Command& a_command) noexcept
 {
     CMD_ASSERT(argCount(1).noVars());
     auto num = a_command.getArgumentAsNumber(0);
@@ -128,8 +125,7 @@ data::Database::obtainConnectionNonstatic(
 }
 
 void
-data::Database::returnConnectionNonstatic(
-    core::CommandExtend& a_command) noexcept
+data::Database::returnConnectionNonstatic(core::Command& a_command) noexcept
 {
     CMD_ASSERT(noArgs().noVars());
     auto pool_id = m_obtained_connection.obj.getPollId();
@@ -140,8 +136,7 @@ data::Database::returnConnectionNonstatic(
 }
 
 void
-data::Database::currentConnectionNonstatic(
-    core::CommandExtend& a_command) noexcept
+data::Database::currentConnectionNonstatic(core::Command& a_command) noexcept
 {
     CMD_ASSERT(noArgs().noVars());
 
@@ -158,8 +153,7 @@ data::Database::currentConnectionNonstatic(
 }
 
 void
-data::Database::executeConnectionNonstatic(
-    core::CommandExtend& a_command) noexcept
+data::Database::executeConnectionNonstatic(core::Command& a_command) noexcept
 {
     CMD_ASSERT(argCount(1).noVars());
     auto& comm = a_command.arguments[0];

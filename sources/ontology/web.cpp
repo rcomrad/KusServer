@@ -3,8 +3,8 @@
 #include <map>
 #include <type_traits>
 
-#include "core/logging/logging.hpp"
-#include "core/logging/table_printer.hpp"
+#include "kernel/framework/logging/logging.hpp"
+#include "kernel/framework/logging/table_printer.hpp"
 
 #include "relation.hpp"
 

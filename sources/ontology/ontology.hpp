@@ -1,8 +1,7 @@
 #pragma once
 
-#include "core/module/module.hpp"
-
-#include "utility/common/holy_trinity.hpp"
+#include "kernel/framework/module/module.hpp"
+#include "kernel/utility/common/holy_trinity.hpp"
 
 namespace onto
 {
