@@ -1,0 +1,21 @@
+https://vulkan-tutorial.com/en/Development_environment#page_Linux
+
+sudo apt install vulkan-tools
+vkcube
+sudo apt install libglfw3-dev
+sudo apt install libglm-dev
+sudo apt install libxi-dev
+
+
+
+
+vcpkg install glfw3
+sudo apt install libxinerama-dev
+sudo apt install libxcursor-dev
+
+
+    xinerama
+    xcursor
+    xorg
+    libglu1-mesa
+    pkg-config

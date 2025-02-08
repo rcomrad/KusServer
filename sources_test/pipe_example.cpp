@@ -35,6 +35,7 @@ pipe_open(const std::string& name, int mode)
 void
 foo(const std::string& to, const std::string& from)
 {
+#ifdef LINUS_LINUX
     std::string read_name  = "/tmp/" + to;
     std::string write_name = "/tmp/" + from;
 
@@ -63,6 +64,7 @@ foo(const std::string& to, const std::string& from)
         }
         std::cout << to << std::endl;
     }
+#endif
 }
 
 TEST_F(PipeExample, smoke)
