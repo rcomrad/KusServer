@@ -10,6 +10,12 @@ serv::Server::Server() noexcept : core::Module("server")
 {
 }
 
+void
+serv::Server::initialize() noexcept
+{
+    crow_serv = std::make_unique<CROWServer>();
+}
+
 bool
 serv::Server::loopBody() noexcept
 {

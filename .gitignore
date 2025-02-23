@@ -23,3 +23,5 @@ id_rsa
 id_rsa.pub
 
 git update-index --assume-unchanged ./.vscode/*
+
+/build_scripts

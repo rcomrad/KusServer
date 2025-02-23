@@ -4,7 +4,7 @@
             "name": "MEGA",
             "includePath": [
                 "${workspaceFolder}/sources/**",
-                "/home/rcomrad/projects/vcpkg/packages/**"
+                "/home/user/vcpkg/packages/**"
             ],
             "intelliSenseMode": "linux-gcc-x64",
             "compilerPath": "/usr/bin/gcc",

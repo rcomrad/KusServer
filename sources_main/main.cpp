@@ -19,16 +19,16 @@ main(int argc, char* argv[])
 
     core::Printer::setOutputType(core::Printer::OutputType::FILE, "logs.txt");
 
-    // core::ModuleRegistry::initModules();
-    // core::ModuleRegistry::runModules();
-    // // TODO: isExit()
-    // while (core::ModuleRegistry::isRunning())
-    // {
-    //     util::Yield::large();
-    // }
-    // core::ModuleRegistry::termModules();
+    core::ModuleRegistry::initModules();
+    core::ModuleRegistry::runModules();
+    // TODO: isExit()
+    while (core::ModuleRegistry::isRunning())
+    {
+        util::Yield::large();
+    }
+    core::ModuleRegistry::termModules();
 
-    Start s;
+    // Start s;
 
     return 0;
 }
