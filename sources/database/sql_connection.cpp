@@ -4,6 +4,8 @@
 
 #include "string/string_malloc.hpp"
 
+#include "utility/type/base.hpp"
+
 #include "struct_storage.hpp"
 
 data::SQLConnection::SQLConnection(const Credentials& a_credentials) noexcept
@@ -27,14 +29,14 @@ data::SQLConnection::insert(void* a_result_ptr,
     {
         switch (struct_data.vars[i].type)
         {
-            case CPPTypeEnum::INT:
+            case util::TypeID::S_INT_32:
                 SPRINTF(cur_char_ptr, "%d,", *(int*)a_result_ptr);
                 break;
-            case CPPTypeEnum::BOOL:
+            case util::TypeID::BOOL:
                 SPRINTF(cur_char_ptr,
                         (*(bool*)a_result_ptr) ? "true" : "false");
                 break;
-            case CPPTypeEnum::FLOAT:
+            case util::TypeID::FLOAT:
                 SPRINTF(cur_char_ptr, "%f,", *(float*)a_result_ptr);
                 break;
         }
@@ -95,13 +97,13 @@ data::SQLConnection::select(void* a_result_ptr,
 
         switch (struct_data.vars[i].type)
         {
-            case CPPTypeEnum::INT:
+            case util::TypeID::S_INT_32:
                 *((int*)a_result_ptr) = m_db_conn.getInt(i);
                 break;
-            case CPPTypeEnum::BOOL:
+            case util::TypeID::BOOL:
                 *((bool*)a_result_ptr) = m_db_conn.getBool(i);
                 break;
-            case CPPTypeEnum::FLOAT:
+            case util::TypeID::FLOAT:
                 *((float*)a_result_ptr) = m_db_conn.getFloat(i);
                 break;
         }

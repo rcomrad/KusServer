@@ -27,6 +27,9 @@ using PoolSemaphore = std::counting_semaphore<MAX_CONNECTIONS_COUNT>;
 namespace data
 {
 
+// TODO: rewrite objects to storage in a static array
+//       and measure the time gain due to the absence of transitions
+
 class ConnectionPool
 {
 public:
@@ -41,15 +44,17 @@ public:
 
     void setConnectionCount(size_t a_count) noexcept;
 
+    friend util::LifecycleManager<ConnectionPool>;
+
 private:
     int m_cur_conn_count;
     int m_max_conn_count;
     Credentials m_credentials;
     // TODO: table print vector size
-    std::vector<InternalConnection> m_connections;
+    std::vector<util::LifecycleManager<InternalConnection>> m_connections;
 
     std::shared_mutex m_resize_mutex;
-    std::vector<InternalConnection&> m_available_conn;
+    std::vector<util::LifecycleManager<InternalConnection&>> m_available_conn;
     util::LifecycleManager<PoolSemaphore> m_available_semaphore;
 
     static std::unordered_set<std::string> m_all_cred_combined;
@@ -62,4 +67,4 @@ private:
         const std::vector<std::string_view>& a_credentials_array) noexcept;
 };
 
-} // namespace data
+}; // namespace data

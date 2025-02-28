@@ -86,6 +86,9 @@
         "regex": "cpp",
         "*.inc": "cpp",
         "*.ini": "cpp",
-        "future": "cpp"
+        "future": "cpp",
+        "complex": "cpp",
+        "coroutine": "cpp",
+        "forward_list": "cpp"
     }
 }

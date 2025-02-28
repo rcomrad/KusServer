@@ -2,8 +2,6 @@
 
 #include <cstring>
 
-#include "utility/type/base.hpp"
-
 #include "credentials.hpp"
 #include "postgresql.hpp"
 #include "struct_data.hpp"

@@ -50,14 +50,15 @@ data::ConnectionPool::get() noexcept
     m_available_semaphore.obj.acquire();
     auto& result = m_available_conn.back();
     m_available_conn.pop_back();
-    return result;
+    return result.obj;
 }
 
 void
 data::ConnectionPool::put(InternalConnection& a_sql_conn) noexcept
 {
     std::shared_lock lock(m_resize_mutex);
-    m_available_conn.emplace_back(a_sql_conn);
+    m_available_conn.emplace_back(
+        util::LifecycleManager<InternalConnection>(a_sql_conn));
     m_available_semaphore.obj.release();
 }
 
@@ -77,7 +78,9 @@ data::ConnectionPool::setConnectionCount(size_t a_count) noexcept
     m_available_semaphore.destroy();
 
     m_cur_conn_count = a_count;
-    m_connections.resize(m_cur_conn_count, m_credentials);
+    m_connections.resize(m_cur_conn_count,
+                         util::LifecycleManager<InternalConnection>(
+                             InternalConnection(m_credentials)));
 
     m_available_conn.clear();
     for (auto& i : m_connections)
