@@ -51,7 +51,7 @@ onto::ContextRouter::processNonstatic(const RouterInpData& a_data) noexcept
 onto::Node*
 onto::ContextRouter::basic(const RouterInpData& a_data)
 {
-    Node* result;
+    Node* result = nullptr;
     std::cout << "basic" << std::endl;
     throw std::runtime_error("No handler specified!");
     return result;
@@ -60,7 +60,7 @@ onto::ContextRouter::basic(const RouterInpData& a_data)
 onto::Node*
 onto::ContextRouter::deleted(const RouterInpData& a_data)
 {
-    Node* result;
+    Node* result = nullptr;
     std::cout << "deleted" << std::endl;
     return result;
 }
@@ -68,7 +68,7 @@ onto::ContextRouter::deleted(const RouterInpData& a_data)
 onto::Node*
 onto::ContextRouter::preprocessor(const RouterInpData& a_data)
 {
-    Node* result;
+    Node* result = nullptr;
     std::cout << "preprocessor" << std::endl;
     return result;
 }
@@ -76,7 +76,7 @@ onto::ContextRouter::preprocessor(const RouterInpData& a_data)
 onto::Node*
 onto::ContextRouter::cinCommunication(const RouterInpData& a_data)
 {
-    Node* result;
+    Node* result = nullptr;
     std::cout << "cin" << std::endl;
 
     auto& stuck = a_data.context_stuck;
@@ -98,7 +98,7 @@ onto::ContextRouter::cinCommunication(const RouterInpData& a_data)
 onto::Node*
 onto::ContextRouter::coutCommunication(const RouterInpData& a_data)
 {
-    Node* result;
+    Node* result = nullptr;
     std::cout << "cout" << std::endl;
 
     auto& stuck = a_data.context_stuck;
@@ -132,7 +132,7 @@ onto::ContextRouter::coutCommunication(const RouterInpData& a_data)
 onto::Node*
 onto::ContextRouter::communication(const RouterInpData& a_data)
 {
-    Node* result;
+    Node* result = nullptr;
     std::cout << "communication" << std::endl;
 
     if (a_data.context_stuck[0].ptr->getName() == "cin")
