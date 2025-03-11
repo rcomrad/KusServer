@@ -7,6 +7,7 @@
     // "C_Cpp.intelliSenseCacheSize": 0,
     "C_Cpp.default.cStandard": "c23",
     "files.associations": {
+        "*.txt": "cmake",
         "any": "cpp",
         "array": "cpp",
         "atomic": "cpp",
@@ -86,6 +87,26 @@
         "regex": "cpp",
         "*.inc": "cpp",
         "*.ini": "cpp",
-        "future": "cpp"
+        "future": "cpp",
+        "xstring": "cpp",
+        "expected": "cpp",
+        "ios": "cpp",
+        "locale": "cpp",
+        "xfacet": "cpp",
+        "xhash": "cpp",
+        "xiosbase": "cpp",
+        "xlocale": "cpp",
+        "xlocbuf": "cpp",
+        "xlocinfo": "cpp",
+        "xlocmes": "cpp",
+        "xlocmon": "cpp",
+        "xlocnum": "cpp",
+        "xloctime": "cpp",
+        "xmemory": "cpp",
+        "xtr1common": "cpp",
+        "xtree": "cpp",
+        "xutility": "cpp",
+        "filesystem": "cpp",
+        "forward_list": "cpp"
     }
 }

@@ -5,7 +5,7 @@
 #include "core/logging/printer.hpp"
 #include "core/module/registry.hpp"
 
-#include "engine/start.hpp"
+#include "engine/app.hpp"
 #include "utility/common/yield.hpp"
 
 //--------------------------------------------------------------------------------
@@ -28,7 +28,9 @@ main(int argc, char* argv[])
     // }
     // core::ModuleRegistry::termModules();
 
-    Start s;
+    kusengine::App a;
+
+    a.run();
 
     return 0;
 }

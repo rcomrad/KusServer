@@ -39,11 +39,13 @@ macro(create_exe NAME)
     endif()
 
     # Libraries include
-    target_link_libraries(${EXE_NAME} PRIVATE libpqxx::pqxx)
-    target_link_libraries(${EXE_NAME} PRIVATE Crow::Crow)
-    target_link_libraries(${EXE_NAME} PRIVATE ${Boost_LIBRARIES})
+    # target_link_libraries(${EXE_NAME} PRIVATE libpqxx::pqxx)
     target_link_libraries(${EXE_NAME} PRIVATE glfw)
     target_link_libraries(${EXE_NAME} PRIVATE Vulkan::Vulkan)
+    target_link_libraries(${EXE_NAME} PRIVATE Crow::Crow)
+    target_link_libraries(${EXE_NAME} PRIVATE ${Boost_LIBRARIES})
+    target_link_libraries(${EXE_NAME} PRIVATE glm::glm)
+
     # target_link_libraries(${EXE_NAME} PRIVATE Vulkan::glslang)
     # target_link_libraries(${EXE_NAME} PRIVATE Vulkan::dxc)
     # target_link_libraries(${EXE_NAME} PRIVATE mailio)
@@ -65,12 +67,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Libraries include
 # find_package(mailio CONFIG REQUIRED)
-find_package(libpqxx CONFIG REQUIRED)
-find_package(Crow CONFIG REQUIRED)
-find_package(Boost REQUIRED system filesystem)
+# find_package(libpqxx CONFIG REQUIRED)
+
 find_package(GTest CONFIG REQUIRED)
+find_package(glm CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(Vulkan REQUIRED)
+find_package(Crow CONFIG REQUIRED)
+find_package(Boost REQUIRED system filesystem)
 
 # Sources include
 add_executable(${PROJECT_NAME} "sources_main/main.cpp")
