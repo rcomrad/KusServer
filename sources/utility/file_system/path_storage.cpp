@@ -25,6 +25,7 @@ util::PathStorage::PathStorage() noexcept
     SCOPED_CONTEXT(addFolderNonstatic, BIN_PATH_NAME, bin_path.string());
 
     auto app_folder_path_str = bin_path.parent_path().string();
+
     SCOPED_CONTEXT(addFolderNonstatic, APP_PATH_NAME, app_folder_path_str);
 
     addContentToPathsNonstatic(app_folder_path_str, ObjectType::FOLDER,

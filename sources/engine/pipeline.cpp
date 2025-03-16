@@ -1,6 +1,7 @@
 #include "pipeline.hpp"
 
 #include <fstream>
+#include <iostream>
 
 #include "utility/file_system/path_storage.hpp"
 
@@ -138,7 +139,6 @@ Pipeline::initPipeline(const std::string& vertex_shader_path,
                        const PipelineConfigInfo& config_info)
 {
     m_device_ptr = device_ptr;
-    compileShaders(vertex_shader_path, fragment_shader_path);
 
     auto vertCode = readFile(vertex_shader_path);
     auto fragCode = readFile(fragment_shader_path);
@@ -218,12 +218,4 @@ Pipeline::createShaderModule(const std::vector<char>& code,
     vkCreateShaderModule(m_device_ptr->device(), &createInfo, nullptr,
                          shader_module);
 }
-
-void
-Pipeline::compileShaders(const std::string& vertex_shader_path,
-                         const std::string& fragment_shader_path)
-{
-    // compile
-}
-
 }; // namespace kusengine

@@ -30,8 +30,8 @@ struct PipelineConfigInfo
 class Pipeline
 {
 public:
-    Pipeline(const Pipeline&)       = delete;
-    void operator=(const Pipeline&) = delete;
+    Pipeline(const Pipeline&)            = delete;
+    Pipeline& operator=(const Pipeline&) = delete;
 
     ~Pipeline();
 
@@ -52,9 +52,6 @@ private:
 
     void createShaderModule(const std::vector<char>& code,
                             VkShaderModule* shader_module);
-
-    void compileShaders(const std::string& vertex_shader_path,
-                        const std::string& fragment_shader_path);
 
     VkPipeline m_pipeline;
 

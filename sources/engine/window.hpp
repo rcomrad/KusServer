@@ -34,16 +34,26 @@ public:
 
     bool isOpen();
 
-    void handleEvents();
+    bool wasWindowResized();
+
+    void resetWindowResizedFlag();
+
+    int handleEvents();
 
     void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
 private:
+    static void framebufferResizeCallback(GLFWwindow* window,
+                                          int width,
+                                          int height);
+
     std::string m_title;
 
     int m_width;
 
     int m_height;
+
+    bool m_frame_buffer_resized_flag;
 
     GLFWwindow* m_window;
 };

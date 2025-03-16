@@ -43,7 +43,7 @@ public:
     // Not copyable or movable
     Device(const Device&) = delete;
 
-    void operator=(const Device&) = delete;
+    Device& operator=(const Device&) = delete;
 
     Device(Device&&) = delete;
 

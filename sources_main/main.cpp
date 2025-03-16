@@ -7,6 +7,7 @@
 
 #include "engine/app.hpp"
 #include "utility/common/yield.hpp"
+#include "utility/file_system/path_storage.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -21,7 +22,14 @@ main(int argc, char* argv[])
 
     // core::ModuleRegistry::initModules();
     // core::ModuleRegistry::runModules();
-    // // TODO: isExit()
+    // auto p = util::PathStorage::getFolderPath("src");
+
+    // if (p.has_value())
+    // {
+    //     std::cout << p.value();
+    // }
+
+    // TODO: isExit()
     // while (core::ModuleRegistry::isRunning())
     // {
     //     util::Yield::large();

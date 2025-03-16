@@ -16,6 +16,7 @@ public:
     struct Vertex
     {
         glm::vec2 position;
+        glm::vec3 color;
 
         static std::vector<VkVertexInputBindingDescription>
         getBindingDescriptions();
@@ -32,8 +33,13 @@ public:
     void bind(VkCommandBuffer command_buffer);
     void draw(VkCommandBuffer command_buffer);
 
+    void move(float x, float y);
+
 private:
-    void createVertexBuffers(const std::vector<Vertex>& vertices);
+    void createVertexBuffer(const std::vector<Vertex>& vertices);
+    void updateVertexBuffer();
+
+    std::vector<Vertex> m_vertices;
 
     Device* m_device_ptr;
     VkBuffer m_vertex_buffer;

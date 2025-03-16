@@ -12,13 +12,15 @@ public:
 
     SwapChain() = default;
 
-    void initSwapChain(Device* device_ptr, VkExtent2D windowExtent);
+    SwapChain(Device* device_ptr, VkExtent2D window_extent);
+
+    void initSwapChain(Device* device_ptr, VkExtent2D window_extent);
 
     ~SwapChain();
 
     SwapChain(const SwapChain&) = delete;
 
-    void operator=(const SwapChain&) = delete;
+    SwapChain& operator=(const SwapChain&) = delete;
 
     VkFramebuffer getFrameBuffer(int index);
 
@@ -43,9 +45,9 @@ public:
     float extentAspectRatio();
     VkFormat findDepthFormat();
 
-    void acquireNextImage(uint32_t* image_index);
-    void submitCommandBuffers(const std::vector<VkCommandBuffer>& buffers,
-                              uint32_t* image_index);
+    VkResult acquireNextImage(uint32_t* image_index);
+    VkResult submitCommandBuffers(const VkCommandBuffer* buffers,
+                                  uint32_t* image_index);
 
 private:
     void createSwapChain();

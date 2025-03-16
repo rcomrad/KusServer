@@ -33,6 +33,8 @@ public:
     static std::string normalizeFolderPath(std::string_view a_path,
                                            bool sep_postfix) noexcept;
 
+    static std::string normalizeSeparators(std::string_view a_path);
+
     static std::string getRelativeToApp(std::string_view a_path,
                                         bool is_folder) noexcept;
 

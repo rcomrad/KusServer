@@ -2,28 +2,63 @@
 
 #include "app.hpp"
 
+#include <cstdlib>
+#include <utility>
+
+#include "utility/file_system/path_storage.hpp"
+
 namespace kusengine
 {
 App::App()
 {
-
     WindowCreateInfo window_info;
     window_info.width  = WIDTH;
     window_info.height = HEIGHT;
     window_info.title  = "Simple app window";
 
+    compileShaders("glslc.exe");
+
     m_window.initWindow(window_info);
     m_device.initDevice(m_window);
     loadModels();
     createPipelineLayout();
-    m_swap_chain.initSwapChain(&m_device, m_window.getExtent());
-    createPipeline();
+    recreateSwapChain();
+
     createCommandBuffers();
+
+    m_target_frame_time = 1 / 150.0;
 }
 
 App::~App()
 {
     vkDestroyPipelineLayout(m_device.device(), m_pipeline_layout, nullptr);
+}
+
+void
+App::compileShaders(const std::string& compile_program_path)
+{
+    std::string sources_path = util::getSourceFolderNameStr("sources");
+
+    std::string vertex_shader_path =
+        sources_path + "/engine/shaders/vertex_shader.vert";
+    std::string fragment_shader_path =
+        sources_path + "/engine/shaders/fragment_shader.frag";
+
+    std::string vertex_compile_command;
+    std::string fragment_compile_command;
+
+#ifdef _WIN32
+    vertex_compile_command = compile_program_path + " " + vertex_shader_path +
+                             " -o " + vertex_shader_path + ".spv";
+    fragment_compile_command = compile_program_path + " " +
+                               fragment_shader_path + " -o " +
+                               fragment_shader_path + ".spv";
+#else
+
+#endif // _WIN32
+
+    system(vertex_compile_command.c_str());
+    system(fragment_compile_command.c_str());
 }
 
 void
@@ -35,15 +70,25 @@ App::generateTrinagle(std::vector<Model::Vertex>& verteces,
 {
     if (depth == 0)
     {
-        verteces.emplace_back(A);
-        verteces.emplace_back(B);
-        verteces.emplace_back(C);
+        glm::vec3 triangle_color = {(std::rand() % 255) / 255.f,
+                                    (std::rand() % 255) / 255.f,
+                                    (std::rand() % 255) / 255.f};
+        Model::Vertex nA = A, nB = B, nC = C;
+
+        nA.color = triangle_color;
+        nB.color = triangle_color;
+        nC.color = triangle_color;
+
+        verteces.emplace_back(nA);
+        verteces.emplace_back(nB);
+        verteces.emplace_back(nC);
         return;
     }
 
     Model::Vertex D = {
         {(A.position.x + B.position.x) / 2, (A.position.y + B.position.y) / 2}
     };
+
     Model::Vertex E = {
         {(A.position.x + C.position.x) / 2, (A.position.y + C.position.y) / 2}
     };
@@ -57,14 +102,23 @@ App::generateTrinagle(std::vector<Model::Vertex>& verteces,
 }
 
 void
+App::moveTriangle(float x, float y)
+{
+    m_model_ptr->move(x, y);
+}
+
+void
 App::loadModels()
 {
     std::vector<Model::Vertex> start_vertices = {
-        {{0.0, -0.5}}, {{0.5, 0.5}}, {{-0.5, 0.5}}};
+        {{0.0, -0.5}, {1.0, 1.0, 0.5}},
+        {{0.5, 0.5},  {1.0, 1.0, 0.5}},
+        {{-0.5, 0.5}, {1.0, 1.0, 0.5}}
+    };
     std::vector<Model::Vertex> vertices;
 
     generateTrinagle(vertices, start_vertices[0], start_vertices[1],
-                     start_vertices[2], 6);
+                     start_vertices[2], 5);
 
     m_model_ptr = std::make_unique<Model>(&m_device, vertices);
 }
@@ -87,9 +141,10 @@ void
 App::createPipeline()
 {
     auto default_pipeline_config_info = Pipeline::defaultPipelineConfigInfo(
-        m_swap_chain.width(), m_swap_chain.height());
+        m_swap_chain_ptr->width(), m_swap_chain_ptr->height());
 
-    default_pipeline_config_info.render_pass     = m_swap_chain.getRenderPass();
+    default_pipeline_config_info.render_pass =
+        m_swap_chain_ptr->getRenderPass();
     default_pipeline_config_info.pipeline_layout = m_pipeline_layout;
 
     m_pipeline_ptr = std::make_unique<Pipeline>();
@@ -99,13 +154,44 @@ App::createPipeline()
         default_pipeline_config_info);
 }
 
+double
+App::getLoopTime()
+{
+    double current_time = glfwGetTime();
+
+    return current_time - std::exchange(m_last_time, current_time);
+}
+
+void
+App::FPSLimit(const double& loop_time)
+{
+    if (loop_time < m_target_frame_time)
+    {
+        double sleep_time = m_target_frame_time - loop_time;
+        glfwWaitEventsTimeout(sleep_time); // Ожидание
+    }
+}
+
 void
 App::run()
 {
     while (m_window.isOpen())
     {
-        m_window.handleEvents();
+        int key_code = m_window.handleEvents();
+
+        float x = 0, y = 0;
+
+        double loop_time = getLoopTime();
+
+        if (key_code == GLFW_KEY_RIGHT) x = 1.f * loop_time;
+        else if (key_code == GLFW_KEY_LEFT) x = -1.f * loop_time;
+        else if (key_code == GLFW_KEY_DOWN) y = 1.f * loop_time;
+        else if (key_code == GLFW_KEY_UP) y = -1.f * loop_time;
+        moveTriangle(x, y);
+
         drawFrame();
+
+        FPSLimit(loop_time);
     }
     vkDeviceWaitIdle(m_device.device());
 }
@@ -113,7 +199,7 @@ App::run()
 void
 App::createCommandBuffers()
 {
-    m_command_buffer_vector.resize(m_swap_chain.imageCount());
+    m_command_buffer_vector.resize(m_swap_chain_ptr->imageCount());
 
     VkCommandBufferAllocateInfo buffer_alloc_info{};
     buffer_alloc_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -124,58 +210,91 @@ App::createCommandBuffers()
 
     vkAllocateCommandBuffers(m_device.device(), &buffer_alloc_info,
                              m_command_buffer_vector.data());
+}
 
-    for (int i = 0; i < m_command_buffer_vector.size(); ++i)
+void
+App::recordCommandBuffer(int ind)
+{
+    VkCommandBufferBeginInfo buffer_begin_info{};
+    buffer_begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+    vkBeginCommandBuffer(m_command_buffer_vector[ind], &buffer_begin_info);
+
+    VkRenderPassBeginInfo renderpass_begin_info{};
+    renderpass_begin_info.sType      = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    renderpass_begin_info.renderPass = m_swap_chain_ptr->getRenderPass();
+    renderpass_begin_info.framebuffer = m_swap_chain_ptr->getFrameBuffer(ind);
+    renderpass_begin_info.renderArea.offset = {0, 0};
+    renderpass_begin_info.renderArea.extent =
+        m_swap_chain_ptr->getSwapChainExtent();
+
+    VkClearValue clear_value{};
+    clear_value.color = {0.0, 0.0, 0.0, 1.0};
+
+    renderpass_begin_info.clearValueCount = 1u;
+    renderpass_begin_info.pClearValues    = &clear_value;
+
+    vkCmdBeginRenderPass(m_command_buffer_vector[ind], &renderpass_begin_info,
+                         VK_SUBPASS_CONTENTS_INLINE);
+
+    m_pipeline_ptr->bind(m_command_buffer_vector[ind]);
+    m_model_ptr->bind(m_command_buffer_vector[ind]);
+    m_model_ptr->draw(m_command_buffer_vector[ind]);
+
+    vkCmdEndRenderPass(m_command_buffer_vector[ind]);
+
+    vkEndCommandBuffer(m_command_buffer_vector[ind]);
+}
+
+void
+App::recreateSwapChain()
+{
+    auto extent = m_window.getExtent();
+
+    while (extent.height == 0 || extent.width == 0)
     {
-        VkCommandBufferBeginInfo buffer_begin_info{};
-        buffer_begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-
-        vkBeginCommandBuffer(m_command_buffer_vector[i], &buffer_begin_info);
-
-        VkRenderPassBeginInfo renderpass_begin_info{};
-        renderpass_begin_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        renderpass_begin_info.renderPass  = m_swap_chain.getRenderPass();
-        renderpass_begin_info.framebuffer = m_swap_chain.getFrameBuffer(i);
-        renderpass_begin_info.renderArea.offset = {0, 0};
-        renderpass_begin_info.renderArea.extent =
-            m_swap_chain.getSwapChainExtent();
-
-        VkClearValue clear_value{};
-        clear_value.color = {0.1, 0.1, 0.1, 1.0};
-
-        renderpass_begin_info.clearValueCount = 1u;
-        renderpass_begin_info.pClearValues    = &clear_value;
-
-        vkCmdBeginRenderPass(m_command_buffer_vector[i], &renderpass_begin_info,
-                             VK_SUBPASS_CONTENTS_INLINE);
-
-        m_pipeline_ptr->bind(m_command_buffer_vector[i]);
-        m_model_ptr->bind(m_command_buffer_vector[i]);
-        m_model_ptr->draw(m_command_buffer_vector[i]);
-        // vkCmdDraw(m_command_buffer_vector[i], 3, 1, 0, 0);
-
-        vkCmdEndRenderPass(m_command_buffer_vector[i]);
-
-        vkEndCommandBuffer(m_command_buffer_vector[i]);
+        extent = m_window.getExtent();
+        glfwWaitEvents();
     }
+
+    vkDeviceWaitIdle(m_device.device());
+    m_swap_chain_ptr = std::make_unique<SwapChain>(&m_device, extent);
+    createPipeline();
 }
 
 void
 App::drawFrame()
 {
-    // uint32_t image_index;
-
-    // m_swap_chain.acquireNextImage(&image_index);
-
-    // m_swap_chain.submitCommandBuffers(m_command_buffer_vector.data(),
-    //                                   &image_index);
-
     uint32_t image_index;
 
-    m_swap_chain.acquireNextImage(&image_index);
+    auto result = m_swap_chain_ptr->acquireNextImage(&image_index);
 
-    m_swap_chain.submitCommandBuffers(m_command_buffer_vector, &image_index);
+    if (result == VK_ERROR_OUT_OF_DATE_KHR)
+    {
+        recreateSwapChain();
+        return;
+    }
 
-    // This call will signal the Fence when the GPU Work is done
+    if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
+    {
+        throw std::exception("failed to acquire swap chain image!");
+    }
+
+    recordCommandBuffer(image_index);
+
+    result = m_swap_chain_ptr->submitCommandBuffers(
+        &m_command_buffer_vector[image_index], &image_index);
+
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR ||
+        m_window.wasWindowResized())
+    {
+        m_window.resetWindowResizedFlag();
+        recreateSwapChain();
+        return;
+    }
+    if (result != VK_SUCCESS)
+    {
+        throw std::exception("failed to present swap chain image!");
+    }
 }
 }; // namespace kusengine

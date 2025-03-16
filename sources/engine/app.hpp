@@ -20,11 +20,13 @@ public:
 
     void run();
 
-    static constexpr int HEIGHT = 320;
+    static constexpr int HEIGHT = 520;
 
-    static constexpr int WIDTH = 500;
+    static constexpr int WIDTH = 800;
 
 private:
+    void compileShaders(const std::string& compile_program_path);
+
     void loadModels();
 
     void createPipelineLayout();
@@ -35,11 +37,8 @@ private:
 
     void drawFrame();
 
-    void generateTrinagle(std::vector<Model::Vertex>& verteces,
-                          const Model::Vertex& A,
-                          const Model::Vertex& B,
-                          const Model::Vertex& C,
-                          int depth);
+    void recreateSwapChain();
+    void recordCommandBuffer(int image_index);
 
     Device m_device;
 
@@ -50,9 +49,28 @@ private:
 
     std::vector<VkCommandBuffer> m_command_buffer_vector;
 
-    SwapChain m_swap_chain;
+    std::unique_ptr<SwapChain> m_swap_chain_ptr;
 
     Window m_window;
+
+    // Triangle
+    void generateTrinagle(std::vector<Model::Vertex>& verteces,
+                          const Model::Vertex& A,
+                          const Model::Vertex& B,
+                          const Model::Vertex& C,
+                          int depth);
+
+    void moveTriangle(float x, float y);
+
+    // Time
+
+    double getLoopTime();
+
+    void FPSLimit(const double& loop_time);
+
+    double m_target_frame_time;
+
+    double m_last_time;
 
     // Window m_window;
 };

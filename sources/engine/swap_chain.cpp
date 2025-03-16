@@ -71,37 +71,49 @@ SwapChain::~SwapChain()
     vkDestroyFence(m_device_ptr->device(), m_img_available_fence, nullptr);
 }
 
-void
+VkResult
 SwapChain::acquireNextImage(uint32_t* image_index)
 {
-    vkWaitForFences(m_device_ptr->device(), 1, &m_img_available_fence, VK_TRUE,
-                    UINT64_MAX);
+    VkResult res;
+    res = vkWaitForFences(m_device_ptr->device(), 1, &m_img_available_fence,
+                          VK_TRUE, UINT64_MAX);
+    if (res != VK_SUCCESS) return res;
 
-    vkResetFences(m_device_ptr->device(), 1, &m_img_available_fence);
+    res = vkResetFences(m_device_ptr->device(), 1, &m_img_available_fence);
+    if (res != VK_SUCCESS) return res;
 
-    vkAcquireNextImageKHR(m_device_ptr->device(), m_swap_chain, UINT64_MAX,
-                          m_acuire_semaphore, 0, image_index);
+    res = vkAcquireNextImageKHR(m_device_ptr->device(), m_swap_chain,
+                                UINT64_MAX, m_acuire_semaphore, 0, image_index);
+    if (res != VK_SUCCESS) return res;
+    return VK_SUCCESS;
 }
 
-void
-SwapChain::submitCommandBuffers(const std::vector<VkCommandBuffer>& buffers,
+VkResult
+SwapChain::submitCommandBuffers(const VkCommandBuffer* buffers,
                                 uint32_t* image_index)
 {
-    VkSubmitInfo submit_info       = {};
-    submit_info.sType              = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    submit_info.commandBufferCount = static_cast<uint32_t>(buffers.size());
 
     VkPipelineStageFlags waitStage =
         VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 
-    submit_info.pCommandBuffers      = buffers.data();
+    VkSubmitInfo submit_info       = {};
+    submit_info.sType              = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    submit_info.commandBufferCount = 1;
+
+    submit_info.pCommandBuffers      = buffers;
     submit_info.pWaitDstStageMask    = &waitStage;
     submit_info.pSignalSemaphores    = &m_submit_semaphore;
     submit_info.signalSemaphoreCount = 1;
     submit_info.pWaitSemaphores      = &m_acuire_semaphore;
     submit_info.waitSemaphoreCount   = 1;
-    vkQueueSubmit(m_device_ptr->graphicsQueue(), 1, &submit_info,
-                  m_img_available_fence);
+
+    auto res = vkQueueSubmit(m_device_ptr->graphicsQueue(), 1, &submit_info,
+                             m_img_available_fence);
+
+    if (res != VK_SUCCESS)
+    {
+        return res;
+    }
 
     VkPresentInfoKHR presentInfo   = {};
     presentInfo.sType              = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -110,7 +122,13 @@ SwapChain::submitCommandBuffers(const std::vector<VkCommandBuffer>& buffers,
     presentInfo.pImageIndices      = image_index;
     presentInfo.pWaitSemaphores    = &m_submit_semaphore;
     presentInfo.waitSemaphoreCount = 1;
-    vkQueuePresentKHR(m_device_ptr->graphicsQueue(), &presentInfo);
+    res = vkQueuePresentKHR(m_device_ptr->graphicsQueue(), &presentInfo);
+
+    if (res != VK_SUCCESS)
+    {
+        return res;
+    }
+    return VK_SUCCESS;
 }
 
 VkRenderPass
@@ -131,7 +149,7 @@ SwapChain::chooseSwapSurfaceFormat(
 {
     for (const auto& availableFormat : availableFormats)
     {
-        if (availableFormat.format == VK_FORMAT_B8G8R8A8_UNORM &&
+        if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &&
             availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
         {
             return availableFormat;
@@ -312,6 +330,11 @@ SwapChain::createSyncObjects()
 
     vkCreateFence(m_device_ptr->device(), &fence_info, 0,
                   &m_img_available_fence);
+}
+
+SwapChain ::SwapChain(Device* device_ptr, VkExtent2D window_extent)
+{
+    initSwapChain(device_ptr, window_extent);
 }
 
 }; // namespace kusengine
