@@ -109,9 +109,9 @@ Pipeline::defaultPipelineConfigInfo(uint32_t width, uint32_t height)
 std::vector<char>
 Pipeline::readFile(const std::string& filepath)
 {
-    std::string ENGINE_DIR = "C:/Users/arsbo/source/repos/KusServer/";
+    auto app_path = util::PathStorage::getFolderPath("app").value();
 
-    std::string enginePath = ENGINE_DIR.data() + filepath;
+    std::string enginePath = app_path.data() + filepath;
 
     std::ifstream file{enginePath, std::ios::ate | std::ios::binary};
 

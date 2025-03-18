@@ -15,10 +15,14 @@ namespace kusengine
 class App
 {
 public:
-    App();
+    App() = default;
     ~App();
 
+    void initApp();
+
     void run();
+
+    bool loopBody();
 
     static constexpr int HEIGHT = 520;
 

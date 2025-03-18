@@ -25,7 +25,7 @@ public:
     // final
     void init() noexcept;
     void term() noexcept;
-    void run() noexcept;
+    virtual void run() noexcept;
 
 protected:
     virtual void initialize() noexcept;

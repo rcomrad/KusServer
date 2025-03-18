@@ -41,8 +41,42 @@ Window::initWindow(WindowCreateInfo& info)
 }
 
 void
+Window::key_callback(GLFWwindow* window,
+                     int key,
+                     int scancode,
+                     int action,
+                     int mods)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(window, GLFW_TRUE); // Запрос на закрытие окна
+    }
+
+    // Вывести сообщение при нажатии клавиши A
+    if (key == GLFW_KEY_A)
+    {
+        if (action == GLFW_PRESS)
+        {
+            std::cout << "Key A was pressed" << std::endl;
+        }
+        else if (action == GLFW_RELEASE)
+        {
+            std::cout << "Key A was released" << std::endl;
+        }
+        else if (action == GLFW_REPEAT)
+        {
+            std::cout << "Key A is being held down" << std::endl;
+        }
+    }
+}
+
+void
 Window::initWindow(int width, int height, const std::string& title)
 {
+    m_title  = title;
+    m_width  = width;
+    m_height = height;
+
     if (glfwInit() == GLFW_FALSE)
     {
         std::cerr << "Failed to init glfw" << std::endl;
@@ -59,6 +93,10 @@ Window::initWindow(int width, int height, const std::string& title)
     }
 
     glfwSetWindowUserPointer(m_window, this);
+
+    // glfwSetKeyCallback(m_window, key_callback);
+
+    // glfwSetCursorPosCallback();
     glfwSetFramebufferSizeCallback(m_window, framebufferResizeCallback);
 }
 
@@ -68,30 +106,34 @@ Window::isOpen()
     return !glfwWindowShouldClose(m_window);
 }
 
-int
-Window::handleEvents()
+std::vector<int>
+Window::getKeyCodes()
 {
-    glfwPollEvents();
-
-    int res = -1;
+    std::vector<int> res;
 
     if (glfwGetKey(m_window, GLFW_KEY_RIGHT) == GLFW_PRESS)
     {
-        res = GLFW_KEY_RIGHT;
+        res.push_back(GLFW_KEY_RIGHT);
     }
     else if (glfwGetKey(m_window, GLFW_KEY_LEFT) == GLFW_PRESS)
     {
-        res = GLFW_KEY_LEFT;
+        res.push_back(GLFW_KEY_LEFT);
     }
     else if (glfwGetKey(m_window, GLFW_KEY_DOWN) == GLFW_PRESS)
     {
-        res = GLFW_KEY_DOWN;
+        res.push_back(GLFW_KEY_DOWN);
     }
     else if (glfwGetKey(m_window, GLFW_KEY_UP) == GLFW_PRESS)
     {
-        res = GLFW_KEY_UP;
+        res.push_back(GLFW_KEY_UP);
     }
     return res;
+}
+
+void
+Window::handleEvents()
+{
+    glfwPollEvents();
 }
 
 void

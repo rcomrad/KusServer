@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 
 #include <string>
+#include <vector>
 
 namespace kusengine
 {
@@ -38,14 +39,22 @@ public:
 
     void resetWindowResizedFlag();
 
-    int handleEvents();
+    void handleEvents();
 
     void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
+
+    std::vector<int> getKeyCodes();
 
 private:
     static void framebufferResizeCallback(GLFWwindow* window,
                                           int width,
                                           int height);
+
+    static void key_callback(GLFWwindow* window,
+                             int key,
+                             int scancode,
+                             int action,
+                             int mods);
 
     std::string m_title;
 

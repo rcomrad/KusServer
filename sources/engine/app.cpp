@@ -3,13 +3,16 @@
 #include "app.hpp"
 
 #include <cstdlib>
+#include <iostream>
 #include <utility>
 
 #include "utility/file_system/path_storage.hpp"
 
 namespace kusengine
 {
-App::App()
+
+void
+App::initApp()
 {
     WindowCreateInfo window_info;
     window_info.width  = WIDTH;
@@ -37,12 +40,18 @@ App::~App()
 void
 App::compileShaders(const std::string& compile_program_path)
 {
-    std::string sources_path = util::getSourceFolderNameStr("sources");
+    auto sources_path = util::PathStorage::getFolderPath("sources");
 
-    std::string vertex_shader_path =
-        sources_path + "/engine/shaders/vertex_shader.vert";
-    std::string fragment_shader_path =
-        sources_path + "/engine/shaders/fragment_shader.frag";
+    if (!sources_path.has_value())
+    {
+        throw std::exception("Did not find sources folder");
+    }
+
+    std::string vertex_shader_path = sources_path.value().data();
+    vertex_shader_path += "engine/shaders/vertex_shader.vert";
+
+    std::string fragment_shader_path = sources_path.value().data();
+    fragment_shader_path += "engine/shaders/fragment_shader.frag";
 
     std::string vertex_compile_command;
     std::string fragment_compile_command;
@@ -172,26 +181,52 @@ App::FPSLimit(const double& loop_time)
     }
 }
 
+bool
+App::loopBody()
+{
+    m_window.handleEvents();
+
+    auto key_codes = m_window.getKeyCodes();
+
+    if (!m_window.isOpen())
+    {
+        vkDeviceWaitIdle(m_device.device());
+        return false;
+    }
+
+    float x = 0, y = 0;
+
+    double loop_time = getLoopTime();
+
+    if (std::find(key_codes.begin(), key_codes.end(), GLFW_KEY_RIGHT) !=
+        key_codes.end())
+        x += 1.f * loop_time;
+
+    if (std::find(key_codes.begin(), key_codes.end(), GLFW_KEY_LEFT) !=
+        key_codes.end())
+        x += -1.f * loop_time;
+    if (std::find(key_codes.begin(), key_codes.end(), GLFW_KEY_DOWN) !=
+        key_codes.end())
+        y += 1.f * loop_time;
+    if (std::find(key_codes.begin(), key_codes.end(), GLFW_KEY_UP) !=
+        key_codes.end())
+        y += -1.f * loop_time;
+
+    moveTriangle(x, y);
+
+    drawFrame();
+
+    FPSLimit(loop_time);
+
+    return true;
+}
+
 void
 App::run()
 {
     while (m_window.isOpen())
     {
-        int key_code = m_window.handleEvents();
-
-        float x = 0, y = 0;
-
-        double loop_time = getLoopTime();
-
-        if (key_code == GLFW_KEY_RIGHT) x = 1.f * loop_time;
-        else if (key_code == GLFW_KEY_LEFT) x = -1.f * loop_time;
-        else if (key_code == GLFW_KEY_DOWN) y = 1.f * loop_time;
-        else if (key_code == GLFW_KEY_UP) y = -1.f * loop_time;
-        moveTriangle(x, y);
-
-        drawFrame();
-
-        FPSLimit(loop_time);
+        loopBody();
     }
     vkDeviceWaitIdle(m_device.device());
 }

@@ -22,11 +22,14 @@ util::PathStorage::PathStorage() noexcept
 {
     // Set path to bin and its parant folders
     auto bin_path = std::filesystem::current_path();
-    SCOPED_CONTEXT(addFolderNonstatic, BIN_PATH_NAME, bin_path.string());
+
+    // SCOPED_CONTEXT(addFolderNonstatic, BIN_PATH_NAME,
+    //                util::Path::normalizeSeparators(bin_path.string()));
 
     auto app_folder_path_str = bin_path.parent_path().string();
 
-    SCOPED_CONTEXT(addFolderNonstatic, APP_PATH_NAME, app_folder_path_str);
+    SCOPED_CONTEXT(addFolderNonstatic, APP_PATH_NAME,
+                   util::Path::normalizeSeparators(app_folder_path_str));
 
     addContentToPathsNonstatic(app_folder_path_str, ObjectType::FOLDER,
                                LevelType::CURRENT);
@@ -317,7 +320,7 @@ util::PathStorage::addContentToPathsNonstatic(std::string_view a_path,
             getContentNonstatic(a_path, ObjectType::FOLDER, a_level_type);
         for (auto& i : content)
         {
-            addFolderNonstatic(i);
+            addFolderNonstatic(Path::normalizeSeparators(i));
         }
     }
 }

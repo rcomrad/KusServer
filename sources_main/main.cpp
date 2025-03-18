@@ -16,29 +16,25 @@ main(int argc, char* argv[])
 {
     std::cout << "LAMPA\n";
     fflush(stdout);
+
     // TODO: write time
 
     core::Printer::setOutputType(core::Printer::OutputType::FILE, "logs.txt");
 
-    // core::ModuleRegistry::initModules();
-    // core::ModuleRegistry::runModules();
-    // auto p = util::PathStorage::getFolderPath("src");
+    core::ModuleRegistry::initModules();
 
-    // if (p.has_value())
-    // {
-    //     std::cout << p.value();
-    // }
+    core::ModuleRegistry::runModules();
 
     // TODO: isExit()
-    // while (core::ModuleRegistry::isRunning())
-    // {
-    //     util::Yield::large();
-    // }
-    // core::ModuleRegistry::termModules();
+    while (core::ModuleRegistry::isRunning())
+    {
+        util::Yield::large();
+    }
+    core::ModuleRegistry::termModules();
 
-    kusengine::App a;
-
-    a.run();
+    // kusengine::App a;
+    // a.initApp();
+    // a.run();
 
     return 0;
 }
