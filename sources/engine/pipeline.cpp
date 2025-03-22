@@ -5,6 +5,7 @@
 
 #include "utility/file_system/path_storage.hpp"
 
+#include "engine_util.hpp"
 #include "model.hpp"
 
 namespace kusengine
@@ -106,25 +107,6 @@ Pipeline::defaultPipelineConfigInfo(uint32_t width, uint32_t height)
     return config_info;
 }
 
-std::vector<char>
-Pipeline::readFile(const std::string& filepath)
-{
-    auto app_path = util::PathStorage::getFolderPath("app").value();
-
-    std::string enginePath = app_path.data() + filepath;
-
-    std::ifstream file{enginePath, std::ios::ate | std::ios::binary};
-
-    size_t fileSize = static_cast<size_t>(file.tellg());
-    std::vector<char> buffer(fileSize);
-
-    file.seekg(0);
-    file.read(buffer.data(), fileSize);
-
-    file.close();
-    return buffer;
-}
-
 void
 Pipeline::bind(VkCommandBuffer command_buffer)
 {
@@ -140,8 +122,8 @@ Pipeline::initPipeline(const std::string& vertex_shader_path,
 {
     m_device_ptr = device_ptr;
 
-    auto vertCode = readFile(vertex_shader_path);
-    auto fragCode = readFile(fragment_shader_path);
+    auto vertCode = engine_util::readFile(vertex_shader_path);
+    auto fragCode = engine_util::readFile(fragment_shader_path);
 
     createShaderModule(vertCode, &m_vertex_shader_module);
     createShaderModule(fragCode, &m_fragment_shader_module);

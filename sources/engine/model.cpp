@@ -78,9 +78,9 @@ Model::Vertex::getAttributeDescriptions()
 
     attributeDescriptions[1].binding  = 0;
     attributeDescriptions[1].location = 1;
-    attributeDescriptions[1].format   = VK_FORMAT_R32G32B32_SFLOAT;
+    attributeDescriptions[1].format   = VK_FORMAT_R32G32_SFLOAT;
 
-    attributeDescriptions[1].offset = offsetof(Vertex, color);
+    attributeDescriptions[1].offset = offsetof(Vertex, uv);
     return attributeDescriptions;
 }
 

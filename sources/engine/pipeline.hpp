@@ -48,8 +48,6 @@ public:
                                                         uint32_t heigth);
 
 private:
-    std::vector<char> readFile(const std::string& filepath);
-
     void createShaderModule(const std::vector<char>& code,
                             VkShaderModule* shader_module);
 

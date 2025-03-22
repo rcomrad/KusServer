@@ -16,7 +16,7 @@ public:
     struct Vertex
     {
         glm::vec2 position;
-        glm::vec3 color;
+        glm::vec2 uv;
 
         static std::vector<VkVertexInputBindingDescription>
         getBindingDescriptions();
@@ -43,6 +43,9 @@ private:
 
     Device* m_device_ptr;
     VkBuffer m_vertex_buffer;
+
+    VkBuffer m_staging_buffer;
+
     VkDeviceMemory m_vertex_buffer_memory;
     uint32_t m_vertex_count;
 };

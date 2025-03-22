@@ -8,6 +8,7 @@
 #include "model.hpp"
 #include "pipeline.hpp"
 #include "swap_chain.hpp"
+#include "texture_storage.hpp"
 #include "window.hpp"
 
 namespace kusengine
@@ -76,7 +77,27 @@ private:
 
     double m_last_time;
 
-    // Window m_window;
+    // Descriptors
+
+    TextureStorage m_texture_storage;
+
+    void createDescriptorSetLayout();
+
+    void createDescriptorSet();
+
+    void createDescriptorPool();
+
+    void updateDescriptorSet();
+
+    void createSampler();
+
+    VkSampler m_sampler;
+
+    VkDescriptorSetLayout m_set_layout;
+
+    VkDescriptorSet m_descriptor_set;
+
+    VkDescriptorPool m_descriptor_pool;
 };
 }; // namespace kusengine
 

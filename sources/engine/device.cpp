@@ -555,7 +555,7 @@ Device::createBuffer(VkDeviceSize size,
     if (vkCreateBuffer(m_logical_device, &bufferInfo, nullptr, &buffer) !=
         VK_SUCCESS)
     {
-        throw std::exception("failed to create vertex buffer!");
+        throw std::exception("failed to create buffer!");
     }
 
     VkMemoryRequirements memRequirements;
@@ -570,7 +570,7 @@ Device::createBuffer(VkDeviceSize size,
     if (vkAllocateMemory(m_logical_device, &allocInfo, nullptr,
                          &bufferMemory) != VK_SUCCESS)
     {
-        throw std::exception("failed to allocate vertex buffer memory!");
+        throw std::exception("failed to allocate buffer memory!");
     }
 
     vkBindBufferMemory(m_logical_device, buffer, bufferMemory, 0);
