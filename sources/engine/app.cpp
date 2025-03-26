@@ -25,15 +25,14 @@ App::initApp()
 
     m_window.initWindow(window_info);
     m_device.initDevice(m_window);
-    m_texture_storage.loadTextures(m_device);
     loadModels();
-    {
-        createDescriptorSetLayout();
-        createSampler();
-        createDescriptorPool();
-        createDescriptorSet();
-        updateDescriptorSet();
-    }
+    // {
+    //     createDescriptorSetLayout();
+    //     createSampler();
+    //     createDescriptorPool();
+    //     createDescriptorSet();
+    //     updateDescriptorSet();
+    // }
     createPipelineLayout();
     recreateSwapChain();
 
@@ -89,15 +88,10 @@ App::generateTrinagle(std::vector<Model::Vertex>& verteces,
 {
     if (depth == 0)
     {
-        glm::vec3 triangle_color = {(std::rand() % 255) / 255.f,
-                                    (std::rand() % 255) / 255.f,
-                                    (std::rand() % 255) / 255.f};
         Model::Vertex nA = A, nB = B, nC = C;
-
-        // nA.color = triangle_color;
-        // nB.color = triangle_color;
-        // nC.color = triangle_color;
-
+        nA.uv = {0.5, 0.0};
+        nB.uv = {0.0, 1.0};
+        nC.uv = {1.0, 1.0};
         verteces.emplace_back(nA);
         verteces.emplace_back(nB);
         verteces.emplace_back(nC);
@@ -130,93 +124,26 @@ void
 App::loadModels()
 {
     std::vector<Model::Vertex> start_vertices = {
-        {{0.0, -0.5}, {0.5, 0.0}},
-        {{0.5, 0.5},  {0.0, 1.0}},
-        {{-0.5, 0.5}, {1.0, 1.0}}
+        {{-0.5f + 0.4, -0.5f + 0.4}, {0.0f, 0.0f}, 0},
+        {{0.5f + 0.4, -0.5f + 0.4},  {1.0f, 0.0f}, 0},
+        {{0.5f + 0.4, 0.5f + 0.4},   {1.0f, 1.0f}, 0},
+        {{-0.5f + 0.4, 0.5f + 0.4},  {0.0f, 1.0f}, 0}
+        //
+        // {{-0.5 - 0.4f, -0.5f - 0.4}, {0.0f, 0.0f}, 1},
+        // {{0.5f - 0.4, -0.5f - 0.4},  {1.0f, 0.0f}, 1},
+        // {{0.5f - 0.4, 0.5f - 0.4},   {1.0f, 1.0f}, 1},
+        // {{-0.5f - 0.4, 0.5f - 0.4},  {0.0f, 1.0f}, 1}
     };
+    const std::vector<uint16_t> indices = {0, 1, 2, 2, 3, 0};
+
     std::vector<Model::Vertex> vertices;
 
     vertices = start_vertices;
 
     // generateTrinagle(vertices, start_vertices[0], start_vertices[1],
-    //                  start_vertices[2], 5);
+    //                  start_vertices[2], 3);
 
-    m_model_ptr = std::make_unique<Model>(&m_device, vertices);
-}
-
-void
-App::createDescriptorSetLayout()
-{
-    std::vector<VkDescriptorSetLayoutBinding> layout_bindings = {
-        engine_util::layout_binding(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-                                    VK_SHADER_STAGE_FRAGMENT_BIT, 1, 0)};
-
-    VkDescriptorSetLayoutCreateInfo layout_info = {};
-    layout_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-    layout_info.bindingCount = layout_bindings.size();
-    layout_info.pBindings    = layout_bindings.data();
-
-    vkCreateDescriptorSetLayout(m_device.device(), &layout_info, 0,
-                                &m_set_layout);
-}
-
-void
-App::createSampler()
-{
-    VkSamplerCreateInfo samplerInfo = {};
-    samplerInfo.sType               = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-    samplerInfo.minFilter           = VK_FILTER_NEAREST;
-    samplerInfo.magFilter           = VK_FILTER_NEAREST;
-
-    vkCreateSampler(m_device.device(), &samplerInfo, 0, &m_sampler);
-}
-
-void
-App::createDescriptorSet()
-{
-    VkDescriptorSetAllocateInfo allocInfo = {};
-    allocInfo.sType       = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-    allocInfo.pSetLayouts = &m_set_layout;
-    allocInfo.descriptorSetCount = 1;
-    allocInfo.descriptorPool     = m_descriptor_pool;
-    vkAllocateDescriptorSets(m_device.device(), &allocInfo, &m_descriptor_set);
-}
-
-void
-App::createDescriptorPool()
-{
-    std::vector<VkDescriptorPoolSize> poolSizes = {
-        {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,         1},
-        {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,         1},
-        {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1}
-    };
-
-    VkDescriptorPoolCreateInfo poolInfo = {};
-    poolInfo.sType         = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-    poolInfo.maxSets       = 1;
-    poolInfo.poolSizeCount = poolSizes.size();
-    poolInfo.pPoolSizes    = poolSizes.data();
-    vkCreateDescriptorPool(m_device.device(), &poolInfo, 0, &m_descriptor_pool);
-}
-
-void
-App::updateDescriptorSet()
-{
-
-    VkDescriptorImageInfo image_info{};
-    image_info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    image_info.imageView   = m_texture_storage.view();
-    image_info.sampler     = m_sampler;
-
-    VkWriteDescriptorSet write{};
-    write.sType           = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    write.dstSet          = m_descriptor_set;
-    write.pImageInfo      = &image_info;
-    write.dstBinding      = 0;
-    write.descriptorCount = 1;
-    write.descriptorType  = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-
-    vkUpdateDescriptorSets(m_device.device(), 1, &write, 0, 0);
+    m_model_ptr = std::make_unique<Model>(&m_device, start_vertices, indices);
 }
 
 void
@@ -225,7 +152,7 @@ App::createPipelineLayout()
     VkPipelineLayoutCreateInfo layout_info{};
     layout_info.sType          = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     layout_info.setLayoutCount = 1;
-    layout_info.pSetLayouts    = &m_set_layout;
+    layout_info.pSetLayouts    = m_model_ptr->getSetLayoutsConstPtr();
     layout_info.pushConstantRangeCount = 0;
     layout_info.pPushConstantRanges    = nullptr;
 
@@ -244,9 +171,12 @@ App::createPipeline()
     default_pipeline_config_info.pipeline_layout = m_pipeline_layout;
 
     m_pipeline_ptr = std::make_unique<Pipeline>();
+
+    std::string app_path =
+        util::PathStorage::getFolderPath("app").value().data();
     m_pipeline_ptr->initPipeline(
-        "sources/engine/shaders/vertex_shader.vert.spv",
-        "sources/engine/shaders/fragment_shader.frag.spv", &m_device,
+        app_path + "sources/engine/shaders/vertex_shader.vert.spv",
+        app_path + "sources/engine/shaders/fragment_shader.frag.spv", &m_device,
         default_pipeline_config_info);
 }
 
@@ -356,15 +286,31 @@ App::recordCommandBuffer(int ind)
     renderpass_begin_info.clearValueCount = 1u;
     renderpass_begin_info.pClearValues    = &clear_value;
 
+    {
+        VkViewport viewport{};
+        viewport.x = 0.0f;
+        viewport.y = 0.0f;
+        viewport.width =
+            static_cast<float>(m_swap_chain_ptr->getSwapChainExtent().width);
+        viewport.height =
+            static_cast<float>(m_swap_chain_ptr->getSwapChainExtent().height);
+        viewport.minDepth = 0.0f;
+        viewport.maxDepth = 1.0f;
+
+        VkRect2D scissor{};
+        scissor.offset = {0, 0};
+        scissor.extent = m_swap_chain_ptr->getSwapChainExtent();
+
+        vkCmdSetViewport(m_command_buffer_vector[ind], 0, 1, &viewport);
+        vkCmdSetScissor(m_command_buffer_vector[ind], 0, 1, &scissor);
+    }
+
     vkCmdBeginRenderPass(m_command_buffer_vector[ind], &renderpass_begin_info,
                          VK_SUBPASS_CONTENTS_INLINE);
 
-    vkCmdBindDescriptorSets(m_command_buffer_vector[ind],
-                            VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline_layout,
-                            0, 1, &m_descriptor_set, 0, 0);
-
+    m_model_ptr->bind(m_command_buffer_vector[ind], m_pipeline_layout);
     m_pipeline_ptr->bind(m_command_buffer_vector[ind]);
-    m_model_ptr->bind(m_command_buffer_vector[ind]);
+
     m_model_ptr->draw(m_command_buffer_vector[ind]);
 
     vkCmdEndRenderPass(m_command_buffer_vector[ind]);

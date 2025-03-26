@@ -10,6 +10,10 @@ class Renderer
 public:
     Renderer() = default;
 
+    void render();
+
+    void draw();
+
     void initRenderer(Window& window);
 
 private:

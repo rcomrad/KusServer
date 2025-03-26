@@ -79,25 +79,15 @@ private:
 
     // Descriptors
 
-    TextureStorage m_texture_storage;
+    // void createDescriptorSetLayout();
 
-    void createDescriptorSetLayout();
+    // void createDescriptorSet();
 
-    void createDescriptorSet();
+    // void createDescriptorPool();
 
-    void createDescriptorPool();
+    // void updateDescriptorSet();
 
-    void updateDescriptorSet();
-
-    void createSampler();
-
-    VkSampler m_sampler;
-
-    VkDescriptorSetLayout m_set_layout;
-
-    VkDescriptorSet m_descriptor_set;
-
-    VkDescriptorPool m_descriptor_pool;
+    // void createSampler();
 };
 }; // namespace kusengine
 

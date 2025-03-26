@@ -2,7 +2,6 @@
 
 #include <fstream>
 
-#include "utility/file_system/path_storage.hpp"
 namespace kusengine
 {
 namespace engine_util
@@ -10,12 +9,7 @@ namespace engine_util
 std::vector<char>
 readFile(std::string_view filepath)
 {
-    std::string full_filepath =
-        util::PathStorage::getFolderPath("app").value().data();
-
-    full_filepath += filepath.data();
-
-    std::ifstream file{full_filepath, std::ios::ate | std::ios::binary};
+    std::ifstream file{filepath.data(), std::ios::ate | std::ios::binary};
 
     size_t fileSize = static_cast<size_t>(file.tellg());
     std::vector<char> buffer(fileSize);
