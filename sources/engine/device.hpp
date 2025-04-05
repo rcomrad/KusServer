@@ -1,7 +1,7 @@
 #ifndef DEVICE_HPP
 #define DEVICE_HPP
 
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan.hpp>
 
 #include <vector>
 
@@ -12,35 +12,18 @@ namespace kusengine
 
 struct SwapChainSupportDetails
 {
-    VkSurfaceCapabilitiesKHR m_capabilities;
-    std::vector<VkSurfaceFormatKHR> m_formats;
-    std::vector<VkPresentModeKHR> m_present_modes;
+    vk::SurfaceCapabilitiesKHR m_capabilities;
+    std::vector<vk::SurfaceFormatKHR> m_formats;
+    std::vector<vk::PresentModeKHR> m_present_modes;
 };
 
-// struct QueueFamilyIndices
-// {
-//     uint32_t graphicsFamily;
-//     uint32_t presentFamily;
-
-//     bool graphicsFamilyHasValue = false;
-//     bool presentFamilyHasValue  = false;
-
-//     bool isComplete()
-//     {
-//         return graphicsFamilyHasValue && presentFamilyHasValue;
-//     }
-// };
-
-class Device
+class Device final
 {
 public:
     Device() = default;
 
     void initDevice(Window& window);
 
-    ~Device();
-
-    // Not copyable or movable
     Device(const Device&) = delete;
 
     Device& operator=(const Device&) = delete;
@@ -49,52 +32,33 @@ public:
 
     Device& operator=(Device&&) = delete;
 
-    VkCommandPool getCommandPool();
-
-    VkDevice device();
-
-    VkSurfaceKHR surface();
-
-    VkQueue graphicsQueue();
-
-    VkQueue presentQueue();
-
-    SwapChainSupportDetails getSwapChainSupport();
+    //
 
     uint32_t findMemoryType(uint32_t typeFilter,
-                            VkMemoryPropertyFlags properties);
+                            vk::MemoryPropertyFlags properties);
 
-    // QueueFamilyIndices findPhysicalQueueFamilies()
-    // {
-    //     return findQueueFamilies(physicalDevice);
-    // }
-    // VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates,
-    //                              VkImageTiling tiling,
-    //                              VkFormatFeatureFlags features);
+    void createBuffer(vk::DeviceSize size,
+                      vk::BufferUsageFlags usage,
+                      vk::MemoryPropertyFlags properties,
+                      vk::Buffer& buffer,
+                      vk::DeviceMemory& bufferMemory);
 
-    // // Buffer Helper Functions
+    void copyBuffer(vk::Buffer src_buffer,
+                    vk::Buffer dst_buffer,
+                    vk::DeviceSize size);
 
-    void createBuffer(VkDeviceSize size,
-                      VkBufferUsageFlags usage,
-                      VkMemoryPropertyFlags properties,
-                      VkBuffer& buffer,
-                      VkDeviceMemory& bufferMemory);
+    //
+    SwapChainSupportDetails getSwapChainSupport();
 
-    // VkCommandBuffer beginSingleTimeCommands();
-    // void endSingleTimeCommands(VkCommandBuffer commandBuffer);
-    // void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize
-    // size); void copyBufferToImage(VkBuffer buffer,
-    //                        VkImage image,
-    //                        uint32_t width,
-    //                        uint32_t height,
-    //                        uint32_t layerCount);
+    vk::CommandPool getCommandPool();
 
-    // void createImageWithInfo(const VkImageCreateInfo& imageInfo,
-    //                          VkMemoryPropertyFlags properties,
-    //                          VkImage& image,
-    //                          VkDeviceMemory& imageMemory);
+    vk::Device device();
 
-    // VkPhysicalDeviceProperties properties;
+    vk::SurfaceKHR surface();
+
+    vk::Queue graphicsQueue();
+
+    vk::Queue presentQueue();
 
 private:
     void createInstance();
@@ -104,39 +68,23 @@ private:
     void createLogicalDevice();
     void createCommandPool();
 
-    VkSurfaceKHR m_surface;
-    VkInstance m_instance;
-    VkPhysicalDevice m_physical_device;
+    vk::UniqueSurfaceKHR m_surface;
+    vk::UniqueInstance m_instance;
+    vk::PhysicalDevice m_physical_device;
     int m_graphics_queue_index;
-    VkDevice m_logical_device;
-    VkQueue m_graphics_queue;
-    VkCommandPool m_command_pool;
+    vk::UniqueDevice m_logical_device;
+    vk::Queue m_graphics_queue;
+    vk::UniqueCommandPool m_command_pool;
 
     // helper functions
-    bool isDeviceSuitable(VkPhysicalDevice device);
+    bool isDeviceSuitable(vk::PhysicalDevice device);
 
     std::vector<const char*> getRequiredExtensions();
 
     void populateDebugMessengerCreateInfo(
         VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 
-    // bool checkValidationLayerSupport();
-    // QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-
-    // void hasGflwRequiredInstanceExtensions();
-    // bool checkDeviceExtensionSupport(VkPhysicalDevice device);
-    // SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
-
-    // VkDebugUtilsMessengerEXT debugMessenger;
-    // Window m_window;
-
-    // VkDevice device_;
-    // VkQueue graphicsQueue_;
-    // VkQueue presentQueue_;
-
     std::vector<const char*> m_validation_layers;
-    // const std::vector<const char*> deviceExtensions = {
-    //     VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 };
 }; // namespace kusengine
 

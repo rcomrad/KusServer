@@ -5,49 +5,41 @@
 
 namespace kusengine
 {
-class SwapChain
+class SwapChain final
 {
 public:
     static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
     SwapChain() = default;
 
-    SwapChain(Device* device_ptr, VkExtent2D window_extent);
-
-    void initSwapChain(Device* device_ptr, VkExtent2D window_extent);
+    SwapChain(Device* device_ptr, vk::Extent2D window_extent);
 
     ~SwapChain();
+
+    void initSwapChain(Device* device_ptr, vk::Extent2D window_extent);
 
     SwapChain(const SwapChain&) = delete;
 
     SwapChain& operator=(const SwapChain&) = delete;
 
-    VkFramebuffer getFrameBuffer(int index);
+    vk::Framebuffer getFrameBuffer(int index);
 
-    VkRenderPass getRenderPass();
-    // VkImageView getImageView(int index)
-    // {
-    //     return swapChainImageViews[index];
-    // }
+    vk::RenderPass getRenderPass();
+
     size_t imageCount();
-    // {
-    //     return swapChainImages.size();
-    // }
-    // VkFormat getSwapChainImageFormat()
-    // {
-    //     return swapChainImageFormat;
-    // }
-    VkExtent2D getSwapChainExtent();
+
+    vk::Extent2D getSwapChainExtent();
 
     uint32_t width();
     uint32_t height();
 
     float extentAspectRatio();
-    VkFormat findDepthFormat();
+    vk::Format findDepthFormat();
 
-    VkResult acquireNextImage(uint32_t* image_index);
-    VkResult submitCommandBuffers(const VkCommandBuffer* buffers,
-                                  uint32_t* image_index);
+    vk::Result acquireNextImage(uint32_t* image_index);
+    vk::Result submitCommandBuffers(
+        const std::vector<vk::CommandBuffer>& buffers,
+        uint32_t* image_index);
 
 private:
     void createSwapChain();
@@ -56,33 +48,32 @@ private:
     void createFramebuffers();
     void createSyncObjects();
 
-    VkSurfaceFormatKHR chooseSwapSurfaceFormat(
-        const std::vector<VkSurfaceFormatKHR>& availableFormats);
+    vk::SurfaceFormatKHR chooseSwapSurfaceFormat(
+        const std::vector<vk::SurfaceFormatKHR>& availableFormats);
+    vk::PresentModeKHR chooseSwapPresentMode(
+        const std::vector<vk::PresentModeKHR>& available_modes);
 
     // VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR&
     // capabilities);
 
-    VkFormat m_swap_chain_image_format;
-    VkExtent2D m_swap_chain_extent;
+    vk::Format m_swap_chain_image_format;
+    vk::Extent2D m_swap_chain_extent;
 
-    std::vector<VkFramebuffer> m_swap_chain_framebuffers;
-    VkRenderPass m_render_pass;
+    std::vector<vk::Framebuffer> m_swap_chain_framebuffers;
+    vk::RenderPass m_render_pass;
 
-    // std::vector<VkImage> depthImages;
-    // std::vector<VkDeviceMemory> depthImageMemorys;
-    // std::vector<VkImageView> depthImageViews;
-    std::vector<VkImage> m_swap_chain_images;
-    std::vector<VkImageView> m_swap_chain_image_views;
+    std::vector<vk::Image> m_swap_chain_images;
+    std::vector<vk::ImageView> m_swap_chain_image_views;
 
-    Device* m_device_ptr;
-    VkExtent2D m_window_extent;
-    VkSwapchainKHR m_swap_chain;
+    vk::Extent2D m_window_extent;
+    vk::SwapchainKHR m_swap_chain;
 
-    VkSemaphore m_submit_semaphore;
-    VkSemaphore m_acuire_semaphore;
-    VkFence m_img_available_fence;
+    vk::Semaphore m_submit_semaphore;
+    vk::Semaphore m_acquire_semaphore;
+    vk::Fence m_img_available_fence;
 
     size_t currentFrame = 0;
+    Device* m_device_ptr;
 };
 }; // namespace kusengine
 

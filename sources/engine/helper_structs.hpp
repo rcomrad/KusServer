@@ -5,16 +5,16 @@
 
 struct Buffer
 {
-    VkBuffer m_buffer;
-    VkDeviceMemory m_memory;
+    vk::UniqueBuffer m_buffer;
+    vk::UniqueDeviceMemory m_memory;
     void* m_data;
 };
 
 struct Image
 {
-    VkImage m_image;
-    VkDeviceMemory m_memory;
-    VkImageView m_view;
+    vk::UniqueImage m_image;
+    vk::UniqueDeviceMemory m_memory;
+    vk::UniqueImageView m_view;
 };
 
 #endif // HELPER_STRUCTS_HPP

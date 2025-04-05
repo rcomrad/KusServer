@@ -16,145 +16,166 @@ TextureStorage::addTexture(std::string_view path)
     m_textures[name] = {};
     Image* image_ptr = &m_textures[name];
 
-    VkExtent3D extent = createTexture(path, image_ptr);
+    vk::Extent3D extent = createTexture(path, image_ptr);
     allocateMemoryForTexture(image_ptr);
     copyDataFromStagingBufferToImage(extent, image_ptr);
     createImageView(image_ptr);
 }
 
-VkExtent3D
+vk::Extent3D
 TextureStorage::createTexture(std::string_view path, Image* image_ptr)
 {
     uint32_t texture_size;
 
     DDSFile* file_data = NULL;
 
-    auto vec  = (engine_util::readFile(path));
+    auto vec  = (engine_util::readFile(path.data()));
     file_data = (DDSFile*)(vec.data());
 
     texture_size = file_data->header.Width * file_data->header.Height * 4;
 
     memcpy(m_staging_buffer.m_data, file_data, texture_size);
 
-    VkImageCreateInfo image_info{};
-    image_info.sType       = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-    image_info.mipLevels   = 1;
-    image_info.arrayLayers = 1;
-    image_info.imageType   = VK_IMAGE_TYPE_2D;
-    image_info.format      = VK_FORMAT_R8G8B8A8_UNORM;
-    image_info.extent  = {file_data->header.Width, file_data->header.Height, 1};
-    image_info.samples = VK_SAMPLE_COUNT_1_BIT;
-    image_info.usage =
-        VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-    image_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    vk::ImageCreateInfo image_create_info =
+        vk::ImageCreateInfo()
+            .setMipLevels(1)
+            .setArrayLayers(1)
+            .setImageType(vk::ImageType::e2D)
+            .setFormat(vk::Format::eR8G8B8A8Unorm)
+            .setExtent({file_data->header.Width, file_data->header.Height, 1})
+            .setSamples(vk::SampleCountFlagBits::e1)
+            .setUsage(vk::ImageUsageFlagBits::eTransferDst |
+                      vk::ImageUsageFlagBits::eSampled)
+            .setInitialLayout(vk::ImageLayout::eUndefined);
 
-    vkCreateImage(m_device_ptr->device(), &image_info, 0, &image_ptr->m_image);
+    image_ptr->m_image =
+        m_device_ptr->device().createImageUnique(image_create_info);
 
-    return image_info.extent;
+    return image_create_info.extent;
 }
 
 void
 TextureStorage::allocateMemoryForTexture(Image* image_ptr)
 {
 
-    VkMemoryRequirements mem_req;
-    vkGetImageMemoryRequirements(m_device_ptr->device(), image_ptr->m_image,
-                                 &mem_req);
+    auto mem_req = m_device_ptr->device().getImageMemoryRequirements(
+        image_ptr->m_image.get());
 
-    VkMemoryAllocateInfo alloc_info{};
-    alloc_info.sType          = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    alloc_info.allocationSize = mem_req.size;
+    vk::MemoryAllocateInfo alloc_info(
+        mem_req.size,
+        m_device_ptr->findMemoryType(mem_req.memoryTypeBits,
+                                     vk::MemoryPropertyFlagBits::eDeviceLocal));
 
-    alloc_info.memoryTypeIndex = m_device_ptr->findMemoryType(
-        mem_req.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-    vkAllocateMemory(m_device_ptr->device(), &alloc_info, 0,
-                     &image_ptr->m_memory);
-
-    vkBindImageMemory(m_device_ptr->device(), image_ptr->m_image,
-                      image_ptr->m_memory, 0);
+    image_ptr->m_memory.get() =
+        m_device_ptr->device().allocateMemory(alloc_info);
+    m_device_ptr->device().bindImageMemory(image_ptr->m_image.get(),
+                                           image_ptr->m_memory.get(), 0);
 }
 
 void
-TextureStorage::copyDataFromStagingBufferToImage(VkExtent3D& extent,
+TextureStorage::copyDataFromStagingBufferToImage(const vk::Extent3D& extent,
                                                  Image* image_ptr)
 {
 
-    VkCommandBuffer command_buffer{};
+    vk::CommandBufferAllocateInfo cmd_alloc_info(
+        m_device_ptr->getCommandPool(), vk::CommandBufferLevel::ePrimary, 1);
+    auto command_buffers =
+        m_device_ptr->device().allocateCommandBuffers(cmd_alloc_info);
+    auto command_buffer = command_buffers[0];
 
-    VkCommandBufferAllocateInfo cmd_alloc_info{};
-    cmd_alloc_info.sType       = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    cmd_alloc_info.level       = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    cmd_alloc_info.commandPool = m_device_ptr->getCommandPool();
-    cmd_alloc_info.commandBufferCount = 1;
-    vkAllocateCommandBuffers(m_device_ptr->device(), &cmd_alloc_info,
-                             &command_buffer);
+    vk::CommandBufferBeginInfo begin_info(
+        vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
 
-    VkCommandBufferBeginInfo begin_info = {};
-    begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    begin_info.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+    command_buffer.begin(begin_info);
 
-    vkBeginCommandBuffer(command_buffer, &begin_info);
+    vk::ImageMemoryBarrier transfer_barrier(
+        vk::AccessFlagBits::eTransferRead,    // srcAccessMask
+        vk::AccessFlagBits::eTransferWrite,   // dstAccessMask
+        vk::ImageLayout::eUndefined,          // oldLayout
+        vk::ImageLayout::eTransferDstOptimal, // newLayout
+        VK_QUEUE_FAMILY_IGNORED,              // srcQueueFamilyIndex
+        VK_QUEUE_FAMILY_IGNORED,              // dstQueueFamilyIndex
+        image_ptr->m_image.get(),
+        vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor,
+                                  0, // baseMipLevel
+                                  1, // levelCount
+                                  0, // baseArrayLayer
+                                  1  // layerCount
+                                  ));
+    command_buffer.pipelineBarrier(vk::PipelineStageFlagBits::eTransfer,
+                                   vk::PipelineStageFlagBits::eTransfer,
+                                   vk::DependencyFlags(), nullptr, nullptr,
+                                   transfer_barrier);
 
-    VkImageSubresourceRange range      = {};
-    range.aspectMask                   = VK_IMAGE_ASPECT_COLOR_BIT;
-    range.layerCount                   = 1;
-    range.levelCount                   = 1;
-    VkImageMemoryBarrier imgMemBarrier = {};
-    imgMemBarrier.sType                = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    imgMemBarrier.image                = image_ptr->m_image;
-    imgMemBarrier.oldLayout            = VK_IMAGE_LAYOUT_UNDEFINED;
-    imgMemBarrier.newLayout            = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-    imgMemBarrier.srcAccessMask        = VK_ACCESS_TRANSFER_READ_BIT;
-    imgMemBarrier.dstAccessMask        = VK_ACCESS_TRANSFER_WRITE_BIT;
-    imgMemBarrier.subresourceRange     = range;
+    vk::BufferImageCopy copy_region(
+        0, 0, 0, // buffer offset, row length, image height
+        vk::ImageSubresourceLayers(vk::ImageAspectFlagBits::eColor,
+                                   0, // mipLevel
+                                   0, // baseArrayLayer
+                                   1  // layerCount
+                                   ),
+        vk::Offset3D(0, 0, 0), extent);
 
-    vkCmdPipelineBarrier(command_buffer, VK_PIPELINE_STAGE_TRANSFER_BIT,
-                         VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, 0, 0, 0, 1,
-                         &imgMemBarrier);
+    command_buffer.copyBufferToImage(
+        m_staging_buffer.m_buffer.get(), image_ptr->m_image.get(),
+        vk::ImageLayout::eTransferDstOptimal, copy_region);
 
-    VkBufferImageCopy copy_region{};
-    copy_region.imageExtent = extent;
-    //{file_data->header.Width, file_data->header.Height, 1};
+    // 5. Transition to shader read-only
+    vk::ImageMemoryBarrier shader_barrier(
+        vk::AccessFlagBits::eTransferWrite,      // srcAccessMask
+        vk::AccessFlagBits::eShaderRead,         // dstAccessMask
+        vk::ImageLayout::eTransferDstOptimal,    // oldLayout
+        vk::ImageLayout::eShaderReadOnlyOptimal, // newLayout
+        VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED,
+        image_ptr->m_image.get(),
+        vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1));
+    command_buffer.pipelineBarrier(vk::PipelineStageFlagBits::eTransfer,
+                                   vk::PipelineStageFlagBits::eFragmentShader,
+                                   vk::DependencyFlags(), nullptr, nullptr,
+                                   shader_barrier);
 
-    copy_region.imageSubresource.layerCount = 1;
-    copy_region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    // 6. End and submit
+    command_buffer.end();
 
-    vkCmdCopyBufferToImage(
-        command_buffer, m_staging_buffer.m_buffer, image_ptr->m_image,
-        VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copy_region);
+    vk::Fence upload_fence = m_device_ptr->device().createFence({});
 
-    imgMemBarrier.oldLayout     = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-    imgMemBarrier.newLayout     = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    imgMemBarrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-    imgMemBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-    vkCmdPipelineBarrier(command_buffer, VK_PIPELINE_STAGE_TRANSFER_BIT,
-                         VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, 0, 0, 0, 0,
-                         1, &imgMemBarrier);
+    vk::SubmitInfo submit_info({},             // waitSemaphores
+                               {},             // waitDstStageMask
+                               command_buffer, // commandBuffers
+                               {}              // signalSemaphores
+    );
+    m_device_ptr->graphicsQueue().submit(submit_info, upload_fence);
 
-    vkEndCommandBuffer(command_buffer);
+    // 7. Wait for completion
+    auto result =
+        m_device_ptr->device().waitForFences(upload_fence, VK_TRUE, UINT64_MAX);
+    if (result != vk::Result::eSuccess)
+    {
+        throw std::runtime_error("Failed to wait for fence");
+    }
 
-    VkFence upload_fence;
-    VkFenceCreateInfo fence_info{};
-    fence_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-    vkCreateFence(m_device_ptr->device(), &fence_info, 0, &upload_fence);
-
-    VkSubmitInfo submit_info{};
-    submit_info.sType              = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    submit_info.commandBufferCount = 1;
-    submit_info.pCommandBuffers    = &command_buffer;
-
-    vkQueueSubmit(m_device_ptr->graphicsQueue(), 1, &submit_info, upload_fence);
-    vkWaitForFences(m_device_ptr->device(), 1, &upload_fence, VK_TRUE,
-                    UINT64_MAX);
-    vkDeviceWaitIdle(m_device_ptr->device());
+    // 8. Cleanup
+    m_device_ptr->device().destroyFence(upload_fence);
+    m_device_ptr->device().freeCommandBuffers(m_device_ptr->getCommandPool(),
+                                              command_buffer);
 }
 
 void
 TextureStorage::destroyStagingBuffer()
 {
-    vkUnmapMemory(m_device_ptr->device(), m_staging_buffer.m_memory);
-    vkDestroyBuffer(m_device_ptr->device(), m_staging_buffer.m_buffer, nullptr);
-    vkFreeMemory(m_device_ptr->device(), m_staging_buffer.m_memory, nullptr);
+    m_device_ptr->device().unmapMemory(m_staging_buffer.m_memory.get());
+
+    if (m_staging_buffer.m_buffer.get())
+    {
+        m_device_ptr->device().destroyBuffer(m_staging_buffer.m_buffer.get());
+        m_staging_buffer.m_buffer.get() = nullptr;
+    }
+
+    if (m_staging_buffer.m_memory.get())
+    {
+        m_device_ptr->device().freeMemory(m_staging_buffer.m_memory.get());
+        m_staging_buffer.m_memory.get() = nullptr;
+    }
 }
 
 void
@@ -179,42 +200,52 @@ TextureStorage::getTextureCount()
     return m_textures.size();
 }
 
-VkImageView
+vk::ImageView
 TextureStorage::getTexture(std::string_view key)
 {
-    return m_textures[key.data()].m_view;
+    return m_textures[key.data()].m_view.get();
 }
 
 void
 TextureStorage::createImageView(Image* image_ptr)
 {
-    VkImageViewCreateInfo viewInfo = {};
-    viewInfo.sType                 = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    viewInfo.image                 = image_ptr->m_image;
-    viewInfo.format                = VK_FORMAT_R8G8B8A8_UNORM;
-    viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    viewInfo.subresourceRange.layerCount = 1;
-    viewInfo.subresourceRange.levelCount = 1;
-    viewInfo.viewType                    = VK_IMAGE_VIEW_TYPE_2D;
+    vk::ImageViewCreateInfo view_info(
+        {},                         // flags
+        image_ptr->m_image.get(),   // image
+        vk::ImageViewType::e2D,     // viewType
+        vk::Format::eR8G8B8A8Unorm, // format
+        {},                         // components
+        {
+            // subresourceRange
+            vk::ImageAspectFlagBits::eColor, // aspectMask
+            0,                               // baseMipLevel
+            1,                               // levelCount
+            0,                               // baseArrayLayer
+            1                                // layerCount
+        });
 
-    vkCreateImageView(m_device_ptr->device(), &viewInfo, 0, &image_ptr->m_view);
+    image_ptr->m_view.get() = m_device_ptr->device().createImageView(view_info);
 }
 
 void
 TextureStorage::createStagingBuffer()
 {
-
-    VkDeviceSize dev_size            = 1024 * 1024 * 20;
-    VkBufferUsageFlags flags         = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-    VkMemoryPropertyFlags prop_flags = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT |
-                                       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+    vk::DeviceSize dev_size    = 1024 * 1024 * 20;
+    vk::BufferUsageFlags flags = vk::BufferUsageFlagBits::eTransferSrc;
+    vk::MemoryPropertyFlags prop_flags =
+        vk::MemoryPropertyFlagBits::eHostCoherent |
+        vk::MemoryPropertyFlagBits::eHostVisible;
 
     m_device_ptr->createBuffer(dev_size, flags, prop_flags,
-                               m_staging_buffer.m_buffer,
-                               m_staging_buffer.m_memory);
+                               m_staging_buffer.m_buffer.get(),
+                               m_staging_buffer.m_memory.get());
 
-    vkMapMemory(m_device_ptr->device(), m_staging_buffer.m_memory, 0, dev_size,
-                0, &m_staging_buffer.m_data);
+    m_staging_buffer.m_data = m_device_ptr->device().mapMemory(
+        m_staging_buffer.m_memory.get(),
+        0,                   // offset
+        dev_size,            // size
+        vk::MemoryMapFlags() // flags (none by default)
+    );
 }
 
 }; // namespace kusengine

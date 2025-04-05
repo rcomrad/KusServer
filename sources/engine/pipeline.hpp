@@ -13,17 +13,18 @@ namespace kusengine
 
 struct PipelineConfigInfo
 {
-    VkViewport viewport;
-    VkRect2D scissor;
-    VkPipelineViewportStateCreateInfo viewport_info;
-    VkPipelineInputAssemblyStateCreateInfo input_assembly_info;
-    VkPipelineRasterizationStateCreateInfo rasterization_info;
-    VkPipelineMultisampleStateCreateInfo multisample_info;
-    VkPipelineColorBlendAttachmentState color_blend_attachment;
-    VkPipelineColorBlendStateCreateInfo color_blend_info;
-    VkPipelineDepthStencilStateCreateInfo depth_stencil_info;
-    VkPipelineLayout pipeline_layout;
-    VkRenderPass render_pass;
+    PipelineConfigInfo();
+    vk::Viewport viewport;
+    vk::Rect2D scissor;
+    vk::PipelineViewportStateCreateInfo viewport_info;
+    vk::PipelineInputAssemblyStateCreateInfo input_assembly_info;
+    vk::PipelineRasterizationStateCreateInfo rasterization_info;
+    vk::PipelineMultisampleStateCreateInfo multisample_info;
+    vk::PipelineColorBlendAttachmentState color_blend_attachment;
+    vk::PipelineColorBlendStateCreateInfo color_blend_info;
+    vk::PipelineDepthStencilStateCreateInfo depth_stencil_info;
+    vk::PipelineLayout pipeline_layout;
+    vk::RenderPass render_pass;
     uint32_t subpass;
 };
 
@@ -33,11 +34,9 @@ public:
     Pipeline(const Pipeline&)            = delete;
     Pipeline& operator=(const Pipeline&) = delete;
 
-    ~Pipeline();
-
     Pipeline() = default;
 
-    void bind(VkCommandBuffer command_buffer);
+    void bind(vk::CommandBuffer command_buffer);
 
     void initPipeline(const std::string& vertex_shader_path,
                       const std::string& fragment_shader_path,
@@ -49,12 +48,12 @@ public:
 
 private:
     void createShaderModule(const std::vector<char>& code,
-                            VkShaderModule* shader_module);
+                            vk::ShaderModule& shader_module);
 
-    VkPipeline m_pipeline;
+    vk::Pipeline m_pipeline;
 
-    VkShaderModule m_vertex_shader_module;
-    VkShaderModule m_fragment_shader_module;
+    vk::ShaderModule m_vertex_shader_module;
+    vk::ShaderModule m_fragment_shader_module;
 
     Device* m_device_ptr;
 };

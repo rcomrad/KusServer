@@ -28,7 +28,7 @@ Window::resetWindowResizedFlag()
     m_frame_buffer_resized_flag = false;
 }
 
-VkExtent2D
+vk::Extent2D
 Window::getExtent()
 {
     return {static_cast<uint32_t>(m_width), static_cast<uint32_t>(m_height)};
@@ -106,29 +106,6 @@ Window::isOpen()
     return !glfwWindowShouldClose(m_window);
 }
 
-std::vector<int>
-Window::getKeyCodes()
-{
-    std::vector<int> res;
-
-    if (glfwGetKey(m_window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-    {
-        res.push_back(GLFW_KEY_RIGHT);
-    }
-    else if (glfwGetKey(m_window, GLFW_KEY_LEFT) == GLFW_PRESS)
-    {
-        res.push_back(GLFW_KEY_LEFT);
-    }
-    else if (glfwGetKey(m_window, GLFW_KEY_DOWN) == GLFW_PRESS)
-    {
-        res.push_back(GLFW_KEY_DOWN);
-    }
-    else if (glfwGetKey(m_window, GLFW_KEY_UP) == GLFW_PRESS)
-    {
-        res.push_back(GLFW_KEY_UP);
-    }
-    return res;
-}
 
 void
 Window::handleEvents()
@@ -137,9 +114,12 @@ Window::handleEvents()
 }
 
 void
-Window::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface)
+Window::createWindowSurface(vk::UniqueInstance& instance,
+                            vk::UniqueSurfaceKHR& surface)
 {
-    glfwCreateWindowSurface(instance, m_window, 0, surface);
+    glfwCreateWindowSurface(static_cast<VkInstance>(instance.get()), m_window,
+                            nullptr,
+                            reinterpret_cast<VkSurfaceKHR*>(&(surface.get())));
 }
 
 void

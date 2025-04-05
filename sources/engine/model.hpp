@@ -22,30 +22,30 @@ public:
         glm::vec2 uv;
         int texture_index;
 
-        static std::vector<VkVertexInputBindingDescription>
+        static std::vector<vk::VertexInputBindingDescription>
         getBindingDescriptions();
-        static std::vector<VkVertexInputAttributeDescription>
+        static std::vector<vk::VertexInputAttributeDescription>
         getAttributeDescriptions();
     };
 
     Model(Device* device,
           const std::vector<Vertex>& vertices,
           const std::vector<uint16_t>& indeces);
-    ~Model();
 
     Model(const Model&)            = delete;
     Model& operator=(const Model&) = delete;
 
-    void bind(VkCommandBuffer command_buffer, VkPipelineLayout& pipelayout);
-    void draw(VkCommandBuffer command_buffer);
+    void bindDescriptorSets(vk::CommandBuffer command_buffer,
+                            vk::PipelineLayout& pipeline_layout);
+    void bindVertexBuffer(vk::CommandBuffer command_buffer);
+    void bindIndexBuffer(vk::CommandBuffer command_buffer);
 
-    void move(float x, float y);
+    void draw(vk::CommandBuffer command_buffer);
 
-    void createIndexBuffer(const std::vector<uint16_t>& indeces);
-
-    const VkDescriptorSetLayout* getSetLayoutsConstPtr();
+    const vk::DescriptorSetLayout* getSetLayoutsConstPtr();
 
 private:
+    void createIndexBuffer(const std::vector<uint16_t>& indeces);
     void createVertexBuffer(const std::vector<Vertex>& vertices);
     void updateVertexBuffer();
     Device* m_device_ptr;
@@ -70,13 +70,15 @@ private:
 
     uint32_t m_texture_count;
 
-    VkSampler m_sampler;
+    vk::Sampler m_sampler;
 
-    VkDescriptorSetLayout m_set_layout;
+    Buffer staging_buffer;
 
-    VkDescriptorSet m_descriptor_set;
+    vk::DescriptorSetLayout m_set_layout;
 
-    VkDescriptorPool m_descriptor_pool;
+    vk::DescriptorSet m_descriptor_set;
+
+    vk::DescriptorPool m_descriptor_pool;
 };
 }; // namespace kusengine
 

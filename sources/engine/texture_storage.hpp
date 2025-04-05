@@ -15,7 +15,7 @@ class TextureStorage
 public:
     void loadTextures(Device* device_ptr);
 
-    VkImageView getTexture(std::string_view key);
+    vk::ImageView getTexture(std::string_view key);
 
     uint32_t getTextureCount();
 
@@ -27,9 +27,10 @@ private:
     void createStagingBuffer();
     void destroyStagingBuffer();
 
-    VkExtent3D createTexture(std::string_view path, Image* image_ptr);
+    vk::Extent3D createTexture(std::string_view path, Image* image_ptr);
     void allocateMemoryForTexture(Image* image_ptr);
-    void copyDataFromStagingBufferToImage(VkExtent3D& extent, Image* image_ptr);
+    void copyDataFromStagingBufferToImage(const vk::Extent3D& extent,
+                                          Image* image_ptr);
     void createImageView(Image* image_ptr);
 
     Buffer m_staging_buffer;

@@ -5,18 +5,22 @@
 #include <string>
 #include <vector>
 
+struct PipelineConfigInfo;
+
 namespace kusengine
 {
 namespace engine_util
 {
 std::vector<char>
-readFile(std::string_view filepath);
+readFile(const std::string& filepath);
 
-VkDescriptorSetLayoutBinding
-layout_binding(VkDescriptorType type,
-               VkShaderStageFlags shaderStages,
-               uint32_t count,
-               uint32_t bindingNumber);
+
+vk::DescriptorSetLayoutBinding
+createLayoutBinding(vk::DescriptorType type,
+                    vk::ShaderStageFlags stageFlags,
+                    uint32_t binding,
+                    uint32_t descriptorCount              = 1,
+                    const vk::Sampler* pImmutableSamplers = nullptr);
 }; // namespace engine_util
 }; // namespace kusengine
 

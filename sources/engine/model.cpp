@@ -23,13 +23,8 @@ Model::Model(Device* device,
     createVertexBuffer(vertices);
     createIndexBuffer(indices);
 }
-Model::~Model()
-{
-    vkDestroyBuffer(m_device_ptr->device(), m_vertex_buffer.m_buffer, nullptr);
-    vkFreeMemory(m_device_ptr->device(), m_vertex_buffer.m_memory, nullptr);
-}
 
-const VkDescriptorSetLayout*
+const vk::DescriptorSetLayout*
 Model::getSetLayoutsConstPtr()
 {
     return &m_set_layout;
@@ -38,22 +33,33 @@ Model::getSetLayoutsConstPtr()
 void
 Model::createIndexBuffer(const std::vector<uint16_t>& indices)
 {
-    m_indices = indices;
+    m_indices                        = indices;
+    const vk::DeviceSize buffer_size = sizeof(indices[0]) * indices.size();
 
-    uint32_t index_count = static_cast<uint32_t>(m_indices.size());
+    // Buffer staging_buffer;
 
-    VkDeviceSize buffer_size = sizeof(m_indices[0]) * index_count;
+    m_device_ptr->createBuffer(
+        buffer_size, vk::BufferUsageFlagBits::eTransferSrc,
+        vk::MemoryPropertyFlagBits::eHostVisible |
+            vk::MemoryPropertyFlagBits::eHostCoherent,
+        staging_buffer.m_buffer.get(), staging_buffer.m_memory.get());
 
-    m_device_ptr->createBuffer(buffer_size, VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-                               VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
-                               m_index_buffer.m_buffer,
-                               m_index_buffer.m_memory);
+    void* data = m_device_ptr->device().mapMemory(staging_buffer.m_memory.get(),
+                                                  0, buffer_size);
 
-    void* data;
-    vkMapMemory(m_device_ptr->device(), m_index_buffer.m_memory, 0, buffer_size,
-                0, &data);
-    memcpy(data, m_indices.data(), static_cast<size_t>(buffer_size));
-    vkUnmapMemory(m_device_ptr->device(), m_index_buffer.m_memory);
+    memcpy(data, indices.data(), static_cast<size_t>(buffer_size));
+
+    m_device_ptr->device().unmapMemory(staging_buffer.m_memory.get());
+
+    m_device_ptr->createBuffer(buffer_size,
+                               vk::BufferUsageFlagBits::eTransferDst |
+                                   vk::BufferUsageFlagBits::eIndexBuffer,
+                               vk::MemoryPropertyFlagBits::eDeviceLocal,
+                               m_index_buffer.m_buffer.get(),
+                               m_index_buffer.m_memory.get());
+
+    m_device_ptr->copyBuffer(staging_buffer.m_buffer.get(),
+                             m_index_buffer.m_buffer.get(), buffer_size);
 }
 
 void
@@ -63,13 +69,13 @@ Model::createVertexBuffer(const std::vector<Vertex>& vertices)
 
     uint32_t vertex_count = static_cast<uint32_t>(m_vertices.size());
 
-    VkDeviceSize buffer_size = sizeof(m_vertices[0]) * vertex_count;
+    vk::DeviceSize buffer_size = sizeof(m_vertices[0]) * vertex_count;
 
-    m_device_ptr->createBuffer(buffer_size, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-                               VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-                                   VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                               m_vertex_buffer.m_buffer,
-                               m_vertex_buffer.m_memory);
+    m_device_ptr->createBuffer(
+        buffer_size, vk::BufferUsageFlagBits::eVertexBuffer,
+        vk::MemoryPropertyFlagBits::eHostVisible |
+            vk::MemoryPropertyFlagBits::eHostCoherent,
+        m_vertex_buffer.m_buffer.get(), m_vertex_buffer.m_memory.get());
 
     updateVertexBuffer();
 }
@@ -77,175 +83,165 @@ Model::createVertexBuffer(const std::vector<Vertex>& vertices)
 void
 Model::updateVertexBuffer()
 {
-    VkDeviceSize buffer_size =
-        sizeof(m_vertices[0]) * static_cast<uint32_t>(m_vertices.size());
+    vk::DeviceSize bufferSize = sizeof(m_vertices[0]) * m_vertices.size();
 
-    void* data;
-    vkMapMemory(m_device_ptr->device(), m_vertex_buffer.m_memory, 0,
-                buffer_size, 0, &data);
-    memcpy(data, m_vertices.data(), static_cast<size_t>(buffer_size));
-    vkUnmapMemory(m_device_ptr->device(), m_vertex_buffer.m_memory);
+    void* data = m_device_ptr->device().mapMemory(
+        m_vertex_buffer.m_memory.get(), 0, bufferSize, vk::MemoryMapFlags());
+    memcpy(data, m_vertices.data(), static_cast<size_t>(bufferSize));
+    m_device_ptr->device().unmapMemory(m_vertex_buffer.m_memory.get());
 }
 
 void
-Model::draw(VkCommandBuffer command_buffer)
+Model::draw(vk::CommandBuffer command_buffer)
 {
-    vkCmdDraw(command_buffer, static_cast<uint32_t>(m_vertices.size()), 1, 0,
-              0);
-    vkCmdDrawIndexed(command_buffer, static_cast<uint32_t>(m_indices.size()), 1,
-                     0, 0, 0);
+    // command_buffer.draw(m_vertices.size(), 1, 0, 0);
+    command_buffer.drawIndexed(m_indices.size(), 1, 0, 0, 0);
 }
 
 void
-Model::bind(VkCommandBuffer command_buffer, VkPipelineLayout& pipelayout)
+Model::bindVertexBuffer(vk::CommandBuffer command_buffer)
 {
-    VkBuffer buffers[]     = {m_vertex_buffer.m_buffer};
-    VkDeviceSize offsets[] = {0};
+    vk::Buffer buffers[]     = {m_vertex_buffer.m_buffer.get()};
+    vk::DeviceSize offsets[] = {0};
 
-    vkCmdBindDescriptorSets(command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                            pipelayout, 0, 1, &m_descriptor_set, 0, 0);
-    vkCmdBindVertexBuffers(command_buffer, 0, 1, buffers, offsets);
-    vkCmdBindIndexBuffer(command_buffer, m_index_buffer.m_buffer, 0,
-                         VK_INDEX_TYPE_UINT16);
+    command_buffer.bindVertexBuffers(0, 1, buffers, offsets);
 }
 
-std::vector<VkVertexInputBindingDescription>
+void
+Model::bindIndexBuffer(vk::CommandBuffer command_buffer)
+{
+    command_buffer.bindIndexBuffer(m_index_buffer.m_buffer.get(), 0,
+                                   vk::IndexType::eUint16);
+}
+
+void
+Model::bindDescriptorSets(vk::CommandBuffer command_buffer,
+                          vk::PipelineLayout& pipeline_layout)
+{
+    command_buffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
+                                      pipeline_layout, 0, 1, &m_descriptor_set,
+                                      0, 0);
+}
+
+std::vector<vk::VertexInputBindingDescription>
 Model::Vertex::getBindingDescriptions()
 {
-    std::vector<VkVertexInputBindingDescription> bindingDescriptions(1);
-    bindingDescriptions[0].binding   = 0;
-    bindingDescriptions[0].stride    = sizeof(Vertex);
-    bindingDescriptions[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-    return bindingDescriptions;
+    return {
+        vk::VertexInputBindingDescription{
+                                          0,                           // binding
+            sizeof(Vertex),              // stride
+            vk::VertexInputRate::eVertex // inputRate
+        }
+    };
 }
 
-std::vector<VkVertexInputAttributeDescription>
+std::vector<vk::VertexInputAttributeDescription>
 Model::Vertex::getAttributeDescriptions()
 {
-    std::vector<VkVertexInputAttributeDescription> attributeDescriptions(3);
-    attributeDescriptions[0].binding  = 0;
-    attributeDescriptions[0].location = 0;
-    attributeDescriptions[0].format   = VK_FORMAT_R32G32_SFLOAT;
-    attributeDescriptions[0].offset   = offsetof(Vertex, position);
+    return {
+        {0, 0, vk::Format::eR32G32Sfloat,
+         static_cast<uint32_t>(offsetof(Vertex, position))     },
+        {1, 0, vk::Format::eR32G32Sfloat,
+         static_cast<uint32_t>(offsetof(Vertex, uv))           },
+        {2, 0, vk::Format::eR32Sint,
 
-    attributeDescriptions[1].binding  = 0;
-    attributeDescriptions[1].location = 1;
-    attributeDescriptions[1].format   = VK_FORMAT_R32G32_SFLOAT;
-    attributeDescriptions[1].offset   = offsetof(Vertex, uv);
-
-    attributeDescriptions[2].binding  = 0;
-    attributeDescriptions[2].location = 2;
-    attributeDescriptions[2].format   = VK_FORMAT_R32_SINT;
-    attributeDescriptions[2].offset   = offsetof(Vertex, texture_index);
-    return attributeDescriptions;
-}
-
-void
-Model::move(float x, float y)
-{
-    for (auto& v : m_vertices)
-    {
-        v.position.x += x;
-        v.position.y += y;
-    }
-    updateVertexBuffer();
+         static_cast<uint32_t>(offsetof(Vertex, texture_index))}
+    };
 }
 
 void
 Model::createSampler()
 {
-    VkSamplerCreateInfo samplerInfo = {};
-    samplerInfo.sType               = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-    samplerInfo.minFilter           = VK_FILTER_NEAREST;
-    samplerInfo.magFilter           = VK_FILTER_NEAREST;
-    samplerInfo.addressModeU        = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    samplerInfo.addressModeV        = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    samplerInfo.addressModeW        = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    vk::SamplerCreateInfo sampler_info(
+        {},                                   // flags
+        vk::Filter::eNearest,                 // minFilter
+        vk::Filter::eNearest,                 // magFilter
+        vk::SamplerMipmapMode::eLinear,       // mipmapMode
+        vk::SamplerAddressMode::eClampToEdge, // addressModeU
+        vk::SamplerAddressMode::eClampToEdge, // addressModeV
+        vk::SamplerAddressMode::eClampToEdge, // addressModeW
+        0.0f,                                 // mipLodBias
+        vk::False,                            // anisotropyEnable
+        16.0f,                                // maxAnisotropy
+        false,                                // compareEnable
+        vk::CompareOp::eAlways,               // compareOp
+        0.0f,                                 // minLod
+        0.0f,                                 // maxLod
+        vk::BorderColor::eIntOpaqueBlack,     // borderColor
+        false                                 // unnormalizedCoordinates
+    );
 
-    /////////////////////////
-    samplerInfo.maxAnisotropy           = 16.0f;
-    samplerInfo.borderColor             = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
-    samplerInfo.unnormalizedCoordinates = VK_FALSE;
-    samplerInfo.compareEnable           = VK_FALSE;
-    samplerInfo.compareOp               = VK_COMPARE_OP_ALWAYS;
-    samplerInfo.mipmapMode              = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-    samplerInfo.mipLodBias              = 0.0f; // Укажите LOD Bias здесь
-
-    vkCreateSampler(m_device_ptr->device(), &samplerInfo, 0, &m_sampler);
+    m_sampler = m_device_ptr->device().createSampler(sampler_info);
 }
 
 void
 Model::createDescriptorSetLayout(uint32_t textures_count)
 {
-    std::vector<VkDescriptorSetLayoutBinding> layout_bindings = {
-        engine_util::layout_binding(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-                                    VK_SHADER_STAGE_FRAGMENT_BIT,
-                                    textures_count, 0)};
+    std::vector<vk::DescriptorSetLayoutBinding> layout_bindings = {
+        engine_util::createLayoutBinding(
+            vk::DescriptorType::eCombinedImageSampler,
+            vk::ShaderStageFlagBits::eFragment, 0, textures_count)};
 
-    VkDescriptorSetLayoutCreateInfo layout_info = {};
-    layout_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-    layout_info.bindingCount = layout_bindings.size();
-    layout_info.pBindings    = layout_bindings.data();
+    vk::DescriptorSetLayoutCreateInfo layout_info({}, layout_bindings.size(),
+                                                  layout_bindings.data());
 
-    vkCreateDescriptorSetLayout(m_device_ptr->device(), &layout_info, 0,
-                                &m_set_layout);
+    m_set_layout =
+        m_device_ptr->device().createDescriptorSetLayout(layout_info);
 }
 
 void
 Model::createDescriptorSet()
 {
-    VkDescriptorSetAllocateInfo allocInfo = {};
-    allocInfo.sType       = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-    allocInfo.pSetLayouts = &m_set_layout;
-    allocInfo.descriptorSetCount = 1;
-    allocInfo.descriptorPool     = m_descriptor_pool;
-    vkAllocateDescriptorSets(m_device_ptr->device(), &allocInfo,
-                             &m_descriptor_set);
+    auto allocInfo = vk::DescriptorSetAllocateInfo()
+                         .setDescriptorPool(m_descriptor_pool)
+                         .setDescriptorSetCount(1)
+                         .setPSetLayouts(&m_set_layout);
+
+    m_descriptor_set =
+        m_device_ptr->device().allocateDescriptorSets(allocInfo).front();
 }
 
 void
 Model::createDescriptorPool()
 {
-    std::vector<VkDescriptorPoolSize> poolSizes = {
-        {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, m_texture_count},
-        {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,         1              },
-        {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,         1              }
-    };
+    std::vector<vk::DescriptorPoolSize> pool_sizes = {
+        vk::DescriptorPoolSize()
+            .setType(vk::DescriptorType::eCombinedImageSampler)
+            .setDescriptorCount(m_texture_count),
+        vk::DescriptorPoolSize()
+            .setType(vk::DescriptorType::eUniformBuffer)
+            .setDescriptorCount(1),
+        vk::DescriptorPoolSize()
+            .setType(vk::DescriptorType::eStorageBuffer)
+            .setDescriptorCount(1)};
 
-    VkDescriptorPoolCreateInfo poolInfo = {};
-    poolInfo.sType         = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-    poolInfo.maxSets       = 1;
-    poolInfo.poolSizeCount = poolSizes.size();
-    poolInfo.pPoolSizes    = poolSizes.data();
-    vkCreateDescriptorPool(m_device_ptr->device(), &poolInfo, 0,
-                           &m_descriptor_pool);
+    auto pool_info =
+        vk::DescriptorPoolCreateInfo().setMaxSets(1).setPoolSizes(pool_sizes);
+
+    m_descriptor_pool = m_device_ptr->device().createDescriptorPool(pool_info);
 }
 
 void
 Model::updateDescriptorSet()
 {
-    std::vector<VkDescriptorImageInfo> image_info(m_texture_count, {});
-    image_info[0].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    image_info[0].imageView   = m_texture_storage.getTexture("cat.dds");
-    image_info[0].sampler     = m_sampler;
+    std::vector<vk::DescriptorImageInfo> imageInfos;
+    imageInfos.reserve(m_texture_count);
 
-    image_info[1].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    image_info[1].imageView   = m_texture_storage.getTexture("eye.dds");
-    image_info[1].sampler     = m_sampler;
+    for (const auto& texName : {"cat.dds", "eye.dds", "red_eye.dds"})
+    {
+        imageInfos.emplace_back(m_sampler,
+                                m_texture_storage.getTexture(texName),
+                                vk::ImageLayout::eShaderReadOnlyOptimal);
+    }
 
-    image_info[2].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    image_info[2].imageView   = m_texture_storage.getTexture("red_eye.dds");
-    image_info[2].sampler     = m_sampler;
+    auto descriptorWrite =
+        vk::WriteDescriptorSet()
+            .setDstSet(m_descriptor_set)
+            .setDstBinding(0)
+            .setDescriptorType(vk::DescriptorType::eCombinedImageSampler)
+            .setImageInfo(imageInfos);
 
-    VkWriteDescriptorSet write{};
-    write.sType           = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    write.dstSet          = m_descriptor_set;
-    write.pImageInfo      = image_info.data();
-    write.dstBinding      = 0;
-    write.descriptorCount = m_texture_storage.getTextureCount();
-    write.descriptorType  = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-
-    vkUpdateDescriptorSets(m_device_ptr->device(), 1, &write, 0, 0);
+    m_device_ptr->device().updateDescriptorSets(descriptorWrite, nullptr);
 }
 
 }; // namespace kusengine

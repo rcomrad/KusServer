@@ -1,6 +1,6 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
-
+#include <vulkan/vulkan.hpp>
 #define GLFW_INCLUDE_VULKAN
 
 #include <GLFW/glfw3.h>
@@ -29,7 +29,7 @@ public:
 
     void initWindow(int width, int height, const std::string& title);
 
-    VkExtent2D getExtent();
+    vk::Extent2D getExtent();
 
     ~Window();
 
@@ -41,9 +41,9 @@ public:
 
     void handleEvents();
 
-    void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
+    void createWindowSurface(vk::UniqueInstance& instance,
+                             vk::UniqueSurfaceKHR& surface);
 
-    std::vector<int> getKeyCodes();
 
 private:
     static void framebufferResizeCallback(GLFWwindow* window,

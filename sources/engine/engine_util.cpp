@@ -2,12 +2,14 @@
 
 #include <fstream>
 
+#include "pipeline.hpp"
+
 namespace kusengine
 {
 namespace engine_util
 {
 std::vector<char>
-readFile(std::string_view filepath)
+readFile(const std::string& filepath)
 {
     std::ifstream file{filepath.data(), std::ios::ate | std::ios::binary};
 
@@ -21,20 +23,21 @@ readFile(std::string_view filepath)
     return buffer;
 }
 
-VkDescriptorSetLayoutBinding
-layout_binding(VkDescriptorType type,
-               VkShaderStageFlags shaderStages,
-               uint32_t count,
-               uint32_t bindingNumber)
+vk::DescriptorSetLayoutBinding
+createLayoutBinding(vk::DescriptorType type,
+                    vk::ShaderStageFlags stageFlags,
+                    uint32_t binding,
+                    uint32_t descriptorCount,
+                    const vk::Sampler* pImmutableSamplers)
 {
-    VkDescriptorSetLayoutBinding binding = {};
-    binding.binding                      = bindingNumber;
-    binding.descriptorCount              = count;
-    binding.descriptorType               = type;
-    binding.stageFlags                   = shaderStages;
-
-    return binding;
+    return vk::DescriptorSetLayoutBinding()
+        .setBinding(binding)
+        .setDescriptorType(type)
+        .setDescriptorCount(descriptorCount)
+        .setStageFlags(stageFlags)
+        .setPImmutableSamplers(pImmutableSamplers);
 }
+
 
 }; // namespace engine_util
 }; // namespace kusengine
