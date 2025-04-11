@@ -1,6 +1,8 @@
 #ifndef DEVICE_HPP
 #define DEVICE_HPP
 
+#include "engine/renderer/swap_chain_frame.hpp"
+
 #include "logical_device.hpp"
 #include "physical_device.hpp"
 
@@ -20,14 +22,16 @@ public:
 
     bool createDevice(Instance& instance, const vk::SurfaceKHR& surface);
 
+    const vk::Device& logicalDeviceConstRef() const;
+
+    const vk::PhysicalDevice& physicalDeviceConstRef() const;
+
     SwapChainSupportDetails getSurfaceSupportDetails(
         const vk::SurfaceKHR& surface) const;
 
-    vk::UniqueSwapchainKHR createSwapChainUnique(
-        const vk::SwapchainCreateInfoKHR& info) const;
-
-    std::vector<vk::Image> getSwapchainImages(
-        const vk::SwapchainKHR& swapchain) const;
+    std::vector<SwapChainFrame> getSwapchainFrames(
+        const vk::SwapchainKHR& swapchain,
+        const vk::Format& format) const;
 
 private:
     // PhysicalDevice m_physical_device;

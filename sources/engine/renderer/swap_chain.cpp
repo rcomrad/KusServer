@@ -116,21 +116,16 @@ SwapChain::initSwapChain(const Device& device)
 
     try
     {
-        m_swapchain = device.createSwapChainUnique(create_info);
+        m_swapchain =
+            device.logicalDeviceConstRef().createSwapchainKHRUnique(
+                create_info);
     }
     catch (vk::SystemError err)
     {
         return false;
     }
 
-    auto&& swapchain_images = device.getSwapchainImages(m_swapchain.get());
-
-    m_images.reserve(swapchain_images.size());
-
-    for (int i = 0; i < swapchain_images.size(); ++i)
-    {
-        m_images.emplace_back(std::move(swapchain_images[i]));
-    }
+    m_frames = device.getSwapchainFrames(m_swapchain.get(), format.format);
 
     m_format = format.format;
     m_extent = extent;

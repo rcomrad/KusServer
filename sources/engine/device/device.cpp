@@ -16,6 +16,19 @@ Device::createDevice(Instance& instance, const vk::SurfaceKHR& surface)
 
     return true;
 }
+
+const vk::Device&
+Device::logicalDeviceConstRef() const
+{
+    return LogicalDevice::device();
+}
+
+const vk::PhysicalDevice&
+Device::physicalDeviceConstRef() const
+{
+    return PhysicalDevice::device();
+}
+
 Device::SwapChainSupportDetails
 Device::getSurfaceSupportDetails(const vk::SurfaceKHR& surface) const
 {
@@ -26,16 +39,18 @@ Device::getSurfaceSupportDetails(const vk::SurfaceKHR& surface) const
     };
 }
 
-vk::UniqueSwapchainKHR
-Device::createSwapChainUnique(const vk::SwapchainCreateInfoKHR& info) const
+std::vector<SwapChainFrame>
+Device::getSwapchainFrames(const vk::SwapchainKHR& swapchain,
+                           const vk::Format& format) const
 {
-    return LogicalDevice::device().createSwapchainKHRUnique(info);
-}
-
-std::vector<vk::Image>
-Device::getSwapchainImages(const vk::SwapchainKHR& swapchain) const
-{
-    return LogicalDevice::device().getSwapchainImagesKHR(swapchain);
+    std::vector<SwapChainFrame> frames;
+    auto&& images = LogicalDevice::device().getSwapchainImagesKHR(swapchain);
+    frames.resize(images.size());
+    for (int i = 0; i < images.size(); ++i)
+    {
+        frames[i].createFrame(LogicalDevice::device(), images[i], format);
+    }
+    return frames;
 }
 
 }; // namespace kusengine

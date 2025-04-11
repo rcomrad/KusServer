@@ -8,10 +8,13 @@
 
 #include "engine/device/device.hpp"
 
+#include "swap_chain_frame.hpp"
+
 namespace kusengine
 {
 class Window;
 class Instance;
+
 
 class SwapChain
 {
@@ -42,7 +45,8 @@ private:
     vk::UniqueSwapchainKHR m_swapchain;
 
     //
-    std::vector<vk::UniqueImage> m_images;
+    std::vector<SwapChainFrame> m_frames;
+
     vk::Format m_format;
     vk::Extent2D m_extent;
 };
