@@ -6,7 +6,7 @@
 namespace kusengine
 {
 
-SwapChain::~SwapChain()
+OLDSwapChain::~OLDSwapChain()
 {
     for (int i = 0; i < m_swap_chain_framebuffers.size(); ++i)
     {
@@ -31,7 +31,7 @@ SwapChain::~SwapChain()
 }
 
 void
-SwapChain::initSwapChain(Device* device_ptr, vk::Extent2D extent)
+OLDSwapChain::initSwapChain(Device* device_ptr, vk::Extent2D extent)
 {
     m_device_ptr = device_ptr;
 
@@ -49,30 +49,30 @@ SwapChain::initSwapChain(Device* device_ptr, vk::Extent2D extent)
 }
 
 vk::Extent2D
-SwapChain::getSwapChainExtent()
+OLDSwapChain::getSwapChainExtent()
 {
     return m_swap_chain_extent;
 }
 
 vk::Framebuffer
-SwapChain::getFrameBuffer(int index)
+OLDSwapChain::getFrameBuffer(int index)
 {
     return m_swap_chain_framebuffers[index];
 }
 
 uint32_t
-SwapChain::width()
+OLDSwapChain::width()
 {
     return m_swap_chain_extent.width;
 }
 uint32_t
-SwapChain::height()
+OLDSwapChain::height()
 {
     return m_swap_chain_extent.height;
 }
 
 vk::Result
-SwapChain::acquireNextImage(uint32_t* image_index)
+OLDSwapChain::acquireNextImage(uint32_t* image_index)
 {
     auto waitResult = m_device_ptr->device().waitForFences(
         1, &m_img_available_fence,
@@ -98,7 +98,7 @@ SwapChain::acquireNextImage(uint32_t* image_index)
 }
 
 vk::Result
-SwapChain::submitCommandBuffers(const std::vector<vk::CommandBuffer>& buffers,
+OLDSwapChain::submitCommandBuffers(const std::vector<vk::CommandBuffer>& buffers,
                                 uint32_t* image_index)
 {
     vk::PipelineStageFlags wait_stage =
@@ -151,19 +151,19 @@ SwapChain::submitCommandBuffers(const std::vector<vk::CommandBuffer>& buffers,
 }
 
 vk::RenderPass
-SwapChain::getRenderPass()
+OLDSwapChain::getRenderPass()
 {
     return m_render_pass;
 }
 
 size_t
-SwapChain::imageCount()
+OLDSwapChain::imageCount()
 {
     return m_swap_chain_images.size();
 }
 
 vk::SurfaceFormatKHR
-SwapChain::chooseSwapSurfaceFormat(
+OLDSwapChain::chooseSwapSurfaceFormat(
     const std::vector<vk::SurfaceFormatKHR>& available_formats)
 {
     constexpr vk::Format preferred_format = vk::Format::eB8G8R8A8Srgb;
@@ -182,7 +182,7 @@ SwapChain::chooseSwapSurfaceFormat(
 }
 
 vk::PresentModeKHR
-SwapChain::chooseSwapPresentMode(
+OLDSwapChain::chooseSwapPresentMode(
     const std::vector<vk::PresentModeKHR>& available_modes)
 {
     // Prefer mailbox (triple buffering) if available
@@ -198,7 +198,7 @@ SwapChain::chooseSwapPresentMode(
 }
 
 void
-SwapChain::createSwapChain()
+OLDSwapChain::createSwapChain()
 {
 
     auto swap_chain_support = m_device_ptr->getSwapChainSupport();
@@ -245,7 +245,7 @@ SwapChain::createSwapChain()
 }
 
 void
-SwapChain::createImageViews()
+OLDSwapChain::createImageViews()
 {
     m_swap_chain_image_views.resize(imageCount());
 
@@ -267,7 +267,7 @@ SwapChain::createImageViews()
     }
 }
 void
-SwapChain::createRenderPass()
+OLDSwapChain::createRenderPass()
 {
     auto swap_chain_support = m_device_ptr->getSwapChainSupport();
     auto surface_format = chooseSwapSurfaceFormat(swap_chain_support.m_formats);
@@ -308,7 +308,7 @@ SwapChain::createRenderPass()
 }
 
 void
-SwapChain::createFramebuffers()
+OLDSwapChain::createFramebuffers()
 {
     m_swap_chain_framebuffers.resize(imageCount());
 
@@ -330,7 +330,7 @@ SwapChain::createFramebuffers()
 }
 
 void
-SwapChain::createSyncObjects()
+OLDSwapChain::createSyncObjects()
 {
     vk::SemaphoreCreateInfo semaphore_info;
     m_acquire_semaphore =
@@ -343,7 +343,7 @@ SwapChain::createSyncObjects()
     m_img_available_fence = m_device_ptr->device().createFence(fence_info);
 }
 
-SwapChain::SwapChain(Device* device_ptr, vk::Extent2D window_extent)
+OLDSwapChain::OLDSwapChain(Device* device_ptr, vk::Extent2D window_extent)
 {
     initSwapChain(device_ptr, window_extent);
 }

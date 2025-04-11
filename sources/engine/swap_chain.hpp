@@ -5,22 +5,22 @@
 
 namespace kusengine
 {
-class SwapChain final
+class OLDSwapChain final
 {
 public:
     static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
-    SwapChain() = default;
+    OLDSwapChain() = default;
 
-    SwapChain(Device* device_ptr, vk::Extent2D window_extent);
+    OLDSwapChain(Device* device_ptr, vk::Extent2D window_extent);
 
-    ~SwapChain();
+    ~OLDSwapChain();
 
     void initSwapChain(Device* device_ptr, vk::Extent2D window_extent);
 
-    SwapChain(const SwapChain&) = delete;
+    OLDSwapChain(const OLDSwapChain&) = delete;
 
-    SwapChain& operator=(const SwapChain&) = delete;
+    OLDSwapChain& operator=(const OLDSwapChain&) = delete;
 
     vk::Framebuffer getFrameBuffer(int index);
 

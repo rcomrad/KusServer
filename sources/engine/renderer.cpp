@@ -5,8 +5,10 @@ namespace kusengine
 {
 
 void
-Renderer::initRenderer(Window& window)
+OLDRenderer::initRenderer(Window& window)
 {
+    m_instance.initInstance("engine start");
+    //
     m_window_ptr = &window;
     compileShaders("glslc.exe");
     m_device.initDevice(window);
@@ -17,13 +19,13 @@ Renderer::initRenderer(Window& window)
 }
 
 void
-Renderer::deviceWaitIdle()
+OLDRenderer::deviceWaitIdle()
 {
     m_device.device().waitIdle();
 }
 
 void
-Renderer::draw()
+OLDRenderer::draw()
 {
     uint32_t image_index;
 
@@ -51,7 +53,7 @@ Renderer::draw()
 }
 
 void
-Renderer::compileShaders(const std::string& compile_program_path)
+OLDRenderer::compileShaders(const std::string& compile_program_path)
 {
     auto sources_path = util::PathStorage::getFolderPath("sources");
 
@@ -84,7 +86,7 @@ Renderer::compileShaders(const std::string& compile_program_path)
 }
 
 void
-Renderer::loadModels()
+OLDRenderer::loadModels()
 {
     std::vector<Model::Vertex> start_vertices = {
         {{-0.5f + 0.4, -0.5f + 0.4}, {0.0f, 0.0f}, 0},
@@ -110,7 +112,7 @@ Renderer::loadModels()
 }
 
 void
-Renderer::createPipelineLayout()
+OLDRenderer::createPipelineLayout()
 {
     vk::PipelineLayoutCreateInfo layout_info(
         vk::PipelineLayoutCreateFlags(),      // flags
@@ -125,7 +127,7 @@ Renderer::createPipelineLayout()
 }
 
 void
-Renderer::createPipeline()
+OLDRenderer::createPipeline()
 {
     PipelineConfigInfo default_pipeline_config_info =
         Pipeline::defaultPipelineConfigInfo(m_swap_chain_ptr->width(),
@@ -148,7 +150,7 @@ Renderer::createPipeline()
 }
 
 void
-Renderer::createCommandBuffers()
+OLDRenderer::createCommandBuffers()
 {
     m_command_buffer_vector.resize(m_swap_chain_ptr->imageCount());
 
@@ -164,7 +166,7 @@ Renderer::createCommandBuffers()
 }
 
 void
-Renderer::recordCommandBuffer(int ind)
+OLDRenderer::recordCommandBuffer(int ind)
 {
     vk::CommandBufferBeginInfo buffer_begin_info{};
     m_command_buffer_vector[ind].begin(buffer_begin_info);
@@ -211,7 +213,7 @@ Renderer::recordCommandBuffer(int ind)
 }
 
 void
-Renderer::recreateSwapChain()
+OLDRenderer::recreateSwapChain()
 {
     auto extent = m_window_ptr->getExtent();
 
@@ -221,7 +223,7 @@ Renderer::recreateSwapChain()
         glfwWaitEvents();
     }
     deviceWaitIdle();
-    m_swap_chain_ptr = std::make_unique<SwapChain>(&m_device, extent);
+    m_swap_chain_ptr = std::make_unique<OLDSwapChain>(&m_device, extent);
     createPipeline();
 }
 

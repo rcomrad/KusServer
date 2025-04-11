@@ -4,7 +4,6 @@
 
 namespace kusengine
 {
-
 Window::Window(WindowCreateInfo& info)
 {
     initWindow(info.width, info.height, info.title);
@@ -38,6 +37,12 @@ void
 Window::initWindow(WindowCreateInfo& info)
 {
     initWindow(info.width, info.height, info.title);
+}
+
+void
+Window::createWindowSurface(const vk::Instance& instance, VkSurfaceKHR& surface)
+{
+    glfwCreateWindowSurface(instance, m_window, nullptr, &surface);
 }
 
 void
@@ -82,7 +87,7 @@ Window::initWindow(int width, int height, const std::string& title)
         std::cerr << "Failed to init glfw" << std::endl;
     }
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
     m_window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
 
@@ -106,20 +111,10 @@ Window::isOpen()
     return !glfwWindowShouldClose(m_window);
 }
 
-
 void
 Window::handleEvents()
 {
     glfwPollEvents();
-}
-
-void
-Window::createWindowSurface(vk::UniqueInstance& instance,
-                            vk::UniqueSurfaceKHR& surface)
-{
-    glfwCreateWindowSurface(static_cast<VkInstance>(instance.get()), m_window,
-                            nullptr,
-                            reinterpret_cast<VkSurfaceKHR*>(&(surface.get())));
 }
 
 void

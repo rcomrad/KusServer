@@ -139,7 +139,7 @@ Device::createInstance()
 void
 Device::createSurface(Window& window)
 {
-    window.createWindowSurface(m_instance, m_surface);
+    // window.createWindowSurface(m_instance, m_surface);
 }
 
 void

@@ -5,7 +5,7 @@
 
 #include <vector>
 
-#include "window.hpp"
+#include "window/window.hpp"
 
 namespace kusengine
 {

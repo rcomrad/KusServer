@@ -13,7 +13,7 @@
 namespace kusengine
 {
 
-void
+bool
 App::initApp()
 {
     WindowCreateInfo window_info;
@@ -22,9 +22,18 @@ App::initApp()
     window_info.title  = "Simple app window";
 
     m_window.initWindow(window_info);
-    m_renderer.initRenderer(m_window);
+
+    bool ok = m_renderer.initRenderer(m_window);
+
+    if (!ok)
+    {
+        std::cout << "Renderer could not create!\n";
+        return false;
+    }
 
     m_target_frame_time = 1 / 150.0;
+
+    return true;
 };
 
 double
@@ -52,7 +61,7 @@ App::loopBody()
 
     if (!m_window.isOpen())
     {
-        m_renderer.deviceWaitIdle();
+        // m_renderer.deviceWaitIdle();
         return false;
     }
 

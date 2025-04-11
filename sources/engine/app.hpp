@@ -4,8 +4,8 @@
 #include <memory>
 #include <vector>
 
-#include "renderer.hpp"
-#include "window.hpp"
+#include "renderer/renderer.hpp"
+#include "window/window.hpp"
 
 namespace kusengine
 {
@@ -14,7 +14,7 @@ class App final
 public:
     App() = default;
 
-    void initApp();
+    bool initApp();
 
     void run();
 

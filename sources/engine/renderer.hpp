@@ -3,18 +3,20 @@
 
 #include <mutex>
 
+#include "instance/instance.hpp"
+
 #include "device.hpp"
 #include "model.hpp"
 #include "pipeline.hpp"
 #include "swap_chain.hpp"
-#include "window.hpp"
+#include "window/window.hpp"
 
 namespace kusengine
 {
-class Renderer final
+class OLDRenderer final
 {
 public:
-    Renderer() = default;
+    OLDRenderer() = default;
 
     void render();
 
@@ -33,6 +35,8 @@ private:
 
     void loadModels();
 
+    void createInstance();
+
     void createPipelineLayout();
 
     void createPipeline();
@@ -44,6 +48,7 @@ private:
     void recreateSwapChain();
     void recordCommandBuffer(int image_index);
 
+    Instance m_instance;
     Device m_device;
 
     std::unique_ptr<Pipeline> m_pipeline_ptr;
@@ -53,7 +58,7 @@ private:
 
     std::vector<vk::CommandBuffer> m_command_buffer_vector;
 
-    std::unique_ptr<SwapChain> m_swap_chain_ptr;
+    std::unique_ptr<OLDSwapChain> m_swap_chain_ptr;
 };
 }; // namespace kusengine
 #endif // RENDERER_HPP

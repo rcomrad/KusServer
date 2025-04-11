@@ -107,6 +107,7 @@
         "xtree": "cpp",
         "xutility": "cpp",
         "filesystem": "cpp",
-        "forward_list": "cpp"
+        "forward_list": "cpp",
+        "queue": "cpp"
     }
 }

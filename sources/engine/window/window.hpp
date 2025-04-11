@@ -8,6 +8,8 @@
 #include <string>
 #include <vector>
 
+#include "engine/instance/instance.hpp"
+
 namespace kusengine
 {
 
@@ -41,9 +43,8 @@ public:
 
     void handleEvents();
 
-    void createWindowSurface(vk::UniqueInstance& instance,
-                             vk::UniqueSurfaceKHR& surface);
-
+    void createWindowSurface(const vk::Instance& instance,
+                             VkSurfaceKHR& surface);
 
 private:
     static void framebufferResizeCallback(GLFWwindow* window,
@@ -66,6 +67,7 @@ private:
 
     GLFWwindow* m_window;
 };
+
 }; // namespace kusengine
 
 #endif // WINDOW_HPP
