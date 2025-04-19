@@ -1,18 +1,17 @@
 #include "device.hpp"
 
+#include "engine/renderer/swap_chain.hpp"
+
 namespace kusengine
 {
 bool
-Device::createDevice(Instance& instance, const vk::SurfaceKHR& surface)
+Device::create(const Instance& instance, const vk::SurfaceKHR& surface)
 {
-    bool success = createPhysicalDevice(instance, surface);
+    if (!PhysicalDevice::create(instance, surface)) return false;
 
-    if (!success) return false;
-
-    success = createLogicalDevice(PhysicalDevice::device(),
-                                  PhysicalDevice::getQueueFamilyIndices());
-
-    if (!success) return false;
+    if (!LogicalDevice::create(PhysicalDevice::device(),
+                               PhysicalDevice::getQueueFamilyIndices()))
+        return false;
 
     return true;
 }
@@ -37,20 +36,6 @@ Device::getSurfaceSupportDetails(const vk::SurfaceKHR& surface) const
         PhysicalDevice::device().getSurfaceFormatsKHR(surface),
         PhysicalDevice::device().getSurfacePresentModesKHR(surface),
     };
-}
-
-std::vector<SwapChainFrame>
-Device::getSwapchainFrames(const vk::SwapchainKHR& swapchain,
-                           const vk::Format& format) const
-{
-    std::vector<SwapChainFrame> frames;
-    auto&& images = LogicalDevice::device().getSwapchainImagesKHR(swapchain);
-    frames.resize(images.size());
-    for (int i = 0; i < images.size(); ++i)
-    {
-        frames[i].createFrame(LogicalDevice::device(), images[i], format);
-    }
-    return frames;
 }
 
 }; // namespace kusengine

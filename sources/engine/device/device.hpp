@@ -6,8 +6,13 @@
 #include "logical_device.hpp"
 #include "physical_device.hpp"
 
+// #include "swap_chain.hpp"
+#include "engine/renderer/render_pass.hpp"
+
 namespace kusengine
 {
+class SwapChain;
+
 class Device final : public PhysicalDevice, public LogicalDevice
 {
 public:
@@ -20,7 +25,8 @@ public:
 
     Device() = default;
 
-    bool createDevice(Instance& instance, const vk::SurfaceKHR& surface);
+    bool create(const Instance& instance,
+                const vk::SurfaceKHR& surface) override;
 
     const vk::Device& logicalDeviceConstRef() const;
 
@@ -29,14 +35,7 @@ public:
     SwapChainSupportDetails getSurfaceSupportDetails(
         const vk::SurfaceKHR& surface) const;
 
-    std::vector<SwapChainFrame> getSwapchainFrames(
-        const vk::SwapchainKHR& swapchain,
-        const vk::Format& format) const;
-
 private:
-    // PhysicalDevice m_physical_device;
-
-    // LogicalDevice m_logical_device;
 };
 }; // namespace kusengine
 

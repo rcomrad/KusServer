@@ -1,5 +1,6 @@
 #include "physical_device.hpp"
 
+#include <iostream>
 #include <set>
 #include <string>
 
@@ -22,6 +23,21 @@ PhysicalDevice::checkDeviceExtensionSupport(
 }
 
 bool
+PhysicalDevice::supportMailBox(const vk::PhysicalDevice& device,
+                               const vk::SurfaceKHR& surface)
+{
+    for (vk::PresentModeKHR presentMode :
+         device.getSurfacePresentModesKHR(surface))
+    {
+        if (presentMode == vk::PresentModeKHR::eMailbox)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool
 PhysicalDevice::isSuitable(const vk::PhysicalDevice& device)
 {
     static std::vector<const char*> requested_extensions = {
@@ -31,11 +47,13 @@ PhysicalDevice::isSuitable(const vk::PhysicalDevice& device)
 }
 
 bool
-PhysicalDevice::createPhysicalDevice(const Instance& instance,
-                                     const vk::SurfaceKHR& surface)
+PhysicalDevice::create(const Instance& instance, const vk::SurfaceKHR& surface)
 {
-    bool s = choosePhysicalDevice(instance);
-    if (!s) return false;
+    if (!choosePhysicalDevice(instance, surface))
+    {
+        std::cerr << "Failed to choose physical device\n";
+        return false;
+    }
 
     m_queue_family_indices = findQueueFamilies(surface);
 
@@ -49,10 +67,19 @@ PhysicalDevice::getQueueFamilyIndices() const
 }
 
 bool
-PhysicalDevice::choosePhysicalDevice(const Instance& instance)
+PhysicalDevice::choosePhysicalDevice(const Instance& instance,
+                                     const vk::SurfaceKHR& surface)
 {
     auto available_devices = instance.getAvailablePhysicalDevices();
 
+    for (vk::PhysicalDevice device : available_devices)
+    {
+        if (isSuitable(device) && supportMailBox(device, surface))
+        {
+            m_physical_device = device;
+            return true;
+        }
+    }
     for (vk::PhysicalDevice device : available_devices)
     {
         if (isSuitable(device))

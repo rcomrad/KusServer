@@ -31,6 +31,8 @@ private:
 
     // Time
 
+    void compileShaders();
+
     double getLoopTime();
 
     void FPSLimit(const double& loop_time);

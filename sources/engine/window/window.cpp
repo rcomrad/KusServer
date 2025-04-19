@@ -1,22 +1,40 @@
 #include "window.hpp"
 
 #include <iostream>
+#include <sstream>
+
+#include "core/logging/logging.hpp"
 
 namespace kusengine
 {
-Window::Window(WindowCreateInfo& info)
-{
-    initWindow(info.width, info.height, info.title);
-}
-
 Window::~Window()
 {
     glfwDestroyWindow(m_window);
     glfwTerminate();
 }
 
+void
+Window::calculateFrameRate()
+{
+    current_time = glfwGetTime();
+    double delta = current_time - last_time;
+
+    if (delta >= 1)
+    {
+        int framerate{std::max(1, int(num_frames / delta))};
+        std::stringstream title;
+        title << "Running at " << framerate << " fps.";
+        glfwSetWindowTitle(m_window, title.str().c_str());
+        last_time  = current_time;
+        num_frames = -1;
+        frame_time = float(1000.0 / framerate);
+    }
+
+    ++num_frames;
+}
+
 bool
-Window::wasWindowResized()
+Window::wasWindowResized() const
 {
     return m_frame_buffer_resized_flag;
 }
@@ -28,21 +46,17 @@ Window::resetWindowResizedFlag()
 }
 
 vk::Extent2D
-Window::getExtent()
+Window::getExtent() const
 {
     return {static_cast<uint32_t>(m_width), static_cast<uint32_t>(m_height)};
 }
 
-void
-Window::initWindow(WindowCreateInfo& info)
+bool
+Window::createWindowSurface(const vk::Instance& instance,
+                            VkSurfaceKHR& surface) const
 {
-    initWindow(info.width, info.height, info.title);
-}
-
-void
-Window::createWindowSurface(const vk::Instance& instance, VkSurfaceKHR& surface)
-{
-    glfwCreateWindowSurface(instance, m_window, nullptr, &surface);
+    return glfwCreateWindowSurface(instance, m_window, nullptr, &surface) ==
+           VK_SUCCESS;
 }
 
 void
@@ -75,7 +89,7 @@ Window::key_callback(GLFWwindow* window,
     }
 }
 
-void
+bool
 Window::initWindow(int width, int height, const std::string& title)
 {
     m_title  = title;
@@ -84,10 +98,12 @@ Window::initWindow(int width, int height, const std::string& title)
 
     if (glfwInit() == GLFW_FALSE)
     {
-        std::cerr << "Failed to init glfw" << std::endl;
+        // TODO: error logging
+        std::cerr << "Failed to init GLFW" << std::endl;
+        return false;
     }
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
     m_window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
 
@@ -95,18 +111,17 @@ Window::initWindow(int width, int height, const std::string& title)
     {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
+        return false;
     }
 
     glfwSetWindowUserPointer(m_window, this);
 
-    // glfwSetKeyCallback(m_window, key_callback);
-
-    // glfwSetCursorPosCallback();
     glfwSetFramebufferSizeCallback(m_window, framebufferResizeCallback);
+    return true;
 }
 
 bool
-Window::isOpen()
+Window::isOpen() const
 {
     return !glfwWindowShouldClose(m_window);
 }

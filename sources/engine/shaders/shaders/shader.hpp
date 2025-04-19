@@ -17,6 +17,9 @@ public:
     vk::ShaderModule createShaderModule(std::string_view file_path,
                                         const vk::Device& logical_device);
 
+    void destroyShaderModule(const vk::Device& logical_device,
+                             const vk::ShaderModule& shader_module);
+
     static Shader& getInstance();
 
 private:

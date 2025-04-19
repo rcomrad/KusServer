@@ -6,30 +6,42 @@
 #include <iostream>
 #include <utility>
 
+#include "shaders/shaders/shader.hpp"
 #include "utility/file_system/path_storage.hpp"
 
-#include "engine_util.hpp"
+#define COMPILE_SHADERS
 
 namespace kusengine
 {
 
+void
+App::compileShaders()
+{
+    auto sources_path = util::PathStorage::getFolderPath("sources");
+
+    std::string vertex_shader_path = sources_path.value().data();
+    vertex_shader_path += "engine/shaders/spirv/vertex_shader.vert";
+
+    std::string fragment_shader_path = sources_path.value().data();
+    fragment_shader_path += "engine/shaders/spirv/fragment_shader.frag";
+
+    auto dst_path =
+        std::format("{}{}", sources_path.value(), "engine/shaders/compiled/");
+
+    Shader::getInstance().compile(vertex_shader_path, dst_path);
+    Shader::getInstance().compile(fragment_shader_path, dst_path);
+}
+
 bool
 App::initApp()
 {
-    WindowCreateInfo window_info;
-    window_info.width  = WIDTH;
-    window_info.height = HEIGHT;
-    window_info.title  = "Simple app window";
+#ifdef COMPILE_SHADERS
+    compileShaders();
+#endif
 
-    m_window.initWindow(window_info);
+    if (!m_window.initWindow(WIDTH, HEIGHT, "Simple app window")) return false;
 
-    bool ok = m_renderer.initRenderer(m_window);
-
-    if (!ok)
-    {
-        std::cout << "Renderer could not create!\n";
-        return false;
-    }
+    if (!m_renderer.initRenderer(m_window)) return false;
 
     m_target_frame_time = 1 / 150.0;
 
@@ -57,6 +69,7 @@ App::FPSLimit(const double& loop_time)
 bool
 App::loopBody()
 {
+
     m_window.handleEvents();
 
     if (!m_window.isOpen())
@@ -67,11 +80,18 @@ App::loopBody()
 
     float x = 0, y = 0;
 
-    double loop_time = getLoopTime();
+    // double loop_time = getLoopTime();
+    m_renderer.drawFrame(m_window);
+    // if (m_window.wasWindowResized())
+    // {
+    //     m_window.resetWindowResizedFlag();
+    // }
+    // else
+    // {
+    //     m_renderer.drawFrame();
+    // }
 
-    m_renderer.draw();
-
-    FPSLimit(loop_time);
+    m_window.calculateFrameRate();
 
     return true;
 }
@@ -81,7 +101,10 @@ App::run()
 {
     while (m_window.isOpen())
     {
-        loopBody();
+        m_window.handleEvents();
+        // double loop_time = getLoopTime();
+        m_renderer.drawFrame(m_window);
+        m_window.calculateFrameRate();
     }
     m_renderer.deviceWaitIdle();
 }

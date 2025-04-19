@@ -16,11 +16,11 @@ public:
 
     Instance() = default;
 
-    bool initInstance(std::string_view app_name);
+    bool create(std::string_view app_name);
 
     std::vector<vk::PhysicalDevice> getAvailablePhysicalDevices() const;
 
-    const vk::Instance& get();
+    const vk::Instance& get() const;
 
 private:
     std::vector<const char*> getExtensions();

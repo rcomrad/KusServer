@@ -6,26 +6,50 @@
 #include <shared_mutex>
 #include <vector>
 
+#include "engine/commands/command_pool.hpp"
 #include "engine/device/device.hpp"
 
 #include "swap_chain_frame.hpp"
+#include "synchronization_control.hpp"
+
+#include "engine/mesh/triangle_mesh.hpp"
 
 namespace kusengine
 {
 class Window;
 class Instance;
-
+class Device;
+class RenderPass;
 
 class SwapChain
 {
 public:
-    bool initSwapChain(const Device& device);
+    SwapChain(const CommandPool& command_pool,
+              const Device& device,
+              const RenderPass& render_pass);
 
-    const vk::SurfaceKHR& surface();
+    bool create(float width, float height);
+    bool recreate(const Window& window, const Instance& instance);
 
-    void createSurface(Window& window, Instance& instance);
+    void createSwapChainFrames();
+
+    bool createSurface(const Window& window, const Instance& instance);
+    // get
+
+    const vk::SurfaceKHR& surface() const;
+
+    vk::Extent2D extent() const;
+
+    vk::Format format() const;
+
+    const vk::SwapchainKHR& swapchain() const;
+    //
+
+    void drawFrame(uint32_t frame_index, const TriangleMesh& mesh);
 
 private:
+    bool present(uint32_t index, const vk::Semaphore* wait_sems);
+
     vk::SurfaceFormatKHR chooseSurfaceFormat(
         const std::vector<vk::SurfaceFormatKHR>& available_formats);
 
@@ -35,6 +59,10 @@ private:
     vk::Extent2D chooseExtent(uint32_t width,
                               uint32_t height,
                               vk::SurfaceCapabilitiesKHR capabilities);
+
+    uint32_t chooseImageCount(const vk::PresentModeKHR& present_mode,
+                              const vk::SurfaceCapabilitiesKHR& capabilities);
+
 
     // Surface
 
@@ -49,6 +77,11 @@ private:
 
     vk::Format m_format;
     vk::Extent2D m_extent;
+
+    //  Refs
+    const CommandPool& command_pool_ref;
+    const Device& device_ref;
+    const RenderPass& render_pass_ref;
 };
 }; // namespace kusengine
 

@@ -12,7 +12,7 @@ Engine::Engine() noexcept : core::Module("engine")
 void
 Engine::run() noexcept
 {
-    if(!m_app.initApp())
+    if (!m_app.initApp())
     {
         return;
     }

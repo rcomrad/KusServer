@@ -21,12 +21,10 @@ class LogicalDevice
 public:
     LogicalDevice() = default;
 
-    bool createLogicalDevice(
-        const vk::PhysicalDevice& physical_device,
-        const kusengine::QueueFamilyIndices& queue_family_indices);
+    bool create(const vk::PhysicalDevice& physical_device,
+                const kusengine::QueueFamilyIndices& queue_family_indices);
 
-    template <const char* queue_name>
-    vk::Queue getQueue() const;
+    vk::Queue getQueue(const std::string& queue_name) const;
 
 protected:
     const vk::Device& device() const;
@@ -38,7 +36,7 @@ private:
 
     void setupQueues(const kusengine::QueueFamilyIndices& queue_family_indices);
 
-    std::map<const char*, QueueData> m_queues;
+    std::map<std::string, QueueData> m_queues;
 
     vk::UniqueDevice m_logical_device;
 };

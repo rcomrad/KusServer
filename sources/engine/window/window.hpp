@@ -25,26 +25,24 @@ class Window
 public:
     Window() = default;
 
-    Window(WindowCreateInfo& info);
+    bool initWindow(int width, int height, const std::string& title);
 
-    void initWindow(WindowCreateInfo& info);
-
-    void initWindow(int width, int height, const std::string& title);
-
-    vk::Extent2D getExtent();
+    vk::Extent2D getExtent() const;
 
     ~Window();
 
-    bool isOpen();
+    bool isOpen() const;
 
-    bool wasWindowResized();
+    bool wasWindowResized() const;
 
     void resetWindowResizedFlag();
 
     void handleEvents();
 
-    void createWindowSurface(const vk::Instance& instance,
-                             VkSurfaceKHR& surface);
+    bool createWindowSurface(const vk::Instance& instance,
+                             VkSurfaceKHR& surface) const;
+
+    void calculateFrameRate();
 
 private:
     static void framebufferResizeCallback(GLFWwindow* window,
@@ -66,6 +64,13 @@ private:
     bool m_frame_buffer_resized_flag;
 
     GLFWwindow* m_window;
+
+    // Time and Rate
+
+    double last_time;
+    double current_time;
+    int num_frames;
+    float frame_time;
 };
 
 }; // namespace kusengine

@@ -4,7 +4,7 @@ namespace kusengine
 {
 
 void
-ValidationLayers::initLayers()
+ValidationLayers::create()
 {
     m_layers.push_back("VK_LAYER_KHRONOS_validation");
 }

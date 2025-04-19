@@ -1,19 +1,61 @@
 #include "swap_chain.hpp"
 
+#include <iostream>
+
+#include "engine/device/device.hpp"
 #include "engine/instance/instance.hpp"
 #include "engine/window/window.hpp"
 
 namespace kusengine
 {
 
-void
-SwapChain::createSurface(Window& window, Instance& instance)
+SwapChain::SwapChain(const CommandPool& command_pool,
+                     const Device& device,
+                     const RenderPass& render_pass)
+    : command_pool_ref(command_pool),
+      device_ref(device),
+      render_pass_ref(render_pass)
+{
+}
+
+const vk::SurfaceKHR&
+SwapChain::surface() const
+{
+    return m_surface.get();
+}
+
+vk::Extent2D
+SwapChain::extent() const
+{
+    return m_extent;
+}
+
+vk::Format
+SwapChain::format() const
+{
+    return m_format;
+}
+
+const vk::SwapchainKHR&
+SwapChain::swapchain() const
+{
+    return m_swapchain.get();
+}
+
+bool
+SwapChain::createSurface(const Window& window, const Instance& instance)
 {
     VkSurfaceKHR c_style_surface{};
 
-    window.createWindowSurface(instance.get(), c_style_surface);
+    if (!window.createWindowSurface(instance.get(), c_style_surface))
+    {
+        std::cerr << "Failed to create window surface";
+        return false;
+    }
 
     m_surface.get() = c_style_surface;
+
+    return true;
 }
 
 vk::SurfaceFormatKHR
@@ -38,6 +80,10 @@ SwapChain::choosePresentMode(
 {
     for (vk::PresentModeKHR presentMode : available_present_modes)
     {
+        if (presentMode == vk::PresentModeKHR::eImmediate)
+        {
+            return presentMode;
+        }
         if (presentMode == vk::PresentModeKHR::eMailbox)
         {
             return presentMode;
@@ -72,26 +118,43 @@ SwapChain::chooseExtent(uint32_t width,
     }
 }
 
-bool
-SwapChain::initSwapChain(const Device& device)
+uint32_t
+SwapChain::chooseImageCount(const vk::PresentModeKHR& present_mode,
+                            const vk::SurfaceCapabilitiesKHR& capabilities)
 {
-    auto support = device.getSurfaceSupportDetails(surface());
+    uint32_t res = 2;
+    if (present_mode == vk::PresentModeKHR::eMailbox) res = 3;
+    return std::min(capabilities.maxImageCount, res);
+}
+
+bool
+SwapChain::recreate(const Window& window, const Instance& instance)
+{
+    createSurface(window, instance);
+    if (!create(window.getExtent().width, window.getExtent().height))
+        return false;
+    createSwapChainFrames();
+    return true;
+}
+
+bool
+SwapChain::create(float width, float height)
+{
+    auto support = device_ref.getSurfaceSupportDetails(surface());
 
     vk::SurfaceFormatKHR format = chooseSurfaceFormat(support.formats);
 
-    vk::PresentModeKHR presentMode = choosePresentMode(support.presentModes);
+    vk::PresentModeKHR present_mode = choosePresentMode(support.presentModes);
 
-    // TODO: add width and heigth
-    vk::Extent2D extent = chooseExtent(0, 0, support.capabilities);
+    vk::Extent2D extent = chooseExtent(width, height, support.capabilities);
 
-    uint32_t image_count = std::min(support.capabilities.maxImageCount,
-                                    support.capabilities.minImageCount + 1);
+    uint32_t image_count = chooseImageCount(present_mode, support.capabilities);
 
     vk::SwapchainCreateInfoKHR create_info = vk::SwapchainCreateInfoKHR(
         vk::SwapchainCreateFlagsKHR(), surface(), image_count, format.format,
         format.colorSpace, extent, 1, vk::ImageUsageFlagBits::eColorAttachment);
 
-    QueueFamilyIndices indices = device.getQueueFamilyIndices();
+    QueueFamilyIndices indices = device_ref.getQueueFamilyIndices();
 
     uint32_t queue_family_indices[] = {indices.graphics_family.value(),
                                        indices.present_family.value()};
@@ -109,7 +172,7 @@ SwapChain::initSwapChain(const Device& device)
 
     create_info.preTransform   = support.capabilities.currentTransform;
     create_info.compositeAlpha = vk::CompositeAlphaFlagBitsKHR::eOpaque;
-    create_info.presentMode    = presentMode;
+    create_info.presentMode    = present_mode;
     create_info.clipped        = VK_TRUE;
 
     create_info.oldSwapchain = vk::SwapchainKHR(nullptr);
@@ -117,7 +180,7 @@ SwapChain::initSwapChain(const Device& device)
     try
     {
         m_swapchain =
-            device.logicalDeviceConstRef().createSwapchainKHRUnique(
+            device_ref.logicalDeviceConstRef().createSwapchainKHRUnique(
                 create_info);
     }
     catch (vk::SystemError err)
@@ -125,17 +188,81 @@ SwapChain::initSwapChain(const Device& device)
         return false;
     }
 
-    m_frames = device.getSwapchainFrames(m_swapchain.get(), format.format);
-
     m_format = format.format;
     m_extent = extent;
 
     return true;
 }
 
-const vk::SurfaceKHR&
-SwapChain::surface()
+void
+SwapChain::createSwapChainFrames()
 {
-    return m_surface.get();
+    auto images = device_ref.logicalDeviceConstRef().getSwapchainImagesKHR(
+        m_swapchain.get());
+
+    m_frames.resize(images.size());
+    for (int i = 0; i < images.size(); ++i)
+    {
+        m_frames[i].createImage(device_ref.logicalDeviceConstRef(), images[i],
+                                m_format);
+        m_frames[i].createFrameBuffer(device_ref.logicalDeviceConstRef(),
+                                      render_pass_ref.renderPass(), m_extent);
+        m_frames[i].createCommandBuffer(command_pool_ref);
+        m_frames[i].createSynchronization(device_ref);
+    }
 }
+
+bool
+SwapChain::present(uint32_t index, const vk::Semaphore* wait_sems)
+{
+    vk::PresentInfoKHR presentInfo = {};
+    presentInfo.waitSemaphoreCount = 1;
+    presentInfo.pWaitSemaphores    = wait_sems;
+
+    presentInfo.swapchainCount = 1;
+    presentInfo.pSwapchains    = &m_swapchain.get();
+    presentInfo.pImageIndices  = &index;
+
+    vk::Result present;
+    try
+    {
+        present = device_ref.getQueue("present").presentKHR(presentInfo);
+    }
+    catch (vk::OutOfDateKHRError error)
+    {
+        present = vk::Result::eErrorOutOfDateKHR;
+    }
+
+    if (present == vk::Result::eErrorOutOfDateKHR ||
+        present == vk::Result::eSuboptimalKHR)
+    {
+        // recreate();
+        return false;
+    }
+    return true;
+}
+
+void
+SwapChain::drawFrame(uint32_t frame_index, const TriangleMesh& mesh)
+{
+
+    m_frames[frame_index].waitForFence(device_ref.logicalDeviceConstRef());
+
+    uint32_t image_index;
+
+    auto acquire_res = device_ref.logicalDeviceConstRef().acquireNextImageKHR(
+        m_swapchain.get(), UINT64_MAX,
+        m_frames[frame_index].synControl().imageAvailable(), nullptr);
+
+    image_index = acquire_res.value;
+
+    //TODO: get command buffer and work with it
+
+    m_frames[frame_index].recordCommandBuffer(render_pass_ref, *this);
+
+    m_frames[frame_index].submitCommandBuffer(device_ref);
+
+    present(image_index, m_frames[frame_index].synControl().signalSemaphores());
+}
+
 }; // namespace kusengine

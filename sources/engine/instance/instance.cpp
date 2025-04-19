@@ -14,7 +14,7 @@ Instance::~Instance()
 }
 
 const vk::Instance&
-Instance::get()
+Instance::get() const
 {
     return m_instance.get();
 }
@@ -26,11 +26,10 @@ Instance::getAvailablePhysicalDevices() const
 }
 
 bool
-Instance::initInstance(std::string_view app_name)
+Instance::create(std::string_view app_name)
 {
-    auto res = createInstance(app_name);
+    if (!createInstance(app_name)) return false;
 
-    if (!res) return false;
     dldi.init(m_instance.get(), vkGetInstanceProcAddr);
     createDebugMessenger();
     return true;
@@ -49,7 +48,7 @@ Instance::createInstance(std::string_view app_name)
 #ifdef _DEBUG
 
     extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-    m_validation_layers.initLayers();
+    m_validation_layers.create();
 
 #endif // _DEBUG
 
@@ -68,7 +67,8 @@ Instance::createInstance(std::string_view app_name)
         m_instance = vk::createInstanceUnique(instance_create_info);
     }
     catch (vk::SystemError err)
-    { // TODO: error handler
+    {
+        std::cerr << err.what() << '\n';
         return false;
     }
     return true;

@@ -51,19 +51,18 @@ kusengine::LogicalDevice::setupQueues(
     m_queues["present"] = {queue_family_indices.present_family.value(), 0, 1.f};
 }
 
-template <const char* queue_name>
 vk::Queue
-LogicalDevice::getQueue() const
+LogicalDevice::getQueue(const std::string& queue_name) const
 {
-    auto queue = m_queues[queue_name];
-    return m_logical_device.get().getQueue(queue.family_index,
-                                           queue.queue_index);
+    auto queue = *(m_queues.find(queue_name));
+
+    return m_logical_device.get().getQueue(queue.second.family_index,
+                                           queue.second.queue_index);
 }
 
 bool
-LogicalDevice::createLogicalDevice(
-    const vk::PhysicalDevice& physical_device,
-    const kusengine::QueueFamilyIndices& queue_family_indices)
+LogicalDevice::create(const vk::PhysicalDevice& physical_device,
+                      const kusengine::QueueFamilyIndices& queue_family_indices)
 {
     std::vector<const char*> enabledLayers;
 #ifdef _DEBUG
@@ -100,7 +99,7 @@ LogicalDevice::createLogicalDevice(
     }
     catch (vk::SystemError err)
     {
-        std::cout << "Cant create logical device\n";
+        std::cout << err.what() << '\n';
         return false;
     }
     return true;

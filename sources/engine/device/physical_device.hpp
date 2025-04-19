@@ -19,8 +19,8 @@ struct QueueFamilyIndices
 class PhysicalDevice
 {
 public:
-    bool createPhysicalDevice(const Instance& instance,
-                              const vk::SurfaceKHR& surface);
+    virtual bool create(const Instance& instance,
+                        const vk::SurfaceKHR& surface);
 
     QueueFamilyIndices getQueueFamilyIndices() const;
 
@@ -28,7 +28,8 @@ protected:
     const vk::PhysicalDevice& device() const;
 
 private:
-    bool choosePhysicalDevice(const Instance& instance);
+    bool choosePhysicalDevice(const Instance& instance,
+                              const vk::SurfaceKHR& surface);
 
     QueueFamilyIndices findQueueFamilies(const vk::SurfaceKHR& surface) const;
 
@@ -37,6 +38,9 @@ private:
     static bool checkDeviceExtensionSupport(
         const vk::PhysicalDevice& device,
         const std::vector<const char*>& requested_extensions);
+
+    static bool supportMailBox(const vk::PhysicalDevice& device,
+                               const vk::SurfaceKHR& surface);
 
     vk::PhysicalDevice m_physical_device;
 

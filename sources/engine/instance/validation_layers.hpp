@@ -13,7 +13,7 @@ class ValidationLayers
 public:
     ValidationLayers() = default;
 
-    void initLayers();
+    void create();
 
     bool supported(std::vector<const char*> extensions);
 

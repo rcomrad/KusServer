@@ -1,40 +1,122 @@
 #include "graphics_pipeline.hpp"
 
-#include "shaders/shaders/shader.hpp"
+#include <iostream>
+
 namespace kusengine
 {
-bool
-GraphicsPipeline::createGraphicsPipeline(const vk::Device& logical_device)
+
+const vk::Pipeline&
+GraphicsPipeline::pipeline() const
 {
-    vk::GraphicsPipelineCreateInfo create_pipeline_info{};
-    create_pipeline_info.flags = vk::PipelineCreateFlags();
+    return m_pipeline.get();
+}
 
-    std::vector<vk::PipelineShaderStageCreateInfo> shader_stages;
+bool
+GraphicsPipeline::configureStages(
+    std::vector<vk::PipelineShaderStageCreateInfo>& shader_stages)
+{
+    return true;
+}
 
-    // Vertex Input
-
-    vk::PipelineVertexInputStateCreateInfo vertex_input_info{};
-    vertex_input_info.flags = vk::PipelineVertexInputStateCreateFlags();
-    vertex_input_info.vertexBindingDescriptionCount   = 0;
-    vertex_input_info.vertexAttributeDescriptionCount = 0;
-    create_pipeline_info.pVertexInputState            = &vertex_input_info;
-
-    // input Assembly
+vk::PipelineInputAssemblyStateCreateInfo
+GraphicsPipeline::inputAssemblyState()
+{
     vk::PipelineInputAssemblyStateCreateInfo input_assembly_info;
     input_assembly_info.flags    = vk::PipelineInputAssemblyStateCreateFlags();
     input_assembly_info.topology = vk::PrimitiveTopology::eTriangleList;
-    create_pipeline_info.pInputAssemblyState = &input_assembly_info;
+    return input_assembly_info;
+}
 
-    // Vertex Shader
+vk::PipelineViewportStateCreateInfo
+GraphicsPipeline::viewportState(const vk::Extent2D& extent,
+                                vk::Viewport& viewport_dst,
+                                vk::Rect2D& scissor_dst)
+{
+    viewport_dst.x        = 0.0f;
+    viewport_dst.y        = 0.0f;
+    viewport_dst.width    = extent.width;
+    viewport_dst.height   = extent.height;
+    viewport_dst.minDepth = 0.0f;
+    viewport_dst.maxDepth = 1.0f;
 
-    vk::UniqueShaderModule vertex_shader_module(
-        Shader::getInstance().createShaderModule("", logical_device));
+    scissor_dst.offset.x = 0.0f;
+    scissor_dst.offset.y = 0.0f;
+    scissor_dst.extent   = extent;
 
+    vk::PipelineViewportStateCreateInfo viewport_state = {};
+    viewport_state.flags         = vk::PipelineViewportStateCreateFlags();
+    viewport_state.viewportCount = 1;
+    viewport_state.pViewports    = &viewport_dst;
+    viewport_state.scissorCount  = 1;
+    viewport_state.pScissors     = &scissor_dst;
+
+    return viewport_state;
+}
+
+vk::PipelineRasterizationStateCreateInfo
+GraphicsPipeline::rasterizerState()
+{
+    vk::PipelineRasterizationStateCreateInfo rasterizer;
+
+    rasterizer.flags = vk::PipelineRasterizationStateCreateFlags();
+    rasterizer.depthClampEnable =
+        VK_FALSE; // discard out of bounds fragments, don't clamp them
+    rasterizer.rasterizerDiscardEnable =
+        VK_FALSE; // This flag would disable fragment output
+    rasterizer.polygonMode = vk::PolygonMode::eFill;
+    rasterizer.lineWidth   = 1.0f;
+    rasterizer.cullMode    = vk::CullModeFlagBits::eBack;
+    rasterizer.frontFace   = vk::FrontFace::eClockwise;
+    rasterizer.depthBiasEnable =
+        VK_FALSE; // Depth bias can be useful in shadow maps.
+
+    return rasterizer;
+}
+
+vk::PipelineMultisampleStateCreateInfo
+GraphicsPipeline::multisamplingState()
+{
+    vk::PipelineMultisampleStateCreateInfo multisampling = {};
+    multisampling.flags = vk::PipelineMultisampleStateCreateFlags();
+    multisampling.sampleShadingEnable  = VK_FALSE;
+    multisampling.rasterizationSamples = vk::SampleCountFlagBits::e1;
+    return multisampling;
+}
+
+vk::PipelineColorBlendStateCreateInfo
+GraphicsPipeline::colorBlendState(
+    vk::PipelineColorBlendAttachmentState& color_blend_attachment)
+{
+
+    color_blend_attachment.colorWriteMask =
+        vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG |
+        vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA;
+    color_blend_attachment.blendEnable = VK_FALSE;
+
+    vk::PipelineColorBlendStateCreateInfo color_blending = {};
+    color_blending.flags             = vk::PipelineColorBlendStateCreateFlags();
+    color_blending.logicOpEnable     = VK_FALSE;
+    color_blending.logicOp           = vk::LogicOp::eCopy;
+    color_blending.attachmentCount   = 1;
+    color_blending.pAttachments      = &color_blend_attachment;
+    color_blending.blendConstants[0] = 0.0f;
+    color_blending.blendConstants[1] = 0.0f;
+    color_blending.blendConstants[2] = 0.0f;
+    color_blending.blendConstants[3] = 0.0f;
+
+    return color_blending;
+}
+
+vk::PipelineShaderStageCreateInfo
+GraphicsPipeline::vertexShaderinfo(vk::ShaderStageFlagBits flag,
+                                   const vk::ShaderModule& shader_module)
+{
     vk::PipelineShaderStageCreateInfo vertex_shader_info = {};
     vertex_shader_info.flags  = vk::PipelineShaderStageCreateFlags();
-    vertex_shader_info.stage  = vk::ShaderStageFlagBits::eVertex;
-    vertex_shader_info.module = vertex_shader_module.get();
+    vertex_shader_info.stage  = flag;
+    vertex_shader_info.module = shader_module;
     vertex_shader_info.pName  = "main";
-    shader_stages.push_back(vertex_shader_info);
+    return vertex_shader_info;
 }
+
 }; // namespace kusengine
