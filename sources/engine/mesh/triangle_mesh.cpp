@@ -6,15 +6,27 @@ TriangleMesh::TriangleMesh(const Device& device) : m_vertex_buffer(device)
 {
 }
 
-void
-TriangleMesh::create(const Device& device)
-{
-    size_t size = 15 * sizeof(float);
-    m_vertex_buffer.create(size);
+// void
+// TriangleMesh::setVerteces(
+//     const std::vector<std::initializer_list<float>>& verteces_data)
+// {
+// }
 
-    std::vector<float> vertices = {0.0f,   -0.05f, 0.0f, 1.0f, 0.0f,
-                                   0.05f,  0.05f,  0.0f, 1.0f, 0.0f,
-                                   -0.05f, 0.05f,  0.0f, 1.0f, 0.0f};
-    m_vertex_buffer.setVerteces(vertices);
+void
+TriangleMesh::create()
+{
+    std::vector<float> vertices = {0.0f,  -0.8f, 0.0f, 1.0f, 0.0f,
+                                   0.5f,  0.5f,  0.0f, 1.0f, 0.0f,
+                                   -0.5f, 0.5f,  0.0f, 1.0f, 0.0f};
+
+    setVertices(vertices.begin(), vertices.end());
+}
+
+void
+TriangleMesh::draw(const vk::CommandBuffer& command_buffer) const
+{
+    m_vertex_buffer.bind(command_buffer);
+
+    command_buffer.draw(m_vertices_count, 1, 0, 0);
 }
 }; // namespace kusengine

@@ -80,10 +80,10 @@ SwapChain::choosePresentMode(
 {
     for (vk::PresentModeKHR presentMode : available_present_modes)
     {
-        if (presentMode == vk::PresentModeKHR::eImmediate)
-        {
-            return presentMode;
-        }
+        // if (presentMode == vk::PresentModeKHR::eImmediate)
+        // {
+        //     return presentMode;
+        // }
         if (presentMode == vk::PresentModeKHR::eMailbox)
         {
             return presentMode;
@@ -243,6 +243,49 @@ SwapChain::present(uint32_t index, const vk::Semaphore* wait_sems)
 }
 
 void
+SwapChain::recordCommandBuffer(const CommandBuffer& command_buffer,
+                               const vk::Framebuffer& framebuffer,
+                               const TriangleMesh& mesh)
+{
+    const vk::CommandBuffer& command_buffer_ref =
+        command_buffer.commandBuffer();
+
+    command_buffer_ref.reset();
+
+    vk::CommandBufferBeginInfo beginInfo = {};
+
+    command_buffer_ref.begin(beginInfo);
+
+    vk::RenderPassBeginInfo renderPassInfo = {};
+    renderPassInfo.renderPass              = render_pass_ref.renderPass();
+    renderPassInfo.framebuffer             = framebuffer;
+
+    renderPassInfo.renderArea.offset.x = 0;
+    renderPassInfo.renderArea.offset.y = 0;
+    renderPassInfo.renderArea.extent   = extent();
+
+    vk::ClearValue clearColor = {
+        std::array<float, 4>{1.0f, 0.5f, 0.25f, 1.0f}
+    };
+
+    renderPassInfo.clearValueCount = 1;
+    renderPassInfo.pClearValues    = &clearColor;
+
+    command_buffer_ref.beginRenderPass(&renderPassInfo,
+                                       vk::SubpassContents::eInline);
+
+    command_buffer_ref.bindPipeline(
+        vk::PipelineBindPoint::eGraphics,
+        render_pass_ref.graphicsPipeline().pipeline());
+
+    mesh.draw(command_buffer_ref);
+
+    command_buffer_ref.endRenderPass();
+
+    command_buffer_ref.end();
+}
+
+void
 SwapChain::drawFrame(uint32_t frame_index, const TriangleMesh& mesh)
 {
 
@@ -256,9 +299,10 @@ SwapChain::drawFrame(uint32_t frame_index, const TriangleMesh& mesh)
 
     image_index = acquire_res.value;
 
-    //TODO: get command buffer and work with it
+    const auto& command_buffer = m_frames[frame_index].commandBuffer();
+    const auto& framebuffer    = m_frames[frame_index].framebuffer();
 
-    m_frames[frame_index].recordCommandBuffer(render_pass_ref, *this);
+    recordCommandBuffer(command_buffer, framebuffer, mesh);
 
     m_frames[frame_index].submitCommandBuffer(device_ref);
 

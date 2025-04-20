@@ -70,8 +70,11 @@ RenderPass::create(const vk::Device& logical_device,
 
     PipelineConfigInfo pipeline_config_info = {extent};
 
-    return m_graphics_pipeline.create<Vertex>(
-        logical_device, pipeline_config_info, pipeline_layout,
-        m_render_pass.get());
+    if (!m_graphics_pipeline.create<Vertex<VertexAttributesPositionColor>>(
+            logical_device, pipeline_config_info, pipeline_layout,
+            m_render_pass.get()))
+        return false;
+
+    return true;
 }
 }; // namespace kusengine

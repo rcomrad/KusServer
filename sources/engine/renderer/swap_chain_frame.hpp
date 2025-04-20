@@ -25,6 +25,8 @@ public:
 
     const SynchronizationControl& synControl() const;
 
+    const vk::Framebuffer& framebuffer() const;
+
     // Image part
     void createImage(const vk::Device& logical_device,
                      const vk::Image& image,
@@ -37,18 +39,17 @@ public:
 
     void waitForFence(const vk::Device& logical_device);
 
-    void recordCommandBuffer(const RenderPass& render_pass,
-                             const SwapChain& swap_chain);
+    // void recordCommandBuffer(const RenderPass& render_pass,
+    //                          const SwapChain& swap_chain);
 
     void submitCommandBuffer(const Device& device);
 
 private:
-
     SynchronizationControl m_sync_control;
     CommandBuffer m_command_buffer;
 
     //
-    vk::UniqueFramebuffer m_frame_buffer;
+    vk::UniqueFramebuffer m_framebuffer;
 
     // vk::UniqueImage m_image;
     vk::UniqueImageView m_view;

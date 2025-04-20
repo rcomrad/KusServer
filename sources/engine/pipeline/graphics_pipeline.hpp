@@ -70,8 +70,10 @@ GraphicsPipeline::vertexInputState(
     vertex_input_info.vertexBindingDescriptionCount = 1;
     vertex_input_info.pVertexBindingDescriptions = &vertex_binding_description;
 
-    vertex_input_info.vertexAttributeDescriptionCount = vertex_attribute_description.size();
-    vertex_input_info.pVertexAttributeDescriptions = vertex_attribute_description.data();
+    vertex_input_info.vertexAttributeDescriptionCount =
+        vertex_attribute_description.size();
+    vertex_input_info.pVertexAttributeDescriptions =
+        vertex_attribute_description.data();
 
     return vertex_input_info;
 }
@@ -99,8 +101,10 @@ GraphicsPipeline::create(const vk::Device& logical_device,
     std::vector<vk::PipelineShaderStageCreateInfo> shader_stages;
 
     // Vertex Input
-    auto vertex_binding_description = VertexType::getBindingDescription();
-    auto attributes                 = VertexType::getAttributeDescriptions();
+    auto& vertex_instance = VertexType::getInstance();
+
+    auto vertex_binding_description = vertex_instance.getBindingDescription();
+    auto attributes = vertex_instance.getAttributeDescriptions();
 
     auto vertex_input =
         vertexInputState(vertex_binding_description, attributes);

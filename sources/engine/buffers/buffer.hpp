@@ -12,10 +12,17 @@ class Buffer
 public:
     Buffer(const Device& device);
 
-    void create(size_t size, vk::BufferUsageFlags usage);
+    void recreate(vk::BufferUsageFlags usage, size_t size = 0);
+
+    void resize(size_t size);
 
     template <typename T>
     void setData(T data);
+
+protected:
+    size_t size() const;
+
+    vk::UniqueBuffer m_buffer;
 
 private:
     uint32_t findMemoryTypeIndex(uint32_t supported_memory_indices,
@@ -24,8 +31,6 @@ private:
     void allocateBufferMemory();
 
     const Device& device_ref;
-
-    vk::UniqueBuffer m_buffer;
 
     vk::UniqueDeviceMemory m_memory;
 

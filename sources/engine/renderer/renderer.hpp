@@ -44,6 +44,7 @@ private:
 
     RenderPass m_render_pass;
 
+    // Triangle
     TriangleMesh m_triangle_mesh;
 
     //

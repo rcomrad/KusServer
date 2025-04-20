@@ -64,6 +64,14 @@ Renderer::initRenderer(Window& window)
     frame_number         = 0;
     max_frames_in_flight = 2;
 
+    m_triangle_mesh.create();
+
+    std::vector<float> vertices = {
+        0.0f,  -0.8f, 1.0f, 1.0f, 0.0f, 0.5f,  0.5f,  1.0f, 1.0f, 0.0f,
+        -0.5f, 0.5f,  1.0f, 1.0f, 0.0f, -1.0f, -0.8f, 1.0f, 1.0f, 0.0f,
+        1.0f,  1.0f,  1.0f, 0.0f, 1.0f, -0.5f, 0.5f,  1.0f, 0.0f, 1.0f};
+    m_triangle_mesh.setVertices(vertices.begin(), vertices.end());
+
     return true;
 }
 

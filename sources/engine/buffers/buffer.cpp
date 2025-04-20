@@ -52,8 +52,10 @@ Buffer::allocateBufferMemory()
 }
 
 void
-Buffer::create(size_t size, vk::BufferUsageFlags usage)
+Buffer::recreate(vk::BufferUsageFlags usage, size_t size)
 {
+    m_size = size;
+
     vk::BufferCreateInfo bufferInfo;
     bufferInfo.flags       = vk::BufferCreateFlags();
     bufferInfo.size        = size;
@@ -65,4 +67,11 @@ Buffer::create(size_t size, vk::BufferUsageFlags usage)
 
     allocateBufferMemory();
 }
+
+size_t
+Buffer::size() const
+{
+    return m_size;
+}
+
 }; // namespace kusengine

@@ -1,6 +1,7 @@
 #ifndef VERTEX_BUFFER_HPP
 #define VERTEX_BUFFER_HPP
 
+#include <initializer_list>
 #include <vector>
 
 #include "buffer.hpp"
@@ -12,11 +13,13 @@ class VertexBuffer : public Buffer
 public:
     VertexBuffer(const Device& device);
 
-    void create(size_t size);
+    void setVertices(const std::initializer_list<float>& vertices);
+    void setVertices(const std::vector<float>& vertices);
 
-    void setVerteces(const std::vector<float>& verteces);
+    void bind(const vk::CommandBuffer& command_buffer) const;
 
 private:
+    void checkBufferSize(size_t);
 };
 }; // namespace kusengine
 

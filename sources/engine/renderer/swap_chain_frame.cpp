@@ -59,8 +59,7 @@ SwapChainFrame::createFrameBuffer(const vk::Device& logical_device,
 
     try
     {
-        m_frame_buffer =
-            logical_device.createFramebufferUnique(framebufferInfo);
+        m_framebuffer = logical_device.createFramebufferUnique(framebufferInfo);
     }
     catch (vk::SystemError err)
     {
@@ -90,48 +89,54 @@ SwapChainFrame::waitForFence(const vk::Device& logical_device)
     logical_device.resetFences(1, &(m_sync_control.inFlightFence()));
 }
 
-void
-SwapChainFrame::recordCommandBuffer(const RenderPass& render_pass,
-                                    const SwapChain& swap_chain)
+// void
+// SwapChainFrame::recordCommandBuffer(const RenderPass& render_pass,
+//                                     const SwapChain& swap_chain)
+// {
+
+//     const vk::CommandBuffer& command_buffer_ref =
+//         m_command_buffer.commandBuffer();
+
+//     command_buffer_ref.reset();
+
+//     command_buffer_ref.reset();
+
+//     vk::CommandBufferBeginInfo beginInfo = {};
+
+//     command_buffer_ref.begin(beginInfo);
+
+//     vk::RenderPassBeginInfo renderPassInfo = {};
+//     renderPassInfo.renderPass              = render_pass.renderPass();
+//     renderPassInfo.framebuffer             = m_frame_buffer.get();
+
+//     renderPassInfo.renderArea.offset.x = 0;
+//     renderPassInfo.renderArea.offset.y = 0;
+//     renderPassInfo.renderArea.extent   = swap_chain.extent();
+
+//     vk::ClearValue clearColor = {
+//         std::array<float, 4>{1.0f, 0.5f, 0.25f, 1.0f}
+//     };
+
+//     renderPassInfo.clearValueCount = 1;
+//     renderPassInfo.pClearValues    = &clearColor;
+
+//     command_buffer_ref.beginRenderPass(&renderPassInfo,
+//                                        vk::SubpassContents::eInline);
+
+//     command_buffer_ref.bindPipeline(vk::PipelineBindPoint::eGraphics,
+//                                     render_pass.graphicsPipeline().pipeline());
+
+//     command_buffer_ref.draw(3, 1, 0, 0);
+
+//     command_buffer_ref.endRenderPass();
+
+//     command_buffer_ref.end();
+// }
+
+const vk::Framebuffer&
+SwapChainFrame::framebuffer() const
 {
-
-    const vk::CommandBuffer& command_buffer_ref =
-        m_command_buffer.commandBuffer();
-
-    command_buffer_ref.reset();
-
-    command_buffer_ref.reset();
-
-    vk::CommandBufferBeginInfo beginInfo = {};
-
-    command_buffer_ref.begin(beginInfo);
-
-    vk::RenderPassBeginInfo renderPassInfo = {};
-    renderPassInfo.renderPass              = render_pass.renderPass();
-    renderPassInfo.framebuffer             = m_frame_buffer.get();
-
-    renderPassInfo.renderArea.offset.x = 0;
-    renderPassInfo.renderArea.offset.y = 0;
-    renderPassInfo.renderArea.extent   = swap_chain.extent();
-
-    vk::ClearValue clearColor = {
-        std::array<float, 4>{1.0f, 0.5f, 0.25f, 1.0f}
-    };
-
-    renderPassInfo.clearValueCount = 1;
-    renderPassInfo.pClearValues    = &clearColor;
-
-    command_buffer_ref.beginRenderPass(&renderPassInfo,
-                                       vk::SubpassContents::eInline);
-
-    command_buffer_ref.bindPipeline(vk::PipelineBindPoint::eGraphics,
-                                    render_pass.graphicsPipeline().pipeline());
-
-    command_buffer_ref.draw(3, 1, 0, 0);
-
-    command_buffer_ref.endRenderPass();
-
-    command_buffer_ref.end();
+    return m_framebuffer.get();
 }
 
 void

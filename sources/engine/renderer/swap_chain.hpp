@@ -8,11 +8,10 @@
 
 #include "engine/commands/command_pool.hpp"
 #include "engine/device/device.hpp"
+#include "engine/mesh/triangle_mesh.hpp"
 
 #include "swap_chain_frame.hpp"
 #include "synchronization_control.hpp"
-
-#include "engine/mesh/triangle_mesh.hpp"
 
 namespace kusengine
 {
@@ -44,7 +43,7 @@ public:
 
     const vk::SwapchainKHR& swapchain() const;
     //
-
+    // template <typename... CallbackBind>
     void drawFrame(uint32_t frame_index, const TriangleMesh& mesh);
 
 private:
@@ -63,7 +62,6 @@ private:
     uint32_t chooseImageCount(const vk::PresentModeKHR& present_mode,
                               const vk::SurfaceCapabilitiesKHR& capabilities);
 
-
     // Surface
 
     vk::UniqueSurfaceKHR m_surface;
@@ -72,11 +70,16 @@ private:
 
     vk::UniqueSwapchainKHR m_swapchain;
 
-    //
+    // frames
     std::vector<SwapChainFrame> m_frames;
 
     vk::Format m_format;
     vk::Extent2D m_extent;
+
+    // Command buffer
+    void recordCommandBuffer(const CommandBuffer& command_buffer,
+                             const vk::Framebuffer& framebuffer,
+                             const TriangleMesh& mesh);
 
     //  Refs
     const CommandPool& command_pool_ref;
