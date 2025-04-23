@@ -10,15 +10,13 @@ class Device;
 class CommandPool
 {
 public:
-    CommandPool(const Device& device);
+    CommandPool() = default;
 
     bool create();
 
     vk::UniqueCommandBuffer allocateCommandBuffer() const;
 
 private:
-    const Device& device_ref;
-
     vk::UniqueCommandPool m_command_pool;
 };
 }; // namespace kusengine

@@ -18,8 +18,7 @@ RenderPass::renderPass() const
 }
 
 bool
-RenderPass::createRenderPass(const vk::Device& logical_device,
-                             vk::Format swap_chain_format)
+RenderPass::createRenderPass(vk::Format swap_chain_format)
 {
     vk::AttachmentDescription colorAttachment = {};
     colorAttachment.flags          = vk::AttachmentDescriptionFlags();
@@ -51,7 +50,7 @@ RenderPass::createRenderPass(const vk::Device& logical_device,
 
     try
     {
-        m_render_pass = logical_device.createRenderPassUnique(renderpassInfo);
+        m_render_pass = LOGICAL_DEVICE.createRenderPassUnique(renderpassInfo);
     }
     catch (vk::SystemError err)
     {
@@ -61,18 +60,16 @@ RenderPass::createRenderPass(const vk::Device& logical_device,
 }
 
 bool
-RenderPass::create(const vk::Device& logical_device,
-                   const vk::PipelineLayout& pipeline_layout,
+RenderPass::create(const vk::PipelineLayout& pipeline_layout,
                    vk::Format swap_chain_format,
                    const vk::Extent2D& extent)
 {
-    if (!createRenderPass(logical_device, swap_chain_format)) return false;
+    if (!createRenderPass(swap_chain_format)) return false;
 
     PipelineConfigInfo pipeline_config_info = {extent};
 
-    if (!m_graphics_pipeline.create<Vertex<VertexAttributesPositionColor>>(
-            logical_device, pipeline_config_info, pipeline_layout,
-            m_render_pass.get()))
+    if (!m_graphics_pipeline.create<VertexDescription>(
+            pipeline_config_info, pipeline_layout, m_render_pass.get()))
         return false;
 
     return true;

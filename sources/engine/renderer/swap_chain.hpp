@@ -8,7 +8,8 @@
 
 #include "engine/commands/command_pool.hpp"
 #include "engine/device/device.hpp"
-#include "engine/mesh/triangle_mesh.hpp"
+#include "engine/mesh/mesh_storage.hpp"
+#include "engine/scene/scene.hpp"
 
 #include "swap_chain_frame.hpp"
 #include "synchronization_control.hpp"
@@ -23,9 +24,7 @@ class RenderPass;
 class SwapChain
 {
 public:
-    SwapChain(const CommandPool& command_pool,
-              const Device& device,
-              const RenderPass& render_pass);
+    SwapChain(const CommandPool& command_pool, const RenderPass& render_pass);
 
     bool create(float width, float height);
     bool recreate(const Window& window, const Instance& instance);
@@ -43,8 +42,8 @@ public:
 
     const vk::SwapchainKHR& swapchain() const;
     //
-    // template <typename... CallbackBind>
-    void drawFrame(uint32_t frame_index, const TriangleMesh& mesh);
+
+    void drawFrame(uint32_t frame_index, const Scene& scene);
 
 private:
     bool present(uint32_t index, const vk::Semaphore* wait_sems);
@@ -79,11 +78,10 @@ private:
     // Command buffer
     void recordCommandBuffer(const CommandBuffer& command_buffer,
                              const vk::Framebuffer& framebuffer,
-                             const TriangleMesh& mesh);
+                             const Scene& scene);
 
     //  Refs
     const CommandPool& command_pool_ref;
-    const Device& device_ref;
     const RenderPass& render_pass_ref;
 };
 }; // namespace kusengine

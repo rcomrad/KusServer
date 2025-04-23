@@ -17,8 +17,7 @@ class SwapChainFrame
 public:
     SwapChainFrame() = default;
 
-    bool createFrameBuffer(const vk::Device& logical_device,
-                           const vk::RenderPass& render_pass,
+    bool createFrameBuffer(const vk::RenderPass& render_pass,
                            const vk::Extent2D& extent);
 
     const CommandBuffer& commandBuffer() const;
@@ -28,21 +27,16 @@ public:
     const vk::Framebuffer& framebuffer() const;
 
     // Image part
-    void createImage(const vk::Device& logical_device,
-                     const vk::Image& image,
-                     const vk::Format& format);
+    void createImage(const vk::Image& image, const vk::Format& format);
 
-    void createSynchronization(const Device& device);
+    void createSynchronization();
 
     // Command Buffer
     void createCommandBuffer(const CommandPool& command_pool);
 
-    void waitForFence(const vk::Device& logical_device);
+    void waitForFence();
 
-    // void recordCommandBuffer(const RenderPass& render_pass,
-    //                          const SwapChain& swap_chain);
-
-    void submitCommandBuffer(const Device& device);
+    void submitCommandBuffer();
 
 private:
     SynchronizationControl m_sync_control;

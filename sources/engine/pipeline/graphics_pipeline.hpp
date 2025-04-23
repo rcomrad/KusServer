@@ -3,6 +3,7 @@
 
 #include <vulkan/vulkan.hpp>
 
+#include "engine/device/device.hpp"
 #include "engine/shaders/shaders/shader.hpp"
 #include "utility/file_system/path_storage.hpp"
 
@@ -20,8 +21,7 @@ public:
     GraphicsPipeline() = default;
 
     template <typename VertexType>
-    bool create(const vk::Device& logical_device,
-                const PipelineConfigInfo& pipeline_config_info,
+    bool create(const PipelineConfigInfo& pipeline_config_info,
                 const vk::PipelineLayout& pipeline_layout,
                 const vk::RenderPass& render_pass);
 
@@ -80,8 +80,7 @@ GraphicsPipeline::vertexInputState(
 
 template <typename VertexType>
 bool
-GraphicsPipeline::create(const vk::Device& logical_device,
-                         const PipelineConfigInfo& pipeline_config_info,
+GraphicsPipeline::create(const PipelineConfigInfo& pipeline_config_info,
                          const vk::PipelineLayout& pipeline_layout,
                          const vk::RenderPass& render_pass)
 {
@@ -119,8 +118,7 @@ GraphicsPipeline::create(const vk::Device& logical_device,
     // Vertex Shader
 
     vk::ShaderModule vertex_shader_module(
-        Shader::getInstance().createShaderModule(vertex_shader_path,
-                                                 logical_device));
+        Shader::getInstance().createShaderModule(vertex_shader_path));
 
     shader_stages.push_back(vertexShaderinfo(vk::ShaderStageFlagBits::eVertex,
                                              vertex_shader_module));
@@ -143,8 +141,7 @@ GraphicsPipeline::create(const vk::Device& logical_device,
     // Fragment Shader
 
     vk::ShaderModule fragment_shader_module(
-        Shader::getInstance().createShaderModule(fragment_shader_path,
-                                                 logical_device));
+        Shader::getInstance().createShaderModule(fragment_shader_path));
 
     shader_stages.push_back(vertexShaderinfo(vk::ShaderStageFlagBits::eFragment,
                                              fragment_shader_module));
@@ -180,15 +177,14 @@ GraphicsPipeline::create(const vk::Device& logical_device,
     //  Make the Pipeline
 
     m_pipeline =
-        logical_device
+        Device::getInstance()
+            .logicalDeviceConstRef()
             .createGraphicsPipelineUnique(nullptr, create_pipeline_info)
             .value;
 
-    Shader::getInstance().destroyShaderModule(logical_device,
-                                              vertex_shader_module);
+    Shader::getInstance().destroyShaderModule(vertex_shader_module);
 
-    Shader::getInstance().destroyShaderModule(logical_device,
-                                              fragment_shader_module);
+    Shader::getInstance().destroyShaderModule(fragment_shader_module);
 
     return true;
 }

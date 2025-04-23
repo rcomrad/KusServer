@@ -14,10 +14,9 @@ public:
 
     std::vector<char> readFile(std::string_view file_path);
 
-    vk::ShaderModule createShaderModule(std::string_view file_path,
-                                        const vk::Device& logical_device);
+    vk::ShaderModule createShaderModule(std::string_view file_path);
 
-    void destroyShaderModule(const vk::Device& logical_device,
+    void destroyShaderModule(
                              const vk::ShaderModule& shader_module);
 
     static Shader& getInstance();

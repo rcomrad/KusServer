@@ -5,7 +5,7 @@ namespace kusengine
 {
 
 bool
-SynchronizationControl::create(const Device& device)
+SynchronizationControl::create()
 {
     vk::SemaphoreCreateInfo semaphoreInfo = {};
 
@@ -14,9 +14,9 @@ SynchronizationControl::create(const Device& device)
     try
     {
         image_available =
-            device.logicalDeviceConstRef().createSemaphoreUnique(semaphoreInfo);
+            LOGICAL_DEVICE.createSemaphoreUnique(semaphoreInfo);
         render_finished =
-            device.logicalDeviceConstRef().createSemaphoreUnique(semaphoreInfo);
+            LOGICAL_DEVICE.createSemaphoreUnique(semaphoreInfo);
     }
     catch (vk::SystemError err)
     {
@@ -30,7 +30,7 @@ SynchronizationControl::create(const Device& device)
     try
     {
         in_flight_fence =
-            device.logicalDeviceConstRef().createFenceUnique(fenceInfo);
+            LOGICAL_DEVICE.createFenceUnique(fenceInfo);
     }
     catch (vk::SystemError err)
     {

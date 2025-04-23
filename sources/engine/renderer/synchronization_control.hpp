@@ -12,7 +12,7 @@ class SynchronizationControl
 public:
     SynchronizationControl() = default;
 
-    bool create(const Device& device);
+    bool create();
 
     const vk::Semaphore* const waitSemaphores() const;
     const vk::Semaphore* const signalSemaphores() const;

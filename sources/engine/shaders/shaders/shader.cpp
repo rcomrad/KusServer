@@ -2,6 +2,7 @@
 
 #include <fstream>
 
+#include "engine/device/device.hpp"
 #include "utility/file_system/path.hpp"
 
 namespace kusengine
@@ -54,8 +55,7 @@ Shader::readFile(std::string_view file_path)
 }
 
 vk::ShaderModule
-Shader::createShaderModule(std::string_view file_path,
-                           const vk::Device& logical_device)
+Shader::createShaderModule(std::string_view file_path)
 {
     std::vector<char>&& source_code = readFile(file_path);
 
@@ -64,13 +64,12 @@ Shader::createShaderModule(std::string_view file_path,
     moduleInfo.codeSize                   = source_code.size();
     moduleInfo.pCode = reinterpret_cast<const uint32_t*>(source_code.data());
 
-    return logical_device.createShaderModule(moduleInfo);
+    return LOGICAL_DEVICE.createShaderModule(moduleInfo);
 }
 
 void
-Shader::destroyShaderModule(const vk::Device& logical_device,
-                            const vk::ShaderModule& shader_module)
+Shader::destroyShaderModule(const vk::ShaderModule& shader_module)
 {
-    logical_device.destroyShaderModule(shader_module);
+    LOGICAL_DEVICE.destroyShaderModule(shader_module);
 }
 }; // namespace kusengine

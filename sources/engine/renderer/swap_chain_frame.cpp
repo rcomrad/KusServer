@@ -19,9 +19,7 @@ SwapChainFrame::commandBuffer() const
 }
 
 void
-SwapChainFrame::createImage(const vk::Device& logical_device,
-                            const vk::Image& image,
-                            const vk::Format& format)
+SwapChainFrame::createImage(const vk::Image& image, const vk::Format& format)
 {
     vk::ImageViewCreateInfo create_image_view_info = {};
     create_image_view_info.image                   = image;
@@ -38,12 +36,11 @@ SwapChainFrame::createImage(const vk::Device& logical_device,
     create_image_view_info.subresourceRange.baseArrayLayer = 0;
     create_image_view_info.subresourceRange.layerCount     = 1;
 
-    m_view = logical_device.createImageViewUnique(create_image_view_info);
+    m_view = LOGICAL_DEVICE.createImageViewUnique(create_image_view_info);
 }
 
 bool
-SwapChainFrame::createFrameBuffer(const vk::Device& logical_device,
-                                  const vk::RenderPass& renderpass,
+SwapChainFrame::createFrameBuffer(const vk::RenderPass& renderpass,
                                   const vk::Extent2D& extent)
 {
     std::vector<vk::ImageView> attachments = {m_view.get()};
@@ -59,7 +56,7 @@ SwapChainFrame::createFrameBuffer(const vk::Device& logical_device,
 
     try
     {
-        m_framebuffer = logical_device.createFramebufferUnique(framebufferInfo);
+        m_framebuffer = LOGICAL_DEVICE.createFramebufferUnique(framebufferInfo);
     }
     catch (vk::SystemError err)
     {
@@ -75,18 +72,18 @@ SwapChainFrame::createCommandBuffer(const CommandPool& command_pool)
 }
 
 void
-SwapChainFrame::createSynchronization(const Device& device)
+SwapChainFrame::createSynchronization()
 {
-    m_sync_control.create(device);
+    m_sync_control.create();
 }
 
 void
-SwapChainFrame::waitForFence(const vk::Device& logical_device)
+SwapChainFrame::waitForFence()
 {
-    logical_device.waitForFences(1, &(m_sync_control.inFlightFence()), VK_TRUE,
+    LOGICAL_DEVICE.waitForFences(1, &(m_sync_control.inFlightFence()), VK_TRUE,
                                  UINT64_MAX);
 
-    logical_device.resetFences(1, &(m_sync_control.inFlightFence()));
+    LOGICAL_DEVICE.resetFences(1, &(m_sync_control.inFlightFence()));
 }
 
 // void
@@ -140,7 +137,7 @@ SwapChainFrame::framebuffer() const
 }
 
 void
-SwapChainFrame::submitCommandBuffer(const Device& device)
+SwapChainFrame::submitCommandBuffer()
 {
     vk::SubmitInfo submitInfo = {};
 
@@ -157,7 +154,7 @@ SwapChainFrame::submitCommandBuffer(const Device& device)
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores    = m_sync_control.signalSemaphores();
 
-    device.getQueue("graphics")
+    DEVICE.getQueue("graphics")
         .submit(submitInfo, m_sync_control.inFlightFence());
 }
 }; // namespace kusengine

@@ -3,9 +3,6 @@
 namespace kusengine
 {
 
-VertexBuffer::VertexBuffer(const Device& device) : Buffer(device)
-{
-}
 void
 VertexBuffer::checkBufferSize(size_t required_size)
 {
@@ -32,7 +29,19 @@ VertexBuffer::setVertices(const std::vector<float>& vertices)
 void
 VertexBuffer::bind(const vk::CommandBuffer& command_buffer) const
 {
-    vk::DeviceSize offsets[] = {0};
-    command_buffer.bindVertexBuffers(0, 1, &(m_buffer.get()), offsets);
+    vk::DeviceSize ds_offsets[] = {0};
+
+    command_buffer.bindVertexBuffers(0, 1, &(m_buffer.get()), ds_offsets);
+}
+
+void
+VertexBuffer::draw(const vk::CommandBuffer& command_buffer,
+                   uint32_t vertex_count,
+                   uint32_t instance_count,
+                   uint32_t first_vertex,
+                   uint32_t first_instance) const
+{
+    command_buffer.draw(vertex_count, instance_count, first_vertex,
+                        first_instance);
 }
 }; // namespace kusengine

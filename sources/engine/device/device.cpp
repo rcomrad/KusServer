@@ -38,4 +38,11 @@ Device::getSurfaceSupportDetails(const vk::SurfaceKHR& surface) const
     };
 }
 
+Device&
+Device::getInstance()
+{
+    static Device device;
+    return device;
+}
+
 }; // namespace kusengine

@@ -7,116 +7,47 @@
 namespace kusengine
 {
 
-struct VertexAttributesPositionColor
+struct UniversalVertexAttributes
 {
-    glm::vec2 position;
+    glm::vec2 pos;
     glm::vec3 color;
-    static constexpr int countFields()
-    {
-        return 2;
-    }
+
+    static constexpr int count_floats = 5;
 };
 
-struct VertexAttributesPositionTexture
-{
-    glm::vec2 position;
-    glm::vec4 texture;
-    static constexpr int countFields()
-    {
-        return 2;
-    }
-};
-
-template <typename VertexAttributes>
-class Vertex
+class VertexDescription
 {
 public:
-    static Vertex& getInstance();
+    static VertexDescription& getInstance();
 
     vk::VertexInputBindingDescription getBindingDescription();
 
-    std::array<vk::VertexInputAttributeDescription,
-               VertexAttributesPositionColor::countFields()>
+    std::array<vk::VertexInputAttributeDescription, 2>
     getAttributeDescriptions();
 
 private:
-    Vertex() = default;
+    VertexDescription() = default;
 
-    VertexAttributesPositionColor vertex_attributes_pos_color;
+    UniversalVertexAttributes m_unviersal_vertex_attributes;
 };
 
-template <typename VertexAttributes>
-Vertex<VertexAttributes>&
-Vertex<VertexAttributes>::getInstance()
+class UniversalVertex
 {
-    static Vertex<VertexAttributes> vertex;
-    return vertex;
-}
+public:
+    UniversalVertex& setPosition(float x, float y);
 
-template <typename VertexAttributes>
-vk::VertexInputBindingDescription
-Vertex<VertexAttributes>::getBindingDescription()
-{
-    vk::VertexInputBindingDescription description;
-    description.binding   = 0;
-    description.stride    = sizeof(VertexAttributes);
-    description.inputRate = vk::VertexInputRate::eVertex;
-    return description;
-}
+    UniversalVertex& setColor(float r, float g, float b);
 
-///////// getAttributeDescriptions
+    const float* const data() const;
 
-template <>
-std::array<vk::VertexInputAttributeDescription,
-           VertexAttributesPositionColor::countFields()>
-Vertex<VertexAttributesPositionColor>::getAttributeDescriptions()
-{
-    std::array<vk::VertexInputAttributeDescription,
-               VertexAttributesPositionColor::countFields()>
-        attribute_description;
+    static constexpr inline int countFloats()
+    {
+        return UniversalVertexAttributes::count_floats;
+    };
 
-    // Pos
-    attribute_description[0].binding  = 0;
-    attribute_description[0].location = 0;
-    attribute_description[0].format   = vk::Format::eR32G32Sfloat;
-    attribute_description[0].offset =
-        offsetof(VertexAttributesPositionColor, position);
-
-    // Color
-    attribute_description[1].offset =
-        offsetof(VertexAttributesPositionColor, color);
-    attribute_description[1].binding  = 0;
-    attribute_description[1].location = 1;
-    attribute_description[1].format   = vk::Format::eR32G32B32Sfloat;
-
-    return attribute_description;
-}
-
-template <>
-std::array<vk::VertexInputAttributeDescription,
-           VertexAttributesPositionTexture::countFields()>
-Vertex<VertexAttributesPositionTexture>::getAttributeDescriptions()
-{
-    std::array<vk::VertexInputAttributeDescription,
-               VertexAttributesPositionTexture::countFields()>
-        attribute_description;
-
-    // Pos
-    attribute_description[0].binding  = 0;
-    attribute_description[0].location = 0;
-    attribute_description[0].format   = vk::Format::eR32G32Sfloat;
-    attribute_description[0].offset =
-        offsetof(VertexAttributesPositionTexture, position);
-
-    // Texture
-    attribute_description[1].offset =
-        offsetof(VertexAttributesPositionTexture, texture);
-    attribute_description[1].binding  = 0;
-    attribute_description[1].location = 1;
-    attribute_description[1].format   = vk::Format::eR32G32B32A32Sfloat;
-
-    return attribute_description;
-}
+private:
+    float m_data[UniversalVertexAttributes::count_floats];
+};
 
 }; // namespace kusengine
 

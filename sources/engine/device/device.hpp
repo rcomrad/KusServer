@@ -23,7 +23,7 @@ public:
         std::vector<vk::PresentModeKHR> presentModes;
     };
 
-    Device() = default;
+    static Device& getInstance();
 
     bool create(const Instance& instance,
                 const vk::SurfaceKHR& surface) override;
@@ -36,7 +36,13 @@ public:
         const vk::SurfaceKHR& surface) const;
 
 private:
+    Device() = default;
 };
+
+#define DEVICE          Device::getInstance()
+#define LOGICAL_DEVICE  Device::getInstance().logicalDeviceConstRef()
+#define PHYSICAL_DEVICE Device::getInstance().physicalDeviceConstRef()
+
 }; // namespace kusengine
 
 #endif // DEVICE_HPP

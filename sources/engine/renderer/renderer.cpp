@@ -8,9 +8,8 @@ namespace kusengine
 {
 
 Renderer::Renderer()
-    : m_command_pool(m_device),
-      m_swap_chain(m_command_pool, m_device, m_render_pass),
-      m_triangle_mesh(m_device)
+    : m_swap_chain(m_command_pool, m_render_pass),
+      device_ref(Device::getInstance())
 {
 }
 
@@ -24,7 +23,7 @@ Renderer::createPipelineLayout()
     try
     {
         m_pipeline_layout =
-            m_device.logicalDeviceConstRef().createPipelineLayoutUnique(
+            LOGICAL_DEVICE.createPipelineLayoutUnique(
                 layoutInfo);
     }
     catch (vk::SystemError err)
@@ -42,7 +41,7 @@ Renderer::initRenderer(Window& window)
 
     if (!m_swap_chain.createSurface(window, m_instance)) return false;
 
-    if (!m_device.create(m_instance, m_swap_chain.surface())) return false;
+    if (!device_ref.create(m_instance, m_swap_chain.surface())) return false;
 
     if (!m_swap_chain.create(window.getExtent().width,
                              window.getExtent().height))
@@ -50,8 +49,7 @@ Renderer::initRenderer(Window& window)
 
     if (!createPipelineLayout()) return false;
 
-    if (!m_render_pass.create(m_device.logicalDeviceConstRef(),
-                              m_pipeline_layout.get(), m_swap_chain.format(),
+    if (!m_render_pass.create(m_pipeline_layout.get(), m_swap_chain.format(),
                               m_swap_chain.extent()))
         return false;
 
@@ -59,18 +57,8 @@ Renderer::initRenderer(Window& window)
 
     m_swap_chain.createSwapChainFrames();
 
-    // if (!m_sync_control.create()) return false;
-
     frame_number         = 0;
     max_frames_in_flight = 2;
-
-    m_triangle_mesh.create();
-
-    std::vector<float> vertices = {
-        0.0f,  -0.8f, 1.0f, 1.0f, 0.0f, 0.5f,  0.5f,  1.0f, 1.0f, 0.0f,
-        -0.5f, 0.5f,  1.0f, 1.0f, 0.0f, -1.0f, -0.8f, 1.0f, 1.0f, 0.0f,
-        1.0f,  1.0f,  1.0f, 0.0f, 1.0f, -0.5f, 0.5f,  1.0f, 0.0f, 1.0f};
-    m_triangle_mesh.setVertices(vertices.begin(), vertices.end());
 
     return true;
 }
@@ -81,19 +69,11 @@ Renderer::deviceWaitIdle()
 }
 
 void
-Renderer::drawFrameImpl(Window& window)
+Renderer::drawFrameImpl(Window& window, const Scene& scene)
 {
-    m_swap_chain.drawFrame(frame_number, m_triangle_mesh);
+    m_swap_chain.drawFrame(frame_number, scene);
 
     frame_number = (frame_number + 1) % max_frames_in_flight;
 }
-
-// void
-// Renderer::drawFrameImpl(const Window& window)
-// {
-//     vkDeviceWaitIdle(m_device.logicalDeviceConstRef());
-//     m_swap_chain.recreate(window, m_instance);
-//     drawFrameImpl();
-// }
 
 }; // namespace kusengine

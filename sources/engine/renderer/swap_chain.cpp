@@ -10,10 +10,8 @@ namespace kusengine
 {
 
 SwapChain::SwapChain(const CommandPool& command_pool,
-                     const Device& device,
                      const RenderPass& render_pass)
     : command_pool_ref(command_pool),
-      device_ref(device),
       render_pass_ref(render_pass)
 {
 }
@@ -140,7 +138,7 @@ SwapChain::recreate(const Window& window, const Instance& instance)
 bool
 SwapChain::create(float width, float height)
 {
-    auto support = device_ref.getSurfaceSupportDetails(surface());
+    auto support = DEVICE.getSurfaceSupportDetails(surface());
 
     vk::SurfaceFormatKHR format = chooseSurfaceFormat(support.formats);
 
@@ -154,7 +152,7 @@ SwapChain::create(float width, float height)
         vk::SwapchainCreateFlagsKHR(), surface(), image_count, format.format,
         format.colorSpace, extent, 1, vk::ImageUsageFlagBits::eColorAttachment);
 
-    QueueFamilyIndices indices = device_ref.getQueueFamilyIndices();
+    QueueFamilyIndices indices = DEVICE.getQueueFamilyIndices();
 
     uint32_t queue_family_indices[] = {indices.graphics_family.value(),
                                        indices.present_family.value()};
@@ -180,7 +178,7 @@ SwapChain::create(float width, float height)
     try
     {
         m_swapchain =
-            device_ref.logicalDeviceConstRef().createSwapchainKHRUnique(
+            LOGICAL_DEVICE.createSwapchainKHRUnique(
                 create_info);
     }
     catch (vk::SystemError err)
@@ -197,18 +195,18 @@ SwapChain::create(float width, float height)
 void
 SwapChain::createSwapChainFrames()
 {
-    auto images = device_ref.logicalDeviceConstRef().getSwapchainImagesKHR(
+    auto images = LOGICAL_DEVICE.getSwapchainImagesKHR(
         m_swapchain.get());
 
     m_frames.resize(images.size());
     for (int i = 0; i < images.size(); ++i)
     {
-        m_frames[i].createImage(device_ref.logicalDeviceConstRef(), images[i],
+        m_frames[i].createImage(images[i],
                                 m_format);
-        m_frames[i].createFrameBuffer(device_ref.logicalDeviceConstRef(),
+        m_frames[i].createFrameBuffer(
                                       render_pass_ref.renderPass(), m_extent);
         m_frames[i].createCommandBuffer(command_pool_ref);
-        m_frames[i].createSynchronization(device_ref);
+        m_frames[i].createSynchronization();
     }
 }
 
@@ -226,7 +224,7 @@ SwapChain::present(uint32_t index, const vk::Semaphore* wait_sems)
     vk::Result present;
     try
     {
-        present = device_ref.getQueue("present").presentKHR(presentInfo);
+        present = DEVICE.getQueue("present").presentKHR(presentInfo);
     }
     catch (vk::OutOfDateKHRError error)
     {
@@ -245,7 +243,7 @@ SwapChain::present(uint32_t index, const vk::Semaphore* wait_sems)
 void
 SwapChain::recordCommandBuffer(const CommandBuffer& command_buffer,
                                const vk::Framebuffer& framebuffer,
-                               const TriangleMesh& mesh)
+                               const Scene& scene)
 {
     const vk::CommandBuffer& command_buffer_ref =
         command_buffer.commandBuffer();
@@ -278,7 +276,7 @@ SwapChain::recordCommandBuffer(const CommandBuffer& command_buffer,
         vk::PipelineBindPoint::eGraphics,
         render_pass_ref.graphicsPipeline().pipeline());
 
-    mesh.draw(command_buffer_ref);
+    // mesh_storage.draw(command_buffer_ref);
 
     command_buffer_ref.endRenderPass();
 
@@ -286,14 +284,14 @@ SwapChain::recordCommandBuffer(const CommandBuffer& command_buffer,
 }
 
 void
-SwapChain::drawFrame(uint32_t frame_index, const TriangleMesh& mesh)
+SwapChain::drawFrame(uint32_t frame_index, const Scene& scene)
 {
 
-    m_frames[frame_index].waitForFence(device_ref.logicalDeviceConstRef());
+    m_frames[frame_index].waitForFence();
 
     uint32_t image_index;
 
-    auto acquire_res = device_ref.logicalDeviceConstRef().acquireNextImageKHR(
+    auto acquire_res = LOGICAL_DEVICE.acquireNextImageKHR(
         m_swapchain.get(), UINT64_MAX,
         m_frames[frame_index].synControl().imageAvailable(), nullptr);
 
@@ -302,9 +300,9 @@ SwapChain::drawFrame(uint32_t frame_index, const TriangleMesh& mesh)
     const auto& command_buffer = m_frames[frame_index].commandBuffer();
     const auto& framebuffer    = m_frames[frame_index].framebuffer();
 
-    recordCommandBuffer(command_buffer, framebuffer, mesh);
+    recordCommandBuffer(command_buffer, framebuffer, scene);
 
-    m_frames[frame_index].submitCommandBuffer(device_ref);
+    m_frames[frame_index].submitCommandBuffer();
 
     present(image_index, m_frames[frame_index].synControl().signalSemaphores());
 }

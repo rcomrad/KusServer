@@ -1,0 +1,29 @@
+#ifndef INSTANCE_BUFFER_HPP
+#define INSTANCE_BUFFER_HPP
+
+#include <initializer_list>
+#include <vector>
+
+#include "buffer.hpp"
+
+namespace kusengine
+{
+class IndexBuffer : public Buffer
+{
+public:
+    IndexBuffer() = default;
+
+    void setIndices(const std::initializer_list<uint32_t>& vertices);
+    void setIndices(const std::vector<uint32_t>& vertices);
+
+    void bind(const vk::CommandBuffer& command_buffer) const;
+
+    void draw(const vk::CommandBuffer& command_buffer,
+              uint32_t index_count) const;
+
+private:
+    void checkBufferSize(size_t) override;
+};
+}; // namespace kusengine
+
+#endif // INSTANCE_BUFFER_HPP

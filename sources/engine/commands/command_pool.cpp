@@ -7,14 +7,10 @@
 namespace kusengine
 {
 
-CommandPool::CommandPool(const Device& device) : device_ref(device)
-{
-}
-
 bool
 CommandPool::create()
 {
-    auto queue_family_indices = device_ref.getQueueFamilyIndices();
+    auto queue_family_indices = DEVICE.getQueueFamilyIndices();
 
     vk::CommandPoolCreateInfo poolInfo;
     poolInfo.flags = vk::CommandPoolCreateFlags() |
@@ -23,9 +19,7 @@ CommandPool::create()
 
     try
     {
-        m_command_pool =
-            device_ref.logicalDeviceConstRef().createCommandPoolUnique(
-                poolInfo);
+        m_command_pool = LOGICAL_DEVICE.createCommandPoolUnique(poolInfo);
     }
     catch (vk::SystemError err)
     {
@@ -44,7 +38,7 @@ CommandPool::allocateCommandBuffer() const
     alloc_info.commandBufferCount            = 1;
 
     return std::move(
-        device_ref.logicalDeviceConstRef().allocateCommandBuffersUnique(
+        LOGICAL_DEVICE.allocateCommandBuffersUnique(
             alloc_info)[0]);
 }
 

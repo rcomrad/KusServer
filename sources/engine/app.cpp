@@ -80,16 +80,7 @@ App::loopBody()
 
     float x = 0, y = 0;
 
-    // double loop_time = getLoopTime();
-    m_renderer.drawFrame(m_window);
-    // if (m_window.wasWindowResized())
-    // {
-    //     m_window.resetWindowResizedFlag();
-    // }
-    // else
-    // {
-    //     m_renderer.drawFrame();
-    // }
+    m_renderer.drawFrame(m_window, scene);
 
     m_window.calculateFrameRate();
 
@@ -103,7 +94,7 @@ App::run()
     {
         m_window.handleEvents();
         // double loop_time = getLoopTime();
-        m_renderer.drawFrame(m_window);
+        m_renderer.drawFrame(m_window, scene);
         m_window.calculateFrameRate();
     }
     m_renderer.deviceWaitIdle();

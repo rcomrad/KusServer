@@ -3,16 +3,12 @@
 namespace kusengine
 {
 
-Buffer::Buffer(const Device& device) : device_ref(device)
-{
-}
-
 uint32_t
 Buffer::findMemoryTypeIndex(uint32_t supported_memory_indices,
                             vk::MemoryPropertyFlags requested_properties)
 {
     vk::PhysicalDeviceMemoryProperties memoryProperties =
-        device_ref.physicalDeviceConstRef().getMemoryProperties();
+        PHYSICAL_DEVICE.getMemoryProperties();
 
     for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)
     {
@@ -34,8 +30,7 @@ void
 Buffer::allocateBufferMemory()
 {
     vk::MemoryRequirements memory_requirements =
-        device_ref.logicalDeviceConstRef().getBufferMemoryRequirements(
-            m_buffer.get());
+        LOGICAL_DEVICE.getBufferMemoryRequirements(m_buffer.get());
 
     vk::MemoryAllocateInfo allocInfo;
     allocInfo.allocationSize = memory_requirements.size;
@@ -44,11 +39,9 @@ Buffer::allocateBufferMemory()
                             vk::MemoryPropertyFlagBits::eHostVisible |
                                 vk::MemoryPropertyFlagBits::eHostCoherent);
 
-    m_memory =
-        device_ref.logicalDeviceConstRef().allocateMemoryUnique(allocInfo);
+    m_memory = LOGICAL_DEVICE.allocateMemoryUnique(allocInfo);
 
-    device_ref.logicalDeviceConstRef().bindBufferMemory(m_buffer.get(),
-                                                        m_memory.get(), 0);
+    LOGICAL_DEVICE.bindBufferMemory(m_buffer.get(), m_memory.get(), 0);
 }
 
 void
@@ -62,8 +55,7 @@ Buffer::recreate(vk::BufferUsageFlags usage, size_t size)
     bufferInfo.usage       = usage;
     bufferInfo.sharingMode = vk::SharingMode::eExclusive;
 
-    m_buffer =
-        device_ref.logicalDeviceConstRef().createBufferUnique(bufferInfo);
+    m_buffer = LOGICAL_DEVICE.createBufferUnique(bufferInfo);
 
     allocateBufferMemory();
 }

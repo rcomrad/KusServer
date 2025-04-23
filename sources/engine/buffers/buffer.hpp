@@ -10,14 +10,14 @@ namespace kusengine
 class Buffer
 {
 public:
-    Buffer(const Device& device);
+    Buffer() = default;
 
     void recreate(vk::BufferUsageFlags usage, size_t size = 0);
 
-    void resize(size_t size);
-
     template <typename T>
     void setData(T data);
+
+    virtual void checkBufferSize(size_t required_size) = 0;
 
 protected:
     size_t size() const;
@@ -30,8 +30,6 @@ private:
 
     void allocateBufferMemory();
 
-    const Device& device_ref;
-
     vk::UniqueDeviceMemory m_memory;
 
     size_t m_size;
@@ -42,11 +40,11 @@ void
 Buffer::setData(T data)
 {
     void* memory_location =
-        device_ref.logicalDeviceConstRef().mapMemory(m_memory.get(), 0, m_size);
+        LOGICAL_DEVICE.mapMemory(m_memory.get(), 0, m_size);
 
     memcpy(memory_location, data, m_size);
 
-    device_ref.logicalDeviceConstRef().unmapMemory(m_memory.get());
+    LOGICAL_DEVICE.unmapMemory(m_memory.get());
 }
 
 }; // namespace kusengine
