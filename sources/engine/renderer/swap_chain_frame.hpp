@@ -5,7 +5,7 @@
 
 #include "engine/commands/command_buffer.hpp"
 
-#include "render_pass.hpp"
+// #include "render_pass.hpp"
 #include "synchronization_control.hpp"
 
 namespace kusengine

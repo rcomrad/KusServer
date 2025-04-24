@@ -5,10 +5,10 @@
 
 namespace kusengine
 {
+
 class RenderPass
 {
 public:
-
     RenderPass() = default;
 
     bool create(const vk::PipelineLayout& pipeline_layout,

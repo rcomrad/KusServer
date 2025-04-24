@@ -5,6 +5,7 @@
 #include "engine/device/device.hpp"
 #include "engine/instance/instance.hpp"
 #include "engine/window/window.hpp"
+#include "render_pass.hpp"
 
 namespace kusengine
 {
@@ -276,7 +277,7 @@ SwapChain::recordCommandBuffer(const CommandBuffer& command_buffer,
         vk::PipelineBindPoint::eGraphics,
         render_pass_ref.graphicsPipeline().pipeline());
 
-    // mesh_storage.draw(command_buffer_ref);
+    scene.draw(command_buffer_ref);
 
     command_buffer_ref.endRenderPass();
 

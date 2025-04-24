@@ -42,6 +42,19 @@ VertexDescription::getAttributeDescriptions()
 }
 
 // Vertex
+UniversalVertex::UniversalVertex(float x, float y, float r, float g, float b)
+{
+    setPosition(x, y);
+    setColor(r, g, b);
+}
+
+UniversalVertex::UniversalVertex(const std::initializer_list<float>& init_list)
+{
+    for (int i = 0; i < init_list.size(); ++i)
+    {
+        m_data[i] = *(init_list.begin() + i);
+    }
+}
 
 UniversalVertex&
 UniversalVertex::setPosition(float x, float y)

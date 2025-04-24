@@ -42,9 +42,6 @@ private:
     SwapChain m_swap_chain;
 
     RenderPass m_render_pass;
-
-    Device& device_ref;
-
     // Triangle
     MeshStorage<UniversalVertex> m_mesh_storage;
 

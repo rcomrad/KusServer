@@ -45,6 +45,8 @@ App::initApp()
 
     m_target_frame_time = 1 / 150.0;
 
+    scene.create();
+
     return true;
 };
 

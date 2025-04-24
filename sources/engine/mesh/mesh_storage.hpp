@@ -2,6 +2,7 @@
 #define MESH_STORAGE__HPP
 
 #include <iostream>
+#include <unordered_map>
 
 #include "engine/buffers/index_buffer.hpp"
 #include "engine/buffers/vertex_buffer.hpp"
@@ -37,17 +38,9 @@ public:
 private:
     void calculateCounts();
 
-    struct MeshInfo
-    {
-        Mesh<_VertexType> mesh;
-
-        uint32_t vertex_offset;
-        uint32_t index_offset;
-    };
-
     bool is_buffer_filled;
 
-    std::unordered_map<MeshType, MeshInfo> m_mesh_storage;
+    std::unordered_map<MeshType, Mesh<_VertexType>> m_mesh_storage;
 
     // Vertices
 
@@ -67,7 +60,7 @@ void
 MeshStorage<_VertexType>::setVertices(MeshType type,
                                       const std::vector<_VertexType>& vertices)
 {
-    m_mesh_storage[type].mesh.setVertices(vertices);
+    m_mesh_storage[type].setVertices(vertices);
     is_buffer_filled = false;
 }
 
@@ -77,7 +70,7 @@ MeshStorage<_VertexType>::setVertices(
     MeshType type,
     const std::initializer_list<_VertexType>& vertices)
 {
-    m_mesh_storage[type].mesh.setVertices(vertices);
+    m_mesh_storage[type].setVertices(vertices);
     is_buffer_filled = false;
 }
 
@@ -86,7 +79,7 @@ void
 MeshStorage<_VertexType>::setIndices(MeshType type,
                                      const std::vector<uint32_t>& indices)
 {
-    m_mesh_storage[type].mesh.setIndices(indices);
+    m_mesh_storage[type].setIndices(indices);
     is_buffer_filled = false;
 }
 
@@ -100,8 +93,8 @@ MeshStorage<_VertexType>::draw(const vk::CommandBuffer& command_buffer) const
         return;
     }
     m_vertex_buffer.bind(command_buffer);
-    m_index_buffer.bind(command_buffer, 0);
-    m_index_buffer.draw(command_buffer, m_index_count, 0, 0);
+    m_index_buffer.bind(command_buffer);
+    m_index_buffer.draw(command_buffer, m_index_count);
 }
 
 template <typename _VertexType>
@@ -112,8 +105,8 @@ MeshStorage<_VertexType>::calculateCounts()
     m_index_count  = 0;
     for (auto it = m_mesh_storage.begin(); it != m_mesh_storage.end(); ++it)
     {
-        m_vertex_count += it->second.mesh.vertexCount();
-        m_index_count += it->second.mesh.indexCount();
+        m_vertex_count += it->second.vertexCount();
+        m_index_count += it->second.indexCount();
     }
 }
 
@@ -136,10 +129,9 @@ MeshStorage<_VertexType>::fillBuffers()
     for (auto it = m_mesh_storage.begin(); it != m_mesh_storage.end(); ++it)
     {
         // Vertices
-        it->second.vertex_offset = vertex_offset;
-        auto count_vertex        = it->second.mesh.vertexCount();
+        auto count_vertex = it->second.vertexCount();
 
-        auto vertdata = it->second.mesh.verticesData();
+        auto vertdata = it->second.verticesData();
 
         std::copy(vertdata, vertdata + count_vertex * count_floats,
                   m_vertex_data.data() + vertex_offset);
@@ -148,11 +140,9 @@ MeshStorage<_VertexType>::fillBuffers()
 
         // Indices
 
-        it->second.index_offset = index_offset;
+        auto count_index = it->second.indexCount();
 
-        auto count_index = it->second.mesh.indexCount();
-
-        auto inddata = it->second.mesh.indicesData();
+        auto inddata = it->second.indicesData();
 
         std::copy(inddata, inddata + count_index,
                   m_index_data.data() + index_offset);

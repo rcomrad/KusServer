@@ -7,9 +7,7 @@
 namespace kusengine
 {
 
-Renderer::Renderer()
-    : m_swap_chain(m_command_pool, m_render_pass),
-      device_ref(Device::getInstance())
+Renderer::Renderer() : m_swap_chain(m_command_pool, m_render_pass)
 {
 }
 
@@ -23,8 +21,7 @@ Renderer::createPipelineLayout()
     try
     {
         m_pipeline_layout =
-            LOGICAL_DEVICE.createPipelineLayoutUnique(
-                layoutInfo);
+            LOGICAL_DEVICE.createPipelineLayoutUnique(layoutInfo);
     }
     catch (vk::SystemError err)
     {
@@ -41,7 +38,7 @@ Renderer::initRenderer(Window& window)
 
     if (!m_swap_chain.createSurface(window, m_instance)) return false;
 
-    if (!device_ref.create(m_instance, m_swap_chain.surface())) return false;
+    if (!DEVICE.create(m_instance, m_swap_chain.surface())) return false;
 
     if (!m_swap_chain.create(window.getExtent().width,
                              window.getExtent().height))

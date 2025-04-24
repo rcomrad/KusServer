@@ -11,9 +11,14 @@ class Scene
 public:
     Scene() = default;
 
+    void create();
+
+    void draw(const vk::CommandBuffer& command_buffer) const;
+
 private:
-    // MeshStorage<UniversalVertex> m_mesh_storage;
+    MeshStorage<UniversalVertex> m_mesh_storage;
 };
+
 }; // namespace kusengine
 
 #endif // SCENE_HPP
