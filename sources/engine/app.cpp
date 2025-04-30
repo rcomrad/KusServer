@@ -45,7 +45,8 @@ App::initApp()
 
     m_target_frame_time = 1 / 150.0;
 
-    scene.create();
+    m_scene.create(static_cast<float>(m_renderer.swapchainExtent().width),
+                   static_cast<float>(m_renderer.swapchainExtent().height));
 
     return true;
 };
@@ -55,7 +56,7 @@ App::getLoopTime()
 {
     double current_time = glfwGetTime();
 
-    return current_time - std::exchange(m_last_time, current_time);
+    return std::exchange(m_last_time, current_time) - current_time;
 }
 
 void
@@ -72,8 +73,6 @@ bool
 App::loopBody()
 {
 
-    m_window.handleEvents();
-
     if (!m_window.isOpen())
     {
         // m_renderer.deviceWaitIdle();
@@ -82,9 +81,13 @@ App::loopBody()
 
     float x = 0, y = 0;
 
-    m_renderer.drawFrame(m_window, scene);
+    m_renderer.drawFrame(m_window, m_scene);
 
     m_window.calculateFrameRate();
+
+    float time = getLoopTime();
+
+    m_window.handleEvents(m_scene, time);
 
     return true;
 }
@@ -94,11 +97,8 @@ App::run()
 {
     while (m_window.isOpen())
     {
-        m_window.handleEvents();
-        // double loop_time = getLoopTime();
-        m_renderer.drawFrame(m_window, scene);
-        m_window.calculateFrameRate();
+        loopBody();
     }
-    m_renderer.deviceWaitIdle();
+    // m_renderer.deviceWaitIdle();
 }
 }; // namespace kusengine

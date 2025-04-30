@@ -98,7 +98,6 @@ Window::initWindow(int width, int height, const std::string& title)
 
     if (glfwInit() == GLFW_FALSE)
     {
-        // TODO: error logging
         std::cerr << "Failed to init GLFW" << std::endl;
         return false;
     }
@@ -127,9 +126,43 @@ Window::isOpen() const
 }
 
 void
-Window::handleEvents()
+Window::handleEvents(Scene& scene, float time)
 {
     glfwPollEvents();
+
+    bool camera_action_flag = false;
+
+    if (glfwGetKey(m_window, GLFW_KEY_A) == GLFW_PRESS)
+    {
+        scene.camera().move({2 * time, 0.0});
+        camera_action_flag = true;
+    }
+    if (glfwGetKey(m_window, GLFW_KEY_D) == GLFW_PRESS)
+    {
+        scene.camera().move({-2 * time, 0.0});
+        camera_action_flag = true;
+    }
+    if (glfwGetKey(m_window, GLFW_KEY_W) == GLFW_PRESS)
+    {
+        scene.camera().move({0.0, 2 * time});
+        camera_action_flag = true;
+    }
+    if (glfwGetKey(m_window, GLFW_KEY_S) == GLFW_PRESS)
+    {
+        scene.camera().move({0.0, -2 * time});
+        camera_action_flag = true;
+    }
+    if (glfwGetKey(m_window, GLFW_KEY_UP) == GLFW_PRESS)
+    {
+        scene.camera().zoomIn(1 - time);
+        camera_action_flag = true;
+    }
+    if (glfwGetKey(m_window, GLFW_KEY_DOWN) == GLFW_PRESS)
+    {
+        scene.camera().zoomOut(1 - time);
+        camera_action_flag = true;
+    }
+    if (camera_action_flag) scene.camera().recalculate();
 }
 
 void

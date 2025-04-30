@@ -66,9 +66,62 @@ SwapChainFrame::createFrameBuffer(const vk::RenderPass& renderpass,
 }
 
 void
-SwapChainFrame::createCommandBuffer(const CommandPool& command_pool)
+SwapChainFrame::updateUniformData(const UBO& new_ubo)
 {
-    m_command_buffer.create(command_pool);
+    if (new_ubo == m_ubo) return;
+    m_uniform_buffer.setData(&new_ubo, sizeof(UBO));
+    writeDescriptorSets();
+}
+
+void
+SwapChainFrame::writeDescriptorSets()
+{
+    vk::DescriptorBufferInfo bufferInfo{};
+    bufferInfo.buffer = m_uniform_buffer.buffer();
+    bufferInfo.offset = 0;
+    bufferInfo.range  = sizeof(UBO);
+
+    vk::WriteDescriptorSet descriptorWrite;
+    descriptorWrite.dstSet          = m_descriptor_sets[0].get();
+    descriptorWrite.dstBinding      = 0;
+    descriptorWrite.dstArrayElement = 0;
+    descriptorWrite.descriptorType  = vk::DescriptorType::eUniformBuffer;
+    descriptorWrite.descriptorCount = 1;
+    descriptorWrite.pBufferInfo     = &bufferInfo;
+
+    LOGICAL_DEVICE.updateDescriptorSets(1, &descriptorWrite, 0, nullptr);
+}
+
+std::vector<vk::DescriptorSet>
+SwapChainFrame::getDescriptorSets() const
+{
+    return {m_descriptor_sets[0].get()};
+}
+
+void
+SwapChainFrame::createDescriptorSet(const DescriptorManager& descriptor_manager)
+{
+    vk::DescriptorSetAllocateInfo allocationInfo;
+
+    allocationInfo.descriptorPool     = descriptor_manager.descriptorPool();
+    allocationInfo.descriptorSetCount = 1;
+    allocationInfo.pSetLayouts = &(descriptor_manager.descriptorSetLayout());
+
+    try
+    {
+        m_descriptor_sets =
+            LOGICAL_DEVICE.allocateDescriptorSetsUnique(allocationInfo);
+    }
+    catch (vk::SystemError err)
+    {
+        std::cerr << err.what();
+    }
+}
+
+void
+SwapChainFrame::createCommandBuffer()
+{
+    m_command_buffer.create();
 }
 
 void
@@ -85,50 +138,6 @@ SwapChainFrame::waitForFence()
 
     LOGICAL_DEVICE.resetFences(1, &(m_sync_control.inFlightFence()));
 }
-
-// void
-// SwapChainFrame::recordCommandBuffer(const RenderPass& render_pass,
-//                                     const SwapChain& swap_chain)
-// {
-
-//     const vk::CommandBuffer& command_buffer_ref =
-//         m_command_buffer.commandBuffer();
-
-//     command_buffer_ref.reset();
-
-//     command_buffer_ref.reset();
-
-//     vk::CommandBufferBeginInfo beginInfo = {};
-
-//     command_buffer_ref.begin(beginInfo);
-
-//     vk::RenderPassBeginInfo renderPassInfo = {};
-//     renderPassInfo.renderPass              = render_pass.renderPass();
-//     renderPassInfo.framebuffer             = m_frame_buffer.get();
-
-//     renderPassInfo.renderArea.offset.x = 0;
-//     renderPassInfo.renderArea.offset.y = 0;
-//     renderPassInfo.renderArea.extent   = swap_chain.extent();
-
-//     vk::ClearValue clearColor = {
-//         std::array<float, 4>{1.0f, 0.5f, 0.25f, 1.0f}
-//     };
-
-//     renderPassInfo.clearValueCount = 1;
-//     renderPassInfo.pClearValues    = &clearColor;
-
-//     command_buffer_ref.beginRenderPass(&renderPassInfo,
-//                                        vk::SubpassContents::eInline);
-
-//     command_buffer_ref.bindPipeline(vk::PipelineBindPoint::eGraphics,
-//                                     render_pass.graphicsPipeline().pipeline());
-
-//     command_buffer_ref.draw(3, 1, 0, 0);
-
-//     command_buffer_ref.endRenderPass();
-
-//     command_buffer_ref.end();
-// }
 
 const vk::Framebuffer&
 SwapChainFrame::framebuffer() const

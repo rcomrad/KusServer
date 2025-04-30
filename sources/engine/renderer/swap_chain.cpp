@@ -5,15 +5,14 @@
 #include "engine/device/device.hpp"
 #include "engine/instance/instance.hpp"
 #include "engine/window/window.hpp"
+
 #include "render_pass.hpp"
 
 namespace kusengine
 {
 
-SwapChain::SwapChain(const CommandPool& command_pool,
-                     const RenderPass& render_pass)
-    : command_pool_ref(command_pool),
-      render_pass_ref(render_pass)
+SwapChain::SwapChain(const RenderPass& render_pass)
+    : render_pass_ref(render_pass)
 {
 }
 
@@ -79,10 +78,10 @@ SwapChain::choosePresentMode(
 {
     for (vk::PresentModeKHR presentMode : available_present_modes)
     {
-        // if (presentMode == vk::PresentModeKHR::eImmediate)
-        // {
-        //     return presentMode;
-        // }
+        if (presentMode == vk::PresentModeKHR::eImmediate)
+        {
+            return presentMode;
+        }
         if (presentMode == vk::PresentModeKHR::eMailbox)
         {
             return presentMode;
@@ -132,7 +131,7 @@ SwapChain::recreate(const Window& window, const Instance& instance)
     createSurface(window, instance);
     if (!create(window.getExtent().width, window.getExtent().height))
         return false;
-    createSwapChainFrames();
+    // createSwapChainFrames();
     return true;
 }
 
@@ -178,9 +177,7 @@ SwapChain::create(float width, float height)
 
     try
     {
-        m_swapchain =
-            LOGICAL_DEVICE.createSwapchainKHRUnique(
-                create_info);
+        m_swapchain = LOGICAL_DEVICE.createSwapchainKHRUnique(create_info);
     }
     catch (vk::SystemError err)
     {
@@ -193,22 +190,21 @@ SwapChain::create(float width, float height)
     return true;
 }
 
-void
-SwapChain::createSwapChainFrames()
+size_t
+SwapChain::createSwapChainFrames(const DescriptorManager& desc_manager)
 {
-    auto images = LOGICAL_DEVICE.getSwapchainImagesKHR(
-        m_swapchain.get());
+    auto images = LOGICAL_DEVICE.getSwapchainImagesKHR(m_swapchain.get());
 
     m_frames.resize(images.size());
     for (int i = 0; i < images.size(); ++i)
     {
-        m_frames[i].createImage(images[i],
-                                m_format);
-        m_frames[i].createFrameBuffer(
-                                      render_pass_ref.renderPass(), m_extent);
-        m_frames[i].createCommandBuffer(command_pool_ref);
+        m_frames[i].createImage(images[i], m_format);
+        m_frames[i].createFrameBuffer(render_pass_ref.renderPass(), m_extent);
+        m_frames[i].createCommandBuffer();
         m_frames[i].createSynchronization();
+        m_frames[i].createDescriptorSet(desc_manager);
     }
+    return images.size();
 }
 
 bool
@@ -242,12 +238,12 @@ SwapChain::present(uint32_t index, const vk::Semaphore* wait_sems)
 }
 
 void
-SwapChain::recordCommandBuffer(const CommandBuffer& command_buffer,
-                               const vk::Framebuffer& framebuffer,
-                               const Scene& scene)
+SwapChain::recordCommandBuffer(const vk::PipelineLayout& pipelayout,
+                               const Scene& scene,
+                               const SwapChainFrame& frame)
 {
     const vk::CommandBuffer& command_buffer_ref =
-        command_buffer.commandBuffer();
+        frame.commandBuffer().commandBuffer();
 
     command_buffer_ref.reset();
 
@@ -257,7 +253,7 @@ SwapChain::recordCommandBuffer(const CommandBuffer& command_buffer,
 
     vk::RenderPassBeginInfo renderPassInfo = {};
     renderPassInfo.renderPass              = render_pass_ref.renderPass();
-    renderPassInfo.framebuffer             = framebuffer;
+    renderPassInfo.framebuffer             = frame.framebuffer();
 
     renderPassInfo.renderArea.offset.x = 0;
     renderPassInfo.renderArea.offset.y = 0;
@@ -273,6 +269,11 @@ SwapChain::recordCommandBuffer(const CommandBuffer& command_buffer,
     command_buffer_ref.beginRenderPass(&renderPassInfo,
                                        vk::SubpassContents::eInline);
 
+    command_buffer_ref.bindDescriptorSets(
+        vk::PipelineBindPoint::eGraphics, pipelayout, 0u,
+        frame.getDescriptorSets().size(), frame.getDescriptorSets().data(), 0,
+        nullptr);
+
     command_buffer_ref.bindPipeline(
         vk::PipelineBindPoint::eGraphics,
         render_pass_ref.graphicsPipeline().pipeline());
@@ -285,10 +286,13 @@ SwapChain::recordCommandBuffer(const CommandBuffer& command_buffer,
 }
 
 void
-SwapChain::drawFrame(uint32_t frame_index, const Scene& scene)
+SwapChain::drawFrame(uint32_t frame_index,
+                     const Scene& scene,
+                     const vk::PipelineLayout& pipelayout)
 {
 
     m_frames[frame_index].waitForFence();
+    m_frames[frame_index].updateUniformData(scene.ubo());
 
     uint32_t image_index;
 
@@ -298,10 +302,7 @@ SwapChain::drawFrame(uint32_t frame_index, const Scene& scene)
 
     image_index = acquire_res.value;
 
-    const auto& command_buffer = m_frames[frame_index].commandBuffer();
-    const auto& framebuffer    = m_frames[frame_index].framebuffer();
-
-    recordCommandBuffer(command_buffer, framebuffer, scene);
+    recordCommandBuffer(pipelayout, scene, m_frames[frame_index]);
 
     m_frames[frame_index].submitCommandBuffer();
 

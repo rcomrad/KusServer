@@ -1,5 +1,6 @@
 #include "command_buffer.hpp"
 
+#include "command_pool.hpp"
 namespace kusengine
 {
 CommandBuffer::CommandBuffer()
@@ -7,9 +8,9 @@ CommandBuffer::CommandBuffer()
 }
 
 void
-CommandBuffer::create(const CommandPool& command_pool)
+CommandBuffer::create()
 {
-    m_command_buffer = command_pool.allocateCommandBuffer();
+    m_command_buffer = COMMAND_POOL.allocateCommandBuffer();
 }
 
 const vk::CommandBuffer&

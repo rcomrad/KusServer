@@ -1,13 +1,8 @@
 #ifndef DEVICE_HPP
 #define DEVICE_HPP
 
-#include "engine/renderer/swap_chain_frame.hpp"
-
 #include "logical_device.hpp"
 #include "physical_device.hpp"
-
-// #include "swap_chain.hpp"
-// #include "engine/renderer/render_pass.hpp"
 
 namespace kusengine
 {

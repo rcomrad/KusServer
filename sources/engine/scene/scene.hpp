@@ -1,22 +1,43 @@
 #ifndef SCENE_HPP
 #define SCENE_HPP
 
-#include "engine/mesh/mesh_storage.hpp"
-#include "engine/mesh/vertex.hpp"
+#include <glm/glm.hpp>
+
+#include "engine/model/mesh_combiner.hpp"
+#include "engine/model/model.hpp"
+#include "engine/uniform_buffer_objects/uniform_buffer_object.hpp"
+
+#include "camera.hpp"
 
 namespace kusengine
 {
+
 class Scene
 {
 public:
     Scene() = default;
 
-    void create();
+    void create(float width, float height);
 
     void draw(const vk::CommandBuffer& command_buffer) const;
 
+    UBO ubo() const;
+
+    const Camera2D& camera() const;
+
+    Camera2D& camera();
+
 private:
-    MeshStorage<UniversalVertex> m_mesh_storage;
+    // Models
+
+    MeshCombiner m_mesh_combiner;
+
+    std::vector<Model> m_models;
+
+    /////////////////////
+    UBO m_ubo;
+
+    Camera2D m_camera;
 };
 
 }; // namespace kusengine

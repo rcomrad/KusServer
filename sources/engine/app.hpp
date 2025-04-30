@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 
+#include "engine/scene/camera.hpp"
 #include "engine/scene/scene.hpp"
 #include "renderer/renderer.hpp"
 #include "window/window.hpp"
@@ -30,7 +31,7 @@ private:
 
     Window m_window;
 
-    Scene scene;
+    Scene m_scene;
 
     // Time
 

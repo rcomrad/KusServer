@@ -162,8 +162,6 @@ GraphicsPipeline::create(const PipelineConfigInfo& pipeline_config_info,
 
     // Pipeline Layout
 
-    // vk::PipelineLayout pipelineLayout =
-    //     make_pipeline_layout(specification.device, debug);
     create_pipeline_info.layout = pipeline_layout;
 
     // Renderpass

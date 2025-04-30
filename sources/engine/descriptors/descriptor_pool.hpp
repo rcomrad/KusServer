@@ -1,0 +1,25 @@
+#ifndef DESCRIPTOR_POOL_HPP
+#define DESCRIPTOR_POOL_HPP
+
+#include <vulkan/vulkan.hpp>
+
+#include "descriptor_set_layout.hpp"
+
+namespace kusengine
+{
+class DescriptorPool
+{
+public:
+    DescriptorPool() = default;
+
+    void create(const DescriptorSetLayoutData& descriptor_set_layout_data,
+                uint32_t size);
+
+    const vk::DescriptorPool& descriptorPool() const;
+
+private:
+    vk::UniqueDescriptorPool m_descriptor_pool;
+};
+}; // namespace kusengine
+
+#endif // DESCRIPTOR_POOL_HPP

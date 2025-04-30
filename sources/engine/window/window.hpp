@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "engine/instance/instance.hpp"
+#include "engine/scene/scene.hpp"
 
 namespace kusengine
 {
@@ -37,7 +38,7 @@ public:
 
     void resetWindowResizedFlag();
 
-    void handleEvents();
+    void handleEvents(Scene& scene, float time);
 
     bool createWindowSurface(const vk::Instance& instance,
                              VkSurfaceKHR& surface) const;

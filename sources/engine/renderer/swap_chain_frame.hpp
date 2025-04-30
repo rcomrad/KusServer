@@ -3,9 +3,11 @@
 
 #include <vulkan/vulkan.hpp>
 
+#include "engine/buffers/uniform_buffer.hpp"
 #include "engine/commands/command_buffer.hpp"
+#include "engine/descriptors/descriptor_manager.hpp"
+#include "engine/uniform_buffer_objects/uniform_buffer_object.hpp"
 
-// #include "render_pass.hpp"
 #include "synchronization_control.hpp"
 
 namespace kusengine
@@ -32,11 +34,21 @@ public:
     void createSynchronization();
 
     // Command Buffer
-    void createCommandBuffer(const CommandPool& command_pool);
+    void createCommandBuffer();
 
     void waitForFence();
 
     void submitCommandBuffer();
+
+    // Resourcers
+
+    void updateUniformData(const UBO& new_ubo);
+
+    void createDescriptorSet(const DescriptorManager& descriptor_manager);
+
+    void writeDescriptorSets();
+
+    std::vector<vk::DescriptorSet> getDescriptorSets() const;
 
 private:
     SynchronizationControl m_sync_control;
@@ -47,6 +59,18 @@ private:
 
     // vk::UniqueImage m_image;
     vk::UniqueImageView m_view;
+
+    // Updatable Resources
+    // vk::DescriptorSets
+
+    // Resources
+    UniformBuffer m_uniform_buffer;
+    UBO m_ubo;
+    std::vector<vk::UniqueDescriptorSet> m_descriptor_sets;
+
+    // vk::DescriptorBufferInfo descriptor_buffer_info;
+
+    // void setCamera(const UBO& camera);
 };
 }; // namespace kusengine
 #endif // SWAP_CHAIN_FRAME_HPP

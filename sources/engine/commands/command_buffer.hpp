@@ -3,8 +3,6 @@
 
 #include <vulkan/vulkan.hpp>
 
-#include "command_pool.hpp"
-
 namespace kusengine
 {
 class CommandBuffer
@@ -12,7 +10,7 @@ class CommandBuffer
 public:
     CommandBuffer();
 
-    void create(const CommandPool& command_pool);
+    void create();
 
     const vk::CommandBuffer& commandBuffer() const;
 

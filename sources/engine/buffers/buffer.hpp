@@ -10,39 +10,52 @@ namespace kusengine
 class Buffer
 {
 public:
-    Buffer() = default;
+    Buffer(vk::BufferUsageFlags buffer_usage_flags,
+           vk::MemoryPropertyFlags requested_properties);
 
-    void recreate(vk::BufferUsageFlags usage, size_t size = 0);
+    void recreate(const vk::DeviceSize& size);
+
+    void checkBufferSize(const vk::DeviceSize& required_size);
+
+    static void copyBuffer(Buffer& src_buffer,
+                           Buffer& dst_buffer,
+                           vk::Queue queue,
+                           const vk::CommandBuffer& command_buffer);
 
     template <typename T>
-    void setData(T data);
+    void setData(T data, const vk::DeviceSize& byte_size);
 
-    virtual void checkBufferSize(size_t required_size) = 0;
+    const vk::Buffer& buffer() const;
 
 protected:
-    size_t size() const;
+    vk::DeviceSize byteSize() const;
 
-    vk::UniqueBuffer m_buffer;
-
-private:
     uint32_t findMemoryTypeIndex(uint32_t supported_memory_indices,
                                  vk::MemoryPropertyFlags requested_properties);
 
+private:
     void allocateBufferMemory();
 
-    vk::UniqueDeviceMemory m_memory;
+    vk::UniqueBuffer m_buffer;
 
-    size_t m_size;
+    vk::DeviceSize m_byte_size;
+
+    vk::BufferUsageFlags m_buffer_usage_flags;
+    vk::MemoryPropertyFlags m_requested_properties;
+
+    vk::UniqueDeviceMemory m_memory;
 };
 
 template <typename T>
 void
-Buffer::setData(T data)
+Buffer::setData(T data, const vk::DeviceSize& byte_size)
 {
-    void* memory_location =
-        LOGICAL_DEVICE.mapMemory(m_memory.get(), 0, m_size);
+    checkBufferSize(byte_size);
 
-    memcpy(memory_location, data, m_size);
+    void* memory_location =
+        LOGICAL_DEVICE.mapMemory(m_memory.get(), 0, m_byte_size);
+
+    memcpy(memory_location, data, m_byte_size);
 
     LOGICAL_DEVICE.unmapMemory(m_memory.get());
 }

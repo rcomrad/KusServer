@@ -11,10 +11,10 @@ namespace kusengine
 class IndexBuffer : public Buffer
 {
 public:
-    IndexBuffer() = default;
+    IndexBuffer();
 
-    void setIndices(const std::initializer_list<uint32_t>& vertices);
-    void setIndices(const std::vector<uint32_t>& vertices);
+    // void setIndices(const std::initializer_list<uint32_t>& vertices);
+    // void setIndices(const std::vector<uint32_t>& vertices);
 
     void bind(const vk::CommandBuffer& command_buffer) const;
 
@@ -22,7 +22,6 @@ public:
               uint32_t index_count) const;
 
 private:
-    void checkBufferSize(size_t) override;
 };
 }; // namespace kusengine
 

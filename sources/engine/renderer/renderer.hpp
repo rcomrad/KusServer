@@ -4,9 +4,9 @@
 #include <mutex>
 
 #include "engine/commands/command_pool.hpp"
+#include "engine/descriptors/descriptor_manager.hpp"
 #include "engine/device/device.hpp"
 #include "engine/instance/instance.hpp"
-#include "engine/mesh/mesh_storage.hpp"
 #include "engine/scene/scene.hpp"
 
 #include "render_pass.hpp"
@@ -28,7 +28,7 @@ public:
 
     bool initRenderer(Window& window);
 
-    void deviceWaitIdle();
+    vk::Extent2D swapchainExtent() const;
 
 private:
     // void drawFrameImpl();
@@ -42,17 +42,14 @@ private:
     SwapChain m_swap_chain;
 
     RenderPass m_render_pass;
-    // Triangle
-    MeshStorage<UniversalVertex> m_mesh_storage;
+    // PipleinLayout
 
-    //
     bool createPipelineLayout();
 
     vk::UniquePipelineLayout m_pipeline_layout;
 
-    // Command-related variables
-
-    CommandPool m_command_pool;
+    // Descriptors
+    DescriptorManager m_descriptor_manager;
 };
 
 template <typename... Args>

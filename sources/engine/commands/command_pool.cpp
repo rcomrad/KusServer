@@ -7,6 +7,13 @@
 namespace kusengine
 {
 
+CommandPool&
+CommandPool::getInstance()
+{
+    static CommandPool command_pool;
+    return command_pool;
+}
+
 bool
 CommandPool::create()
 {
@@ -38,8 +45,7 @@ CommandPool::allocateCommandBuffer() const
     alloc_info.commandBufferCount            = 1;
 
     return std::move(
-        LOGICAL_DEVICE.allocateCommandBuffersUnique(
-            alloc_info)[0]);
+        LOGICAL_DEVICE.allocateCommandBuffersUnique(alloc_info)[0]);
 }
 
 } // namespace kusengine

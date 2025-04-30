@@ -3,35 +3,17 @@
 namespace kusengine
 {
 
-void
-IndexBuffer::checkBufferSize(size_t required_size)
+IndexBuffer::IndexBuffer()
+    : Buffer(vk::BufferUsageFlagBits::eIndexBuffer,
+             vk::MemoryPropertyFlagBits::eHostVisible |
+                 vk::MemoryPropertyFlagBits::eHostCoherent)
 {
-    if (required_size > Buffer::size())
-    {
-        Buffer::recreate(vk::BufferUsageFlagBits::eIndexBuffer, required_size);
-    }
-}
-
-void
-IndexBuffer::setIndices(const std::initializer_list<uint32_t>& indices)
-{
-    checkBufferSize(indices.size() * sizeof(uint32_t));
-    Buffer::setData(indices.begin());
-}
-
-void
-IndexBuffer::setIndices(const std::vector<uint32_t>& indices)
-{
-    checkBufferSize(indices.size() * sizeof(uint32_t));
-    Buffer::setData(indices.data());
 }
 
 void
 IndexBuffer::bind(const vk::CommandBuffer& command_buffer) const
 {
-    vk::DeviceSize ds_offset = 0;
-    command_buffer.bindIndexBuffer(m_buffer.get(), ds_offset,
-                                   vk::IndexType::eUint32);
+    command_buffer.bindIndexBuffer(buffer(), 0, vk::IndexType::eUint32);
 }
 
 void

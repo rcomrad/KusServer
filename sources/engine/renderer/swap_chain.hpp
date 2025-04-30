@@ -8,7 +8,7 @@
 
 #include "engine/commands/command_pool.hpp"
 #include "engine/device/device.hpp"
-#include "engine/mesh/mesh_storage.hpp"
+#include "engine/model/mesh_storage.hpp"
 #include "engine/scene/scene.hpp"
 
 #include "swap_chain_frame.hpp"
@@ -24,12 +24,12 @@ class RenderPass;
 class SwapChain
 {
 public:
-    SwapChain(const CommandPool& command_pool, const RenderPass& render_pass);
+    SwapChain(const RenderPass& render_pass);
 
     bool create(float width, float height);
     bool recreate(const Window& window, const Instance& instance);
 
-    void createSwapChainFrames();
+    size_t createSwapChainFrames(const DescriptorManager& desc_manager);
 
     bool createSurface(const Window& window, const Instance& instance);
     // get
@@ -43,7 +43,9 @@ public:
     const vk::SwapchainKHR& swapchain() const;
     //
 
-    void drawFrame(uint32_t frame_index, const Scene& scene);
+    void drawFrame(uint32_t frame_index,
+                   const Scene& scene,
+                   const vk::PipelineLayout& pipelayout);
 
 private:
     bool present(uint32_t index, const vk::Semaphore* wait_sems);
@@ -76,12 +78,11 @@ private:
     vk::Extent2D m_extent;
 
     // Command buffer
-    void recordCommandBuffer(const CommandBuffer& command_buffer,
-                             const vk::Framebuffer& framebuffer,
-                             const Scene& scene);
+    void recordCommandBuffer(const vk::PipelineLayout& pipelayout,
+                             const Scene& scene,
+                             const SwapChainFrame& frame);
 
     //  Refs
-    const CommandPool& command_pool_ref;
     const RenderPass& render_pass_ref;
 };
 }; // namespace kusengine

@@ -7,16 +7,23 @@
 namespace kusengine
 {
 
-Renderer::Renderer() : m_swap_chain(m_command_pool, m_render_pass)
+Renderer::Renderer() : m_swap_chain(m_render_pass)
 {
+}
+
+vk::Extent2D
+Renderer::swapchainExtent() const
+{
+    return m_swap_chain.extent();
 }
 
 bool
 Renderer::createPipelineLayout()
 {
     vk::PipelineLayoutCreateInfo layoutInfo;
-    layoutInfo.flags                  = vk::PipelineLayoutCreateFlags();
-    layoutInfo.setLayoutCount         = 0;
+    layoutInfo.flags          = vk::PipelineLayoutCreateFlags();
+    layoutInfo.setLayoutCount = 1;
+    layoutInfo.pSetLayouts    = &(m_descriptor_manager.descriptorSetLayout());
     layoutInfo.pushConstantRangeCount = 0;
     try
     {
@@ -44,31 +51,27 @@ Renderer::initRenderer(Window& window)
                              window.getExtent().height))
         return false;
 
+    m_descriptor_manager.create();
+
     if (!createPipelineLayout()) return false;
 
     if (!m_render_pass.create(m_pipeline_layout.get(), m_swap_chain.format(),
                               m_swap_chain.extent()))
         return false;
 
-    if (!m_command_pool.create()) return false;
+    if (!COMMAND_POOL.create()) return false;
 
-    m_swap_chain.createSwapChainFrames();
-
-    frame_number         = 0;
-    max_frames_in_flight = 2;
+    frame_number = 0;
+    max_frames_in_flight =
+        m_swap_chain.createSwapChainFrames(m_descriptor_manager);
 
     return true;
 }
 
 void
-Renderer::deviceWaitIdle()
-{
-}
-
-void
 Renderer::drawFrameImpl(Window& window, const Scene& scene)
 {
-    m_swap_chain.drawFrame(frame_number, scene);
+    m_swap_chain.drawFrame(frame_number, scene, m_pipeline_layout.get());
 
     frame_number = (frame_number + 1) % max_frames_in_flight;
 }
