@@ -19,12 +19,17 @@ public:
     void draw(const vk::CommandBuffer& command_buffer) const;
 
 private:
+    std::vector<uint32_t> m_index_offsets;
+    std::vector<uint32_t> m_vertex_offsets;
+    std::vector<uint32_t> m_index_counts;
 
     void calculateCounts(const std::vector<Model>& models);
 
+    bool has_data_flag;
+
     uint32_t m_index_count;
 
-    uint32_t m_vertex_count;
+    uint32_t m_vertex_float_count;
 
     GpuVertexBuffer m_mesh_buffer;
 

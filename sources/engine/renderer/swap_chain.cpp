@@ -78,10 +78,10 @@ SwapChain::choosePresentMode(
 {
     for (vk::PresentModeKHR presentMode : available_present_modes)
     {
-        if (presentMode == vk::PresentModeKHR::eImmediate)
-        {
-            return presentMode;
-        }
+        // if (presentMode == vk::PresentModeKHR::eImmediate)
+        // {
+        //     return presentMode;
+        // }
         if (presentMode == vk::PresentModeKHR::eMailbox)
         {
             return presentMode;
@@ -292,7 +292,9 @@ SwapChain::drawFrame(uint32_t frame_index,
 {
 
     m_frames[frame_index].waitForFence();
+
     m_frames[frame_index].updateUniformData(scene.ubo());
+    // m_frames[frame_index].updateDynamicObjectsData(scene.dynamicObjectsData());
 
     uint32_t image_index;
 

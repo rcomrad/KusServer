@@ -27,9 +27,9 @@ public:
 
     const vk::Buffer& buffer() const;
 
-protected:
     vk::DeviceSize byteSize() const;
 
+protected:
     uint32_t findMemoryTypeIndex(uint32_t supported_memory_indices,
                                  vk::MemoryPropertyFlags requested_properties);
 

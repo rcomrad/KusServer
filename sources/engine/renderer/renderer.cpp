@@ -23,7 +23,8 @@ Renderer::createPipelineLayout()
     vk::PipelineLayoutCreateInfo layoutInfo;
     layoutInfo.flags          = vk::PipelineLayoutCreateFlags();
     layoutInfo.setLayoutCount = 1;
-    layoutInfo.pSetLayouts    = &(m_descriptor_manager.descriptorSetLayout());
+    layoutInfo.pSetLayouts =
+        &(m_descriptor_manager.descriptorSetLayout().descriptorSetLayout());
     layoutInfo.pushConstantRangeCount = 0;
     try
     {

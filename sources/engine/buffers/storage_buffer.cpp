@@ -1,10 +1,10 @@
-#include "staging_buffer.hpp"
+#include "storage_buffer.hpp"
 
 namespace kusengine
 {
 
-StagingBuffer::StagingBuffer()
-    : Buffer(vk::BufferUsageFlagBits::eTransferSrc,
+StorageBuffer::StorageBuffer()
+    : Buffer(vk::BufferUsageFlagBits::eStorageBuffer,
              vk::MemoryPropertyFlagBits::eHostVisible |
                  vk::MemoryPropertyFlagBits::eHostCoherent)
 {

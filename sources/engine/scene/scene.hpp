@@ -3,9 +3,10 @@
 
 #include <glm/glm.hpp>
 
-#include "engine/model/mesh_combiner.hpp"
+#include "engine/model/mesh/mesh_combiner.hpp"
 #include "engine/model/model.hpp"
-#include "engine/uniform_buffer_objects/uniform_buffer_object.hpp"
+#include "engine/objects_data/dynamic_objects_data.hpp"
+#include "engine/objects_data/uniform_buffer_object.hpp"
 
 #include "camera.hpp"
 
@@ -21,20 +22,26 @@ public:
 
     void draw(const vk::CommandBuffer& command_buffer) const;
 
-    UBO ubo() const;
+    const UBO& ubo() const;
 
     const Camera2D& camera() const;
 
     Camera2D& camera();
+
+    const DynamicObjectsData& dynamicObjectsData() const;
 
 private:
     // Models
 
     MeshCombiner m_mesh_combiner;
 
-    std::vector<Model> m_models;
+    // -----------  Models Data ----------- //
 
-    /////////////////////
+    std::vector<Model> m_models;
+    DynamicObjectsData m_dynamic_objects_data;
+
+    // ------------------------------------- //
+
     UBO m_ubo;
 
     Camera2D m_camera;

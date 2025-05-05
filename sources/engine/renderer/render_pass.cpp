@@ -1,6 +1,6 @@
 #include "render_pass.hpp"
 
-#include "engine/model/vertex.hpp"
+#include "engine/model/vertex/vertex.hpp"
 
 namespace kusengine
 {

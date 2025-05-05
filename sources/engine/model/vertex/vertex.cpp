@@ -56,6 +56,13 @@ UniversalVertex::UniversalVertex(const std::initializer_list<float>& init_list)
     }
 }
 
+UniversalVertex::UniversalVertex(const glm::vec2& position,
+                                 const glm::vec3& color)
+{
+    setPosition(position.x, position.y);
+    setColor(color.x, color.y, color.z);
+}
+
 UniversalVertex&
 UniversalVertex::setPosition(float x, float y)
 {

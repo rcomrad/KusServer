@@ -19,7 +19,9 @@ public:
     void bind(const vk::CommandBuffer& command_buffer) const;
 
     void draw(const vk::CommandBuffer& command_buffer,
-              uint32_t index_count) const;
+              uint32_t index_count,
+              uint32_t first_index,
+              uint32_t vertex_offset) const;
 
 private:
 };

@@ -1,10 +1,17 @@
 #include "swap_chain_frame.hpp"
 
+#include <iostream>
+
 #include "swap_chain.hpp"
 #include "synchronization_control.hpp"
 
 namespace kusengine
 {
+std::vector<vk::DescriptorSet>
+SwapChainFrame::getDescriptorSets() const
+{
+    return {m_descriptor_sets[0].get()};
+}
 
 const SynchronizationControl&
 SwapChainFrame::synControl() const
@@ -66,46 +73,70 @@ SwapChainFrame::createFrameBuffer(const vk::RenderPass& renderpass,
 }
 
 void
-SwapChainFrame::updateUniformData(const UBO& new_ubo)
+SwapChainFrame::updateUniformData(const UBO& ubo)
 {
-    if (new_ubo == m_ubo) return;
-    m_uniform_buffer.setData(&new_ubo, sizeof(UBO));
-    writeDescriptorSets();
+    m_uniform_buffer.setData(&ubo, sizeof(UBO));
+    writeDescriptorSetUBO();
 }
 
 void
-SwapChainFrame::writeDescriptorSets()
+SwapChainFrame::updateDynamicObjectsData(const DynamicObjectsData& data)
 {
-    vk::DescriptorBufferInfo bufferInfo{};
-    bufferInfo.buffer = m_uniform_buffer.buffer();
-    bufferInfo.offset = 0;
-    bufferInfo.range  = sizeof(UBO);
+    m_storage_buffer.setData(data.m_dynamic_objects_data.data(),
+                             data.m_dynamic_objects_data.size() *
+                                 sizeof(DynamicObjectData));
 
-    vk::WriteDescriptorSet descriptorWrite;
-    descriptorWrite.dstSet          = m_descriptor_sets[0].get();
-    descriptorWrite.dstBinding      = 0;
-    descriptorWrite.dstArrayElement = 0;
-    descriptorWrite.descriptorType  = vk::DescriptorType::eUniformBuffer;
-    descriptorWrite.descriptorCount = 1;
-    descriptorWrite.pBufferInfo     = &bufferInfo;
-
-    LOGICAL_DEVICE.updateDescriptorSets(1, &descriptorWrite, 0, nullptr);
+    writeDescriptorSetDOB();
 }
 
-std::vector<vk::DescriptorSet>
-SwapChainFrame::getDescriptorSets() const
+void
+SwapChainFrame::writeDescriptorSetUBO()
 {
-    return {m_descriptor_sets[0].get()};
+    vk::DescriptorBufferInfo ubo_buffer_info{};
+    ubo_buffer_info.buffer = m_uniform_buffer.buffer();
+    ubo_buffer_info.offset = 0;
+    ubo_buffer_info.range  = sizeof(UBO);
+
+    vk::WriteDescriptorSet descriptor_write;
+    descriptor_write.dstSet          = m_descriptor_sets[0].get();
+    descriptor_write.dstBinding      = 0;
+    descriptor_write.dstArrayElement = 0;
+    descriptor_write.descriptorType  = vk::DescriptorType::eUniformBuffer;
+    descriptor_write.descriptorCount = 1;
+    descriptor_write.pBufferInfo     = &ubo_buffer_info;
+
+    LOGICAL_DEVICE.updateDescriptorSets(1, &descriptor_write, 0, nullptr);
+}
+
+void
+SwapChainFrame::writeDescriptorSetDOB()
+{
+    vk::DescriptorBufferInfo dob_buffer_info{};
+    dob_buffer_info.buffer = m_storage_buffer.buffer();
+    dob_buffer_info.offset = 0;
+    dob_buffer_info.range  = m_storage_buffer.byteSize();
+
+    vk::WriteDescriptorSet descriptor_write;
+    descriptor_write.dstSet          = m_descriptor_sets[0].get();
+    descriptor_write.dstBinding      = 1;
+    descriptor_write.dstArrayElement = 0;
+    descriptor_write.descriptorType  = vk::DescriptorType::eStorageBuffer;
+    descriptor_write.descriptorCount = 1;
+    descriptor_write.pBufferInfo     = &dob_buffer_info;
+
+    LOGICAL_DEVICE.updateDescriptorSets(1, &descriptor_write, 0, nullptr);
 }
 
 void
 SwapChainFrame::createDescriptorSet(const DescriptorManager& descriptor_manager)
 {
+
     vk::DescriptorSetAllocateInfo allocationInfo;
 
     allocationInfo.descriptorPool     = descriptor_manager.descriptorPool();
     allocationInfo.descriptorSetCount = 1;
-    allocationInfo.pSetLayouts = &(descriptor_manager.descriptorSetLayout());
+    allocationInfo.pSetLayouts =
+        &(descriptor_manager.descriptorSetLayout().descriptorSetLayout());
 
     try
     {

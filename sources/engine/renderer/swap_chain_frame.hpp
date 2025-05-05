@@ -3,10 +3,12 @@
 
 #include <vulkan/vulkan.hpp>
 
+#include "engine/buffers/storage_buffer.hpp"
 #include "engine/buffers/uniform_buffer.hpp"
 #include "engine/commands/command_buffer.hpp"
 #include "engine/descriptors/descriptor_manager.hpp"
-#include "engine/uniform_buffer_objects/uniform_buffer_object.hpp"
+#include "engine/objects_data/dynamic_objects_data.hpp"
+#include "engine/objects_data/uniform_buffer_object.hpp"
 
 #include "synchronization_control.hpp"
 
@@ -42,11 +44,14 @@ public:
 
     // Resourcers
 
-    void updateUniformData(const UBO& new_ubo);
+    void updateUniformData(const UBO& ubo);
+
+    void updateDynamicObjectsData(const DynamicObjectsData& data);
 
     void createDescriptorSet(const DescriptorManager& descriptor_manager);
 
-    void writeDescriptorSets();
+    void writeDescriptorSetUBO();
+    void writeDescriptorSetDOB();
 
     std::vector<vk::DescriptorSet> getDescriptorSets() const;
 
@@ -57,20 +62,14 @@ private:
     //
     vk::UniqueFramebuffer m_framebuffer;
 
-    // vk::UniqueImage m_image;
     vk::UniqueImageView m_view;
 
-    // Updatable Resources
-    // vk::DescriptorSets
-
     // Resources
+
     UniformBuffer m_uniform_buffer;
-    UBO m_ubo;
     std::vector<vk::UniqueDescriptorSet> m_descriptor_sets;
 
-    // vk::DescriptorBufferInfo descriptor_buffer_info;
-
-    // void setCamera(const UBO& camera);
+    StorageBuffer m_storage_buffer;
 };
 }; // namespace kusengine
 #endif // SWAP_CHAIN_FRAME_HPP

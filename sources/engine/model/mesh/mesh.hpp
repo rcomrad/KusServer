@@ -1,7 +1,7 @@
 #ifndef MESH_HPP
 #define MESH_HPP
 
-#include "vertex.hpp"
+#include "engine/model/vertex/vertex.hpp"
 
 namespace kusengine
 {
@@ -20,6 +20,8 @@ public:
 
     const std::vector<float>& getVertices() const;
     const std::vector<uint32_t>& getIndices() const;
+
+    uint32_t getVertexCount() const;
 
 private:
     std::vector<float> m_vertices;
@@ -77,6 +79,12 @@ const std::vector<uint32_t>&
 Mesh<Vt>::getIndices() const
 {
     return m_indices;
+}
+template <typename Vt>
+uint32_t
+Mesh<Vt>::getVertexCount() const
+{
+    return m_vertices.size() / Vt::countFloats();
 }
 
 }; // namespace kusengine

@@ -15,7 +15,7 @@ public:
 
     void create();
 
-    const vk::DescriptorSetLayout& descriptorSetLayout() const;
+    const DescriptorSetLayout& descriptorSetLayout() const;
     const vk::DescriptorPool& descriptorPool() const;
 
 private:

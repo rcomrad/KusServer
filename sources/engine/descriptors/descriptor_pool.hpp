@@ -13,7 +13,8 @@ public:
     DescriptorPool() = default;
 
     void create(const DescriptorSetLayoutData& descriptor_set_layout_data,
-                uint32_t size);
+                uint32_t max_sets,
+                uint32_t desc_count);
 
     const vk::DescriptorPool& descriptorPool() const;
 

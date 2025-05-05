@@ -8,7 +8,6 @@
 
 #include "engine/commands/command_pool.hpp"
 #include "engine/device/device.hpp"
-#include "engine/model/mesh_storage.hpp"
 #include "engine/scene/scene.hpp"
 
 #include "swap_chain_frame.hpp"

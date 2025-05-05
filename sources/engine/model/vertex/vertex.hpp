@@ -40,6 +40,8 @@ public:
 
     UniversalVertex(float x, float y, float r = 0, float g = 0, float b = 0);
 
+    UniversalVertex(const glm::vec2& position, const glm::vec3& color);
+
     UniversalVertex(const std::initializer_list<float>& init_list);
 
     UniversalVertex& setPosition(float x, float y);

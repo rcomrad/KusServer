@@ -16,23 +16,22 @@ DescriptorPool::descriptorPool() const
 void
 DescriptorPool::create(
     const DescriptorSetLayoutData& descriptor_set_layout_data,
-    uint32_t size)
+    uint32_t max_sets, uint32_t desc_count)
 {
     std::vector<vk::DescriptorPoolSize> poolSizes;
 
     for (int i = 0; i < descriptor_set_layout_data.count; i++)
     {
-
         vk::DescriptorPoolSize poolSize;
         poolSize.type            = descriptor_set_layout_data.types[i];
-        poolSize.descriptorCount = size;
+        poolSize.descriptorCount = desc_count;
         poolSizes.push_back(poolSize);
     }
 
     vk::DescriptorPoolCreateInfo poolInfo;
 
     poolInfo.flags         = vk::DescriptorPoolCreateFlags();
-    poolInfo.maxSets       = size;
+    poolInfo.maxSets       = max_sets;
     poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
     poolInfo.pPoolSizes    = poolSizes.data();
 
