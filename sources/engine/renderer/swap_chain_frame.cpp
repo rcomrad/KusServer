@@ -85,7 +85,6 @@ SwapChainFrame::updateDynamicObjectsData(const DynamicObjectsData& data)
     m_storage_buffer.setData(data.m_dynamic_objects_data.data(),
                              data.m_dynamic_objects_data.size() *
                                  sizeof(DynamicObjectData));
-
     writeDescriptorSetDOB();
 }
 
@@ -95,7 +94,7 @@ SwapChainFrame::writeDescriptorSetUBO()
     vk::DescriptorBufferInfo ubo_buffer_info{};
     ubo_buffer_info.buffer = m_uniform_buffer.buffer();
     ubo_buffer_info.offset = 0;
-    ubo_buffer_info.range  = sizeof(UBO);
+    ubo_buffer_info.range  = m_uniform_buffer.byteSize();
 
     vk::WriteDescriptorSet descriptor_write;
     descriptor_write.dstSet          = m_descriptor_sets[0].get();

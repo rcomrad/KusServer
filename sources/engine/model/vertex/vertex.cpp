@@ -20,10 +20,10 @@ VertexDescription::getBindingDescription()
     return description;
 }
 
-std::array<vk::VertexInputAttributeDescription, 2>
+std::array<vk::VertexInputAttributeDescription, 1>
 VertexDescription::getAttributeDescriptions()
 {
-    std::array<vk::VertexInputAttributeDescription, 2> attribute_description;
+    std::array<vk::VertexInputAttributeDescription, 1> attribute_description;
 
     // Pos
     attribute_description[0].binding  = 0;
@@ -32,11 +32,11 @@ VertexDescription::getAttributeDescriptions()
     attribute_description[0].offset = offsetof(UniversalVertexAttributes, pos);
 
     // Color
-    attribute_description[1].offset =
-        offsetof(UniversalVertexAttributes, color);
-    attribute_description[1].binding  = 0;
-    attribute_description[1].location = 1;
-    attribute_description[1].format   = vk::Format::eR32G32B32Sfloat;
+    // attribute_description[1].offset =
+    //     offsetof(UniversalVertexAttributes, color);
+    // attribute_description[1].binding  = 0;
+    // attribute_description[1].location = 1;
+    // attribute_description[1].format   = vk::Format::eR32G32B32Sfloat;
 
     return attribute_description;
 }
@@ -45,12 +45,12 @@ VertexDescription::getAttributeDescriptions()
 UniversalVertex::UniversalVertex(float x, float y, float r, float g, float b)
 {
     setPosition(x, y);
-    setColor(r, g, b);
+    // setColor(r, g, b);
 }
 
 UniversalVertex::UniversalVertex(const std::initializer_list<float>& init_list)
 {
-    for (int i = 0; i < init_list.size(); ++i)
+    for (int i = 0; i < 2; ++i)
     {
         m_data[i] = *(init_list.begin() + i);
     }
@@ -60,7 +60,7 @@ UniversalVertex::UniversalVertex(const glm::vec2& position,
                                  const glm::vec3& color)
 {
     setPosition(position.x, position.y);
-    setColor(color.x, color.y, color.z);
+    // setColor(color.x, color.y, color.z);
 }
 
 UniversalVertex&
@@ -71,14 +71,14 @@ UniversalVertex::setPosition(float x, float y)
     return *this;
 }
 
-UniversalVertex&
-UniversalVertex::setColor(float r, float g, float b)
-{
-    m_data[2] = r;
-    m_data[3] = g;
-    m_data[4] = b;
-    return *this;
-}
+// UniversalVertex&
+// UniversalVertex::setColor(float r, float g, float b)
+// {
+//     m_data[0] = r;
+//     m_data[1] = g;
+//     m_data[2] = b;
+//     return *this;
+// }
 
 const float* const
 UniversalVertex::data() const

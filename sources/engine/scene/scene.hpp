@@ -22,13 +22,15 @@ public:
 
     void draw(const vk::CommandBuffer& command_buffer) const;
 
-    const UBO& ubo() const;
+    UBO ubo() const;
 
     const Camera2D& camera() const;
 
     Camera2D& camera();
 
     const DynamicObjectsData& dynamicObjectsData() const;
+
+    void update(float time);
 
 private:
     // Models
@@ -37,12 +39,20 @@ private:
 
     // -----------  Models Data ----------- //
 
-    std::vector<Model> m_models;
+    std::vector<std::pair<Model, int>> m_models;
     DynamicObjectsData m_dynamic_objects_data;
+
+    // ----------- Moving Data ------------ //
+
+    std::vector<std::array<float, 3>>
+        circlec_moving_info; // angle, angle_speed, radius
+
+    std::vector<std::array<float, 3>>
+        circlec_color_info; // speed for x, y, and z
 
     // ------------------------------------- //
 
-    UBO m_ubo;
+    // UBO m_ubo;
 
     Camera2D m_camera;
 };

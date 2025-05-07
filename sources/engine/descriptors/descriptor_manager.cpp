@@ -18,19 +18,23 @@ DescriptorManager::descriptorPool() const
 void
 DescriptorManager::create()
 {
-    DescriptorSetLayoutData bindings;
-    bindings.count = 1;
+    std::vector<DescriptorBindingData> bindings;
 
-    bindings.indices.push_back(0);
-    bindings.types.push_back(vk::DescriptorType::eUniformBuffer);
-    bindings.counts.push_back(1);
-    bindings.stages.push_back(vk::ShaderStageFlagBits::eVertex);
+    DescriptorBindingData binding_data;
+    binding_data.index = 0;
+    binding_data.stage = vk::ShaderStageFlagBits::eVertex;
+    binding_data.count = 1;
+    binding_data.type  = vk::DescriptorType::eUniformBuffer;
+
+    bindings.emplace_back(binding_data);
 
     //
-    // bindings.indices.push_back(1);
-    // bindings.types.push_back(vk::DescriptorType::eStorageBuffer);
-    // bindings.counts.push_back(1);
-    // bindings.stages.push_back(vk::ShaderStageFlagBits::eVertex);
+    binding_data.index = 1;
+    binding_data.stage = vk::ShaderStageFlagBits::eVertex;
+    binding_data.count = 1;
+    binding_data.type  = vk::DescriptorType::eStorageBuffer;
+
+    bindings.emplace_back(binding_data);
 
     m_layout.create(bindings);
 

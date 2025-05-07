@@ -2,19 +2,19 @@
 #define VERTEX_HPP
 
 #include <glm/glm.hpp>
-#include <initializer_list>
 #include <vulkan/vulkan.hpp>
+
+#include <initializer_list>
 
 namespace kusengine
 {
 
-
 struct UniversalVertexAttributes
 {
     glm::vec2 pos;
-    glm::vec3 color;
+    // glm::vec3 color;
 
-    static constexpr int count_floats = 5;
+    static constexpr int count_floats = 2;
 };
 
 class VertexDescription
@@ -24,7 +24,7 @@ public:
 
     vk::VertexInputBindingDescription getBindingDescription();
 
-    std::array<vk::VertexInputAttributeDescription, 2>
+    std::array<vk::VertexInputAttributeDescription, 1>
     getAttributeDescriptions();
 
 private:
@@ -45,8 +45,6 @@ public:
     UniversalVertex(const std::initializer_list<float>& init_list);
 
     UniversalVertex& setPosition(float x, float y);
-
-    UniversalVertex& setColor(float r, float g, float b);
 
     const float* const data() const;
 

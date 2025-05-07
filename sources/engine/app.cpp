@@ -89,6 +89,8 @@ App::loopBody()
 
     m_window.handleEvents(m_scene, time);
 
+    m_scene.update(time);
+
     return true;
 }
 

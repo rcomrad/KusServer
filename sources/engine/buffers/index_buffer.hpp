@@ -20,8 +20,10 @@ public:
 
     void draw(const vk::CommandBuffer& command_buffer,
               uint32_t index_count,
+              uint32_t instance_count,
               uint32_t first_index,
-              uint32_t vertex_offset) const;
+              uint32_t vertex_offset,
+              uint32_t firste_instance) const;
 
 private:
 };

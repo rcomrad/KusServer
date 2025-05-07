@@ -8,7 +8,10 @@ namespace kusengine
 
 struct DynamicObjectData
 {
-    glm::vec2 move_coord;
+    glm::vec3 color;
+    float padding1;
+    glm::vec2 position;
+    float padding2[2];
 };
 
 struct DynamicObjectsData

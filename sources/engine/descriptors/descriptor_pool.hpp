@@ -12,7 +12,7 @@ class DescriptorPool
 public:
     DescriptorPool() = default;
 
-    void create(const DescriptorSetLayoutData& descriptor_set_layout_data,
+    void create(const std::vector<DescriptorBindingData>& descriptor_set_layout_data,
                 uint32_t max_sets,
                 uint32_t desc_count);
 

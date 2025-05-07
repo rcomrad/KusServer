@@ -19,10 +19,14 @@ IndexBuffer::bind(const vk::CommandBuffer& command_buffer) const
 void
 IndexBuffer::draw(const vk::CommandBuffer& command_buffer,
                   uint32_t index_count,
+                  uint32_t instance_count,
                   uint32_t first_index,
-                  uint32_t vertex_offset) const
+                  uint32_t vertex_offset,
+                  uint32_t first_instance) const
 {
-    command_buffer.drawIndexed(index_count, 1, first_index, vertex_offset, 0);
+    command_buffer.drawIndexed(index_count, instance_count, first_index,
+                               vertex_offset, first_instance);
+    // command_buffer.drawIndexed(6, 3, 0, 0, 0);
 }
 
 }; // namespace kusengine

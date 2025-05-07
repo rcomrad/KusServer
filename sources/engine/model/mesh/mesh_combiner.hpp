@@ -14,16 +14,23 @@ class MeshCombiner
 public:
     MeshCombiner();
 
-    void combine(const std::vector<Model>& models);
+    void combine(const std::vector<std::pair<Model, int>>& models);
 
     void draw(const vk::CommandBuffer& command_buffer) const;
 
 private:
-    std::vector<uint32_t> m_index_offsets;
-    std::vector<uint32_t> m_vertex_offsets;
-    std::vector<uint32_t> m_index_counts;
+    struct RangeInfo
+    {
+        uint32_t vertex_offset;
+        uint32_t index_count;
+        uint32_t first_index;
+        uint32_t instance_count;
+        uint32_t first_instance;
+    };
 
-    void calculateCounts(const std::vector<Model>& models);
+    std::vector<RangeInfo> m_ranges_info;
+
+    void calculateCounts(const std::vector<std::pair<Model, int>>& models);
 
     bool has_data_flag;
 

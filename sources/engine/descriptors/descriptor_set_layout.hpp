@@ -7,20 +7,18 @@
 
 namespace kusengine
 {
-struct DescriptorSetLayoutData
+struct DescriptorBindingData
 {
-
+    int index;
+    vk::DescriptorType type;
     int count;
-    std::vector<int> indices;
-    std::vector<vk::DescriptorType> types;
-    std::vector<int> counts;
-    std::vector<vk::ShaderStageFlags> stages;
+    vk::ShaderStageFlags stage;
 };
 
 class DescriptorSetLayout
 {
 public:
-    void create(const DescriptorSetLayoutData& data);
+    void create(const std::vector<DescriptorBindingData>& data);
 
     uint32_t count() const;
 

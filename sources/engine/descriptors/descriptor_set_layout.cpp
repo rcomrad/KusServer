@@ -7,9 +7,9 @@
 namespace kusengine
 {
 void
-DescriptorSetLayout::create(const DescriptorSetLayoutData& data)
+DescriptorSetLayout::create(const std::vector<DescriptorBindingData>& data)
 {
-    m_count = data.count;
+    m_count = data.size();
 
     std::vector<vk::DescriptorSetLayoutBinding> layout_bindings;
     layout_bindings.reserve(m_count);
@@ -17,10 +17,10 @@ DescriptorSetLayout::create(const DescriptorSetLayoutData& data)
     for (int i = 0; i < m_count; i++)
     {
         vk::DescriptorSetLayoutBinding layout_binding;
-        layout_binding.binding            = data.indices[i];
-        layout_binding.descriptorType     = data.types[i];
-        layout_binding.descriptorCount    = data.counts[i];
-        layout_binding.stageFlags         = data.stages[i];
+        layout_binding.binding            = data[i].index;
+        layout_binding.descriptorType     = data[i].type;
+        layout_binding.descriptorCount    = data[i].count;
+        layout_binding.stageFlags         = data[i].stage;
         layout_binding.pImmutableSamplers = nullptr;
         layout_bindings.push_back(layout_binding);
     }
