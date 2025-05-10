@@ -46,14 +46,14 @@ public:
 
     void updateUniformData(const UBO& ubo);
 
-    void updateDynamicObjectsData(const DynamicObjectsData& data);
+    void updateDynamicObjectsData(const std::vector<DynamicObjectData>& data);
 
     void createDescriptorSet(const DescriptorManager& descriptor_manager);
 
     void writeDescriptorSetUBO();
     void writeDescriptorSetDOB();
 
-    std::vector<vk::DescriptorSet> getDescriptorSets() const;
+    void fillDescriptorSets(std::vector<vk::DescriptorSet>& d_sets) const;
 
 private:
     SynchronizationControl m_sync_control;

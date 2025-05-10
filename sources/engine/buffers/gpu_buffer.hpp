@@ -35,7 +35,7 @@ GpuVertexBuffer::setDataTrowStagingBuffer(T data,
     StagingBuffer staging_buffer;
     staging_buffer.setData(data, byte_size);
 
-    Buffer::copyBuffer(staging_buffer, *this, DEVICE.getQueue("graphics"),
+    Buffer::copyBuffer(&staging_buffer, this, DEVICE.getQueue("graphics"),
                        command_buffer.commandBuffer());
 }
 

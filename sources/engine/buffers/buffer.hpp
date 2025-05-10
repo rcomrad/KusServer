@@ -4,12 +4,27 @@
 #include <vulkan/vulkan.hpp>
 
 #include "engine/device/device.hpp"
+#include "engine/textures/image.hpp"
 
 namespace kusengine
 {
 class Buffer
 {
 public:
+    // ---------- //
+    static void copyBuffer(const Buffer* const src_buffer,
+                           Buffer* const dst_buffer,
+                           vk::Queue queue,
+                           const vk::CommandBuffer& command_buffer);
+
+    static void copyBufferToImage(const Buffer* src_buffer,
+                                  Image& dst_image,
+                                  vk::Queue queue,
+                                  const vk::CommandBuffer& command_buffer,
+                                  float w,
+                                  float h);
+
+    // ---------- //
     Buffer(vk::BufferUsageFlags buffer_usage_flags,
            vk::MemoryPropertyFlags requested_properties);
 
@@ -17,21 +32,12 @@ public:
 
     void checkBufferSize(const vk::DeviceSize& required_size);
 
-    static void copyBuffer(Buffer& src_buffer,
-                           Buffer& dst_buffer,
-                           vk::Queue queue,
-                           const vk::CommandBuffer& command_buffer);
-
     template <typename T>
     void setData(T data, const vk::DeviceSize& byte_size);
 
     const vk::Buffer& buffer() const;
 
     vk::DeviceSize byteSize() const;
-
-protected:
-    uint32_t findMemoryTypeIndex(uint32_t supported_memory_indices,
-                                 vk::MemoryPropertyFlags requested_properties);
 
 private:
     void allocateBufferMemory();

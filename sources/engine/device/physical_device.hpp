@@ -24,6 +24,9 @@ public:
 
     QueueFamilyIndices getQueueFamilyIndices() const;
 
+    uint32_t findMemoryTypeIndex(uint32_t supported_memory_indices,
+                                 vk::MemoryPropertyFlags requested_properties);
+
 protected:
     const vk::PhysicalDevice& device() const;
 

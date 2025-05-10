@@ -12,9 +12,9 @@ namespace kusengine
 struct UniversalVertexAttributes
 {
     glm::vec2 pos;
-    // glm::vec3 color;
+    glm::vec2 text_pos;
 
-    static constexpr int count_floats = 2;
+    static constexpr int count_floats = 4;
 };
 
 class VertexDescription
@@ -24,8 +24,7 @@ public:
 
     vk::VertexInputBindingDescription getBindingDescription();
 
-    std::array<vk::VertexInputAttributeDescription, 1>
-    getAttributeDescriptions();
+    std::vector<vk::VertexInputAttributeDescription> getAttributeDescriptions();
 
 private:
     VertexDescription() = default;
@@ -38,15 +37,16 @@ class UniversalVertex
 public:
     UniversalVertex() = default;
 
-    UniversalVertex(float x, float y, float r = 0, float g = 0, float b = 0);
+    UniversalVertex(float x, float y);
 
-    UniversalVertex(const glm::vec2& position, const glm::vec3& color);
-
-    UniversalVertex(const std::initializer_list<float>& init_list);
+    UniversalVertex(const glm::vec2& position,
+                    const glm::vec3& color,
+                    const glm::vec2& text_position);
 
     UniversalVertex& setPosition(float x, float y);
+    UniversalVertex& setTexturePosition(float x, float y);
 
-    const float* const data() const;
+    const UniversalVertexAttributes* const data() const;
 
     static constexpr inline int countFloats()
     {
@@ -54,7 +54,7 @@ public:
     };
 
 private:
-    float m_data[UniversalVertexAttributes::count_floats];
+    UniversalVertexAttributes m_attributes;
 };
 
 }; // namespace kusengine

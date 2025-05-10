@@ -20,13 +20,9 @@ class DescriptorSetLayout
 public:
     void create(const std::vector<DescriptorBindingData>& data);
 
-    uint32_t count() const;
-
     const vk::DescriptorSetLayout& descriptorSetLayout() const;
 
 private:
-    uint32_t m_count;
-
     vk::UniqueDescriptorSetLayout m_descriptor_set_layout;
 };
 

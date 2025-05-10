@@ -28,29 +28,6 @@ Buffer::checkBufferSize(const vk::DeviceSize& required_size)
     }
 }
 
-uint32_t
-Buffer::findMemoryTypeIndex(uint32_t supported_memory_indices,
-                            vk::MemoryPropertyFlags requested_properties)
-{
-    vk::PhysicalDeviceMemoryProperties memoryProperties =
-        PHYSICAL_DEVICE.getMemoryProperties();
-
-    for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)
-    {
-        bool supported{static_cast<bool>(supported_memory_indices & (1 << i))};
-
-        bool sufficient{(memoryProperties.memoryTypes[i].propertyFlags &
-                         requested_properties) == requested_properties};
-
-        if (supported && sufficient)
-        {
-            return i;
-        }
-    }
-
-    return 0;
-}
-
 void
 Buffer::allocateBufferMemory()
 {
@@ -59,7 +36,7 @@ Buffer::allocateBufferMemory()
 
     vk::MemoryAllocateInfo allocInfo;
     allocInfo.allocationSize  = memory_requirements.size;
-    allocInfo.memoryTypeIndex = findMemoryTypeIndex(
+    allocInfo.memoryTypeIndex = DEVICE.findMemoryTypeIndex(
         memory_requirements.memoryTypeBits, m_requested_properties);
 
     m_memory = LOGICAL_DEVICE.allocateMemoryUnique(allocInfo);
@@ -90,8 +67,8 @@ Buffer::byteSize() const
 }
 
 void
-Buffer::copyBuffer(Buffer& src_buffer,
-                   Buffer& dst_buffer,
+Buffer::copyBuffer(const Buffer* const src_buffer,
+                   Buffer* const dst_buffer,
                    vk::Queue queue,
                    const vk::CommandBuffer& command_buffer)
 {
@@ -104,11 +81,11 @@ Buffer::copyBuffer(Buffer& src_buffer,
     vk::BufferCopy copyRegion;
     copyRegion.srcOffset = 0;
     copyRegion.dstOffset = 0;
-    copyRegion.size      = src_buffer.m_byte_size;
+    copyRegion.size      = src_buffer->m_byte_size;
 
-    dst_buffer.checkBufferSize(src_buffer.m_byte_size);
-    command_buffer.copyBuffer(src_buffer.m_buffer.get(),
-                              dst_buffer.m_buffer.get(), 1, &copyRegion);
+    dst_buffer->checkBufferSize(src_buffer->m_byte_size);
+    command_buffer.copyBuffer(src_buffer->m_buffer.get(),
+                              dst_buffer->m_buffer.get(), 1, &copyRegion);
 
     command_buffer.end();
 
@@ -117,6 +94,44 @@ Buffer::copyBuffer(Buffer& src_buffer,
     submitInfo.pCommandBuffers    = &command_buffer;
     queue.submit(1, &submitInfo, nullptr);
     queue.waitIdle();
+}
+
+void
+Buffer::copyBufferToImage(const Buffer* const src_buffer,
+                          Image& dst_image,
+                          vk::Queue queue,
+                          const vk::CommandBuffer& command_buffer,
+                          float width,
+                          float height)
+{
+    command_buffer.reset();
+
+    vk::CommandBufferBeginInfo beginInfo;
+    beginInfo.flags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit;
+    command_buffer.begin(beginInfo);
+
+    vk::ImageMemoryBarrier barrier = dst_image.memoryBarrier();
+
+    command_buffer.pipelineBarrier(vk::PipelineStageFlagBits::eTopOfPipe,
+                                   vk::PipelineStageFlagBits::eTransfer, {}, 0,
+                                   nullptr, 0, nullptr, 1, &barrier);
+
+    vk::BufferImageCopy region(
+        0, 0, 0, {vk::ImageAspectFlagBits::eColor, 0, 0, 1}, {0, 0, 0},
+        {static_cast<uint32_t>(width), static_cast<uint32_t>(height), 1});
+
+    dst_image.getDataFromBuffer(src_buffer->buffer(), command_buffer, region);
+
+    barrier.srcAccessMask = vk::AccessFlagBits::eTransferWrite;
+    barrier.dstAccessMask = vk::AccessFlagBits::eShaderRead;
+    barrier.oldLayout     = vk::ImageLayout::eTransferDstOptimal;
+    barrier.newLayout     = vk::ImageLayout::eShaderReadOnlyOptimal;
+
+    command_buffer.pipelineBarrier(vk::PipelineStageFlagBits::eTransfer,
+                                   vk::PipelineStageFlagBits::eFragmentShader,
+                                   {}, 0, nullptr, 0, nullptr, 1, &barrier);
+
+    command_buffer.end();
 }
 
 }; // namespace kusengine

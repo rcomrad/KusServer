@@ -52,10 +52,8 @@ macro(create_exe NAME)
     target_link_libraries(${EXE_NAME} PRIVATE Crow::Crow)
     target_link_libraries(${EXE_NAME} PRIVATE ${Boost_LIBRARIES})
     target_link_libraries(${EXE_NAME} PRIVATE glm::glm)
+    target_include_directories(${EXE_NAME} PRIVATE ${Stb_INCLUDE_DIR})
 
-    # target_link_libraries(${EXE_NAME} PRIVATE Vulkan::glslang)
-    # target_link_libraries(${EXE_NAME} PRIVATE Vulkan::dxc)
-    # target_link_libraries(${EXE_NAME} PRIVATE mailio)
 
     # Output file name settings
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
@@ -82,6 +80,7 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(Vulkan REQUIRED)
 find_package(Crow CONFIG REQUIRED)
 find_package(Boost REQUIRED system filesystem)
+find_package(Stb REQUIRED)
 
 # Sources include
 add_executable(${PROJECT_NAME} "sources_main/main.cpp")

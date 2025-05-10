@@ -12,22 +12,21 @@ namespace kusengine
 void
 Scene::update(float time)
 {
-    for (int i = 0; i < m_dynamic_objects_data.m_dynamic_objects_data.size();
-         ++i)
+    for (int i = 0; i < m_dynamic_objects_data.size(); ++i)
     {
         circlec_moving_info[i][0] += circlec_moving_info[i][1] * time;
 
-        m_dynamic_objects_data.m_dynamic_objects_data[i].position.x =
+        m_dynamic_objects_data[i].position.x =
             std::cos(circlec_moving_info[i][0] / 180 * 3.14) *
             circlec_moving_info[i][2];
 
-        m_dynamic_objects_data.m_dynamic_objects_data[i].position.y =
+        m_dynamic_objects_data[i].position.y =
             std::sin(circlec_moving_info[i][0] / 180 * 3.14) *
             circlec_moving_info[i][2];
 
-        float& x = m_dynamic_objects_data.m_dynamic_objects_data[i].color.x;
-        float& y = m_dynamic_objects_data.m_dynamic_objects_data[i].color.y;
-        float& z = m_dynamic_objects_data.m_dynamic_objects_data[i].color.z;
+        float& x = m_dynamic_objects_data[i].color.x;
+        float& y = m_dynamic_objects_data[i].color.y;
+        float& z = m_dynamic_objects_data[i].color.z;
 
         auto updColorChannel =
             [time](float& color_channel, float& color_changing_speed)
@@ -47,8 +46,11 @@ Scene::update(float time)
 }
 
 void
-Scene::create(float width, float height)
+Scene::create(float width,
+              float height,
+              const TextureStorage* texture_storage_ptr)
 {
+    m_texture_storage_ptr = texture_storage_ptr;
     // Models
     m_models.resize(3);
     circlec_moving_info.resize(m_models.size());
@@ -89,20 +91,22 @@ Scene::create(float width, float height)
     m_models[0].second = 3;
 
     // Camera
+    m_ubo.projection = {1.0};
     m_camera.setAspectRatio(width / height);
+    ///////////////
 
     m_mesh_combiner.combine(m_models);
 
-    m_dynamic_objects_data.m_dynamic_objects_data.resize(m_models[0].second);
+    m_dynamic_objects_data.resize(m_models[0].second);
 }
 
-UBO
+const UBO&
 Scene::ubo() const
 {
-    return {m_camera.getViewProjection()};
+    return m_ubo;
 }
 
-const DynamicObjectsData&
+const std::vector<DynamicObjectData>&
 Scene::dynamicObjectsData() const
 {
     return m_dynamic_objects_data;
@@ -111,18 +115,26 @@ Scene::dynamicObjectsData() const
 void
 Scene::draw(const vk::CommandBuffer& command_buffer) const
 {
-    m_mesh_combiner.draw(command_buffer);
+    m_mesh_combiner.bindBuffers(command_buffer);
+    for (int i = 0; i < m_models.size(); ++i)
+    {
+        m_mesh_combiner.draw(command_buffer, i);
+    }
 }
 
-const Camera2D&
-Scene::camera() const
+void
+Scene::fillDescriptorSets(std::vector<vk::DescriptorSet>& d_sets) const
 {
-    return m_camera;
+    d_sets.emplace_back(
+        m_texture_storage_ptr->getTexture("cat").getDescriptorSet());
 }
 
-Camera2D&
-Scene::camera()
+void
+Scene::moveCamera(float x, float y, float z)
 {
-    return m_camera;
+    m_camera.move({x, y});
+    m_camera.zoom(z + 1);
+    m_camera.recalculate();
+    m_ubo.projection = m_camera.getViewProjection();
 }
 }; // namespace kusengine

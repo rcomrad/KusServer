@@ -16,7 +16,9 @@ public:
 
     void combine(const std::vector<std::pair<Model, int>>& models);
 
-    void draw(const vk::CommandBuffer& command_buffer) const;
+    void bindBuffers(const vk::CommandBuffer& command_buffer) const;
+
+    void draw(const vk::CommandBuffer& command_buffer, int index) const;
 
 private:
     struct RangeInfo
@@ -36,7 +38,7 @@ private:
 
     uint32_t m_index_count;
 
-    uint32_t m_vertex_float_count;
+    uint32_t m_vertex_count;
 
     GpuVertexBuffer m_mesh_buffer;
 

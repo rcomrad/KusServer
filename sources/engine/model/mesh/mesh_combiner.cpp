@@ -15,7 +15,7 @@ MeshCombiner::calculateCounts(const std::vector<std::pair<Model, int>>& models)
     for (auto& model : models)
     {
         m_index_count += model.first.getMesh().getIndices().size();
-        m_vertex_float_count += model.first.getMesh().getVertices().size();
+        m_vertex_count += model.first.getMesh().getVertices().size();
     }
 }
 
@@ -24,7 +24,7 @@ MeshCombiner::combine(const std::vector<std::pair<Model, int>>& models)
 {
     calculateCounts(models);
 
-    std::vector<float> all_vertices(m_vertex_float_count);
+    std::vector<UniversalVertexAttributes> all_vertices(m_vertex_count);
     std::vector<uint32_t> all_indices(m_index_count);
 
     m_ranges_info.resize(models.size());
@@ -53,7 +53,8 @@ MeshCombiner::combine(const std::vector<std::pair<Model, int>>& models)
                   mesh.getVertices().data() + mesh.getVertices().size(),
                   all_vertices.data() + vertex_float_count);
 
-        vertex_float_count += mesh.getVertices().size();
+        vertex_float_count +=
+            mesh.getVertices().size() * UniversalVertexAttributes::count_floats;
 
         // offsets
         range_info.vertex_offset += mesh.getVertices().size();
@@ -64,7 +65,9 @@ MeshCombiner::combine(const std::vector<std::pair<Model, int>>& models)
     if (all_vertices.size() == 0 || all_indices.size() == 0) return;
 
     m_mesh_buffer.setDataTrowStagingBuffer(
-        all_vertices.data(), m_vertex_float_count * sizeof(float));
+        all_vertices.data(), m_vertex_count *
+                                 UniversalVertexAttributes::count_floats *
+                                 sizeof(float));
 
     m_index_buffer.setData(all_indices.data(),
                            m_index_count * sizeof(uint32_t));
@@ -73,18 +76,22 @@ MeshCombiner::combine(const std::vector<std::pair<Model, int>>& models)
 }
 
 void
-MeshCombiner::draw(const vk::CommandBuffer& command_buffer) const
+MeshCombiner::bindBuffers(const vk::CommandBuffer& command_buffer) const
 {
     if (!has_data_flag) return;
     m_mesh_buffer.bind(command_buffer);
     m_index_buffer.bind(command_buffer);
+}
 
-    for (int i = 0; i < m_ranges_info.size(); ++i)
-    {
-        m_index_buffer.draw(
-            command_buffer, m_ranges_info[i].index_count,
-            m_ranges_info[i].instance_count, m_ranges_info[i].first_index,
-            m_ranges_info[i].vertex_offset, m_ranges_info[i].first_instance);
-    }
+void
+MeshCombiner::draw(const vk::CommandBuffer& command_buffer, int index) const
+{
+    if (!has_data_flag) return;
+
+    m_index_buffer.draw(command_buffer, m_ranges_info[index].index_count,
+                        m_ranges_info[index].instance_count,
+                        m_ranges_info[index].first_index,
+                        m_ranges_info[index].vertex_offset,
+                        m_ranges_info[index].first_instance);
 }
 }; // namespace kusengine

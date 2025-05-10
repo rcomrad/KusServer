@@ -7,6 +7,7 @@
 #include "engine/model/model.hpp"
 #include "engine/objects_data/dynamic_objects_data.hpp"
 #include "engine/objects_data/uniform_buffer_object.hpp"
+#include "engine/textures/texture_storage.hpp"
 
 #include "camera.hpp"
 
@@ -18,21 +19,34 @@ class Scene
 public:
     Scene() = default;
 
-    void create(float width, float height);
+    void create(float width,
+                float height,
+                const TextureStorage* texture_storage_ptr);
 
     void draw(const vk::CommandBuffer& command_buffer) const;
 
-    UBO ubo() const;
+    // Shaders Data  //
+    const UBO& ubo() const;
+
+    const std::vector<DynamicObjectData>& dynamicObjectsData() const;
+
+    // -------------- //
 
     const Camera2D& camera() const;
 
-    Camera2D& camera();
-
-    const DynamicObjectsData& dynamicObjectsData() const;
+    void moveCamera(float x, float y, float z);
 
     void update(float time);
 
+    //
+
+    void fillDescriptorSets(std::vector<vk::DescriptorSet>& d_sets) const;
+
 private:
+    // Textures
+
+    const TextureStorage* m_texture_storage_ptr;
+
     // Models
 
     MeshCombiner m_mesh_combiner;
@@ -40,7 +54,7 @@ private:
     // -----------  Models Data ----------- //
 
     std::vector<std::pair<Model, int>> m_models;
-    DynamicObjectsData m_dynamic_objects_data;
+    std::vector<DynamicObjectData> m_dynamic_objects_data;
 
     // ----------- Moving Data ------------ //
 
@@ -52,7 +66,7 @@ private:
 
     // ------------------------------------- //
 
-    // UBO m_ubo;
+    UBO m_ubo;
 
     Camera2D m_camera;
 };

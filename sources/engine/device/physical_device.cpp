@@ -135,4 +135,28 @@ PhysicalDevice::device() const
 {
     return m_physical_device;
 }
+
+uint32_t
+PhysicalDevice::findMemoryTypeIndex(
+    uint32_t supported_memory_indices,
+    vk::MemoryPropertyFlags requested_properties)
+{
+    vk::PhysicalDeviceMemoryProperties memoryProperties =
+        m_physical_device.getMemoryProperties();
+
+    for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)
+    {
+        bool supported{static_cast<bool>(supported_memory_indices & (1 << i))};
+
+        bool sufficient{(memoryProperties.memoryTypes[i].propertyFlags &
+                         requested_properties) == requested_properties};
+
+        if (supported && sufficient)
+        {
+            return i;
+        }
+    }
+
+    return 0;
+}
 }; // namespace kusengine

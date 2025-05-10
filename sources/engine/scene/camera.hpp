@@ -12,9 +12,7 @@ public:
 
     void move(const glm::vec2& offset);
 
-    void zoomIn(float factor);
-
-    void zoomOut(float factor);
+    void zoom(float factor);
 
     void setViewWidth(float width);
 

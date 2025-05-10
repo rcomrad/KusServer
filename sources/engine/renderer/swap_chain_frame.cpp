@@ -7,10 +7,14 @@
 
 namespace kusengine
 {
-std::vector<vk::DescriptorSet>
-SwapChainFrame::getDescriptorSets() const
+
+void
+SwapChainFrame::fillDescriptorSets(std::vector<vk::DescriptorSet>& d_sets) const
 {
-    return {m_descriptor_sets[0].get()};
+    for (int i = 0; i < m_descriptor_sets.size(); ++i)
+    {
+        d_sets.emplace_back(m_descriptor_sets[i].get());
+    }
 }
 
 const SynchronizationControl&
@@ -80,11 +84,11 @@ SwapChainFrame::updateUniformData(const UBO& ubo)
 }
 
 void
-SwapChainFrame::updateDynamicObjectsData(const DynamicObjectsData& data)
+SwapChainFrame::updateDynamicObjectsData(
+    const std::vector<DynamicObjectData>& data)
 {
-    m_storage_buffer.setData(data.m_dynamic_objects_data.data(),
-                             data.m_dynamic_objects_data.size() *
-                                 sizeof(DynamicObjectData));
+    m_storage_buffer.setData(data.data(),
+                             data.size() * sizeof(DynamicObjectData));
     writeDescriptorSetDOB();
 }
 
@@ -132,10 +136,11 @@ SwapChainFrame::createDescriptorSet(const DescriptorManager& descriptor_manager)
 
     vk::DescriptorSetAllocateInfo allocationInfo;
 
-    allocationInfo.descriptorPool     = descriptor_manager.descriptorPool();
+    allocationInfo.descriptorPool =
+        descriptor_manager.descriptorConstructs()[0].pool.descriptorPool();
     allocationInfo.descriptorSetCount = 1;
     allocationInfo.pSetLayouts =
-        &(descriptor_manager.descriptorSetLayout().descriptorSetLayout());
+        &(descriptor_manager.descriptorSetLayoutVector()[0]);
 
     try
     {

@@ -8,6 +8,7 @@
 #include "engine/device/device.hpp"
 #include "engine/instance/instance.hpp"
 #include "engine/scene/scene.hpp"
+#include "engine/textures/texture_storage.hpp"
 
 #include "render_pass.hpp"
 #include "swap_chain.hpp"
@@ -23,17 +24,15 @@ class Renderer final
 public:
     Renderer();
 
-    template <typename... Args>
-    void drawFrame(Args&&... args);
+    void drawFrame(Window& window, const Scene& scene);
 
     bool initRenderer(Window& window);
 
     vk::Extent2D swapchainExtent() const;
 
-private:
-    // void drawFrameImpl();
-    void drawFrameImpl(Window& window, const Scene& scene);
+    void loadTextures(TextureStorage& texture_storage);
 
+private:
     int max_frames_in_flight;
     int frame_number;
 
@@ -51,13 +50,6 @@ private:
     // Descriptors
     DescriptorManager m_descriptor_manager;
 };
-
-template <typename... Args>
-void
-Renderer::drawFrame(Args&&... args)
-{
-    drawFrameImpl(std::forward<Args>(args)...);
-}
 
 }; // namespace kusengine
 #endif // RENDERER_HPP

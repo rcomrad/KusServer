@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "engine/window/window.hpp"
+#include "utility/file_system/path.hpp"
 
 namespace kusengine
 {
@@ -21,10 +22,11 @@ bool
 Renderer::createPipelineLayout()
 {
     vk::PipelineLayoutCreateInfo layoutInfo;
-    layoutInfo.flags          = vk::PipelineLayoutCreateFlags();
-    layoutInfo.setLayoutCount = 1;
+    layoutInfo.flags = vk::PipelineLayoutCreateFlags();
+    layoutInfo.setLayoutCount =
+        m_descriptor_manager.descriptorSetLayoutVector().size();
     layoutInfo.pSetLayouts =
-        &(m_descriptor_manager.descriptorSetLayout().descriptorSetLayout());
+        m_descriptor_manager.descriptorSetLayoutVector().data();
     layoutInfo.pushConstantRangeCount = 0;
     try
     {
@@ -37,6 +39,16 @@ Renderer::createPipelineLayout()
         return false;
     }
     return true;
+}
+
+void
+Renderer::loadTextures(TextureStorage& texture_storage)
+{
+    auto resources_path = util::PathStorage::getFolderPath("resource");
+
+    std::string cat_path = resources_path.value().data();
+    cat_path += "engine_textures/cat.png";
+    texture_storage.addTexture(cat_path, m_descriptor_manager, "cat");
 }
 
 bool
@@ -70,7 +82,7 @@ Renderer::initRenderer(Window& window)
 }
 
 void
-Renderer::drawFrameImpl(Window& window, const Scene& scene)
+Renderer::drawFrame(Window& window, const Scene& scene)
 {
     m_swap_chain.drawFrame(frame_number, scene, m_pipeline_layout.get());
 

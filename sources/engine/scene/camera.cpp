@@ -49,15 +49,9 @@ Camera2D::move(const glm::vec2& offset)
 }
 
 void
-Camera2D::zoomIn(float factor)
+Camera2D::zoom(float factor)
 {
     m_zoom *= factor;
-}
-
-void
-Camera2D::zoomOut(float factor)
-{
-    m_zoom /= factor;
 }
 
 void

@@ -132,37 +132,47 @@ Window::handleEvents(Scene& scene, float time)
 
     bool camera_action_flag = false;
 
+    float x = 0, y = 0, z = 0;
+
     if (glfwGetKey(m_window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        scene.camera().move({2 * time, 0.0});
+        x                  = 2 * time;
         camera_action_flag = true;
     }
     if (glfwGetKey(m_window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        scene.camera().move({-2 * time, 0.0});
+        x = -2 * time;
+
         camera_action_flag = true;
     }
     if (glfwGetKey(m_window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        scene.camera().move({0.0, 2 * time});
+        y = 2 * time;
+
         camera_action_flag = true;
     }
     if (glfwGetKey(m_window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        scene.camera().move({0.0, -2 * time});
+        y = -2 * time;
+
         camera_action_flag = true;
     }
     if (glfwGetKey(m_window, GLFW_KEY_UP) == GLFW_PRESS)
     {
-        scene.camera().zoomIn(1 - time);
+        z = -time;
+
         camera_action_flag = true;
     }
     if (glfwGetKey(m_window, GLFW_KEY_DOWN) == GLFW_PRESS)
     {
-        scene.camera().zoomOut(1 - time);
+        z = time;
+
         camera_action_flag = true;
     }
-    if (camera_action_flag) scene.camera().recalculate();
+    if (camera_action_flag)
+    {
+        scene.moveCamera(x, y, z);
+    }
 }
 
 void

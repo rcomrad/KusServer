@@ -5,11 +5,11 @@
 
 namespace kusengine
 {
-template <typename Vt>
+template <typename _VertexType>
 class Mesh
 {
 public:
-    using VertexType = Vt;
+    using VertexType = _VertexType;
 
     Mesh() = default;
 
@@ -18,20 +18,20 @@ public:
 
     void setIndices(const std::vector<uint32_t>& indices);
 
-    const std::vector<float>& getVertices() const;
+    const std::vector<UniversalVertexAttributes>& getVertices() const;
     const std::vector<uint32_t>& getIndices() const;
 
     uint32_t getVertexCount() const;
 
 private:
-    std::vector<float> m_vertices;
+    std::vector<UniversalVertexAttributes> m_vertices;
 
     std::vector<uint32_t> m_indices;
 };
 
-template <typename Vt>
+template <typename VertexType>
 void
-Mesh<Vt>::setVertices(const std::vector<VertexType>& vertices)
+Mesh<VertexType>::setVertices(const std::vector<VertexType>& vertices)
 {
     size_t size = vertices.size();
 
@@ -44,9 +44,9 @@ Mesh<Vt>::setVertices(const std::vector<VertexType>& vertices)
                   m_vertices.data() + i * count_floats);
     }
 }
-template <typename Vt>
+template <typename VertexType>
 void
-Mesh<Vt>::setVertices(const std::initializer_list<VertexType>& vertices)
+Mesh<VertexType>::setVertices(const std::initializer_list<VertexType>& vertices)
 {
     size_t size = vertices.size();
 
@@ -61,30 +61,30 @@ Mesh<Vt>::setVertices(const std::initializer_list<VertexType>& vertices)
     }
 }
 
-template <typename Vt>
+template <typename VertexType>
 void
-Mesh<Vt>::setIndices(const std::vector<uint32_t>& indices)
+Mesh<VertexType>::setIndices(const std::vector<uint32_t>& indices)
 {
     m_indices = indices;
 }
-template <typename Vt>
-const std::vector<float>&
-Mesh<Vt>::getVertices() const
+template <typename VertexType>
+const std::vector<UniversalVertexAttributes>&
+Mesh<VertexType>::getVertices() const
 {
     return m_vertices;
 }
 
-template <typename Vt>
+template <typename VertexType>
 const std::vector<uint32_t>&
-Mesh<Vt>::getIndices() const
+Mesh<VertexType>::getIndices() const
 {
     return m_indices;
 }
-template <typename Vt>
+template <typename VertexType>
 uint32_t
-Mesh<Vt>::getVertexCount() const
+Mesh<VertexType>::getVertexCount() const
 {
-    return m_vertices.size() / Vt::countFloats();
+    return m_vertices.size();
 }
 
 }; // namespace kusengine

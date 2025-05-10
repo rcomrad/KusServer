@@ -9,12 +9,10 @@ namespace kusengine
 void
 DescriptorSetLayout::create(const std::vector<DescriptorBindingData>& data)
 {
-    m_count = data.size();
-
     std::vector<vk::DescriptorSetLayoutBinding> layout_bindings;
-    layout_bindings.reserve(m_count);
+    layout_bindings.reserve(data.size());
 
-    for (int i = 0; i < m_count; i++)
+    for (int i = 0; i < data.size(); i++)
     {
         vk::DescriptorSetLayoutBinding layout_binding;
         layout_binding.binding            = data[i].index;
@@ -27,7 +25,7 @@ DescriptorSetLayout::create(const std::vector<DescriptorBindingData>& data)
 
     vk::DescriptorSetLayoutCreateInfo layout_info;
     layout_info.flags        = vk::DescriptorSetLayoutCreateFlagBits();
-    layout_info.bindingCount = m_count;
+    layout_info.bindingCount = data.size();
     layout_info.pBindings    = layout_bindings.data();
 
     try
@@ -39,12 +37,6 @@ DescriptorSetLayout::create(const std::vector<DescriptorBindingData>& data)
     {
         std::cerr << "Failed to create Descriptor set layout\n";
     }
-}
-
-uint32_t
-DescriptorSetLayout::count() const
-{
-    return m_count;
 }
 
 const vk::DescriptorSetLayout&

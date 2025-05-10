@@ -269,10 +269,13 @@ SwapChain::recordCommandBuffer(const vk::PipelineLayout& pipelayout,
     command_buffer_ref.beginRenderPass(&renderPassInfo,
                                        vk::SubpassContents::eInline);
 
+    std::vector<vk::DescriptorSet> descriptor_set_vector;
+    frame.fillDescriptorSets(descriptor_set_vector);
+    scene.fillDescriptorSets(descriptor_set_vector);
+
     command_buffer_ref.bindDescriptorSets(
         vk::PipelineBindPoint::eGraphics, pipelayout, 0u,
-        frame.getDescriptorSets().size(), frame.getDescriptorSets().data(), 0,
-        nullptr);
+        descriptor_set_vector.size(), descriptor_set_vector.data(), 0, nullptr);
 
     command_buffer_ref.bindPipeline(
         vk::PipelineBindPoint::eGraphics,
@@ -292,6 +295,7 @@ SwapChain::drawFrame(uint32_t frame_index,
 {
 
     m_frames[frame_index].waitForFence();
+
     m_frames[frame_index].updateUniformData(scene.ubo());
     m_frames[frame_index].updateDynamicObjectsData(scene.dynamicObjectsData());
 

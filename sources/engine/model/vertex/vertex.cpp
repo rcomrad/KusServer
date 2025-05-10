@@ -20,10 +20,10 @@ VertexDescription::getBindingDescription()
     return description;
 }
 
-std::array<vk::VertexInputAttributeDescription, 1>
+std::vector<vk::VertexInputAttributeDescription>
 VertexDescription::getAttributeDescriptions()
 {
-    std::array<vk::VertexInputAttributeDescription, 1> attribute_description;
+    std::vector<vk::VertexInputAttributeDescription> attribute_description(2);
 
     // Pos
     attribute_description[0].binding  = 0;
@@ -31,59 +31,47 @@ VertexDescription::getAttributeDescriptions()
     attribute_description[0].format   = vk::Format::eR32G32Sfloat;
     attribute_description[0].offset = offsetof(UniversalVertexAttributes, pos);
 
-    // Color
-    // attribute_description[1].offset =
-    //     offsetof(UniversalVertexAttributes, color);
-    // attribute_description[1].binding  = 0;
-    // attribute_description[1].location = 1;
-    // attribute_description[1].format   = vk::Format::eR32G32B32Sfloat;
+    // TextPos
+    attribute_description[1].binding  = 0;
+    attribute_description[1].location = 1;
+    attribute_description[1].format   = vk::Format::eR32G32Sfloat;
+    attribute_description[1].offset =
+        offsetof(UniversalVertexAttributes, text_pos);
 
     return attribute_description;
 }
 
 // Vertex
-UniversalVertex::UniversalVertex(float x, float y, float r, float g, float b)
+UniversalVertex::UniversalVertex(float x, float y)
 {
     setPosition(x, y);
-    // setColor(r, g, b);
-}
-
-UniversalVertex::UniversalVertex(const std::initializer_list<float>& init_list)
-{
-    for (int i = 0; i < 2; ++i)
-    {
-        m_data[i] = *(init_list.begin() + i);
-    }
 }
 
 UniversalVertex::UniversalVertex(const glm::vec2& position,
-                                 const glm::vec3& color)
+                                 const glm::vec3& color,
+                                 const glm::vec2& text_position)
 {
     setPosition(position.x, position.y);
-    // setColor(color.x, color.y, color.z);
 }
 
 UniversalVertex&
 UniversalVertex::setPosition(float x, float y)
 {
-    m_data[0] = x;
-    m_data[1] = y;
+    m_attributes.pos = {x, y};
     return *this;
 }
 
-// UniversalVertex&
-// UniversalVertex::setColor(float r, float g, float b)
-// {
-//     m_data[0] = r;
-//     m_data[1] = g;
-//     m_data[2] = b;
-//     return *this;
-// }
+UniversalVertex&
+UniversalVertex::setTexturePosition(float x, float y)
+{
+    m_attributes.text_pos = {x, y};
+    return *this;
+}
 
-const float* const
+const UniversalVertexAttributes* const
 UniversalVertex::data() const
 {
-    return m_data;
+    return &m_attributes;
 }
 
 }; // namespace kusengine
