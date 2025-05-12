@@ -8,13 +8,20 @@
 namespace kusengine
 {
 
-void
-SwapChainFrame::fillDescriptorSets(std::vector<vk::DescriptorSet>& d_sets) const
+// void
+// SwapChainFrame::fillDescriptorSets(std::vector<vk::DescriptorSet>& d_sets)
+// const
+// {
+//     for (int i = 0; i < m_descriptor_sets.size(); ++i)
+//     {
+//         d_sets.emplace_back(m_descriptor_sets[i].get());
+//     }
+// }
+
+std::vector<vk::DescriptorSet>
+SwapChainFrame::descriptorSets() const
 {
-    for (int i = 0; i < m_descriptor_sets.size(); ++i)
-    {
-        d_sets.emplace_back(m_descriptor_sets[i].get());
-    }
+    return {m_descriptor_sets[0].get()};
 }
 
 const SynchronizationControl&

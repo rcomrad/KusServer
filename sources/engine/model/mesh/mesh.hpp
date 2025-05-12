@@ -5,16 +5,13 @@
 
 namespace kusengine
 {
-template <typename _VertexType>
 class Mesh
 {
 public:
-    using VertexType = _VertexType;
-
     Mesh() = default;
 
-    void setVertices(const std::vector<VertexType>& vertices);
-    void setVertices(const std::initializer_list<VertexType>& vertices);
+    void setVertices(const std::vector<UniversalVertex>& vertices);
+    void setVertices(const std::initializer_list<UniversalVertex>& vertices);
 
     void setIndices(const std::vector<uint32_t>& indices);
 
@@ -28,64 +25,6 @@ private:
 
     std::vector<uint32_t> m_indices;
 };
-
-template <typename VertexType>
-void
-Mesh<VertexType>::setVertices(const std::vector<VertexType>& vertices)
-{
-    size_t size = vertices.size();
-
-    int count_floats = VertexType::countFloats();
-    m_vertices.resize(size * count_floats);
-
-    for (size_t i = 0; i < size; ++i)
-    {
-        std::copy(vertices[i].data(), vertices[i].data() + count_floats,
-                  m_vertices.data() + i * count_floats);
-    }
-}
-template <typename VertexType>
-void
-Mesh<VertexType>::setVertices(const std::initializer_list<VertexType>& vertices)
-{
-    size_t size = vertices.size();
-
-    int count_floats = VertexType::countFloats();
-    m_vertices.resize(size * count_floats);
-
-    for (size_t i = 0; i < size; ++i)
-    {
-        std::copy((vertices.begin() + i)->data(),
-                  (vertices.begin() + i)->data() + count_floats,
-                  m_vertices.data() + i * count_floats);
-    }
-}
-
-template <typename VertexType>
-void
-Mesh<VertexType>::setIndices(const std::vector<uint32_t>& indices)
-{
-    m_indices = indices;
-}
-template <typename VertexType>
-const std::vector<UniversalVertexAttributes>&
-Mesh<VertexType>::getVertices() const
-{
-    return m_vertices;
-}
-
-template <typename VertexType>
-const std::vector<uint32_t>&
-Mesh<VertexType>::getIndices() const
-{
-    return m_indices;
-}
-template <typename VertexType>
-uint32_t
-Mesh<VertexType>::getVertexCount() const
-{
-    return m_vertices.size();
-}
 
 }; // namespace kusengine
 

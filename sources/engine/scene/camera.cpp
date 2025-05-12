@@ -11,11 +11,9 @@ Camera2D::Camera2D()
     m_zoom         = 1.0f;
     m_aspect_ratio = 16.0f / 9.0f;
     m_view_width   = 10.0f;
-
-    recalculate();
 }
 
-void
+glm::mat4
 Camera2D::recalculate()
 {
     float view_height = m_view_width / m_aspect_ratio;
@@ -26,14 +24,13 @@ Camera2D::recalculate()
     view           = glm::translate(view, glm::vec3(-m_position, 0.0f));
     view           = glm::scale(view, glm::vec3(m_zoom, m_zoom, 1.0f));
 
-    m_view_projection = projection * view;
+    return m_view_projection = projection * view;
 }
 
 void
 Camera2D::setAspectRatio(float aspect_ratio)
 {
     m_aspect_ratio = aspect_ratio;
-    recalculate();
 }
 
 glm::mat4

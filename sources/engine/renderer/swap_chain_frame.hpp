@@ -53,7 +53,7 @@ public:
     void writeDescriptorSetUBO();
     void writeDescriptorSetDOB();
 
-    void fillDescriptorSets(std::vector<vk::DescriptorSet>& d_sets) const;
+    std::vector<vk::DescriptorSet> descriptorSets() const;
 
 private:
     SynchronizationControl m_sync_control;

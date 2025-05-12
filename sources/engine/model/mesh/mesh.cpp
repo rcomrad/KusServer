@@ -3,51 +3,51 @@
 namespace kusengine
 {
 
-// void
-// Mesh::setVertices(const std::vector<UniversalVertex>& vertices)
-// {
-//     size_t size = vertices.size();
-//     if (size == 0) return;
+void
+Mesh::setVertices(const std::vector<UniversalVertex>& vertices)
+{
+    size_t size = vertices.size();
 
-//     m_count_vertex   = size;
-//     int count_floats = UniversalVertex::countFloats();
-//     m_vertices_data.resize(size * count_floats);
+    m_vertices.resize(size);
 
-//     for (size_t i = 0; i < size; ++i)
-//     {
-//         std::copy(vertices[i].data(), vertices[i].data() + count_floats,
-//                   m_vertices_data.data() + i * count_floats);
-//     }
-// }
+    for (size_t i = 0; i < size; ++i)
+    {
+        m_vertices[i] = *(vertices[i].data());
+    }
+}
+void
+Mesh::setVertices(const std::initializer_list<UniversalVertex>& vertices)
+{
+    size_t size = vertices.size();
 
-// void
-// Mesh::setVertices(const std::initializer_list<UniversalVertex>& vertices)
-// {
-//     size_t size = vertices.size();
-//     if (size == 0) return;
+    m_vertices.resize(size);
 
-//     m_count_vertex   = size;
-//     int count_floats = UniversalVertex::countFloats();
-//     m_vertices_data.resize(size * count_floats);
+    for (size_t i = 0; i < size; ++i)
+    {
+        m_vertices[i] = *((vertices.begin() + i)->data());
+    }
+}
 
-//     for (size_t i = 0; i < size; ++i)
-//     {
-//         std::copy((vertices.begin() + i)->data(),
-//                   (vertices.begin() + i)->data() + count_floats,
-//                   m_vertices_data.data() + i * count_floats);
-//     }
-// }
+void
+Mesh::setIndices(const std::vector<uint32_t>& indices)
+{
+    m_indices = indices;
+}
+const std::vector<UniversalVertexAttributes>&
+Mesh::getVertices() const
+{
+    return m_vertices;
+}
 
-// size_t
-// Mesh::countVertex() const noexcept
-// {
-//     return m_count_vertex;
-// }
+const std::vector<uint32_t>&
+Mesh::getIndices() const
+{
+    return m_indices;
+}
 
-// const float* const
-// Mesh::data() const noexcept
-// {
-//     return m_vertices_data.data();
-// }
-
+uint32_t
+Mesh::getVertexCount() const
+{
+    return m_vertices.size();
+}
 }; // namespace kusengine

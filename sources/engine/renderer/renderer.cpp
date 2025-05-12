@@ -44,11 +44,14 @@ Renderer::createPipelineLayout()
 void
 Renderer::loadTextures(TextureStorage& texture_storage)
 {
-    auto resources_path = util::PathStorage::getFolderPath("resource");
+    std::string resources_path =
+        util::PathStorage::getFolderPath("resource").value().data();
 
-    std::string cat_path = resources_path.value().data();
-    cat_path += "engine_textures/cat.png";
-    texture_storage.addTexture(cat_path, m_descriptor_manager, "cat");
+    texture_storage.addTexture(resources_path + "engine_textures/cat.png",
+                               m_descriptor_manager);
+
+    texture_storage.addTexture(resources_path + "engine_textures/eye.png",
+                               m_descriptor_manager);
 }
 
 bool

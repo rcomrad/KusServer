@@ -18,7 +18,7 @@ public:
 
     glm::mat4 getViewProjection() const;
 
-    void recalculate();
+    glm::mat4 recalculate();
 
     void setAspectRatio(float aspect_ratio);
 

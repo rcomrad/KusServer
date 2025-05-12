@@ -2,35 +2,32 @@
 
 namespace kusengine
 {
-// void
-// Model::create()
-// {
-//     std::vector<UniversalVertex> rectangle = {
-//         {-1, -1, 0.3, 1,   0.5},
-//         {1,  -1, 0.1, 1,   0.8},
-//         {1,  1,  0.6, 0.2, 0.5},
-//         {-1, 1,  0.3, 0,   1  }
-//     };
-//     m_mesh.setVertices(rectangle);
-
-//     std::vector<uint32_t> indices = {0, 1, 2, 2, 3, 0};
-//     m_mesh.setIndices(indices);
-// }
-
 void
-Model::setMesh(const Mesh<UniversalVertex>& mesh)
+Model::setMesh(const Mesh& mesh)
 {
     m_mesh = mesh;
 }
 void
-Model::setMesh(Mesh<UniversalVertex>&& mesh)
+Model::setMesh(Mesh&& mesh)
 {
     m_mesh = mesh;
 }
 
-const Mesh<UniversalVertex>&
+const Mesh&
 Model::getMesh() const
 {
     return m_mesh;
+}
+
+void
+Model::setTexture(const std::shared_ptr<Texture>& texture)
+{
+    m_texture = texture;
+}
+
+const vk::DescriptorSet&
+Model::getTextureDescriptorSet() const
+{
+    return m_texture->getDescriptorSet();
 }
 }; // namespace kusengine

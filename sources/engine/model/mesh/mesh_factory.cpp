@@ -10,7 +10,7 @@ MeshFactory::getInstance()
     return fabric;
 }
 
-Mesh<UniversalVertex>
+Mesh
 MeshFactory::createUniversalRectangleMesh(const glm::vec2& position,
                                           const glm::vec2& size,
                                           const glm::vec3& color)
@@ -29,7 +29,7 @@ MeshFactory::createUniversalRectangleMesh(const glm::vec2& position,
     UniversalVertex left_bottom_vertex(position.x, position.y + size.y);
     left_bottom_vertex.setTexturePosition(0, 1);
 
-    Mesh<UniversalVertex> rectangle;
+    Mesh rectangle;
     rectangle.setVertices({left_top_vertex, right_top_vertex,
                            right_bottom_vertex, left_bottom_vertex});
     rectangle.setIndices({0, 1, 2, 2, 3, 0});

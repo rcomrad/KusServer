@@ -49,7 +49,7 @@ App::initApp()
 
     m_scene.create(static_cast<float>(m_renderer.swapchainExtent().width),
                    static_cast<float>(m_renderer.swapchainExtent().height),
-                   &m_texture_storage);
+                   m_texture_storage);
 
     return true;
 };

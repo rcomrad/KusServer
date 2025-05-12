@@ -1,7 +1,8 @@
 #include "mesh_combiner.hpp"
 
-#include "engine/model/model.hpp"
+#include <iostream>
 
+#include "engine/model/model.hpp"
 namespace kusengine
 {
 
@@ -27,14 +28,12 @@ MeshCombiner::combine(const std::vector<std::pair<Model, int>>& models)
     std::vector<UniversalVertexAttributes> all_vertices(m_vertex_count);
     std::vector<uint32_t> all_indices(m_index_count);
 
-    m_ranges_info.resize(models.size());
+    m_ranges_info.reserve(models.size());
 
     RangeInfo range_info;
     range_info.first_index    = 0;
     range_info.first_instance = 0;
     range_info.vertex_offset  = 0;
-
-    int vertex_float_count = 0;
 
     for (auto& model : models)
     {
@@ -42,6 +41,7 @@ MeshCombiner::combine(const std::vector<std::pair<Model, int>>& models)
 
         range_info.index_count    = mesh.getIndices().size();
         range_info.instance_count = model.second;
+
         m_ranges_info.emplace_back(range_info);
         // copy data
 
@@ -51,10 +51,7 @@ MeshCombiner::combine(const std::vector<std::pair<Model, int>>& models)
 
         std::copy(mesh.getVertices().data(),
                   mesh.getVertices().data() + mesh.getVertices().size(),
-                  all_vertices.data() + vertex_float_count);
-
-        vertex_float_count +=
-            mesh.getVertices().size() * UniversalVertexAttributes::count_floats;
+                  all_vertices.data() + range_info.vertex_offset);
 
         // offsets
         range_info.vertex_offset += mesh.getVertices().size();
@@ -73,6 +70,14 @@ MeshCombiner::combine(const std::vector<std::pair<Model, int>>& models)
                            m_index_count * sizeof(uint32_t));
 
     has_data_flag = true;
+
+    // std::cout << "Index count\t: " << m_ranges_info[0].index_count << "\n"
+    //           << "instance count\t: " << m_ranges_info[0].instance_count <<
+    //           "\n"
+    //           << "first index\t: " << m_ranges_info[0].first_index << "\n"
+    //           << "vertex offset\t: " << m_ranges_info[0].vertex_offset <<
+    //           "\n"
+    //           << "first instance\t: " << m_ranges_info[0].first_instance;
 }
 
 void

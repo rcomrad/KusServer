@@ -9,21 +9,13 @@ namespace kusengine
 class TextureStorage
 {
 public:
-    enum class PictureName
-    {
-        CAT,
-        RED_TRIANGLE,
-        EYE_TRIANGLE
-    };
-
     void addTexture(std::string_view folder_path,
-                    const DescriptorManager& desc_manager,
-                    std::string texture_name = "");
+                    const DescriptorManager& desc_manager);
 
-    const Texture& getTexture(const std::string& keyval) const;
+    std::shared_ptr<Texture> getTexture(const std::string& keyval) const;
 
 private:
-    std::unordered_map<std::string, Texture> m_texture_storage;
+    std::unordered_map<std::string, std::shared_ptr<Texture>> m_texture_storage;
 };
 }; // namespace kusengine
 

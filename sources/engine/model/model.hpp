@@ -3,19 +3,25 @@
 
 #include "engine/model/mesh/mesh.hpp"
 #include "engine/model/vertex/vertex.hpp"
+#include "engine/textures/texture.hpp"
 
 namespace kusengine
 {
 class Model
 {
 public:
-    void setMesh(const Mesh<UniversalVertex>& mesh);
-    void setMesh(Mesh<UniversalVertex>&& mesh);
+    void setMesh(const Mesh& mesh);
+    void setMesh(Mesh&& mesh);
 
-    const Mesh<UniversalVertex>& getMesh() const;
+    const Mesh& getMesh() const;
+
+    void setTexture(const std::shared_ptr<Texture>& texture);
+
+    const vk::DescriptorSet& getTextureDescriptorSet() const;
 
 private:
-    Mesh<UniversalVertex> m_mesh;
+    Mesh m_mesh;
+    std::shared_ptr<const Texture> m_texture;
 };
 
 }; // namespace kusengine

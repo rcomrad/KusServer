@@ -9,10 +9,16 @@
 namespace kusengine
 {
 
+struct MyVec2
+{
+    float x;
+    float y;
+};
+
 struct UniversalVertexAttributes
 {
-    glm::vec2 pos;
-    glm::vec2 text_pos;
+    MyVec2 pos;
+    MyVec2 text_pos;
 
     static constexpr int count_floats = 4;
 };

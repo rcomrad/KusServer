@@ -259,29 +259,23 @@ SwapChain::recordCommandBuffer(const vk::PipelineLayout& pipelayout,
     renderPassInfo.renderArea.offset.y = 0;
     renderPassInfo.renderArea.extent   = extent();
 
-    vk::ClearValue clearColor = {
-        std::array<float, 4>{1.0f, 0.5f, 0.25f, 1.0f}
-    };
-
     renderPassInfo.clearValueCount = 1;
-    renderPassInfo.pClearValues    = &clearColor;
+    renderPassInfo.pClearValues    = &(scene.clearColor());
 
     command_buffer_ref.beginRenderPass(&renderPassInfo,
                                        vk::SubpassContents::eInline);
 
-    std::vector<vk::DescriptorSet> descriptor_set_vector;
-    frame.fillDescriptorSets(descriptor_set_vector);
-    scene.fillDescriptorSets(descriptor_set_vector);
+    auto ds = frame.descriptorSets();
 
-    command_buffer_ref.bindDescriptorSets(
-        vk::PipelineBindPoint::eGraphics, pipelayout, 0u,
-        descriptor_set_vector.size(), descriptor_set_vector.data(), 0, nullptr);
+    command_buffer_ref.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
+                                          pipelayout, 0u, ds.size(), ds.data(),
+                                          0, nullptr); // frame resources
 
     command_buffer_ref.bindPipeline(
         vk::PipelineBindPoint::eGraphics,
         render_pass_ref.graphicsPipeline().pipeline());
 
-    scene.draw(command_buffer_ref);
+    scene.render(command_buffer_ref, pipelayout);
 
     command_buffer_ref.endRenderPass();
 

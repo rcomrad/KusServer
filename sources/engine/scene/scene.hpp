@@ -21,9 +21,10 @@ public:
 
     void create(float width,
                 float height,
-                const TextureStorage* texture_storage_ptr);
+                const TextureStorage& texture_storage_ptr);
 
-    void draw(const vk::CommandBuffer& command_buffer) const;
+    void render(const vk::CommandBuffer& command_buffer,
+                const vk::PipelineLayout& pipelayout) const;
 
     // Shaders Data  //
     const UBO& ubo() const;
@@ -40,9 +41,12 @@ public:
 
     //
 
-    void fillDescriptorSets(std::vector<vk::DescriptorSet>& d_sets) const;
+    // void fillDescriptorSets(std::vector<vk::DescriptorSet>& d_sets) const;
+
+    const vk::ClearValue& clearColor() const;
 
 private:
+    vk::ClearValue m_clear_value;
     // Textures
 
     const TextureStorage* m_texture_storage_ptr;
