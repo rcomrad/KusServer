@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\projects\VSCode\KusServerGrateAgain\rrr\CMakeFiles\f604daaaa457d89794229f68f6a17c43\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{087E599B-7BF9-3E6B-802D-A5267DB9A12B}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

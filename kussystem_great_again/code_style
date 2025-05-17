@@ -1,0 +1,6 @@
+1,2) 
+    if (NULL == ptr)
+    {
+        ERROR
+    }
+3) int instead of int32_t, short, char, etc where it makes scence (like return)

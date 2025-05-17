@@ -1,0 +1,10 @@
+^D:\PROJECTS\VSCODE\KUSSERVERGRATEAGAIN\RRR\CMAKEFILES\F604DAAAA457D89794229F68F6A17C43\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/projects/VSCode/KusServerGrateAgain -BD:/projects/VSCode/KusServerGrateAgain/rrr --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file D:/projects/VSCode/KusServerGrateAgain/rrr/KusServer.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
