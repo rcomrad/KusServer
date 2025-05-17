@@ -1,0 +1,19 @@
+~ TYPE
+int
+float
+double
+bool
+char
+
+~ OPERATOR
+if
+for
+while
+
+~ COMMUNICATION
+cin
+cout
+
+~ DELETED
+#include
+std
