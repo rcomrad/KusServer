@@ -1,0 +1,2 @@
+[INFO ] printer.cpp              | setOutputType                 [143 ]: Log buffer changed to 'test_output.txt' file
+[ERROR] storage.cpp              | setVariableTamplate           [18  ]: Failed to set value 'Z' for 'var' variable.

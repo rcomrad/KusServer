@@ -1,0 +1,1 @@
+[INFO ] printer.cpp              | setOutputType                 [143 ]: Log buffer changed to '/home/user/projects/KusServer/data/logs.txt' file

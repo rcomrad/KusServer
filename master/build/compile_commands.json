@@ -1,0 +1,698 @@
+[
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/command/command.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/command/command.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/command/command.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/command/command.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/command/command_caller.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/command/command_caller.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/command/command_caller.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/command/command_caller.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/command/command_data.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/command/command_data.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/command/command_data.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/command/command_data.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/command/command_functor.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/command/command_functor.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/command/command_functor.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/command/command_functor.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/command/handler.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/command/handler.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/command/handler.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/command/handler.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/command/input_buffer.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/command/input_buffer.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/command/input_buffer.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/command/input_buffer.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/command/input_stdin.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/command/input_stdin.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/command/input_stdin.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/command/input_stdin.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/logging/column_view.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/logging/column_view.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/logging/column_view.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/logging/column_view.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/logging/printer.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/logging/printer.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/logging/printer.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/logging/printer.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/logging/table_printer.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/logging/table_printer.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/logging/table_printer.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/logging/table_printer.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/logging/table_storage.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/logging/table_storage.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/logging/table_storage.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/logging/table_storage.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/module/base.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/base.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/base.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/module/base.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/module/callback_storage.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/callback_storage.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/callback_storage.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/module/callback_storage.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/module/command_sets.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/command_sets.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/command_sets.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/module/command_sets.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/module/kernel.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/kernel.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/kernel.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/module/kernel.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/module/module.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/module.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/module.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/module/module.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/module/module_base.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/module_base.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/module_base.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/module/module_base.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/module/register.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/register.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/register.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/module/register.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/module/registry.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/registry.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/registry.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/module/registry.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/module/state.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/state.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/state.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/module/state.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/module/state_storage.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/state_storage.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/state_storage.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/module/state_storage.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/module/synchronized_state.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/synchronized_state.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/synchronized_state.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/module/synchronized_state.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/module/thread_module..cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/thread_module..cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/thread_module..cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/module/thread_module..cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/module/thread_module_interface.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/thread_module_interface.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/thread_module_interface.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/module/thread_module_interface.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/variable/register.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/variable/register.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/variable/register.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/variable/register.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/variable/storage.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/variable/storage.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/variable/storage.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/variable/storage.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/framework/variable/variable.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/variable/variable.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/variable/variable.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/framework/variable/variable.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/string/separators.cpp.o -c /home/user/projects/KusServer/sources/kernel/string/separators.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/string/separators.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/string/separators.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/string/to_string.cpp.o -c /home/user/projects/KusServer/sources/kernel/string/to_string.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/string/to_string.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/string/to_string.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/string/value.cpp.o -c /home/user/projects/KusServer/sources/kernel/string/value.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/string/value.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/string/value.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/tester/commands_fixture.cpp.o -c /home/user/projects/KusServer/sources/kernel/tester/commands_fixture.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/tester/commands_fixture.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/tester/commands_fixture.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/tester/fixture.cpp.o -c /home/user/projects/KusServer/sources/kernel/tester/fixture.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/tester/fixture.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/tester/fixture.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/tester/kernel_fixture.cpp.o -c /home/user/projects/KusServer/sources/kernel/tester/kernel_fixture.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/tester/kernel_fixture.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/tester/kernel_fixture.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/utility/common/src_path.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/common/src_path.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/common/src_path.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/utility/common/src_path.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/utility/datastructs/ascii_box.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/datastructs/ascii_box.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/datastructs/ascii_box.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/utility/datastructs/ascii_box.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/utility/datastructs/pt_key_storage.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/datastructs/pt_key_storage.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/datastructs/pt_key_storage.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/utility/datastructs/pt_key_storage.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/utility/file_system/file.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/file_system/file.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/file_system/file.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/utility/file_system/file.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/utility/file_system/file_write.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/file_system/file_write.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/file_system/file_write.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/utility/file_system/file_write.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/utility/file_system/path.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/file_system/path.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/file_system/path.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/utility/file_system/path.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/utility/file_system/path_storage.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/file_system/path_storage.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/file_system/path_storage.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/utility/file_system/path_storage.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/utility/file_system/read_target.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/file_system/read_target.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/file_system/read_target.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/utility/file_system/read_target.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/utility/string/caster.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/string/caster.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/string/caster.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/utility/string/caster.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/utility/string/normalize.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/string/normalize.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/string/normalize.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/utility/string/normalize.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/utility/string/parser.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/string/parser.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/string/parser.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/utility/string/parser.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/utility/string/print_type.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/string/print_type.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/string/print_type.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/utility/string/print_type.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/utility/string/slicer.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/string/slicer.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/string/slicer.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/utility/string/slicer.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/utility/synchronization/condvar.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/synchronization/condvar.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/synchronization/condvar.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/utility/synchronization/condvar.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/utility/synchronization/yield.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/synchronization/yield.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/synchronization/yield.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/utility/synchronization/yield.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/utility/type/date_time.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/type/date_time.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/type/date_time.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/utility/type/date_time.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/utility/type/date_time_handler.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/type/date_time_handler.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/type/date_time_handler.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/utility/type/date_time_handler.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel.dir/sources/kernel/utility/type/kus_type_info.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/type/kus_type_info.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/type/kus_type_info.cpp",
+  "output": "CMakeFiles/kernel.dir/sources/kernel/utility/type/kus_type_info.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -g -std=gnu++20 -o CMakeFiles/_test.dir/sources/main_app.cpp.o -c /home/user/projects/KusServer/sources/main_app.cpp",
+  "file": "/home/user/projects/KusServer/sources/main_app.cpp",
+  "output": "CMakeFiles/_test.dir/sources/main_app.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -I/home/user/projects/KusServer/sources -g -std=gnu++20 -o CMakeFiles/_test.dir/sources/_test/test_module.cpp.o -c /home/user/projects/KusServer/sources/_test/test_module.cpp",
+  "file": "/home/user/projects/KusServer/sources/_test/test_module.cpp",
+  "output": "CMakeFiles/_test.dir/sources/_test/test_module.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/_test_test.dir/sources/main_test.cpp.o -c /home/user/projects/KusServer/sources/main_test.cpp",
+  "file": "/home/user/projects/KusServer/sources/main_test.cpp",
+  "output": "CMakeFiles/_test_test.dir/sources/main_test.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/_test_test.dir/sources/_test/_tests/dummy.cpp.o -c /home/user/projects/KusServer/sources/_test/_tests/dummy.cpp",
+  "file": "/home/user/projects/KusServer/sources/_test/_tests/dummy.cpp",
+  "output": "CMakeFiles/_test_test.dir/sources/_test/_tests/dummy.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/_test_test.dir/sources/_test/test_module.cpp.o -c /home/user/projects/KusServer/sources/_test/test_module.cpp",
+  "file": "/home/user/projects/KusServer/sources/_test/test_module.cpp",
+  "output": "CMakeFiles/_test_test.dir/sources/_test/test_module.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/main_test.cpp.o -c /home/user/projects/KusServer/sources/main_test.cpp",
+  "file": "/home/user/projects/KusServer/sources/main_test.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/main_test.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/_tests/base.cpp.o -c /home/user/projects/KusServer/sources/kernel/_tests/base.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/_tests/base.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/_tests/base.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/_tests/lifecycle_manager.cpp.o -c /home/user/projects/KusServer/sources/kernel/_tests/lifecycle_manager.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/_tests/lifecycle_manager.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/_tests/lifecycle_manager.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/_tests/module/tests_sync.cpp.o -c /home/user/projects/KusServer/sources/kernel/_tests/module/tests_sync.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/_tests/module/tests_sync.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/_tests/module/tests_sync.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/_tests/module/tests_thread.cpp.o -c /home/user/projects/KusServer/sources/kernel/_tests/module/tests_thread.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/_tests/module/tests_thread.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/_tests/module/tests_thread.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/_tests/num_prefix_tree.cpp.o -c /home/user/projects/KusServer/sources/kernel/_tests/num_prefix_tree.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/_tests/num_prefix_tree.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/_tests/num_prefix_tree.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/_tests/string.cpp.o -c /home/user/projects/KusServer/sources/kernel/_tests/string.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/_tests/string.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/_tests/string.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/_tests/table_print_test.cpp.o -c /home/user/projects/KusServer/sources/kernel/_tests/table_print_test.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/_tests/table_print_test.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/_tests/table_print_test.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/_tests/variable_storage.cpp.o -c /home/user/projects/KusServer/sources/kernel/_tests/variable_storage.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/_tests/variable_storage.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/_tests/variable_storage.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/command/command.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/command/command.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/command/command.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/command/command.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/command/command_caller.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/command/command_caller.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/command/command_caller.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/command/command_caller.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/command/command_data.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/command/command_data.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/command/command_data.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/command/command_data.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/command/command_functor.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/command/command_functor.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/command/command_functor.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/command/command_functor.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/command/handler.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/command/handler.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/command/handler.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/command/handler.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/command/input_buffer.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/command/input_buffer.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/command/input_buffer.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/command/input_buffer.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/command/input_stdin.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/command/input_stdin.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/command/input_stdin.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/command/input_stdin.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/logging/column_view.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/logging/column_view.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/logging/column_view.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/logging/column_view.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/logging/printer.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/logging/printer.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/logging/printer.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/logging/printer.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/logging/table_printer.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/logging/table_printer.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/logging/table_printer.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/logging/table_printer.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/logging/table_storage.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/logging/table_storage.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/logging/table_storage.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/logging/table_storage.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/module/base.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/base.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/base.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/module/base.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/module/callback_storage.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/callback_storage.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/callback_storage.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/module/callback_storage.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/module/command_sets.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/command_sets.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/command_sets.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/module/command_sets.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/module/kernel.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/kernel.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/kernel.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/module/kernel.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/module/module.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/module.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/module.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/module/module.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/module/module_base.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/module_base.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/module_base.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/module/module_base.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/module/register.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/register.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/register.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/module/register.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/module/registry.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/registry.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/registry.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/module/registry.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/module/state.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/state.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/state.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/module/state.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/module/state_storage.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/state_storage.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/state_storage.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/module/state_storage.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/module/synchronized_state.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/synchronized_state.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/synchronized_state.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/module/synchronized_state.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/module/thread_module..cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/thread_module..cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/thread_module..cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/module/thread_module..cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/module/thread_module_interface.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/module/thread_module_interface.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/module/thread_module_interface.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/module/thread_module_interface.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/variable/register.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/variable/register.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/variable/register.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/variable/register.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/variable/storage.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/variable/storage.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/variable/storage.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/variable/storage.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/framework/variable/variable.cpp.o -c /home/user/projects/KusServer/sources/kernel/framework/variable/variable.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/framework/variable/variable.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/framework/variable/variable.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/string/separators.cpp.o -c /home/user/projects/KusServer/sources/kernel/string/separators.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/string/separators.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/string/separators.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/string/to_string.cpp.o -c /home/user/projects/KusServer/sources/kernel/string/to_string.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/string/to_string.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/string/to_string.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/string/value.cpp.o -c /home/user/projects/KusServer/sources/kernel/string/value.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/string/value.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/string/value.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/tester/commands_fixture.cpp.o -c /home/user/projects/KusServer/sources/kernel/tester/commands_fixture.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/tester/commands_fixture.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/tester/commands_fixture.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/tester/fixture.cpp.o -c /home/user/projects/KusServer/sources/kernel/tester/fixture.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/tester/fixture.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/tester/fixture.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/tester/kernel_fixture.cpp.o -c /home/user/projects/KusServer/sources/kernel/tester/kernel_fixture.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/tester/kernel_fixture.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/tester/kernel_fixture.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/utility/common/src_path.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/common/src_path.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/common/src_path.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/utility/common/src_path.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/utility/datastructs/ascii_box.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/datastructs/ascii_box.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/datastructs/ascii_box.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/utility/datastructs/ascii_box.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/utility/datastructs/pt_key_storage.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/datastructs/pt_key_storage.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/datastructs/pt_key_storage.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/utility/datastructs/pt_key_storage.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/utility/file_system/file.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/file_system/file.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/file_system/file.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/utility/file_system/file.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/utility/file_system/file_write.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/file_system/file_write.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/file_system/file_write.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/utility/file_system/file_write.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/utility/file_system/path.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/file_system/path.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/file_system/path.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/utility/file_system/path.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/utility/file_system/path_storage.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/file_system/path_storage.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/file_system/path_storage.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/utility/file_system/path_storage.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/utility/file_system/read_target.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/file_system/read_target.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/file_system/read_target.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/utility/file_system/read_target.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/utility/string/caster.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/string/caster.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/string/caster.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/utility/string/caster.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/utility/string/normalize.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/string/normalize.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/string/normalize.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/utility/string/normalize.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/utility/string/parser.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/string/parser.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/string/parser.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/utility/string/parser.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/utility/string/print_type.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/string/print_type.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/string/print_type.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/utility/string/print_type.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/utility/string/slicer.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/string/slicer.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/string/slicer.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/utility/string/slicer.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/utility/synchronization/condvar.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/synchronization/condvar.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/synchronization/condvar.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/utility/synchronization/condvar.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/utility/synchronization/yield.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/synchronization/yield.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/synchronization/yield.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/utility/synchronization/yield.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/utility/type/date_time.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/type/date_time.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/type/date_time.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/utility/type/date_time.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/utility/type/date_time_handler.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/type/date_time_handler.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/type/date_time_handler.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/utility/type/date_time_handler.cpp.o"
+},
+{
+  "directory": "/home/user/projects/KusServer/build",
+  "command": "/usr/bin/g++ -DLINUS_LINUX -DTESTING -I/home/user/projects/KusServer/sources -isystem /home/user/vcpkg/installed/x64-linux/include -g -std=gnu++20 -o CMakeFiles/kernel_test.dir/sources/kernel/utility/type/kus_type_info.cpp.o -c /home/user/projects/KusServer/sources/kernel/utility/type/kus_type_info.cpp",
+  "file": "/home/user/projects/KusServer/sources/kernel/utility/type/kus_type_info.cpp",
+  "output": "CMakeFiles/kernel_test.dir/sources/kernel/utility/type/kus_type_info.cpp.o"
+}
+]

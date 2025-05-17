@@ -1,0 +1,6 @@
+/home/user/projects/KusServer/build/CMakeFiles/_test.dir
+/home/user/projects/KusServer/build/CMakeFiles/_test_test.dir
+/home/user/projects/KusServer/build/CMakeFiles/kernel.dir
+/home/user/projects/KusServer/build/CMakeFiles/kernel_test.dir
+/home/user/projects/KusServer/build/CMakeFiles/edit_cache.dir
+/home/user/projects/KusServer/build/CMakeFiles/rebuild_cache.dir

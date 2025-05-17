@@ -1,0 +1,87 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.21.3"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "KusSysteam",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "_test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-_test-Debug-cca7cf61804d9e2dccbf.json",
+					"name" : "_test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "_test_test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-_test_test-Debug-fa1a7f6769fc345022aa.json",
+					"name" : "_test_test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "kernel::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-kernel-Debug-aa67fd0f5b3b4e8d8116.json",
+					"name" : "kernel",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "kernel_test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-kernel_test-Debug-2c35f766f0b89852f712.json",
+					"name" : "kernel_test",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/user/projects/KusServer/build",
+		"source" : "/home/user/projects/KusServer"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}

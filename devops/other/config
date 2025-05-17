@@ -1,4 +1,0 @@
-Host kussystem kussystem.ru
-    HostName kussystem.ru
-    IdentityFile ~/.ssh/server # private key
-    User rcomrad

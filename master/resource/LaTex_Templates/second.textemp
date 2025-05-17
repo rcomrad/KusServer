@@ -1,0 +1,34 @@
+\newgeometry{
+ left=30mm,
+ top=30mm,
+ }
+
+%\smallskip
+%\vspace{200mm} %5mm vertical space
+\noindent
+\vspace{2mm} %5mm vertical space
+ {Наименование организации: 
+$school
+ }
+ \\
+ \vspace{2mm} %5mm vertical space
+ {Объединение: 
+$subject
+ }
+ \\
+ \vspace{2mm} %5mm vertical space
+ {Группа: 
+$group
+ }
+\\
+ \vspace{2mm} %5mm vertical space
+ {Руководитель: 
+$teacher
+ }
+\\
+\begin{center}
+{ РАССПИСАНИЕ ЗАНЯТИЙ }
+\\
+ \vspace{8mm} %5mm vertical space
+
+ 
