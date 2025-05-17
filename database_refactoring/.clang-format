@@ -1,0 +1,56 @@
+BasedOnStyle: Microsoft 
+
+IndentWidth: 4
+UseTab: Never
+BreakBeforeBraces: Allman
+
+PointerAlignment: Left
+IndentCaseLabels: true
+ColumnLimit: 80
+AccessModifierOffset: -4
+AlwaysBreakAfterReturnType: TopLevel 
+EmptyLineBeforeAccessModifier: LogicalBlock
+MaxEmptyLinesToKeep: 1
+
+AlignArrayOfStructures: Left
+AlignConsecutiveAssignments: Consecutive 
+AlignConsecutiveMacros: Consecutive
+IndentPPDirectives: AfterHash
+AlignEscapedNewlines: Left
+AlignTrailingComments: true
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AlwaysBreakTemplateDeclarations: Yes
+BreakBeforeConceptDeclarations: Always
+AllowShortLoopsOnASingleLine: true
+AllowShortIfStatementsOnASingleLine : AllIfsAndElse
+
+AllowAllArgumentsOnNextLine : true
+BinPackArguments: true
+AlignAfterOpenBracket : Align
+AllowAllParametersOfDeclarationOnNextLine : true
+BinPackParameters : false
+PackConstructorInitializers : NextLine
+InsertNewlineAtEOF : true
+
+SortIncludes: CaseSensitive
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex:           '<*/.*>'
+    Priority:        10
+#  - Regex:           '"[A-Z]+/.*"'
+#    Priority:        20
+  - Regex:           '<*>'
+    Priority:        30
+
+  - Regex:           '"domain.*"'
+    Priority:        50
+  - Regex:           '"algorithms.*"'
+    Priority:        51
+  - Regex:           '"database.*"'
+    Priority:        51
+
+  - Regex:           '"*/.*"'
+    Priority:        100
+
+  - Regex:           '".*"'
+    Priority:        150
