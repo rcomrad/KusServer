@@ -1,137 +1,220 @@
-// #include <vector>
+#include <algorithm>
+#include <vector>
 
-// #include "kernel/framework/logging/table_printer.hpp"
-// #include "kernel/framework/logging/table_storage.hpp"
+#include "kernel/framework/logger/include_me.hpp"
+#include "kernel/tester/commands_fixture.hpp"
 
-// #include "kernel/tester/fixture.hpp"
+namespace kustest
+{
 
-// namespace kustest
-// {
+struct Adress : public core::TablePrinter
+{
+    int building_numder;
+    double x;
+    double y;
+    size_t coord_hash;
+    std::string street_name;
 
-// // #define SHORT_RND       std::rand() / 1024 - RAND_MAX / 2 / 1024
-// // #define LONG_RND        std::rand() - RAND_MAX
-// // #define FLOAT_RND       (SHORT_RND) / 1000
-// // #define DOUBLE_RND      (LONG_RND) / 1000
-// // #define ARRAG_RND(name) name[std::rand() % name.size()]
+    Adress(int a_building_numder,
+           double a_x,
+           double a_y,
+           size_t a_coord_hash,
+           const std::string& a_street_name)
+        : building_numder(a_building_numder),
+          x(a_x),
+          y(a_y),
+          coord_hash(a_coord_hash),
+          street_name(a_street_name)
+    {
+    }
 
-// static std::vector<int> ints_array       = {0,  2,   234, 5,       24,   -234,
-//                                             -3, -46, -9,  2153253, -3432};
-// static std::vector<double> doubles_array = {
-//     0.12,  -0.4, -0.45345, -345.3453, -45.1,     -8.8,       -0.99,
-//     76.76, 5.23, 5.54,     5.76,      -999.8678, 43543.43453
+    void print() const override
+    {
+        building_info =
+            &addCell(building_numder).setName("building").alignmentRight();
+        addCell(x).setName("x coord").alignmentRight();
+        addCell(y).setName("y coord").alignmentMiddle();
+        addCell(coord_hash).setName("hash").alignmentLeft();
+        street_info = &addCell(street_name).setName("street").alignmentLeft();
+    }
 
-// };
+    mutable core::ColumnInfo* building_info;
+    mutable core::ColumnInfo* street_info;
+};
 
-// static std::vector<const char*> street_names_array = {
-//     "Kuna",  "Slavy",      "Pobedy",      "Razmarina",      "Kafki",
-//     "Daddy", "Pskovskaya", "Moskovskaya", "Rozy Luksemburg"};
-// static std::vector<const char*> names_array = {
-//     "Alex", "Slava", "Tyoma", "Bob", "Jhon", "Cena", "Lev", "Misha", "Ksy"};
-// static std::vector<const char*> surnames_array = {
-//     "Orestovich", "Frolov",  "Bezdelnyi",        "Letyaga",
-//     "Orestovich", "Frolov",  "Bezdelnyi",        "Letyaga",
-//     "Varvarov",   "Kusakin", "Koyaanisquatsiuth"};
+template <typename T>
+struct AdressList : public core::TablePrinter
+{
+    std::vector<T> adr_list;
 
-// #define ARRAG_RND(name) name[std::rand() % name.size()]
+    void print() const override
+    {
+        addTableConrainer(adr_list);
+    }
+};
 
-// struct Adress
-// {
-//     int building_numder;
-//     double x;
-//     double y;
-//     uint64_t coord_hash;
-//     std::string street_name;
-//     // const char* street_name;
-//     // const char* -> *(const char**)(a_data_ptr + 32)
+class UTablePrinter : public Fixture
+{
+};
 
-//     Adress() noexcept
-//         : building_numder(ARRAG_RND(ints_array)),
-//           x(ARRAG_RND(doubles_array)),
-//           y(ARRAG_RND(doubles_array)),
-//           coord_hash(ARRAG_RND(ints_array)),
-//           street_name(ARRAG_RND(street_names_array))
-//     {
-//     }
+auto
+getData()
+{
+    std::vector<Adress> adr_list;
+    adr_list.emplace_back(32, 3.65, 567567.867, 453453, "Abasov streat");
+    adr_list.emplace_back(35632, 0.675, 27, 65782345845, "Koyaanisquatsiuth");
+    adr_list.emplace_back(12345, 78.3456, 0, 0, "Slavy");
+    adr_list.emplace_back(0, 0, 3464.435, 2355, "Kafki");
+    return adr_list;
+}
 
-// private:
-//     TABLE_REGISTER_HPP(
-//         Adress,
-//         .addCol(obj.building_numder, obj.x, obj.y, obj.street_name))
+TEST_F(UTablePrinter, simple)
+{
+    // clang-format off
+    std::string answer =
+        "| building |  x coord  |    y coord    |    hash     |      street       |\n"
+        "|       32 |  3.650000 | 567567.867000 | 453453      | Abasov streat     |\n"
+        "|    35632 |  0.675000 |   27.000000   | 65782345845 | Koyaanisquatsiuth |\n"
+        "|    12345 | 78.345600 |   0.000000    | 0           | Slavy             |\n"
+        "|        0 |  0.000000 |  3464.435000  | 2355        | Kafki             |\n";
+    // clang-format on
 
-//     // Expands to:
-//     // struct AdressTABLE_REGISTER
-//     // {
-//     //     inline AdressTABLE_REGISTER() noexcept
-//     //     {
-//     //         Adress* obj_ptr = nullptr;
-//     //         Adress& obj     = *obj_ptr;
-//     //         core::TableInfo info(obj);
-//     //         info.addCol(obj.building_numder, obj.x, obj.y, obj.street_name);
-//     //         core::TableStorage::addTableInfo(std::type_index(typeid(obj)),
-//     //                                          info);
-//     //     }
-//     // };
-//     // static AdressTABLE_REGISTER AdressTABLE_REGISTERglobal;
-// };
+    AdressList<Adress> list;
+    list.adr_list = getData();
+    auto result   = list.buildTable();
 
-// TABLE_REGISTER_CPP(kustest, Adress);
+    ASSERT_NE(result.get(), nullptr);
+    EXPECT_STREQ(answer.data(), result.get());
 
-// struct Person
-// {
-//     Adress adress;
-//     int id;
-//     char name[50];
-//     std::string surname;
-//     uint64_t name_hash;
-//     float weight;
-//     float high;
-//     uint64_t body_hash;
+    result = list.buildTable();
+    ASSERT_NE(result.get(), nullptr);
+    EXPECT_STREQ(answer.data(), result.get());
+}
 
-//     Person() noexcept
-//         : id(ARRAG_RND(ints_array)),
-//           surname(ARRAG_RND(surnames_array)),
-//           name_hash(ARRAG_RND(ints_array)),
-//           weight(ARRAG_RND(doubles_array)),
-//           high(ARRAG_RND(doubles_array)),
-//           body_hash(ARRAG_RND(ints_array))
-//     {
-//         auto ptr = ARRAG_RND(names_array);
-//         strcpy(name, ptr);
-//     }
+struct AdditionalData
+{
+    int building_year;
+    size_t street_hash;
+    double normalized_hash;
+};
 
-// private:
-//     TABLE_REGISTER_HPP(
-//         Person,
-//         .addCol(obj.id, obj.name, obj.surname, obj.weight, obj.high)
-//             .addRow(obj.adress))
-// };
+struct IncreasedAdress : public Adress, public AdditionalData
+{
+    IncreasedAdress(const Adress& a_base_adres,
+                    int a_building_year,
+                    size_t a_street_hash,
+                    double a_normalized_hash)
+        : Adress(a_base_adres),
+          AdditionalData(a_building_year, a_street_hash, a_normalized_hash)
+    {
+    }
 
-// TABLE_REGISTER_CPP(kustest, Person);
+    void print() const override
+    {
+        Adress::print();
+        addSubline();
+        addCell(*building_info, building_year).alignmentMiddle();
+        addCell(*street_info, street_hash);
+        addSubline();
+        addCell(*street_info, normalized_hash).alignmentRight();
+    }
+};
 
-// struct Journal
-// {
-//     std::vector<Person> data;
-// };
+struct KeyedIncreasedAdress : public IncreasedAdress
+{
+    using IncreasedAdress::IncreasedAdress;
 
-// class UTestTablePrint : public Fixture
-// {
-// };
+    void print() const override
+    {
+        IncreasedAdress::print();
+        getKeyInfo();
+    }
+};
 
-// TEST_F(UTestTablePrint, simpl_print)
-// {
-//     std::srand(1264970717);
-//     Journal j;
+template <typename T>
+auto
+getComplexData()
+{
+    std::vector<AdditionalData> additional_data = {
+        {1961,      3832116832,   7.6574  },
+        {0,         4564,         1547    },
+        {119611961, 975375375373, -0.99   },
+        {-39,       10,           27.57667},
+        {97978,     0,            596     },
+    };
+    std::reverse(additional_data.begin(), additional_data.end());
 
-//     // TODO: turn on test
-//     // for (int i = 0; i < 15; ++i)
-//     // {
-//     //     j.data.emplace_back();
-//     //     std::cout << core::TablePrinter::print(
-//     //                      j.data, {"id", "name", "surname", "weight", "high",
-//     //                               "building_numder", "x", "y",
-//     //                               "street_name"})
-//     //               << std::endl;
-//     // }
-// }
+    std::vector<T> adr_list;
+    for (auto& i : getData())
+    {
+        auto cur = additional_data.back();
+        additional_data.pop_back();
+        adr_list.emplace_back(i, cur.building_year, cur.street_hash,
+                              cur.normalized_hash);
+    }
+    return adr_list;
+}
 
-// } // namespace kustest
+TEST_F(UTablePrinter, subline)
+{
+    // clang-format off
+    std::string answer =
+        "| building  |  x coord  |    y coord    |    hash     |      street       |\n"
+        "|        32 |  3.650000 | 567567.867000 | 453453      | Abasov streat     |\n"
+        "|   1961    |           |               |             | 3832116832        |\n"
+        "|           |           |               |             |          7.657400 |\n"
+        "|     35632 |  0.675000 |   27.000000   | 65782345845 | Koyaanisquatsiuth |\n"
+        "|     0     |           |               |             | 4564              |\n"
+        "|           |           |               |             |       1547.000000 |\n"
+        "|     12345 | 78.345600 |   0.000000    | 0           | Slavy             |\n"
+        "| 119611961 |           |               |             | 975375375373      |\n"
+        "|           |           |               |             |         -0.990000 |\n"
+        "|         0 |  0.000000 |  3464.435000  | 2355        | Kafki             |\n"
+        "|    -39    |           |               |             | 10                |\n"
+        "|           |           |               |             |         27.576670 |\n";
+    // clang-format on
+
+    AdressList<IncreasedAdress> list;
+    list.adr_list = getComplexData<IncreasedAdress>();
+    auto result   = list.buildTable();
+
+    ASSERT_NE(result.get(), nullptr);
+    EXPECT_STREQ(answer.data(), result.get());
+
+    result = list.buildTable();
+    ASSERT_NE(result.get(), nullptr);
+    EXPECT_STREQ(answer.data(), result.get());
+}
+
+TEST_F(UTablePrinter, keyed_subline)
+{
+    // clang-format off
+    std::string answer =
+        "| # | building  |  x coord  |    y coord    |    hash     |      street       |\n"
+        "| 0 |        32 |  3.650000 | 567567.867000 | 453453      | Abasov streat     |\n"
+        "|   |   1961    |           |               |             | 3832116832        |\n"
+        "|   |           |           |               |             |          7.657400 |\n"
+        "| 1 |     35632 |  0.675000 |   27.000000   | 65782345845 | Koyaanisquatsiuth |\n"
+        "|   |     0     |           |               |             | 4564              |\n"
+        "|   |           |           |               |             |       1547.000000 |\n"
+        "| 2 |     12345 | 78.345600 |   0.000000    | 0           | Slavy             |\n"
+        "|   | 119611961 |           |               |             | 975375375373      |\n"
+        "|   |           |           |               |             |         -0.990000 |\n"
+        "| 3 |         0 |  0.000000 |  3464.435000  | 2355        | Kafki             |\n"
+        "|   |    -39    |           |               |             | 10                |\n"
+        "|   |           |           |               |             |         27.576670 |\n";
+    // clang-format on
+
+    AdressList<KeyedIncreasedAdress> list;
+    list.adr_list = getComplexData<KeyedIncreasedAdress>();
+    auto result   = list.buildTable();
+
+    ASSERT_NE(result.get(), nullptr);
+    EXPECT_STREQ(answer.data(), result.get());
+
+    result = list.buildTable();
+    ASSERT_NE(result.get(), nullptr);
+    EXPECT_STREQ(answer.data(), result.get());
+}
+
+} // namespace kustest

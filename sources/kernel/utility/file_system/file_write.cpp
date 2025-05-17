@@ -1,36 +1,23 @@
 #include "file_write.hpp"
 
 #include <cstdio>
+#include <stdarg.h>
 
-#include "kernel/framework/logging/logging.hpp"
+#include "kernel/framework/logger/include_me.hpp"
 #include "kernel/framework/module/kernel.hpp"
 
-#include "path_storage.hpp"
-
-util::FileWrite::FileWrite(const core::Context& a_context,
-                           const str::string& a_file_name) noexcept
-    : m_is_print_error_msg(false)
+util::FileWrite::FileWrite(const std::string& a_file_name)
 {
-    // GET_FILE_PATH(file_path, a_file_name, &a_context);
-    // m_file = std::fopen(file_path.data(), "w");
-    // if (!m_file)
-    // {
-    //     CONTEXT_ERROR(a_context,
-    //                   "Can't open file for write. Name: '%s', path: '%s'.",
-    //                   a_file_name, file_path);
-    // }
-
     auto& file_path = KERNEL.getFilePath(a_file_name);
     m_file          = std::fopen(file_path.data(), "w");
     if (!m_file)
     {
-        CONTEXT_ERROR(a_context,
-                      "Can't open file for write. Name: '%s', path: '%s'.",
-                      a_file_name, file_path);
+        THROW("Can't open file for write. Name: '%s', path: '%s'.", a_file_name,
+              file_path);
     }
 }
 
-util::FileWrite::~FileWrite() noexcept
+util::FileWrite::~FileWrite()
 {
     if (m_file != nullptr)
     {
@@ -41,16 +28,6 @@ util::FileWrite::~FileWrite() noexcept
 void
 util::FileWrite::write(const char* format, ...) noexcept
 {
-    if (m_file == nullptr)
-    {
-        if (!m_is_print_error_msg)
-        {
-            m_is_print_error_msg = true;
-            LOG_ERROR("Unable to write in broken file.");
-        }
-        return;
-    }
-
     va_list args;
     va_start(args, format);
     vfprintf(m_file, format, args);

@@ -1,6 +1,6 @@
 #include "command_functor.hpp"
 
-#include "kernel/framework/logging/logging.hpp"
+#include "kernel/framework/logger/include_me.hpp"
 
 core::CommandFunctor::CommandFunctor(std::string&& a_comm_str,
                                      FP_ResultCallback a_outp_call,

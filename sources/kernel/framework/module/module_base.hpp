@@ -5,7 +5,7 @@
 // #include <string>
 
 // #include "kernel/utility/synchronization/condvar.hpp"
-// #include "kernel/utility/type/lifecycle_manager.hpp"
+// #include "kernel/utility/type/declaration/lifecycle_manager.hpp"
 
 // //--------------------------------------------------------------------------------
 
@@ -41,8 +41,8 @@
 
 //     void kill() noexcept;
 
-//     void setVariable(int a_variable_num, int a_variable_value) const noexcept;
-//     int getVariable(int a_variable_num) const noexcept;
+//     void setVariable(int a_variable_num, int a_variable_value) const
+//     noexcept; int getVariable(int a_variable_num) const noexcept;
 
 // private:
 //     std::string m_name;

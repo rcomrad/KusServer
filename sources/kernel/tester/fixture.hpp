@@ -12,7 +12,7 @@ namespace kustest
 class Fixture : public testing::Test
 {
 protected:
-    Fixture() = default;
+    Fixture();
     ~Fixture();
 
     // template <typename... Args>

@@ -1,6 +1,6 @@
 // #include "module_base.hpp"
 
-// #include "kernel/framework/logging/logging.hpp"
+// #include "kernel/framework/logger/include_me.hpp"
 // #include "kernel/framework/module/kernel.hpp"
 // #include "kernel/utility/common/exception.hpp"
 

@@ -4,10 +4,9 @@
 
 #include "kernel/framework/command/handler.hpp"
 #include "kernel/framework/command/input_stdin.hpp"
-#include "kernel/framework/logging/printer.hpp"
 #include "kernel/framework/variable/storage.hpp"
 #include "kernel/utility/file_system/path_storage.hpp"
-#include "kernel/utility/type/lifecycle_manager.hpp"
+#include "kernel/utility/type/declaration/lifecycle_manager.hpp"
 
 #include "callback_storage.hpp"
 #include "registry.hpp"
@@ -21,7 +20,6 @@ namespace core
 class Base : public VariableStorage,
              public CommandHandler,
              public CallbackStorage,
-             public Printer,
              public util::PathStorage,
              public StateStorage,
              public ModuleRegistry

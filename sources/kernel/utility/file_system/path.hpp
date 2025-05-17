@@ -5,8 +5,8 @@
 #include <string>
 #include <string_view>
 
-#include "kernel/framework/logging/logging.hpp"
-#include "kernel/utility/common/holy_trinity.hpp"
+#include "kernel/framework/logger/include_me.hpp"
+#include "kernel/utility/defines/holy_trinity.hpp"
 
 static inline constexpr const char PATH_SEPARATOR = '/';
 
@@ -26,8 +26,7 @@ public:
         return combineImpl(is_folder, std::string_view(args)...);
     }
 
-    static std::string getName(std::string_view a_path,
-                               const core::Context& a_context) noexcept;
+    static std::string getName(std::string_view a_path) noexcept;
 
     static std::string normalizeFolderPath(std::string_view a_path,
                                            bool sep_postfix) noexcept;

@@ -4,8 +4,6 @@
 
 #include <set>
 
-#include "kernel/framework/logging/context.hpp"
-
 #include "command_functor.hpp"
 
 //------------------------------------------------------------------------------
@@ -20,8 +18,6 @@ public:
         : CommandFunctor(std::forward<Args&&>(args)...), m_check_result(true)
     {
     }
-
-    Command& setContext(Context&& a_context) noexcept;
 
     Command& noArgs() noexcept;
     Command& noVars() noexcept;
@@ -44,7 +40,6 @@ public:
 
 private:
     bool m_check_result;
-    Context m_context;
 
     int getArgumentAsNumberBase(int a_arg_num,
                                 int a_max_val,

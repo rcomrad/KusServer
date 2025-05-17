@@ -1,8 +1,5 @@
 #include "variable.hpp"
 
-#include <format>
-
-#include "kernel/utility/common/exception.hpp"
 #include "kernel/utility/string/normalize.hpp"
 
 //--------------------------------------------------------------------------------
@@ -183,7 +180,8 @@ core::Variable::addValueMap(std::string& result) const
             break;
 
         case Type::RANGE:
-            result += std::format("from {} to {}", m_min_value, m_max_value);
+            result += std::string("from ") + std::to_string(m_min_value) +
+                      " to " + std::to_string(m_max_value);
             break;
 
         case Type::WORD:

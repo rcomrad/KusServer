@@ -24,17 +24,7 @@ util::File::read(std::string_view a_path) noexcept
 std::optional<std::string>
 util::File::readStored(std::string_view a_path) noexcept
 {
-    // std::optional<std::string> result;
-    // DECLARE_LOCAL_CONTEXT;
-    // auto path = PathStorage::getFilePath(a_path, &context_local);
-    // if (path.has_value())
-    // {
-    //     result = read(path.value());
-    // }
-    // return result;
-
     std::optional<std::string> result;
-    DECLARE_LOCAL_CONTEXT;
     auto& path = KERNEL.getFilePath(std::string(a_path));
     result     = read(path);
     return result;
