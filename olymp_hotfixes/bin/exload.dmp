@@ -1,0 +1,821 @@
+problem
+	Разминка;triangle;lcmp.exe;16;1;1000;100
+	Swiper;swiper;lcmp.exe;5;1;1000;100
+	Внеберляндская жизнь;life;ncmp.exe;9;1;1000;100
+	Зазеркалье;labirint;ncmp.exe;6;1;1000;100
+	Счёты;abacus;rcmp4.exe;6;1;1000;100
+END
+
+competition_problem
+	Разминка;1;1
+	Swiper;1;2
+	Внеберляндская жизнь;1;3
+	Зазеркалье;1;4
+	Счёты;1;5
+	Разминка;2;1
+	Swiper;2;2
+	Внеберляндская жизнь;2;3
+	Зазеркалье;2;4
+	Счёты;2;5
+END
+
+competition
+	Тестер;2023-04-21 15:00:00;2023-04-22 18:55:00
+	Очный тур;2023-04-23 15:00:00;2023-04-23 18:55:00
+END
+
+user
+	submitor;123;Tester;Testerovich;512;1
+	Acnonios-Vesuvius;aEfUVU;Tester;Testerovich;512;1
+	Agricola-Ulpius;1nsLs4;Tester;Testerovich;512;1
+	Agrippa-Cornelius;2hccb5;Tester;Testerovich;512;1
+	Agrippa-Postumius;mvnVGL;Tester;Testerovich;512;1
+	Agrippa-Sertorius;gJTsKa;Tester;Testerovich;512;1
+	Albinus-Flavius;YqysSr;Tester;Testerovich;512;1
+	Albinus-Tullius;VxWYWA;Tester;Testerovich;512;1
+	Albinus-Vitellius;NZZ99m;Tester;Testerovich;512;1
+	Albus-Cornelius;SqEh7y;Tester;Testerovich;512;1
+	Albus-Julius;etdsrd;Tester;Testerovich;512;1
+	Albus-Rabirius;cc6XFv;Tester;Testerovich;512;1
+	Appius-Nigidius;puWksm;Tester;Testerovich;512;1
+	Appius-Plinius;bV5RxD;Tester;Testerovich;512;1
+	Appius-Salvius;UmC6UF;Tester;Testerovich;512;1
+	Appius-Sempronius;KY7pcs;Tester;Testerovich;512;1
+	Appius-Vitellius;M15G2z;Tester;Testerovich;512;1
+	Aratus-Junius;YqLnwK;Tester;Testerovich;512;1
+	Aratus-Licinius;5hy4Nz;Tester;Testerovich;512;1
+	Aratus-Livius;wbaLZB;Tester;Testerovich;512;1
+	Aratus-Pompeius;nNBrmv;Tester;Testerovich;512;1
+	Aristomides-Julius;LrxkaX;Tester;Testerovich;512;1
+	Aristomides-Junius;a4MDmB;Tester;Testerovich;512;1
+	Aristomides-Nigidius;ThReLG;Tester;Testerovich;512;1
+	Aristomides-Sertorius;vGy9gQ;Tester;Testerovich;512;1
+	Aulus-Lucius;rces19;Tester;Testerovich;512;1
+	Aulus-Vesuvius;GAKhpV;Tester;Testerovich;512;1
+	Auspex-Fulvius;LYt727;Tester;Testerovich;512;1
+	Auspex-Lucius;wgUgLh;Tester;Testerovich;512;1
+	Auspex-Scribonius;ea2T37;Tester;Testerovich;512;1
+	Barbatus-Domitius;mmXVs3;Tester;Testerovich;512;1
+	Bibulus-Aufidius;Gxr4X8;Tester;Testerovich;512;1
+	Bibulus-Clodius;3EveeQ;Tester;Testerovich;512;1
+	Brutus-Fulvius;gGa8TN;Tester;Testerovich;512;1
+	Brutus-Gabinius;Th7MbG;Tester;Testerovich;512;1
+	Brutus-Horatius;7fRM7V;Tester;Testerovich;512;1
+	Brutus-Lucius;mSuWgd;Tester;Testerovich;512;1
+	Brutus-Manlius;Uctw7R;Tester;Testerovich;512;1
+	Caelus-Aurelius;7DnqHx;Tester;Testerovich;512;1
+	Caelus-Flavius;KfcA3e;Tester;Testerovich;512;1
+	Caelus-Scribonius;3c2Z7G;Tester;Testerovich;512;1
+	Caelus-Vesuvius;4nBk6g;Tester;Testerovich;512;1
+	Caelus-Vinicius;8dHcFx;Tester;Testerovich;512;1
+	Caelus-Aemilius;SRDSLp;Tester;Testerovich;512;1
+	Caesar-Domitius;aBy8wZ;Tester;Testerovich;512;1
+	Caesar-Junius;bfx2pQ;Tester;Testerovich;512;1
+	Caesar-Ulpius;3eXZdV;Tester;Testerovich;512;1
+	Caesar-Viridius;xnKRLZ;Tester;Testerovich;512;1
+	Calvinus-Cassius;Q96t4E;Tester;Testerovich;512;1
+	Calvinus-Julius;aR8XeZ;Tester;Testerovich;512;1
+	Calvinus-Junius;T7LChd;Tester;Testerovich;512;1
+	Calvinus-Vesuvius;vE6uR4;Tester;Testerovich;512;1
+	Calvus-Atius;fzXGhV;Tester;Testerovich;512;1
+	Calvus-Fulvius;5EbxKD;Tester;Testerovich;512;1
+	Cato-Pompeius;QAX461;Tester;Testerovich;512;1
+	Catulus-Aufidius;ZARwc5;Tester;Testerovich;512;1
+	Catulus-Pompeius;36vMqk;Tester;Testerovich;512;1
+	Catulus-Sertorius;cHUWES;Tester;Testerovich;512;1
+	Catulus-Aemilius;LM8kfe;Tester;Testerovich;512;1
+	Cicero-Caecilius;fpnxJP;Tester;Testerovich;512;1
+	Cicero-Furius;Mp4CCJ;Tester;Testerovich;512;1
+	Cicero-Gabinius;BpFYNC;Tester;Testerovich;512;1
+	Cicero-Pompeius;m3pfnZ;Tester;Testerovich;512;1
+	Cicero-Sempronius;Jzywse;Tester;Testerovich;512;1
+	Cicero-Ulpius;wVS1Sy;Tester;Testerovich;512;1
+	Cicero-Vinicius;VGgH5b;Tester;Testerovich;512;1
+	Damasus-Horatius;C76RDm;Tester;Testerovich;512;1
+	Damasus-Junius;Ba55Sd;Tester;Testerovich;512;1
+	Damasus-Tullius;264fXk;Tester;Testerovich;512;1
+	Decius-Ulpius;xwCshd;Tester;Testerovich;512;1
+	Dentatus-Galerius;Bcdpg2;Tester;Testerovich;512;1
+	Dentatus-Lucius;aCPbRk;Tester;Testerovich;512;1
+	Donatus-Clodius;1mPfQ7;Tester;Testerovich;512;1
+	Draco-Pompeius;Mkhc8s;Tester;Testerovich;512;1
+	Emeritus-Clodius;C7b3sy;Tester;Testerovich;512;1
+	Emeritus-Flavius;SFWqpD;Tester;Testerovich;512;1
+	Ephron-Cassius;FuwFuf;Tester;Testerovich;512;1
+	Ephron-Claudius;SJ3nUb;Tester;Testerovich;512;1
+	Ephron-Marius;TqGFYw;Tester;Testerovich;512;1
+	Ephron-Pompeius;wuengV;Tester;Testerovich;512;1
+	Ephron-Vitellius;3c1BkT;Tester;Testerovich;512;1
+	Euclid-Lucius;nSa7GW;Tester;Testerovich;512;1
+	Euclid-Silius;L51Ntz;Tester;Testerovich;512;1
+	Eudicus-Nigidius;T6Q4KM;Tester;Testerovich;512;1
+	Eudicus-Viridius;B23XrB;Tester;Testerovich;512;1
+	Eugenius-Titius;TE5tHM;Tester;Testerovich;512;1
+	Euphemius-Atilius;5X9NB4;Tester;Testerovich;512;1
+END
+
+user_competition
+	1;1
+	1;2
+	2;2
+	3;2
+	4;2
+	5;2
+	6;2
+	7;2
+	8;2
+	9;2
+	10;2
+	11;2
+	12;2
+	13;2
+	14;2
+	15;2
+	16;2
+	17;2
+	18;2
+	19;2
+	20;2
+	21;2
+	22;2
+	23;2
+	24;2
+	25;2
+	26;2
+	27;2
+	28;2
+	29;2
+	30;2
+	31;2
+	32;2
+	33;2
+	34;2
+	35;2
+	36;2
+	37;2
+	38;2
+	39;2
+	40;2
+	41;2
+	42;2
+	43;2
+	44;2
+	45;2
+	46;2
+	47;2
+	48;2
+	49;2
+	50;2
+	51;2
+	52;2
+	53;2
+	54;2
+	55;2
+	56;2
+	57;2
+	58;2
+	59;2
+	60;2
+	61;2
+	62;2
+	63;2
+	64;2
+	65;2
+	66;2
+	67;2
+	68;2
+	69;2
+	70;2
+	71;2
+	72;2
+	73;2
+	74;2
+	75;2
+	76;2
+	77;2
+	78;2
+	79;2
+	80;2
+	81;2
+	82;2
+	83;2
+	84;2
+	85;2
+	86;2
+	87;2
+END
+
+submission
+	1;	5;	2023-04-23 14:30:24;	NUN;	-1;	/home/rcomrad/data/submition/1-2023-4-23 14:30:24-some.cpp
+	1;	5;	2023-04-23 14:31:10;	NUN;	1;	/home/rcomrad/data/submition/2-2023-4-23 14:31:10-some.cpp
+	1;	5;	2023-04-23 14:31:43;	NUN;	1;	/home/rcomrad/data/submition/3-2023-4-23 14:31:43-some.cpp
+	1;	3;	2023-04-23 14:33:24;	NUN;	-1;	/home/rcomrad/data/submition/4-2023-4-23 14:33:24-some.cpp
+	1;	5;	2023-04-23 14:33:43;	NUN;	1;	/home/rcomrad/data/submition/5-2023-4-23 14:33:43-some.cpp
+	1;	1;	2023-04-23 14:45:51;	NUN;	-1;	/home/rcomrad/data/submition/6-2023-4-23 14:45:51-1some.cpp
+	1;	2;	2023-04-23 14:46:13;	NUN;	-1;	/home/rcomrad/data/submition/7-2023-4-23 14:46:13-1some.cpp
+	1;	3;	2023-04-23 14:46:26;	NUN;	-1;	/home/rcomrad/data/submition/8-2023-4-23 14:46:26-1some.cpp
+	1;	4;	2023-04-23 14:46:34;	NUN;	-1;	/home/rcomrad/data/submition/9-2023-4-23 14:46:34-1some.cpp
+	1;	5;	2023-04-23 14:46:41;	NUN;	1;	/home/rcomrad/data/submition/10-2023-4-23 14:46:41-1some.cpp
+	1;	5;	2023-04-23 14:48:21;	NUN;	-1;	/home/rcomrad/data/submition/11-2023-4-23 14:48:21-1some.cpp
+	1;	5;	2023-04-23 14:56:41;	NUN;	1;	/home/rcomrad/data/submition/12-2023-4-23 14:56:41-1some.cpp
+	87;	1;	2023-04-23 15:03:25;	NUN;	-1;	/home/rcomrad/data/submition/13-2023-4-23 15:3:25-87some.py
+	70;	1;	2023-04-23 15:04:16;	NUN;	-1;	/home/rcomrad/data/submition/14-2023-4-23 15:4:16-70some.py
+	18;	1;	2023-04-23 15:04:34;	NUN;	-1;	/home/rcomrad/data/submition/15-2023-4-23 15:4:34-18some.py
+	18;	1;	2023-04-23 15:05:07;	NUN;	-1;	/home/rcomrad/data/submition/16-2023-4-23 15:5:07-18some.py
+	85;	1;	2023-04-23 15:06:02;	NUN;	-1;	/home/rcomrad/data/submition/17-2023-4-23 15:6:02-85some.py
+	35;	1;	2023-04-23 15:06:31;	NUN;	-1;	/home/rcomrad/data/submition/18-2023-4-23 15:6:31-35some.py
+	17;	1;	2023-04-23 15:06:59;	NUN;	-1;	/home/rcomrad/data/submition/19-2023-4-23 15:6:59-17some.py
+	68;	1;	2023-04-23 15:07:35;	NUN;	-1;	/home/rcomrad/data/submition/20-2023-4-23 15:7:35-68some.py
+	60;	1;	2023-04-23 15:08:34;	NUN;	-1;	/home/rcomrad/data/submition/21-2023-4-23 15:8:34-60some.py
+	33;	1;	2023-04-23 15:10:07;	NUN;	-1;	/home/rcomrad/data/submition/22-2023-4-23 15:10:07-33some.py
+	57;	1;	2023-04-23 15:11:05;	NUN;	-1;	/home/rcomrad/data/submition/23-2023-4-23 15:11:05-57some.py
+	18;	2;	2023-04-23 15:11:24;	NUN;	-1;	/home/rcomrad/data/submition/24-2023-4-23 15:11:24-18some.py
+	5;	1;	2023-04-23 15:12:00;	NUN;	-1;	/home/rcomrad/data/submition/25-2023-4-23 15:12:00-5some.py
+	30;	1;	2023-04-23 15:12:01;	NUN;	-1;	/home/rcomrad/data/submition/26-2023-4-23 15:12:01-30some.py
+	17;	2;	2023-04-23 15:13:29;	NUN;	-1;	/home/rcomrad/data/submition/27-2023-4-23 15:13:29-17some.py
+	77;	1;	2023-04-23 15:13:32;	NUN;	-1;	/home/rcomrad/data/submition/28-2023-4-23 15:13:32-77some.cpp
+	30;	1;	2023-04-23 15:13:50;	NUN;	-1;	/home/rcomrad/data/submition/29-2023-4-23 15:13:50-30some.py
+	38;	1;	2023-04-23 15:13:51;	NUN;	-1;	/home/rcomrad/data/submition/30-2023-4-23 15:13:51-38some.py
+	73;	1;	2023-04-23 15:13:58;	NUN;	-1;	/home/rcomrad/data/submition/31-2023-4-23 15:13:58-73some.py
+	53;	1;	2023-04-23 15:14:01;	NUN;	-1;	/home/rcomrad/data/submition/32-2023-4-23 15:14:01-53some.py
+	25;	1;	2023-04-23 15:14:42;	NUN;	-1;	/home/rcomrad/data/submition/33-2023-4-23 15:14:42-25some.py
+	60;	2;	2023-04-23 15:14:53;	NUN;	-1;	/home/rcomrad/data/submition/34-2023-4-23 15:14:53-60some.py
+	21;	1;	2023-04-23 15:15:00;	NUN;	-1;	/home/rcomrad/data/submition/35-2023-4-23 15:15:00-21some.py
+	63;	1;	2023-04-23 15:15:46;	NUN;	-1;	/home/rcomrad/data/submition/36-2023-4-23 15:15:46-63some.py
+	50;	1;	2023-04-23 15:17:50;	NUN;	-1;	/home/rcomrad/data/submition/37-2023-4-23 15:17:50-50some.py
+	54;	1;	2023-04-23 15:17:58;	NUN;	-1;	/home/rcomrad/data/submition/38-2023-4-23 15:17:58-54some.py
+	13;	1;	2023-04-23 15:18:26;	NUN;	-1;	/home/rcomrad/data/submition/39-2023-4-23 15:18:26-13some.cpp
+	32;	1;	2023-04-23 15:18:29;	NUN;	-1;	/home/rcomrad/data/submition/40-2023-4-23 15:18:29-32some.py
+	69;	1;	2023-04-23 15:18:39;	NUN;	-1;	/home/rcomrad/data/submition/41-2023-4-23 15:18:39-69some.py
+	57;	2;	2023-04-23 15:19:37;	NUN;	-1;	/home/rcomrad/data/submition/42-2023-4-23 15:19:37-57some.py
+	49;	1;	2023-04-23 15:19:39;	NUN;	-1;	/home/rcomrad/data/submition/43-2023-4-23 15:19:39-49some.py
+	35;	2;	2023-04-23 15:20:03;	NUN;	-1;	/home/rcomrad/data/submition/44-2023-4-23 15:20:03-35some.py
+	83;	1;	2023-04-23 15:20:13;	NUN;	-1;	/home/rcomrad/data/submition/45-2023-4-23 15:20:13-83some.py
+	85;	2;	2023-04-23 15:20:14;	NUN;	-1;	/home/rcomrad/data/submition/46-2023-4-23 15:20:14-85some.py
+	8;	2;	2023-04-23 15:20:40;	NUN;	-1;	/home/rcomrad/data/submition/47-2023-4-23 15:20:40-8some.py
+	36;	1;	2023-04-23 15:21:10;	NUN;	-1;	/home/rcomrad/data/submition/48-2023-4-23 15:21:10-36some.py
+	38;	2;	2023-04-23 15:21:36;	NUN;	-1;	/home/rcomrad/data/submition/49-2023-4-23 15:21:36-38some.py
+	74;	1;	2023-04-23 15:22:16;	NUN;	-1;	/home/rcomrad/data/submition/50-2023-4-23 15:22:16-74some.py
+	84;	1;	2023-04-23 15:22:20;	NUN;	-1;	/home/rcomrad/data/submition/51-2023-4-23 15:22:20-84some.py
+	87;	2;	2023-04-23 15:23:44;	NUN;	-1;	/home/rcomrad/data/submition/52-2023-4-23 15:23:44-87some.py
+	31;	1;	2023-04-23 15:24:10;	NUN;	-1;	/home/rcomrad/data/submition/53-2023-4-23 15:24:10-31some.py
+	5;	2;	2023-04-23 15:24:20;	NUN;	-1;	/home/rcomrad/data/submition/54-2023-4-23 15:24:20-5some.py
+	72;	1;	2023-04-23 15:24:26;	NUN;	-1;	/home/rcomrad/data/submition/55-2023-4-23 15:24:26-72some.py
+	44;	1;	2023-04-23 15:24:39;	NUN;	-1;	/home/rcomrad/data/submition/56-2023-4-23 15:24:39-44some.py
+	37;	1;	2023-04-23 15:24:44;	NUN;	-1;	/home/rcomrad/data/submition/57-2023-4-23 15:24:44-37some.py
+	60;	3;	2023-04-23 15:24:48;	NUN;	-1;	/home/rcomrad/data/submition/58-2023-4-23 15:24:48-60some.py
+	84;	1;	2023-04-23 15:25:24;	NUN;	-1;	/home/rcomrad/data/submition/59-2023-4-23 15:25:24-84some.py
+	32;	2;	2023-04-23 15:25:28;	NUN;	-1;	/home/rcomrad/data/submition/60-2023-4-23 15:25:28-32some.py
+	69;	2;	2023-04-23 15:26:08;	NUN;	-1;	/home/rcomrad/data/submition/61-2023-4-23 15:26:08-69some.py
+	25;	2;	2023-04-23 15:27:15;	NUN;	-1;	/home/rcomrad/data/submition/62-2023-4-23 15:27:15-25some.py
+	30;	2;	2023-04-23 15:27:35;	NUN;	-1;	/home/rcomrad/data/submition/63-2023-4-23 15:27:35-30some.py
+	33;	2;	2023-04-23 15:27:36;	NUN;	-1;	/home/rcomrad/data/submition/64-2023-4-23 15:27:36-33some.py
+	1;	1;	2023-04-23 15:27:46;	NUN;	-1;	/home/rcomrad/data/submition/65-2023-4-23 15:27:46-1some.py
+	87;	3;	2023-04-23 15:28:30;	NUN;	-1;	/home/rcomrad/data/submition/66-2023-4-23 15:28:30-87some.py
+	18;	3;	2023-04-23 15:28:34;	NUN;	-1;	/home/rcomrad/data/submition/67-2023-4-23 15:28:34-18some.py
+	36;	3;	2023-04-23 15:29:32;	NUN;	2;	/home/rcomrad/data/submition/68-2023-4-23 15:29:32-36some.py
+	13;	1;	2023-04-23 15:29:50;	NUN;	-1;	/home/rcomrad/data/submition/69-2023-4-23 15:29:50-13some.cpp
+	54;	2;	2023-04-23 15:29:53;	NUN;	5;	/home/rcomrad/data/submition/70-2023-4-23 15:29:53-54some.py
+	1;	1;	2023-04-23 15:30:28;	NUN;	3;	/home/rcomrad/data/submition/71-2023-4-23 15:30:28-1some.py
+	68;	2;	2023-04-23 15:30:34;	NUN;	3;	/home/rcomrad/data/submition/72-2023-4-23 15:30:34-68some.py
+	73;	3;	2023-04-23 15:32:21;	NUN;	2;	/home/rcomrad/data/submition/73-2023-4-23 15:32:21-73some.py
+	35;	3;	2023-04-23 15:32:28;	NUN;	1;	/home/rcomrad/data/submition/74-2023-4-23 15:32:28-35some.py
+	80;	1;	2023-04-23 15:33:03;	NUN;	3;	/home/rcomrad/data/submition/75-2023-4-23 15:33:03-80some.py
+	17;	3;	2023-04-23 15:34:30;	NUN;	2;	/home/rcomrad/data/submition/76-2023-4-23 15:34:30-17some.py
+	36;	4;	2023-04-23 15:34:33;	NUN;	1;	/home/rcomrad/data/submition/77-2023-4-23 15:34:33-36some.py
+	80;	1;	2023-04-23 15:34:46;	NUN;	-1;	/home/rcomrad/data/submition/78-2023-4-23 15:34:46-80some.py
+	79;	1;	2023-04-23 15:35:32;	NUN;	1;	/home/rcomrad/data/submition/79-2023-4-23 15:35:32-79some.cpp
+	72;	3;	2023-04-23 15:35:39;	NUN;	-1;	/home/rcomrad/data/submition/80-2023-4-23 15:35:39-72some.py
+	17;	3;	2023-04-23 15:37:01;	NUN;	2;	/home/rcomrad/data/submition/81-2023-4-23 15:37:01-17some.py
+	79;	1;	2023-04-23 15:37:08;	NUN;	1;	/home/rcomrad/data/submition/82-2023-4-23 15:37:08-79some.cpp
+	70;	2;	2023-04-23 15:39:14;	NUN;	5;	/home/rcomrad/data/submition/83-2023-4-23 15:39:14-70some.py
+	70;	1;	2023-04-23 15:39:45;	NUN;	8;	/home/rcomrad/data/submition/84-2023-4-23 15:39:45-70some.py
+	35;	5;	2023-04-23 15:40:15;	NUN;	1;	/home/rcomrad/data/submition/85-2023-4-23 15:40:15-35some.py
+	35;	4;	2023-04-23 15:40:22;	NUN;	1;	/home/rcomrad/data/submition/86-2023-4-23 15:40:22-35some.py
+	58;	1;	2023-04-23 15:40:38;	NUN;	8;	/home/rcomrad/data/submition/87-2023-4-23 15:40:38-58some.py
+	77;	1;	2023-04-23 15:41:20;	NUN;	1;	/home/rcomrad/data/submition/88-2023-4-23 15:41:20-77some.cpp
+	74;	1;	2023-04-23 15:41:27;	NUN;	8;	/home/rcomrad/data/submition/89-2023-4-23 15:41:27-74some.py
+	77;	3;	2023-04-23 15:41:34;	NUN;	1;	/home/rcomrad/data/submition/90-2023-4-23 15:41:34-77some.cpp
+	77;	2;	2023-04-23 15:41:43;	NUN;	1;	/home/rcomrad/data/submition/91-2023-4-23 15:41:43-77some.cpp
+	60;	4;	2023-04-23 15:42:06;	NUN;	2;	/home/rcomrad/data/submition/92-2023-4-23 15:42:06-60some.py
+	17;	3;	2023-04-23 15:42:07;	NUN;	-1;	/home/rcomrad/data/submition/93-2023-4-23 15:42:07-17some.py
+	73;	1;	2023-04-23 15:42:12;	NUN;	1;	/home/rcomrad/data/submition/94-2023-4-23 15:42:12-73some.cpp
+	60;	1;	2023-04-23 15:42:22;	NUN;	1;	/home/rcomrad/data/submition/95-2023-4-23 15:42:22-60some.py
+	73;	2;	2023-04-23 15:42:32;	NUN;	1;	/home/rcomrad/data/submition/96-2023-4-23 15:42:32-73some.cpp
+	60;	2;	2023-04-23 15:42:32;	NUN;	5;	/home/rcomrad/data/submition/97-2023-4-23 15:42:32-60some.py
+	17;	2;	2023-04-23 15:42:34;	NUN;	-1;	/home/rcomrad/data/submition/98-2023-4-23 15:42:34-17some.py
+	60;	3;	2023-04-23 15:42:58;	NUN;	1;	/home/rcomrad/data/submition/99-2023-4-23 15:42:58-60some.py
+	17;	1;	2023-04-23 15:42:59;	NUN;	1;	/home/rcomrad/data/submition/100-2023-4-23 15:42:59-17some.py
+	73;	2;	2023-04-23 15:43:11;	NUN;	1;	/home/rcomrad/data/submition/101-2023-4-23 15:43:11-73some.cpp
+	77;	4;	2023-04-23 15:43:12;	NUN;	2;	/home/rcomrad/data/submition/102-2023-4-23 15:43:12-77some.py
+	30;	1;	2023-04-23 15:43:17;	NUN;	2;	/home/rcomrad/data/submition/103-2023-4-23 15:43:17-30some.py
+	73;	3;	2023-04-23 15:43:26;	NUN;	2;	/home/rcomrad/data/submition/104-2023-4-23 15:43:26-73some.py
+	77;	1;	2023-04-23 15:43:28;	NUN;	2;	/home/rcomrad/data/submition/105-2023-4-23 15:43:28-77some.py
+	30;	2;	2023-04-23 15:43:32;	NUN;	5;	/home/rcomrad/data/submition/106-2023-4-23 15:43:32-30some.py
+	32;	3;	2023-04-23 15:43:33;	NUN;	2;	/home/rcomrad/data/submition/107-2023-4-23 15:43:33-32some.py
+	77;	2;	2023-04-23 15:43:34;	NUN;	1;	/home/rcomrad/data/submition/108-2023-4-23 15:43:34-77some.py
+	77;	2;	2023-04-23 15:43:43;	NUN;	5;	/home/rcomrad/data/submition/109-2023-4-23 15:43:43-77some.py
+	44;	1;	2023-04-23 15:43:44;	NUN;	-1;	/home/rcomrad/data/submition/110-2023-4-23 15:43:44-44some.py
+	58;	1;	2023-04-23 15:43:46;	NUN;	1;	/home/rcomrad/data/submition/111-2023-4-23 15:43:46-58some.py
+	77;	3;	2023-04-23 15:43:50;	NUN;	2;	/home/rcomrad/data/submition/112-2023-4-23 15:43:50-77some.py
+	32;	1;	2023-04-23 15:43:58;	NUN;	2;	/home/rcomrad/data/submition/113-2023-4-23 15:43:58-32some.py
+	10;	1;	2023-04-23 15:44:00;	NUN;	-1;	/home/rcomrad/data/submition/114-2023-4-23 15:44:00-10some.py
+	60;	1;	2023-04-23 15:44:02;	NUN;	2;	/home/rcomrad/data/submition/115-2023-4-23 15:44:02-60some.py
+	77;	4;	2023-04-23 15:44:10;	NUN;	2;	/home/rcomrad/data/submition/116-2023-4-23 15:44:10-77some.py
+	60;	1;	2023-04-23 15:44:16;	NUN;	8;	/home/rcomrad/data/submition/117-2023-4-23 15:44:16-60some.py
+	32;	2;	2023-04-23 15:44:20;	NUN;	5;	/home/rcomrad/data/submition/118-2023-4-23 15:44:20-32some.py
+	30;	3;	2023-04-23 15:44:32;	NUN;	-1;	/home/rcomrad/data/submition/119-2023-4-23 15:44:32-30some.py
+	44;	2;	2023-04-23 15:44:34;	NUN;	5;	/home/rcomrad/data/submition/120-2023-4-23 15:44:34-44some.py
+	58;	1;	2023-04-23 15:44:49;	NUN;	-1;	/home/rcomrad/data/submition/121-2023-4-23 15:44:49-58some.py
+	60;	3;	2023-04-23 15:45:02;	NUN;	-1;	/home/rcomrad/data/submition/122-2023-4-23 15:45:02-60some.py
+	32;	1;	2023-04-23 15:46:08;	NUN;	1;	/home/rcomrad/data/submition/123-2023-4-23 15:46:08-32some.py
+	38;	3;	2023-04-23 15:46:38;	NUN;	1;	/home/rcomrad/data/submition/124-2023-4-23 15:46:38-38some.py
+	18;	1;	2023-04-23 15:47:11;	NUN;	-1;	/home/rcomrad/data/submition/125-2023-4-23 15:47:11-18some.py
+	30;	1;	2023-04-23 15:47:23;	NUN;	-1;	/home/rcomrad/data/submition/126-2023-4-23 15:47:23-30some.py
+	80;	2;	2023-04-23 15:47:50;	NUN;	5;	/home/rcomrad/data/submition/127-2023-4-23 15:47:50-80some.py
+	63;	1;	2023-04-23 15:47:56;	NUN;	2;	/home/rcomrad/data/submition/128-2023-4-23 15:47:56-63some.py
+	31;	2;	2023-04-23 15:48:10;	NUN;	5;	/home/rcomrad/data/submition/129-2023-4-23 15:48:10-31some.py
+	80;	1;	2023-04-23 15:48:17;	NUN;	-1;	/home/rcomrad/data/submition/130-2023-4-23 15:48:17-80some.py
+	77;	4;	2023-04-23 15:48:33;	NUN;	1;	/home/rcomrad/data/submition/131-2023-4-23 15:48:33-77some.py
+	8;	2;	2023-04-23 15:48:34;	NUN;	5;	/home/rcomrad/data/submition/132-2023-4-23 15:48:34-8some.py
+	31;	1;	2023-04-23 15:48:47;	NUN;	2;	/home/rcomrad/data/submition/133-2023-4-23 15:48:47-31some.py
+	77;	4;	2023-04-23 15:48:56;	NUN;	2;	/home/rcomrad/data/submition/134-2023-4-23 15:48:56-77some.py
+	73;	4;	2023-04-23 15:49:12;	NUN;	2;	/home/rcomrad/data/submition/135-2023-4-23 15:49:12-73some.py
+	74;	2;	2023-04-23 15:49:19;	NUN;	5;	/home/rcomrad/data/submition/136-2023-4-23 15:49:19-74some.py
+	8;	3;	2023-04-23 15:49:26;	NUN;	-1;	/home/rcomrad/data/submition/137-2023-4-23 15:49:26-8some.py
+	18;	2;	2023-04-23 15:49:37;	NUN;	5;	/home/rcomrad/data/submition/138-2023-4-23 15:49:37-18some.py
+	57;	5;	2023-04-23 15:49:56;	NUN;	5;	/home/rcomrad/data/submition/139-2023-4-23 15:49:56-57some.py
+	5;	3;	2023-04-23 15:50:07;	NUN;	-1;	/home/rcomrad/data/submition/140-2023-4-23 15:50:07-5some.py
+	42;	1;	2023-04-23 15:50:10;	NUN;	3;	/home/rcomrad/data/submition/141-2023-4-23 15:50:10-42some.py
+	37;	2;	2023-04-23 15:50:11;	NUN;	5;	/home/rcomrad/data/submition/142-2023-4-23 15:50:11-37some.py
+	38;	3;	2023-04-23 15:50:29;	NUN;	2;	/home/rcomrad/data/submition/143-2023-4-23 15:50:29-38some.py
+	74;	2;	2023-04-23 15:50:39;	NUN;	5;	/home/rcomrad/data/submition/144-2023-4-23 15:50:39-74some.py
+	57;	1;	2023-04-23 15:50:41;	NUN;	-1;	/home/rcomrad/data/submition/146-2023-4-23 15:50:41-57some.py
+	60;	5;	2023-04-23 15:50:40;	NUN;	1;	/home/rcomrad/data/submition/145-2023-4-23 15:50:40-60some.py
+	32;	1;	2023-04-23 15:50:58;	NUN;	-1;	/home/rcomrad/data/submition/147-2023-4-23 15:50:58-32some.py
+	50;	2;	2023-04-23 15:51:07;	NUN;	-1;	/home/rcomrad/data/submition/148-2023-4-23 15:51:07-50some.py
+	68;	3;	2023-04-23 15:51:08;	NUN;	-1;	/home/rcomrad/data/submition/149-2023-4-23 15:51:08-68some.py
+	5;	2;	2023-04-23 15:51:09;	NUN;	-1;	/home/rcomrad/data/submition/150-2023-4-23 15:51:09-5some.py
+	13;	1;	2023-04-23 15:51:10;	NUN;	-1;	/home/rcomrad/data/submition/151-2023-4-23 15:51:10-13some.py
+	37;	1;	2023-04-23 15:51:15;	NUN;	-1;	/home/rcomrad/data/submition/152-2023-4-23 15:51:15-37some.py
+	16;	2;	2023-04-23 15:51:16;	NUN;	-1;	/home/rcomrad/data/submition/153-2023-4-23 15:51:16-16some.py
+	77;	2;	2023-04-23 15:51:17;	NUN;	-1;	/home/rcomrad/data/submition/154-2023-4-23 15:51:17-77some.py
+	57;	2;	2023-04-23 15:51:19;	NUN;	-1;	/home/rcomrad/data/submition/155-2023-4-23 15:51:19-57some.py
+	21;	1;	2023-04-23 15:51:38;	NUN;	-1;	/home/rcomrad/data/submition/156-2023-4-23 15:51:38-21some.py
+	17;	1;	2023-04-23 15:51:56;	NUN;	-1;	/home/rcomrad/data/submition/157-2023-4-23 15:51:56-17some.py
+	5;	1;	2023-04-23 15:51:58;	NUN;	-1;	/home/rcomrad/data/submition/158-2023-4-23 15:51:58-5some.py
+	85;	1;	2023-04-23 15:52:18;	NUN;	-1;	/home/rcomrad/data/submition/159-2023-4-23 15:52:18-85some.py
+	60;	1;	2023-04-23 15:52:41;	NUN;	-1;	/home/rcomrad/data/submition/160-2023-4-23 15:52:41-60some.py
+	80;	2;	2023-04-23 15:53:06;	NUN;	-1;	/home/rcomrad/data/submition/161-2023-4-23 15:53:06-80some.py
+	49;	2;	2023-04-23 15:53:17;	NUN;	-1;	/home/rcomrad/data/submition/162-2023-4-23 15:53:17-49some.py
+	44;	2;	2023-04-23 15:53:33;	NUN;	-1;	/home/rcomrad/data/submition/163-2023-4-23 15:53:33-44some.py
+	77;	5;	2023-04-23 15:54:29;	NUN;	-1;	/home/rcomrad/data/submition/164-2023-4-23 15:54:29-77some.py
+	40;	1;	2023-04-23 15:55:09;	NUN;	1;	/home/rcomrad/data/submition/165-2023-4-23 15:55:09-40some.cpp
+	42;	1;	2023-04-23 15:55:41;	NUN;	1;	/home/rcomrad/data/submition/166-2023-4-23 15:55:41-42some.py
+	64;	4;	2023-04-23 15:55:54;	NUN;	1;	/home/rcomrad/data/submition/167-2023-4-23 15:55:54-64some.py
+	77;	4;	2023-04-23 15:56:03;	NUN;	1;	/home/rcomrad/data/submition/168-2023-4-23 15:56:03-77some.py
+	77;	4;	2023-04-23 15:56:15;	NUN;	1;	/home/rcomrad/data/submition/169-2023-4-23 15:56:15-77some.py
+	49;	1;	2023-04-23 15:56:48;	NUN;	1;	/home/rcomrad/data/submition/170-2023-4-23 15:56:48-49some.py
+	69;	3;	2023-04-23 15:57:19;	NUN;	1;	/home/rcomrad/data/submition/171-2023-4-23 15:57:19-69some.py
+	69;	1;	2023-04-23 15:57:57;	NUN;	1;	/home/rcomrad/data/submition/172-2023-4-23 15:57:57-69some.cpp
+	80;	2;	2023-04-23 15:57:59;	NUN;	1;	/home/rcomrad/data/submition/173-2023-4-23 15:57:59-80some.py
+	18;	3;	2023-04-23 15:58:00;	NUN;	1;	/home/rcomrad/data/submition/174-2023-4-23 15:58:00-18some.py
+	50;	1;	2023-04-23 15:58:07;	NUN;	1;	/home/rcomrad/data/submition/175-2023-4-23 15:58:07-50some.py
+	69;	2;	2023-04-23 15:58:08;	NUN;	1;	/home/rcomrad/data/submition/176-2023-4-23 15:58:08-69some.cpp
+	54;	3;	2023-04-23 15:58:39;	NUN;	1;	/home/rcomrad/data/submition/177-2023-4-23 15:58:39-54some.py
+	18;	3;	2023-04-23 15:58:47;	NUN;	1;	/home/rcomrad/data/submition/178-2023-4-23 15:58:47-18some.py
+	80;	2;	2023-04-23 15:58:47;	NUN;	1;	/home/rcomrad/data/submition/179-2023-4-23 15:58:47-80some.py
+	54;	2;	2023-04-23 15:58:57;	NUN;	1;	/home/rcomrad/data/submition/180-2023-4-23 15:58:57-54some.py
+	69;	3;	2023-04-23 15:59:03;	NUN;	1;	/home/rcomrad/data/submition/181-2023-4-23 15:59:03-69some.py
+	54;	1;	2023-04-23 15:59:06;	NUN;	1;	/home/rcomrad/data/submition/182-2023-4-23 15:59:06-54some.py
+	18;	3;	2023-04-23 15:59:26;	NUN;	1;	/home/rcomrad/data/submition/183-2023-4-23 15:59:26-18some.py
+	8;	5;	2023-04-23 15:59:45;	NUN;	1;	/home/rcomrad/data/submition/184-2023-4-23 15:59:45-8some.py
+	8;	5;	2023-04-23 16:01:22;	NUN;	1;	/home/rcomrad/data/submition/185-2023-4-23 16:1:22-8some.py
+	66;	1;	2023-04-23 16:02:17;	NUN;	1;	/home/rcomrad/data/submition/186-2023-4-23 16:2:17-66some.py
+	83;	2;	2023-04-23 16:02:49;	NUN;	1;	/home/rcomrad/data/submition/187-2023-4-23 16:2:49-83some.py
+	85;	2;	2023-04-23 16:02:50;	NUN;	1;	/home/rcomrad/data/submition/188-2023-4-23 16:2:50-85some.py
+	80;	2;	2023-04-23 16:02:59;	NUN;	1;	/home/rcomrad/data/submition/189-2023-4-23 16:2:59-80some.py
+	72;	3;	2023-04-23 16:03:18;	NUN;	1;	/home/rcomrad/data/submition/190-2023-4-23 16:3:18-72some.py
+	83;	2;	2023-04-23 16:03:32;	NUN;	1;	/home/rcomrad/data/submition/191-2023-4-23 16:3:32-83some.py
+	72;	1;	2023-04-23 16:03:33;	NUN;	1;	/home/rcomrad/data/submition/192-2023-4-23 16:3:33-72some.py
+	77;	3;	2023-04-23 16:03:37;	NUN;	1;	/home/rcomrad/data/submition/193-2023-4-23 16:3:37-77some.py
+	22;	1;	2023-04-23 16:03:54;	NUN;	1;	/home/rcomrad/data/submition/194-2023-4-23 16:3:54-22some.py
+	80;	2;	2023-04-23 16:04:32;	NUN;	1;	/home/rcomrad/data/submition/195-2023-4-23 16:4:32-80some.py
+	66;	1;	2023-04-23 16:04:58;	NUN;	1;	/home/rcomrad/data/submition/196-2023-4-23 16:4:58-66some.py
+	8;	5;	2023-04-23 16:05:09;	NUN;	1;	/home/rcomrad/data/submition/197-2023-4-23 16:5:09-8some.py
+	42;	1;	2023-04-23 16:05:20;	NUN;	1;	/home/rcomrad/data/submition/198-2023-4-23 16:5:20-42some.py
+	66;	1;	2023-04-23 16:05:25;	NUN;	1;	/home/rcomrad/data/submition/199-2023-4-23 16:5:25-66some.py
+	50;	2;	2023-04-23 16:06:07;	NUN;	1;	/home/rcomrad/data/submition/200-2023-4-23 16:6:07-50some.py
+	77;	3;	2023-04-23 16:06:27;	NUN;	1;	/home/rcomrad/data/submition/201-2023-4-23 16:6:27-77some.py
+	2;	1;	2023-04-23 16:06:45;	NUN;	1;	/home/rcomrad/data/submition/202-2023-4-23 16:6:45-2some.py
+	28;	1;	2023-04-23 16:06:56;	NUN;	1;	/home/rcomrad/data/submition/203-2023-4-23 16:6:56-28some.py
+	31;	1;	2023-04-23 16:07:12;	NUN;	1;	/home/rcomrad/data/submition/204-2023-4-23 16:7:12-31some.py
+	57;	5;	2023-04-23 16:08:10;	NUN;	1;	/home/rcomrad/data/submition/205-2023-4-23 16:8:10-57some.py
+	77;	3;	2023-04-23 16:08:10;	NUN;	1;	/home/rcomrad/data/submition/206-2023-4-23 16:8:10-77some.py
+	64;	2;	2023-04-23 16:08:24;	NUN;	1;	/home/rcomrad/data/submition/207-2023-4-23 16:8:24-64some.py
+	60;	1;	2023-04-23 16:08:54;	NUN;	1;	/home/rcomrad/data/submition/208-2023-4-23 16:8:54-60some.py
+	32;	1;	2023-04-23 16:09:17;	NUN;	1;	/home/rcomrad/data/submition/209-2023-4-23 16:9:17-32some.py
+	2;	1;	2023-04-23 16:09:20;	NUN;	1;	/home/rcomrad/data/submition/210-2023-4-23 16:9:20-2some.cpp
+	60;	1;	2023-04-23 16:09:21;	NUN;	1;	/home/rcomrad/data/submition/211-2023-4-23 16:9:21-60some.py
+	42;	1;	2023-04-23 16:09:35;	NUN;	1;	/home/rcomrad/data/submition/212-2023-4-23 16:9:35-42some.py
+	63;	1;	2023-04-23 16:09:46;	NUN;	1;	/home/rcomrad/data/submition/213-2023-4-23 16:9:46-63some.py
+	32;	1;	2023-04-23 16:10:01;	NUN;	1;	/home/rcomrad/data/submition/214-2023-4-23 16:10:01-32some.py
+	77;	4;	2023-04-23 16:10:27;	NUN;	1;	/home/rcomrad/data/submition/215-2023-4-23 16:10:27-77some.py
+	60;	1;	2023-04-23 16:10:35;	NUN;	1;	/home/rcomrad/data/submition/216-2023-4-23 16:10:35-60some.py
+	32;	1;	2023-04-23 16:10:43;	NUN;	1;	/home/rcomrad/data/submition/217-2023-4-23 16:10:43-32some.py
+	32;	3;	2023-04-23 16:11:07;	NUN;	1;	/home/rcomrad/data/submition/218-2023-4-23 16:11:07-32some.py
+	60;	1;	2023-04-23 16:12:07;	NUN;	1;	/home/rcomrad/data/submition/219-2023-4-23 16:12:07-60some.py
+	60;	2;	2023-04-23 16:12:36;	NUN;	1;	/home/rcomrad/data/submition/220-2023-4-23 16:12:36-60some.py
+	60;	3;	2023-04-23 16:13:02;	NUN;	1;	/home/rcomrad/data/submition/221-2023-4-23 16:13:02-60some.py
+	60;	5;	2023-04-23 16:13:27;	NUN;	1;	/home/rcomrad/data/submition/222-2023-4-23 16:13:27-60some.py
+	60;	1;	2023-04-23 16:13:39;	NUN;	-1;	/home/rcomrad/data/submition/223-2023-4-23 16:13:39-60some.py
+	64;	2;	2023-04-23 16:13:56;	NUN;	-1;	/home/rcomrad/data/submition/224-2023-4-23 16:13:56-64some.py
+	32;	1;	2023-04-23 16:14:38;	NUN;	-1;	/home/rcomrad/data/submition/225-2023-4-23 16:14:38-32some.py
+	33;	2;	2023-04-23 16:14:42;	NUN;	-1;	/home/rcomrad/data/submition/226-2023-4-23 16:14:42-33some.py
+	70;	1;	2023-04-23 16:15:30;	NUN;	-1;	/home/rcomrad/data/submition/227-2023-4-23 16:15:30-70some.py
+	42;	1;	2023-04-23 16:16:02;	NUN;	-1;	/home/rcomrad/data/submition/228-2023-4-23 16:16:02-42some.py
+	74;	3;	2023-04-23 16:16:49;	NUN;	-1;	/home/rcomrad/data/submition/229-2023-4-23 16:16:49-74some.py
+	13;	1;	2023-04-23 16:17:30;	NUN;	-1;	/home/rcomrad/data/submition/230-2023-4-23 16:17:30-13some.cpp
+	69;	3;	2023-04-23 16:17:42;	NUN;	1;	/home/rcomrad/data/submition/231-2023-4-23 16:17:42-69some.py
+	2;	2;	2023-04-23 16:17:46;	NUN;	1;	/home/rcomrad/data/submition/232-2023-4-23 16:17:46-2some.py
+	31;	1;	2023-04-23 16:18:08;	NUN;	1;	/home/rcomrad/data/submition/233-2023-4-23 16:18:08-31some.py
+	21;	3;	2023-04-23 16:19:46;	NUN;	1;	/home/rcomrad/data/submition/234-2023-4-23 16:19:46-21some.py
+	32;	1;	2023-04-23 16:20:28;	NUN;	1;	/home/rcomrad/data/submition/235-2023-4-23 16:20:28-32some.py
+	85;	5;	2023-04-23 16:21:40;	NUN;	1;	/home/rcomrad/data/submition/236-2023-4-23 16:21:40-85some.py
+	53;	2;	2023-04-23 16:23:43;	NUN;	1;	/home/rcomrad/data/submition/237-2023-4-23 16:23:43-53some.cpp
+	80;	3;	2023-04-23 16:24:05;	NUN;	1;	/home/rcomrad/data/submition/238-2023-4-23 16:24:05-80some.py
+	85;	2;	2023-04-23 16:24:13;	NUN;	1;	/home/rcomrad/data/submition/239-2023-4-23 16:24:13-85some.py
+	85;	3;	2023-04-23 16:24:38;	NUN;	1;	/home/rcomrad/data/submition/240-2023-4-23 16:24:38-85some.py
+	8;	5;	2023-04-23 16:24:59;	NUN;	1;	/home/rcomrad/data/submition/241-2023-4-23 16:24:59-8some.py
+	5;	4;	2023-04-23 16:25:26;	NUN;	1;	/home/rcomrad/data/submition/242-2023-4-23 16:25:26-5some.py
+	85;	5;	2023-04-23 16:25:26;	NUN;	1;	/home/rcomrad/data/submition/243-2023-4-23 16:25:26-85some.py
+	85;	5;	2023-04-23 16:25:47;	NUN;	1;	/home/rcomrad/data/submition/244-2023-4-23 16:25:47-85some.cpp
+	5;	4;	2023-04-23 16:25:49;	NUN;	1;	/home/rcomrad/data/submition/245-2023-4-23 16:25:49-5some.py
+	49;	3;	2023-04-23 16:25:55;	NUN;	1;	/home/rcomrad/data/submition/246-2023-4-23 16:25:55-49some.py
+	80;	1;	2023-04-23 16:26:33;	NUN;	1;	/home/rcomrad/data/submition/247-2023-4-23 16:26:33-80some.py
+	18;	1;	2023-04-23 16:27:11;	NUN;	1;	/home/rcomrad/data/submition/248-2023-4-23 16:27:11-18some.py
+	17;	4;	2023-04-23 16:27:13;	NUN;	1;	/home/rcomrad/data/submition/249-2023-4-23 16:27:13-17some.py
+	73;	5;	2023-04-23 16:28:10;	NUN;	1;	/home/rcomrad/data/submition/250-2023-4-23 16:28:10-73some.py
+	73;	2;	2023-04-23 16:29:02;	NUN;	1;	/home/rcomrad/data/submition/251-2023-4-23 16:29:02-73some.py
+	18;	1;	2023-04-23 16:29:14;	NUN;	1;	/home/rcomrad/data/submition/252-2023-4-23 16:29:14-18some.py
+	8;	1;	2023-04-23 16:29:19;	NUN;	1;	/home/rcomrad/data/submition/253-2023-4-23 16:29:19-8some.py
+	17;	4;	2023-04-23 16:29:28;	NUN;	1;	/home/rcomrad/data/submition/254-2023-4-23 16:29:28-17some.py
+	73;	3;	2023-04-23 16:29:29;	NUN;	1;	/home/rcomrad/data/submition/255-2023-4-23 16:29:29-73some.py
+	18;	1;	2023-04-23 16:29:30;	NUN;	1;	/home/rcomrad/data/submition/256-2023-4-23 16:29:30-18some.py
+	23;	1;	2023-04-23 16:29:32;	NUN;	-1;	/home/rcomrad/data/submition/257-2023-4-23 16:29:32-23some.cpp
+	5;	4;	2023-04-23 16:29:41;	NUN;	1;	/home/rcomrad/data/submition/258-2023-4-23 16:29:41-5some.py
+	73;	4;	2023-04-23 16:29:46;	NUN;	1;	/home/rcomrad/data/submition/259-2023-4-23 16:29:46-73some.py
+	32;	1;	2023-04-23 16:30:08;	NUN;	1;	/home/rcomrad/data/submition/262-2023-4-23 16:30:08-32some.py
+	60;	1;	2023-04-23 16:29:52;	NUN;	1;	/home/rcomrad/data/submition/260-2023-4-23 16:29:52-60some.py
+	73;	5;	2023-04-23 16:30:00;	NUN;	1;	/home/rcomrad/data/submition/261-2023-4-23 16:30:00-73some.py
+	31;	1;	2023-04-23 16:30:18;	NUN;	1;	/home/rcomrad/data/submition/263-2023-4-23 16:30:18-31some.py
+	60;	1;	2023-04-23 16:30:28;	NUN;	1;	/home/rcomrad/data/submition/264-2023-4-23 16:30:28-60some.py
+	53;	1;	2023-04-23 16:30:36;	NUN;	1;	/home/rcomrad/data/submition/265-2023-4-23 16:30:36-53some.py
+	32;	1;	2023-04-23 16:30:37;	NUN;	1;	/home/rcomrad/data/submition/266-2023-4-23 16:30:37-32some.py
+	40;	1;	2023-04-23 16:30:41;	NUN;	1;	/home/rcomrad/data/submition/267-2023-4-23 16:30:41-40some.py
+	60;	1;	2023-04-23 16:30:50;	NUN;	1;	/home/rcomrad/data/submition/268-2023-4-23 16:30:50-60some.py
+	5;	4;	2023-04-23 16:30:51;	NUN;	1;	/home/rcomrad/data/submition/269-2023-4-23 16:30:51-5some.py
+	53;	2;	2023-04-23 16:30:51;	NUN;	1;	/home/rcomrad/data/submition/270-2023-4-23 16:30:51-53some.py
+	80;	3;	2023-04-23 16:31:23;	NUN;	1;	/home/rcomrad/data/submition/271-2023-4-23 16:31:23-80some.py
+	5;	4;	2023-04-23 16:31:56;	NUN;	2;	/home/rcomrad/data/submition/272-2023-4-23 16:31:56-5some.py
+	80;	1;	2023-04-23 16:31:56;	NUN;	1;	/home/rcomrad/data/submition/273-2023-4-23 16:31:56-80some.py
+	75;	5;	2023-04-23 16:32:27;	NUN;	1;	/home/rcomrad/data/submition/274-2023-4-23 16:32:27-75some.py
+	38;	1;	2023-04-23 16:32:34;	NUN;	-1;	/home/rcomrad/data/submition/275-2023-4-23 16:32:34-38some.py
+	18;	2;	2023-04-23 16:32:46;	NUN;	-1;	/home/rcomrad/data/submition/276-2023-4-23 16:32:46-18some.py
+	38;	2;	2023-04-23 16:32:47;	NUN;	-1;	/home/rcomrad/data/submition/277-2023-4-23 16:32:47-38some.py
+	54;	5;	2023-04-23 16:34:00;	NUN;	-1;	/home/rcomrad/data/submition/278-2023-4-23 16:34:00-54some.py
+	13;	1;	2023-04-23 16:34:31;	NUN;	-1;	/home/rcomrad/data/submition/279-2023-4-23 16:34:31-13some.cpp
+	18;	2;	2023-04-23 16:34:57;	NUN;	1;	/home/rcomrad/data/submition/280-2023-4-23 16:34:57-18some.py
+	80;	2;	2023-04-23 16:35:31;	NUN;	1;	/home/rcomrad/data/submition/281-2023-4-23 16:35:31-80some.py
+	2;	3;	2023-04-23 16:35:35;	NUN;	1;	/home/rcomrad/data/submition/282-2023-4-23 16:35:35-2some.py
+	80;	1;	2023-04-23 16:35:54;	NUN;	1;	/home/rcomrad/data/submition/283-2023-4-23 16:35:54-80some.py
+	32;	1;	2023-04-23 16:36:13;	NUN;	1;	/home/rcomrad/data/submition/284-2023-4-23 16:36:13-32some.py
+	13;	1;	2023-04-23 16:36:45;	NUN;	-1;	/home/rcomrad/data/submition/285-2023-4-23 16:36:45-13some.cpp
+	54;	1;	2023-04-23 16:37:16;	NUN;	1;	/home/rcomrad/data/submition/286-2023-4-23 16:37:16-54some.py
+	79;	1;	2023-04-23 16:37:24;	NUN;	1;	/home/rcomrad/data/submition/287-2023-4-23 16:37:24-79some.cpp
+	32;	1;	2023-04-23 16:38:12;	NUN;	1;	/home/rcomrad/data/submition/288-2023-4-23 16:38:12-32some.py
+	69;	1;	2023-04-23 16:39:19;	NUN;	1;	/home/rcomrad/data/submition/289-2023-4-23 16:39:19-69some.py
+	69;	2;	2023-04-23 16:39:51;	NUN;	1;	/home/rcomrad/data/submition/290-2023-4-23 16:39:51-69some.py
+	60;	3;	2023-04-23 16:40:00;	NUN;	1;	/home/rcomrad/data/submition/291-2023-4-23 16:40:00-60some.py
+	80;	1;	2023-04-23 16:40:04;	NUN;	1;	/home/rcomrad/data/submition/292-2023-4-23 16:40:04-80some.py
+	69;	3;	2023-04-23 16:40:07;	NUN;	1;	/home/rcomrad/data/submition/293-2023-4-23 16:40:07-69some.py
+	32;	1;	2023-04-23 16:40:09;	NUN;	1;	/home/rcomrad/data/submition/294-2023-4-23 16:40:09-32some.py
+	31;	1;	2023-04-23 16:40:23;	NUN;	1;	/home/rcomrad/data/submition/295-2023-4-23 16:40:23-31some.py
+	30;	4;	2023-04-23 16:40:57;	NUN;	1;	/home/rcomrad/data/submition/296-2023-4-23 16:40:57-30some.py
+	73;	5;	2023-04-23 16:41:13;	NUN;	1;	/home/rcomrad/data/submition/297-2023-4-23 16:41:13-73some.py
+	8;	5;	2023-04-23 16:41:19;	NUN;	1;	/home/rcomrad/data/submition/298-2023-4-23 16:41:19-8some.py
+	52;	1;	2023-04-23 16:41:49;	NUN;	-1;	/home/rcomrad/data/submition/299-2023-4-23 16:41:49-52some.cpp
+	32;	3;	2023-04-23 16:42:05;	NUN;	1;	/home/rcomrad/data/submition/300-2023-4-23 16:42:05-32some.py
+	30;	4;	2023-04-23 16:42:17;	NUN;	1;	/home/rcomrad/data/submition/301-2023-4-23 16:42:17-30some.py
+	18;	2;	2023-04-23 16:42:53;	NUN;	1;	/home/rcomrad/data/submition/302-2023-4-23 16:42:53-18some.py
+	75;	5;	2023-04-23 16:43:00;	NUN;	1;	/home/rcomrad/data/submition/303-2023-4-23 16:43:00-75some.py
+	31;	1;	2023-04-23 16:45:42;	NUN;	1;	/home/rcomrad/data/submition/304-2023-4-23 16:45:42-31some.py
+	32;	4;	2023-04-23 16:45:47;	NUN;	1;	/home/rcomrad/data/submition/305-2023-4-23 16:45:47-32some.py
+	60;	3;	2023-04-23 16:46:11;	NUN;	1;	/home/rcomrad/data/submition/306-2023-4-23 16:46:11-60some.py
+	69;	4;	2023-04-23 16:46:21;	NUN;	1;	/home/rcomrad/data/submition/307-2023-4-23 16:46:21-69some.py
+	10;	3;	2023-04-23 16:46:24;	NUN;	1;	/home/rcomrad/data/submition/308-2023-4-23 16:46:24-10some.py
+	13;	1;	2023-04-23 16:46:34;	NUN;	-1;	/home/rcomrad/data/submition/309-2023-4-23 16:46:34-13some.cpp
+	69;	4;	2023-04-23 16:46:45;	NUN;	1;	/home/rcomrad/data/submition/310-2023-4-23 16:46:45-69some.py
+	69;	4;	2023-04-23 16:47:28;	NUN;	1;	/home/rcomrad/data/submition/311-2023-4-23 16:47:28-69some.py
+	83;	3;	2023-04-23 16:47:34;	NUN;	1;	/home/rcomrad/data/submition/312-2023-4-23 16:47:34-83some.py
+	13;	1;	2023-04-23 16:48:00;	NUN;	-1;	/home/rcomrad/data/submition/313-2023-4-23 16:48:00-13some.cpp
+	17;	5;	2023-04-23 16:48:26;	NUN;	1;	/home/rcomrad/data/submition/314-2023-4-23 16:48:26-17some.py
+	83;	3;	2023-04-23 16:48:41;	NUN;	1;	/home/rcomrad/data/submition/315-2023-4-23 16:48:41-83some.py
+	80;	4;	2023-04-23 16:48:47;	NUN;	1;	/home/rcomrad/data/submition/316-2023-4-23 16:48:47-80some.py
+	13;	1;	2023-04-23 16:49:41;	NUN;	1;	/home/rcomrad/data/submition/317-2023-4-23 16:49:41-13some.py
+	40;	3;	2023-04-23 16:50:24;	NUN;	1;	/home/rcomrad/data/submition/318-2023-4-23 16:50:24-40some.py
+	1;	1;	2023-04-23 16:51:26;	NUN;	1;	/home/rcomrad/data/submition/319-2023-4-23 16:51:26-1some.py
+	40;	3;	2023-04-23 16:51:34;	NUN;	1;	/home/rcomrad/data/submition/320-2023-4-23 16:51:34-40some.py
+	40;	3;	2023-04-23 16:51:49;	NUN;	1;	/home/rcomrad/data/submition/321-2023-4-23 16:51:49-40some.py
+	18;	2;	2023-04-23 16:51:50;	NUN;	1;	/home/rcomrad/data/submition/322-2023-4-23 16:51:50-18some.py
+	18;	2;	2023-04-23 16:52:02;	NUN;	1;	/home/rcomrad/data/submition/323-2023-4-23 16:52:02-18some.py
+	40;	1;	2023-04-23 16:52:15;	NUN;	1;	/home/rcomrad/data/submition/324-2023-4-23 16:52:15-40some.py
+	5;	5;	2023-04-23 16:52:18;	NUN;	1;	/home/rcomrad/data/submition/325-2023-4-23 16:52:18-5some.py
+	32;	1;	2023-04-23 16:52:44;	NUN;	-1;	/home/rcomrad/data/submition/326-2023-4-23 16:52:44-32some.cpp
+	31;	1;	2023-04-23 16:52:58;	NUN;	-1;	/home/rcomrad/data/submition/327-2023-4-23 16:52:58-31some.cpp
+	32;	1;	2023-04-23 16:53:11;	NUN;	1;	/home/rcomrad/data/submition/328-2023-4-23 16:53:11-32some.py
+	40;	1;	2023-04-23 16:53:26;	NUN;	-1;	/home/rcomrad/data/submition/329-2023-4-23 16:53:26-40some.cpp
+	40;	3;	2023-04-23 16:53:43;	NUN;	1;	/home/rcomrad/data/submition/330-2023-4-23 16:53:43-40some.cpp
+	80;	1;	2023-04-23 16:53:51;	NUN;	-1;	/home/rcomrad/data/submition/331-2023-4-23 16:53:51-80some.cpp
+	32;	1;	2023-04-23 16:54:13;	NUN;	-1;	/home/rcomrad/data/submition/332-2023-4-23 16:54:13-32some.cpp
+	80;	2;	2023-04-23 16:54:14;	NUN;	1;	/home/rcomrad/data/submition/333-2023-4-23 16:54:14-80some.cpp
+	31;	3;	2023-04-23 16:54:28;	NUN;	1;	/home/rcomrad/data/submition/334-2023-4-23 16:54:28-31some.py
+	80;	2;	2023-04-23 16:54:38;	NUN;	1;	/home/rcomrad/data/submition/335-2023-4-23 16:54:38-80some.cpp
+	32;	3;	2023-04-23 16:54:52;	NUN;	1;	/home/rcomrad/data/submition/336-2023-4-23 16:54:52-32some.cpp
+	80;	1;	2023-04-23 16:54:59;	NUN;	-1;	/home/rcomrad/data/submition/337-2023-4-23 16:54:59-80some.cpp
+	32;	3;	2023-04-23 16:55:09;	NUN;	1;	/home/rcomrad/data/submition/338-2023-4-23 16:55:09-32some.cpp
+	32;	3;	2023-04-23 16:55:22;	NUN;	1;	/home/rcomrad/data/submition/339-2023-4-23 16:55:22-32some.cpp
+	31;	3;	2023-04-23 16:55:24;	NUN;	1;	/home/rcomrad/data/submition/340-2023-4-23 16:55:24-31some.cpp
+	80;	3;	2023-04-23 16:55:53;	NUN;	1;	/home/rcomrad/data/submition/341-2023-4-23 16:55:53-80some.cpp
+	80;	4;	2023-04-23 16:56:09;	NUN;	1;	/home/rcomrad/data/submition/342-2023-4-23 16:56:09-80some.cpp
+	80;	1;	2023-04-23 16:56:29;	NUN;	-1;	/home/rcomrad/data/submition/343-2023-4-23 16:56:29-80some.cpp
+	32;	3;	2023-04-23 16:56:45;	NUN;	1;	/home/rcomrad/data/submition/344-2023-4-23 16:56:45-32some.cpp
+	80;	3;	2023-04-23 16:56:53;	NUN;	1;	/home/rcomrad/data/submition/345-2023-4-23 16:56:53-80some.cpp
+	32;	3;	2023-04-23 16:57:06;	NUN;	1;	/home/rcomrad/data/submition/346-2023-4-23 16:57:06-32some.py
+	18;	2;	2023-04-23 16:57:09;	NUN;	1;	/home/rcomrad/data/submition/347-2023-4-23 16:57:09-18some.py
+	10;	3;	2023-04-23 16:57:42;	NUN;	1;	/home/rcomrad/data/submition/348-2023-4-23 16:57:42-10some.py
+	60;	3;	2023-04-23 16:58:06;	NUN;	1;	/home/rcomrad/data/submition/349-2023-4-23 16:58:06-60some.py
+	80;	2;	2023-04-23 16:58:19;	NUN;	1;	/home/rcomrad/data/submition/350-2023-4-23 16:58:19-80some.cpp
+	30;	4;	2023-04-23 16:59:41;	NUN;	1;	/home/rcomrad/data/submition/351-2023-4-23 16:59:41-30some.py
+	32;	3;	2023-04-23 17:00:10;	NUN;	1;	/home/rcomrad/data/submition/352-2023-4-23 17:0:10-32some.cpp
+	1;	1;	2023-04-23 17:00:16;	NUN;	-1;	/home/rcomrad/data/submition/353-2023-4-23 17:0:16-1some.cpp
+	69;	4;	2023-04-23 17:00:50;	NUN;	1;	/home/rcomrad/data/submition/354-2023-4-23 17:0:50-69some.cpp
+	1;	1;	2023-04-23 17:01:01;	NUN;	-1;	/home/rcomrad/data/submition/355-2023-4-23 17:1:01-1some.cpp
+	1;	1;	2023-04-23 17:01:06;	NUN;	3;	/home/rcomrad/data/submition/356-2023-4-23 17:1:06-1some.py
+	1;	1;	2023-04-23 17:01:07;	NUN;	-1;	/home/rcomrad/data/submition/357-2023-4-23 17:1:07-1some.cpp
+	2;	5;	2023-04-23 17:01:33;	NUN;	2;	/home/rcomrad/data/submition/358-2023-4-23 17:1:33-2some.cpp
+	69;	3;	2023-04-23 17:01:35;	NUN;	1;	/home/rcomrad/data/submition/359-2023-4-23 17:1:35-69some.cpp
+	1;	1;	2023-04-23 17:01:39;	NUN;	3;	/home/rcomrad/data/submition/360-2023-4-23 17:1:39-1some.py
+	80;	2;	2023-04-23 17:01:47;	NUN;	1;	/home/rcomrad/data/submition/361-2023-4-23 17:1:47-80some.cpp
+	80;	2;	2023-04-23 17:02:05;	NUN;	1;	/home/rcomrad/data/submition/362-2023-4-23 17:2:05-80some.py
+	1;	1;	2023-04-23 17:02:06;	NUN;	1;	/home/rcomrad/data/submition/363-2023-4-23 17:2:06-1some.cpp
+	47;	1;	2023-04-23 17:02:14;	NUN;	3;	/home/rcomrad/data/submition/364-2023-4-23 17:2:14-47some.py
+	1;	1;	2023-04-23 17:02:16;	NUN;	1;	/home/rcomrad/data/submition/365-2023-4-23 17:2:16-1some.py
+	80;	4;	2023-04-23 17:02:28;	NUN;	-1;	/home/rcomrad/data/submition/367-2023-4-23 17:2:28-80some.cpp
+	68;	1;	2023-04-23 17:02:31;	NUN;	-1;	/home/rcomrad/data/submition/368-2023-4-23 17:2:31-68some.py
+	2;	5;	2023-04-23 17:02:23;	NUN;	1;	/home/rcomrad/data/submition/366-2023-4-23 17:2:23-2some.cpp
+	68;	2;	2023-04-23 17:02:43;	NUN;	-1;	/home/rcomrad/data/submition/369-2023-4-23 17:2:43-68some.py
+	68;	3;	2023-04-23 17:02:52;	NUN;	-1;	/home/rcomrad/data/submition/370-2023-4-23 17:2:52-68some.py
+	1;	1;	2023-04-23 17:03:15;	NUN;	-1;	/home/rcomrad/data/submition/371-2023-4-23 17:3:15-1some.cpp
+	42;	2;	2023-04-23 17:03:18;	NUN;	-1;	/home/rcomrad/data/submition/372-2023-4-23 17:3:18-42some.py
+	76;	4;	2023-04-23 17:03:26;	NUN;	-1;	/home/rcomrad/data/submition/373-2023-4-23 17:3:26-76some.py
+	64;	3;	2023-04-23 17:03:30;	NUN;	-1;	/home/rcomrad/data/submition/374-2023-4-23 17:3:30-64some.py
+	1;	1;	2023-04-23 17:05:30;	NUN;	-1;	/home/rcomrad/data/submition/375-2023-4-23 17:5:30-1some.cpp
+	60;	1;	2023-04-23 17:05:33;	NUN;	1;	/home/rcomrad/data/submition/376-2023-4-23 17:5:33-60some.py
+	50;	3;	2023-04-23 17:05:33;	NUN;	1;	/home/rcomrad/data/submition/377-2023-4-23 17:5:33-50some.py
+	60;	2;	2023-04-23 17:05:42;	NUN;	1;	/home/rcomrad/data/submition/378-2023-4-23 17:5:42-60some.py
+	1;	1;	2023-04-23 17:05:43;	NUN;	1;	/home/rcomrad/data/submition/379-2023-4-23 17:5:43-1some.py
+	5;	5;	2023-04-23 17:05:46;	NUN;	1;	/home/rcomrad/data/submition/380-2023-4-23 17:5:46-5some.cpp
+	1;	1;	2023-04-23 17:06:07;	NUN;	-1;	/home/rcomrad/data/submition/387-2023-4-23 17:6:07-1some.cpp
+	60;	3;	2023-04-23 17:05:53;	NUN;	1;	/home/rcomrad/data/submition/382-2023-4-23 17:5:53-60some.py
+	37;	3;	2023-04-23 17:05:56;	NUN;	1;	/home/rcomrad/data/submition/383-2023-4-23 17:5:56-37some.py
+	60;	3;	2023-04-23 17:06:03;	NUN;	1;	/home/rcomrad/data/submition/384-2023-4-23 17:6:03-60some.py
+	42;	1;	2023-04-23 17:06:04;	NUN;	1;	/home/rcomrad/data/submition/385-2023-4-23 17:6:04-42some.py
+	32;	5;	2023-04-23 17:06:06;	NUN;	1;	/home/rcomrad/data/submition/386-2023-4-23 17:6:06-32some.py
+	80;	4;	2023-04-23 17:06:11;	NUN;	-1;	/home/rcomrad/data/submition/388-2023-4-23 17:6:11-80some.cpp
+	60;	4;	2023-04-23 17:06:13;	NUN;	-1;	/home/rcomrad/data/submition/389-2023-4-23 17:6:13-60some.py
+	32;	5;	2023-04-23 17:06:16;	NUN;	-1;	/home/rcomrad/data/submition/390-2023-4-23 17:6:16-32some.cpp
+	60;	5;	2023-04-23 17:06:25;	NUN;	-1;	/home/rcomrad/data/submition/391-2023-4-23 17:6:25-60some.py
+	80;	3;	2023-04-23 17:06:30;	NUN;	-1;	/home/rcomrad/data/submition/392-2023-4-23 17:6:30-80some.cpp
+	60;	1;	2023-04-23 17:06:34;	NUN;	-1;	/home/rcomrad/data/submition/393-2023-4-23 17:6:34-60some.py
+	42;	2;	2023-04-23 17:05:49;	NUN;	1;	/home/rcomrad/data/submition/381-2023-4-23 17:5:49-42some.py
+	60;	2;	2023-04-23 17:06:42;	NUN;	-1;	/home/rcomrad/data/submition/394-2023-4-23 17:6:42-60some.py
+	80;	2;	2023-04-23 17:06:45;	NUN;	-1;	/home/rcomrad/data/submition/395-2023-4-23 17:6:45-80some.cpp
+	1;	1;	2023-04-23 17:06:49;	NUN;	-1;	/home/rcomrad/data/submition/396-2023-4-23 17:6:49-1some.cpp
+	75;	1;	2023-04-23 17:07:06;	NUN;	-1;	/home/rcomrad/data/submition/397-2023-4-23 17:7:06-75some.py
+	1;	1;	2023-04-23 17:08:17;	NUN;	-1;	/home/rcomrad/data/submition/398-2023-4-23 17:8:17-1some.cpp
+	4;	1;	2023-04-23 17:08:43;	NUN;	-1;	/home/rcomrad/data/submition/399-2023-4-23 17:8:43-4some.py
+	1;	1;	2023-04-23 17:09:15;	NUN;	-1;	/home/rcomrad/data/submition/400-2023-4-23 17:9:15-1some.cpp
+	32;	3;	2023-04-23 17:09:28;	NUN;	-1;	/home/rcomrad/data/submition/401-2023-4-23 17:9:28-32some.cpp
+	32;	3;	2023-04-23 17:09:41;	NUN;	-1;	/home/rcomrad/data/submition/402-2023-4-23 17:9:41-32some.py
+	1;	1;	2023-04-23 17:10:23;	NUN;	-1;	/home/rcomrad/data/submition/403-2023-4-23 17:10:23-1some.cpp
+	18;	2;	2023-04-23 17:10:40;	NUN;	1;	/home/rcomrad/data/submition/404-2023-4-23 17:10:40-18some.py
+	75;	1;	2023-04-23 17:10:51;	NUN;	1;	/home/rcomrad/data/submition/405-2023-4-23 17:10:51-75some.py
+	80;	4;	2023-04-23 17:10:56;	NUN;	1;	/home/rcomrad/data/submition/406-2023-4-23 17:10:56-80some.cpp
+	18;	2;	2023-04-23 17:11:05;	NUN;	1;	/home/rcomrad/data/submition/407-2023-4-23 17:11:05-18some.py
+	80;	4;	2023-04-23 17:11:25;	NUN;	1;	/home/rcomrad/data/submition/408-2023-4-23 17:11:25-80some.py
+	32;	4;	2023-04-23 17:11:27;	NUN;	1;	/home/rcomrad/data/submition/409-2023-4-23 17:11:27-32some.cpp
+	83;	3;	2023-04-23 17:11:29;	NUN;	1;	/home/rcomrad/data/submition/410-2023-4-23 17:11:29-83some.py
+	80;	3;	2023-04-23 17:11:38;	NUN;	1;	/home/rcomrad/data/submition/411-2023-4-23 17:11:38-80some.py
+	32;	4;	2023-04-23 17:11:48;	NUN;	1;	/home/rcomrad/data/submition/412-2023-4-23 17:11:48-32some.py
+	80;	1;	2023-04-23 17:11:53;	NUN;	-1;	/home/rcomrad/data/submition/413-2023-4-23 17:11:53-80some.cpp
+	80;	2;	2023-04-23 17:12:15;	NUN;	1;	/home/rcomrad/data/submition/414-2023-4-23 17:12:15-80some.cpp
+	80;	3;	2023-04-23 17:12:27;	NUN;	-1;	/home/rcomrad/data/submition/416-2023-4-23 17:12:27-80some.cpp
+	30;	5;	2023-04-23 17:12:32;	NUN;	-1;	/home/rcomrad/data/submition/417-2023-4-23 17:12:32-30some.py
+	5;	5;	2023-04-23 17:12:26;	NUN;	1;	/home/rcomrad/data/submition/415-2023-4-23 17:12:26-5some.cpp
+	69;	3;	2023-04-23 17:12:39;	NUN;	-1;	/home/rcomrad/data/submition/418-2023-4-23 17:12:39-69some.py
+	80;	3;	2023-04-23 17:12:47;	NUN;	-1;	/home/rcomrad/data/submition/419-2023-4-23 17:12:47-80some.cpp
+	69;	4;	2023-04-23 17:12:58;	NUN;	-1;	/home/rcomrad/data/submition/420-2023-4-23 17:12:58-69some.py
+	81;	3;	2023-04-23 17:12:59;	NUN;	-1;	/home/rcomrad/data/submition/421-2023-4-23 17:12:59-81some.py
+	80;	4;	2023-04-23 17:13:02;	NUN;	-1;	/home/rcomrad/data/submition/422-2023-4-23 17:13:02-80some.cpp
+	4;	2;	2023-04-23 17:13:25;	NUN;	-1;	/home/rcomrad/data/submition/423-2023-4-23 17:13:25-4some.py
+	80;	2;	2023-04-23 17:13:29;	NUN;	-1;	/home/rcomrad/data/submition/424-2023-4-23 17:13:29-80some.cpp
+	50;	3;	2023-04-23 17:14:02;	NUN;	-1;	/home/rcomrad/data/submition/425-2023-4-23 17:14:02-50some.py
+	50;	1;	2023-04-23 17:14:33;	NUN;	-1;	/home/rcomrad/data/submition/426-2023-4-23 17:14:33-50some.py
+	83;	3;	2023-04-23 17:15:07;	NUN;	-1;	/home/rcomrad/data/submition/427-2023-4-23 17:15:07-83some.py
+	8;	2;	2023-04-23 17:15:14;	NUN;	-1;	/home/rcomrad/data/submition/428-2023-4-23 17:15:14-8some.py
+	80;	2;	2023-04-23 17:16:22;	NUN;	-1;	/home/rcomrad/data/submition/429-2023-4-23 17:16:22-80some.cpp
+	21;	2;	2023-04-23 17:17:05;	NUN;	-1;	/home/rcomrad/data/submition/430-2023-4-23 17:17:05-21some.py
+	18;	2;	2023-04-23 17:17:34;	NUN;	-1;	/home/rcomrad/data/submition/431-2023-4-23 17:17:34-18some.cpp
+	32;	3;	2023-04-23 17:18:35;	NUN;	-1;	/home/rcomrad/data/submition/432-2023-4-23 17:18:35-32some.cpp
+	1;	1;	2023-04-23 17:18:59;	NUN;	-1;	/home/rcomrad/data/submition/433-2023-4-23 17:18:59-1some.cpp
+	10;	2;	2023-04-23 17:19:01;	NUN;	1;	/home/rcomrad/data/submition/434-2023-4-23 17:19:01-10some.py
+	30;	2;	2023-04-23 17:19:04;	NUN;	1;	/home/rcomrad/data/submition/435-2023-4-23 17:19:04-30some.py
+	25;	3;	2023-04-23 17:19:15;	NUN;	1;	/home/rcomrad/data/submition/436-2023-4-23 17:19:15-25some.py
+	52;	2;	2023-04-23 17:19:22;	NUN;	1;	/home/rcomrad/data/submition/437-2023-4-23 17:19:22-52some.py
+	4;	3;	2023-04-23 17:19:23;	NUN;	2;	/home/rcomrad/data/submition/438-2023-4-23 17:19:23-4some.py
+	80;	2;	2023-04-23 17:19:31;	NUN;	1;	/home/rcomrad/data/submition/439-2023-4-23 17:19:31-80some.cpp
+	80;	1;	2023-04-23 17:19:44;	NUN;	-1;	/home/rcomrad/data/submition/440-2023-4-23 17:19:44-80some.cpp
+	30;	2;	2023-04-23 17:19:53;	NUN;	1;	/home/rcomrad/data/submition/441-2023-4-23 17:19:53-30some.py
+	80;	2;	2023-04-23 17:20:02;	NUN;	1;	/home/rcomrad/data/submition/442-2023-4-23 17:20:02-80some.cpp
+	80;	3;	2023-04-23 17:20:17;	NUN;	1;	/home/rcomrad/data/submition/443-2023-4-23 17:20:17-80some.cpp
+	80;	4;	2023-04-23 17:20:33;	NUN;	1;	/home/rcomrad/data/submition/444-2023-4-23 17:20:33-80some.cpp
+	18;	2;	2023-04-23 17:20:35;	NUN;	-1;	/home/rcomrad/data/submition/445-2023-4-23 17:20:35-18some.cpp
+	10;	2;	2023-04-23 17:20:53;	NUN;	1;	/home/rcomrad/data/submition/446-2023-4-23 17:20:53-10some.py
+	30;	5;	2023-04-23 17:21:13;	NUN;	1;	/home/rcomrad/data/submition/447-2023-4-23 17:21:13-30some.py
+	16;	5;	2023-04-23 17:21:35;	NUN;	-1;	/home/rcomrad/data/submition/448-2023-4-23 17:21:35-16some.py
+	4;	3;	2023-04-23 17:21:50;	NUN;	-1;	/home/rcomrad/data/submition/449-2023-4-23 17:21:50-4some.py
+	32;	4;	2023-04-23 17:22:49;	NUN;	-1;	/home/rcomrad/data/submition/450-2023-4-23 17:22:49-32some.py
+	17;	5;	2023-04-23 17:23:21;	NUN;	-1;	/home/rcomrad/data/submition/451-2023-4-23 17:23:21-17some.py
+	18;	1;	2023-04-23 17:24:20;	NUN;	-1;	/home/rcomrad/data/submition/452-2023-4-23 17:24:20-18some.cpp
+	37;	2;	2023-04-23 17:24:31;	NUN;	-1;	/home/rcomrad/data/submition/454-2023-4-23 17:24:31-37some.py
+	60;	3;	2023-04-23 17:24:28;	NUN;	-1;	/home/rcomrad/data/submition/453-2023-4-23 17:24:28-60some.py
+	76;	5;	2023-04-23 17:24:43;	NUN;	-1;	/home/rcomrad/data/submition/455-2023-4-23 17:24:43-76some.py
+	80;	1;	2023-04-23 17:24:56;	NUN;	-1;	/home/rcomrad/data/submition/456-2023-4-23 17:24:56-80some.cpp
+	18;	3;	2023-04-23 17:25:16;	NUN;	2;	/home/rcomrad/data/submition/457-2023-4-23 17:25:16-18some.py
+	80;	4;	2023-04-23 17:26:29;	NUN;	1;	/home/rcomrad/data/submition/458-2023-4-23 17:26:29-80some.cpp
+	13;	3;	2023-04-23 17:26:46;	NUN;	-1;	/home/rcomrad/data/submition/459-2023-4-23 17:26:46-13some.py
+	32;	3;	2023-04-23 17:27:26;	NUN;	-1;	/home/rcomrad/data/submition/460-2023-4-23 17:27:26-32some.cpp
+	80;	3;	2023-04-23 17:27:31;	NUN;	-1;	/home/rcomrad/data/submition/461-2023-4-23 17:27:31-80some.cpp
+	64;	1;	2023-04-23 17:31:59;	NUN;	8;	/home/rcomrad/data/submition/462-2023-4-23 17:31:59-64some.py
+	64;	3;	2023-04-23 17:32:27;	NUN;	1;	/home/rcomrad/data/submition/463-2023-4-23 17:32:27-64some.py
+	80;	1;	2023-04-23 17:32:55;	NUN;	1;	/home/rcomrad/data/submition/464-2023-4-23 17:32:55-80some.cpp
+	21;	3;	2023-04-23 17:36:37;	NUN;	-1;	/home/rcomrad/data/submition/473-2023-4-23 17:36:37-21some.py
+	60;	3;	2023-04-23 17:36:44;	NUN;	-1;	/home/rcomrad/data/submition/474-2023-4-23 17:36:44-60some.py
+	18;	1;	2023-04-23 17:32:58;	NUN;	2;	/home/rcomrad/data/submition/465-2023-4-23 17:32:58-18some.py
+	64;	3;	2023-04-23 17:33:00;	NUN;	1;	/home/rcomrad/data/submition/466-2023-4-23 17:33:00-64some.py
+	32;	3;	2023-04-23 17:33:15;	NUN;	2;	/home/rcomrad/data/submition/467-2023-4-23 17:33:15-32some.py
+	10;	2;	2023-04-23 17:33:26;	NUN;	5;	/home/rcomrad/data/submition/468-2023-4-23 17:33:26-10some.py
+	30;	2;	2023-04-23 17:33:33;	NUN;	5;	/home/rcomrad/data/submition/469-2023-4-23 17:33:33-30some.py
+	16;	1;	2023-04-23 17:34:48;	NUN;	3;	/home/rcomrad/data/submition/470-2023-4-23 17:34:48-16some.py
+	60;	3;	2023-04-23 17:35:13;	NUN;	-1;	/home/rcomrad/data/submition/471-2023-4-23 17:35:13-60some.py
+	74;	5;	2023-04-23 17:36:29;	NUN;	1;	/home/rcomrad/data/submition/472-2023-4-23 17:36:29-74some.py
+	60;	1;	2023-04-23 17:39:27;	NUN;	-1;	/home/rcomrad/data/submition/475-2023-4-23 17:39:27-60some.py
+	60;	2;	2023-04-23 17:40:12;	NUN;	-1;	/home/rcomrad/data/submition/476-2023-4-23 17:40:12-60some.py
+	60;	4;	2023-04-23 17:40:21;	NUN;	-1;	/home/rcomrad/data/submition/477-2023-4-23 17:40:21-60some.py
+	42;	3;	2023-04-23 17:40:21;	NUN;	-1;	/home/rcomrad/data/submition/478-2023-4-23 17:40:21-42some.py
+	60;	5;	2023-04-23 17:40:30;	NUN;	-1;	/home/rcomrad/data/submition/479-2023-4-23 17:40:30-60some.py
+	64;	1;	2023-04-23 17:40:47;	NUN;	-1;	/home/rcomrad/data/submition/480-2023-4-23 17:40:47-64some.py
+	18;	1;	2023-04-23 17:41:37;	NUN;	-1;	/home/rcomrad/data/submition/481-2023-4-23 17:41:37-18some.cpp
+	71;	1;	2023-04-23 17:41:38;	NUN;	-1;	/home/rcomrad/data/submition/482-2023-4-23 17:41:38-71some.py
+	60;	3;	2023-04-23 17:43:10;	NUN;	-1;	/home/rcomrad/data/submition/483-2023-4-23 17:43:10-60some.py
+	23;	5;	2023-04-23 17:43:14;	NUN;	-1;	/home/rcomrad/data/submition/484-2023-4-23 17:43:14-23some.cpp
+	80;	5;	2023-04-23 17:43:19;	NUN;	-1;	/home/rcomrad/data/submition/485-2023-4-23 17:43:19-80some.cpp
+	23;	3;	2023-04-23 17:43:37;	NUN;	1;	/home/rcomrad/data/submition/486-2023-4-23 17:43:37-23some.cpp
+	1;	1;	2023-04-23 17:43:58;	NUN;	-1;	/home/rcomrad/data/submition/488-2023-4-23 17:43:58-1some.cpp
+	32;	3;	2023-04-23 17:44:04;	NUN;	-1;	/home/rcomrad/data/submition/489-2023-4-23 17:44:04-32some.cpp
+	32;	3;	2023-04-23 17:44:15;	NUN;	-1;	/home/rcomrad/data/submition/490-2023-4-23 17:44:15-32some.py
+	33;	3;	2023-04-23 17:44:17;	NUN;	-1;	/home/rcomrad/data/submition/491-2023-4-23 17:44:17-33some.py
+	30;	5;	2023-04-23 17:44:26;	NUN;	-1;	/home/rcomrad/data/submition/492-2023-4-23 17:44:26-30some.py
+	80;	5;	2023-04-23 17:44:28;	NUN;	-1;	/home/rcomrad/data/submition/493-2023-4-23 17:44:28-80some.py
+	80;	1;	2023-04-23 17:44:55;	NUN;	-1;	/home/rcomrad/data/submition/494-2023-4-23 17:44:55-80some.cpp
+	1;	1;	2023-04-23 17:44:57;	NUN;	-1;	/home/rcomrad/data/submition/495-2023-4-23 17:44:57-1some.cpp
+	10;	2;	2023-04-23 17:45:21;	NUN;	-1;	/home/rcomrad/data/submition/496-2023-4-23 17:45:21-10some.py
+	23;	4;	2023-04-23 17:43:42;	NUN;	1;	/home/rcomrad/data/submition/487-2023-4-23 17:43:42-23some.cpp
+	42;	1;	2023-04-23 17:47:08;	NUN;	8;	/home/rcomrad/data/submition/497-2023-4-23 17:47:08-42some.py
+	4;	5;	2023-04-23 17:47:23;	NUN;	2;	/home/rcomrad/data/submition/498-2023-4-23 17:47:23-4some.py
+	64;	3;	2023-04-23 17:47:34;	NUN;	-1;	/home/rcomrad/data/submition/499-2023-4-23 17:47:34-64some.py
+	1;	1;	2023-04-23 17:47:40;	NUN;	-1;	/home/rcomrad/data/submition/500-2023-4-23 17:47:40-1some.cpp
+	1;	1;	2023-04-23 17:48:19;	NUN;	-1;	/home/rcomrad/data/submition/501-2023-4-23 17:48:19-1some.cpp
+	8;	2;	2023-04-23 17:48:31;	NUN;	1;	/home/rcomrad/data/submition/502-2023-4-23 17:48:31-8some.py
+	50;	5;	2023-04-23 17:48:32;	NUN;	1;	/home/rcomrad/data/submition/503-2023-4-23 17:48:32-50some.py
+	80;	1;	2023-04-23 17:49:04;	NUN;	-1;	/home/rcomrad/data/submition/504-2023-4-23 17:49:04-80some.cpp
+	1;	1;	2023-04-23 17:49:24;	NUN;	-1;	/home/rcomrad/data/submition/505-2023-4-23 17:49:24-1some.cpp
+	50;	2;	2023-04-23 17:49:36;	NUN;	1;	/home/rcomrad/data/submition/506-2023-4-23 17:49:36-50some.py
+	1;	1;	2023-04-23 17:51:38;	NUN;	-1;	/home/rcomrad/data/submition/507-2023-4-23 17:51:38-1some.cpp
+	47;	1;	2023-04-23 17:51:52;	NUN;	1;	/home/rcomrad/data/submition/508-2023-4-23 17:51:52-47some.py
+	30;	5;	2023-04-23 17:51:54;	NUN;	1;	/home/rcomrad/data/submition/509-2023-4-23 17:51:54-30some.py
+	77;	3;	2023-04-23 17:53:29;	NUN;	1;	/home/rcomrad/data/submition/510-2023-4-23 17:53:29-77some.py
+	5;	5;	2023-04-23 17:54:03;	NUN;	1;	/home/rcomrad/data/submition/511-2023-4-23 17:54:03-5some.py
+	71;	3;	2023-04-23 17:54:40;	NUN;	1;	/home/rcomrad/data/submition/512-2023-4-23 17:54:40-71some.py
+	5;	4;	2023-04-23 17:55:11;	NUN;	1;	/home/rcomrad/data/submition/513-2023-4-23 17:55:11-5some.cpp
+	16;	3;	2023-04-23 17:55:31;	NUN;	1;	/home/rcomrad/data/submition/514-2023-4-23 17:55:31-16some.py
+	5;	5;	2023-04-23 17:55:51;	NUN;	1;	/home/rcomrad/data/submition/515-2023-4-23 17:55:51-5some.cpp
+	30;	5;	2023-04-23 17:56:01;	NUN;	1;	/home/rcomrad/data/submition/516-2023-4-23 17:56:01-30some.py
+	5;	4;	2023-04-23 17:56:09;	NUN;	1;	/home/rcomrad/data/submition/517-2023-4-23 17:56:09-5some.cpp
+	73;	3;	2023-04-23 17:56:24;	NUN;	1;	/home/rcomrad/data/submition/518-2023-4-23 17:56:24-73some.py
+	47;	2;	2023-04-23 17:56:37;	NUN;	1;	/home/rcomrad/data/submition/519-2023-4-23 17:56:37-47some.py
+	8;	2;	2023-04-23 17:57:59;	NUN;	1;	/home/rcomrad/data/submition/522-2023-4-23 17:57:59-8some.py
+	81;	1;	2023-04-23 17:57:59;	NUN;	1;	/home/rcomrad/data/submition/523-2023-4-23 17:57:59-81some.py
+	45;	1;	2023-04-23 18:06:28;	NUN;	1;	/home/rcomrad/data/submition/529-2023-4-23 18:6:28-45some.py
+	16;	1;	2023-04-23 18:09:56;	NUN;	1;	/home/rcomrad/data/submition/535-2023-4-23 18:9:56-16some.py
+	22;	2;	2023-04-23 18:10:08;	NUN;	1;	/home/rcomrad/data/submition/536-2023-4-23 18:10:08-22some.py
+	47;	3;	2023-04-23 17:57:23;	NUN;	1;	/home/rcomrad/data/submition/520-2023-4-23 17:57:23-47some.py
+	47;	3;	2023-04-23 17:57:31;	NUN;	1;	/home/rcomrad/data/submition/521-2023-4-23 17:57:31-47some.py
+	47;	3;	2023-04-23 18:00:34;	NUN;	1;	/home/rcomrad/data/submition/524-2023-4-23 18:0:34-47some.py
+	16;	3;	2023-04-23 18:01:21;	NUN;	1;	/home/rcomrad/data/submition/525-2023-4-23 18:1:21-16some.py
+	16;	1;	2023-04-23 18:03:57;	NUN;	1;	/home/rcomrad/data/submition/526-2023-4-23 18:3:57-16some.py
+	45;	1;	2023-04-23 18:04:56;	NUN;	1;	/home/rcomrad/data/submition/527-2023-4-23 18:4:56-45some.py
+	50;	2;	2023-04-23 18:06:11;	NUN;	1;	/home/rcomrad/data/submition/528-2023-4-23 18:6:11-50some.py
+	73;	2;	2023-04-23 18:07:05;	NUN;	1;	/home/rcomrad/data/submition/530-2023-4-23 18:7:05-73some.py
+	18;	1;	2023-04-23 18:07:24;	NUN;	-1;	/home/rcomrad/data/submition/531-2023-4-23 18:7:24-18some.cpp
+	81;	2;	2023-04-23 18:07:29;	NUN;	1;	/home/rcomrad/data/submition/532-2023-4-23 18:7:29-81some.py
+	73;	2;	2023-04-23 18:07:36;	NUN;	1;	/home/rcomrad/data/submition/533-2023-4-23 18:7:36-73some.py
+	64;	4;	2023-04-23 18:08:02;	NUN;	1;	/home/rcomrad/data/submition/534-2023-4-23 18:8:02-64some.py
+	20;	1;	2023-04-23 18:10:59;	NUN;	1;	/home/rcomrad/data/submition/537-2023-4-23 18:10:59-20some.py
+	20;	1;	2023-04-23 18:14:23;	NUN;	1;	/home/rcomrad/data/submition/538-2023-4-23 18:14:23-20some.py
+	44;	3;	2023-04-23 18:14:37;	NUN;	1;	/home/rcomrad/data/submition/539-2023-4-23 18:14:37-44some.py
+	18;	3;	2023-04-23 18:15:15;	NUN;	1;	/home/rcomrad/data/submition/540-2023-4-23 18:15:15-18some.py
+	4;	5;	2023-04-23 18:15:19;	NUN;	5;	/home/rcomrad/data/submition/541-2023-4-23 18:15:19-4some.py
+	20;	1;	2023-04-23 18:15:46;	NUN;	-1;	/home/rcomrad/data/submition/542-2023-4-23 18:15:46-20some.py
+	16;	1;	2023-04-23 18:16:19;	NUN;	-1;	/home/rcomrad/data/submition/543-2023-4-23 18:16:19-16some.py
+	18;	3;	2023-04-23 18:16:29;	NUN;	2;	/home/rcomrad/data/submition/544-2023-4-23 18:16:29-18some.py
+	76;	3;	2023-04-23 18:17:38;	NUN;	1;	/home/rcomrad/data/submition/545-2023-4-23 18:17:38-76some.py
+	50;	1;	2023-04-23 18:17:46;	NUN;	10;	/home/rcomrad/data/submition/546-2023-4-23 18:17:46-50some.py
+	50;	2;	2023-04-23 18:18:05;	NUN;	3;	/home/rcomrad/data/submition/547-2023-4-23 18:18:05-50some.py
+	18;	3;	2023-04-23 18:18:27;	NUN;	2;	/home/rcomrad/data/submition/548-2023-4-23 18:18:27-18some.py
+	17;	4;	2023-04-23 18:18:32;	NUN;	-1;	/home/rcomrad/data/submition/549-2023-4-23 18:18:32-17some.py
+	50;	3;	2023-04-23 18:18:39;	NUN;	2;	/home/rcomrad/data/submition/550-2023-4-23 18:18:39-50some.py
+	83;	5;	2023-04-23 18:21:33;	NUN;	5;	/home/rcomrad/data/submition/551-2023-4-23 18:21:33-83some.py
+	50;	1;	2023-04-23 18:22:22;	NUN;	-1;	/home/rcomrad/data/submition/552-2023-4-23 18:22:22-50some.py
+	50;	1;	2023-04-23 18:23:41;	NUN;	-1;	/home/rcomrad/data/submition/553-2023-4-23 18:23:41-50some.py
+	4;	5;	2023-04-23 18:23:58;	NUN;	-1;	/home/rcomrad/data/submition/554-2023-4-23 18:23:58-4some.py
+	4;	4;	2023-04-23 18:27:33;	NUN;	6;	/home/rcomrad/data/submition/555-2023-4-23 18:27:33-4some.cpp
+	18;	3;	2023-04-23 18:28:41;	NUN;	1;	/home/rcomrad/data/submition/556-2023-4-23 18:28:41-18some.py
+	18;	3;	2023-04-23 18:29:46;	NUN;	2;	/home/rcomrad/data/submition/557-2023-4-23 18:29:46-18some.py
+	18;	1;	2023-04-23 18:31:12;	NUN;	-1;	/home/rcomrad/data/submition/558-2023-4-23 18:31:12-18some.py
+	18;	3;	2023-04-23 18:31:15;	NUN;	-1;	/home/rcomrad/data/submition/559-2023-4-23 18:31:15-18some.py
+	4;	4;	2023-04-23 18:31:18;	NUN;	2;	/home/rcomrad/data/submition/560-2023-4-23 18:31:18-4some.cpp
+	50;	2;	2023-04-23 18:31:24;	NUN;	5;	/home/rcomrad/data/submition/561-2023-4-23 18:31:24-50some.py
+	45;	2;	2023-04-23 18:31:52;	NUN;	5;	/home/rcomrad/data/submition/562-2023-4-23 18:31:52-45some.py
+	76;	2;	2023-04-23 18:31:54;	NUN;	1;	/home/rcomrad/data/submition/563-2023-4-23 18:31:54-76some.py
+	4;	4;	2023-04-23 18:32:03;	NUN;	2;	/home/rcomrad/data/submition/564-2023-4-23 18:32:03-4some.cpp
+	64;	4;	2023-04-23 18:35:01;	NUN;	2;	/home/rcomrad/data/submition/565-2023-4-23 18:35:01-64some.py
+	8;	4;	2023-04-23 18:35:20;	NUN;	2;	/home/rcomrad/data/submition/566-2023-4-23 18:35:20-8some.py
+	8;	1;	2023-04-23 18:36:31;	NUN;	8;	/home/rcomrad/data/submition/567-2023-4-23 18:36:31-8some.py
+	8;	2;	2023-04-23 18:36:46;	NUN;	5;	/home/rcomrad/data/submition/568-2023-4-23 18:36:46-8some.py
+	8;	5;	2023-04-23 18:37:12;	NUN;	5;	/home/rcomrad/data/submition/569-2023-4-23 18:37:12-8some.py
+	80;	5;	2023-04-23 18:37:51;	NUN;	-1;	/home/rcomrad/data/submition/570-2023-4-23 18:37:51-80some.cpp
+	50;	2;	2023-04-23 18:38:46;	NUN;	-1;	/home/rcomrad/data/submition/571-2023-4-23 18:38:46-50some.py
+	80;	4;	2023-04-23 18:38:59;	NUN;	-1;	/home/rcomrad/data/submition/572-2023-4-23 18:38:59-80some.cpp
+	80;	1;	2023-04-23 18:39:19;	NUN;	-1;	/home/rcomrad/data/submition/573-2023-4-23 18:39:19-80some.cpp
+	80;	2;	2023-04-23 18:39:50;	NUN;	-1;	/home/rcomrad/data/submition/574-2023-4-23 18:39:50-80some.cpp
+	4;	4;	2023-04-23 18:40:10;	NUN;	-1;	/home/rcomrad/data/submition/575-2023-4-23 18:40:10-4some.cpp
+	20;	2;	2023-04-23 18:40:15;	NUN;	-1;	/home/rcomrad/data/submition/576-2023-4-23 18:40:15-20some.py
+	16;	3;	2023-04-23 18:42:08;	NUN;	2;	/home/rcomrad/data/submition/577-2023-4-23 18:42:08-16some.py
+	79;	2;	2023-04-23 18:42:27;	NUN;	1;	/home/rcomrad/data/submition/578-2023-4-23 18:42:27-79some.cpp
+	8;	5;	2023-04-23 18:42:53;	NUN;	5;	/home/rcomrad/data/submition/579-2023-4-23 18:42:53-8some.py
+	79;	3;	2023-04-23 18:43:14;	NUN;	-1;	/home/rcomrad/data/submition/580-2023-4-23 18:43:14-79some.cpp
+	18;	5;	2023-04-23 18:43:14;	NUN;	-1;	/home/rcomrad/data/submition/581-2023-4-23 18:43:14-18some.py
+	49;	4;	2023-04-23 18:43:26;	NUN;	-1;	/home/rcomrad/data/submition/582-2023-4-23 18:43:26-49some.py
+	83;	5;	2023-04-23 18:43:37;	NUN;	-1;	/home/rcomrad/data/submition/583-2023-4-23 18:43:37-83some.py
+	18;	5;	2023-04-23 18:45:45;	NUN;	5;	/home/rcomrad/data/submition/584-2023-4-23 18:45:45-18some.py
+	8;	1;	2023-04-23 18:46:09;	NUN;	-1;	/home/rcomrad/data/submition/585-2023-4-23 18:46:09-8some.py
+	18;	5;	2023-04-23 18:46:26;	NUN;	-1;	/home/rcomrad/data/submition/586-2023-4-23 18:46:26-18some.py
+	10;	3;	2023-04-23 18:46:40;	NUN;	-1;	/home/rcomrad/data/submition/587-2023-4-23 18:46:40-10some.py
+	18;	5;	2023-04-23 18:46:43;	NUN;	-1;	/home/rcomrad/data/submition/588-2023-4-23 18:46:43-18some.py
+	18;	2;	2023-04-23 18:46:52;	NUN;	-1;	/home/rcomrad/data/submition/589-2023-4-23 18:46:52-18some.py
+	20;	3;	2023-04-23 18:46:52;	NUN;	-1;	/home/rcomrad/data/submition/590-2023-4-23 18:46:52-20some.py
+	18;	5;	2023-04-23 18:47:01;	NUN;	-1;	/home/rcomrad/data/submition/591-2023-4-23 18:47:01-18some.py
+	38;	3;	2023-04-23 18:47:49;	NUN;	-1;	/home/rcomrad/data/submition/592-2023-4-23 18:47:49-38some.py
+	83;	2;	2023-04-23 18:48:37;	NUN;	-1;	/home/rcomrad/data/submition/594-2023-4-23 18:48:37-83some.py
+	18;	5;	2023-04-23 18:48:34;	NUN;	5;	/home/rcomrad/data/submition/593-2023-4-23 18:48:34-18some.py
+	18;	5;	2023-04-23 18:50:03;	NUN;	-1;	/home/rcomrad/data/submition/595-2023-4-23 18:50:03-18some.py
+	13;	2;	2023-04-23 18:50:06;	NUN;	-1;	/home/rcomrad/data/submition/596-2023-4-23 18:50:06-13some.cpp
+	8;	1;	2023-04-23 18:50:06;	NUN;	-1;	/home/rcomrad/data/submition/597-2023-4-23 18:50:06-8some.py
+	71;	2;	2023-04-23 18:51:29;	NUN;	-1;	/home/rcomrad/data/submition/598-2023-4-23 18:51:29-71some.py
+	77;	3;	2023-04-23 18:51:53;	NUN;	-1;	/home/rcomrad/data/submition/599-2023-4-23 18:51:53-77some.py
+	58;	2;	2023-04-23 18:53:04;	NUN;	-1;	/home/rcomrad/data/submition/600-2023-4-23 18:53:04-58some.py
+	77;	4;	2023-04-23 18:53:25;	NUN;	-1;	/home/rcomrad/data/submition/601-2023-4-23 18:53:25-77some.py
+	76;	1;	2023-04-23 18:54:15;	NUN;	-1;	/home/rcomrad/data/submition/602-2023-4-23 18:54:15-76some.py
+	1;	1;	2023-04-23 18:55:17;	NUN;	-1;	/home/rcomrad/data/submition/603-2023-4-23 18:55:17-1some.cpp
+	18;	5;	2023-04-23 18:57:40;	NUN;	1;	/home/rcomrad/data/submition/604-2023-4-23 18:57:40-18some.py
+	6;	1;	2023-04-23 18:59:01;	NUN;	1;	/home/rcomrad/data/submition/605-2023-4-23 18:59:01-6some.py
+	37;	3;	2023-04-23 18:59:09;	NUN;	1;	/home/rcomrad/data/submition/606-2023-4-23 18:59:09-37some.py
+	6;	2;	2023-04-23 18:59:10;	NUN;	1;	/home/rcomrad/data/submition/607-2023-4-23 18:59:10-6some.py
+	6;	2;	2023-04-23 18:59:46;	NUN;	1;	/home/rcomrad/data/submition/608-2023-4-23 18:59:46-6some.py
+	8;	4;	2023-04-23 19:00:56;	NUN;	1;	/home/rcomrad/data/submition/609-2023-4-23 19:0:56-8some.py
+	70;	5;	2023-04-23 19:01:17;	NUN;	1;	/home/rcomrad/data/submition/610-2023-4-23 19:1:17-70some.py
+	8;	4;	2023-04-23 19:45:31;	NUN;	-1;	/home/rcomrad/data/submition/611-2023-4-23 19:45:31-8some.py
+	8;	4;	2023-04-23 20:09:41;	NUN;	-1;	/home/rcomrad/data/submition/612-2023-4-23 20:9:41-8some.py
+END
