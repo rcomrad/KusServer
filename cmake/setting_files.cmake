@@ -38,13 +38,13 @@ macro(load_target_switch_file)
         file(WRITE ${TARGET_SWITCH} 
             "macro(check NAME)\n"
             "    if(\$\{TASK\} MATCHES \$\{NAME\} OR \$\{TASK\} MATCHES all)\n"
-            "        include(/home/user/projects/KusServer/sources/\$\{NAME\}/_setup.cmake)\n"
+            "        include(\$\{CMAKE_CURRENT_SOURCE_DIR\}/sources/\$\{NAME\}/_setup.cmake)\n"
             "    endif()\n"
             "    set(\$\{NAME\}_MODULES \$\{MODULES\})\n"
             "    unset(MODULES)\n"
             "\n"
             "    foreach(MODULE \$\{\$\{NAME\}_MODULES\})\n"
-            "        include(/home/user/projects/KusServer/sources/\$\{MODULE\}/_setup.cmake)\n"
+            "        include(\$\{CMAKE_CURRENT_SOURCE_DIR\}/sources/\$\{MODULE\}/_setup.cmake)\n"
             "    endforeach()\n"
             "endmacro()\n\n"
         )

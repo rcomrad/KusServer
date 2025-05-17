@@ -11,6 +11,11 @@ macro(gtest_lib)
     )
 endmacro()
 
+macro(vulkan_lib)
+    find_package(Vulkan REQUIRED)
+    target_link_libraries(${TARGET} PRIVATE Vulkan::Vulkan)
+endmacro()
+
 # PRODUSES:
 #   LIBRARY_NAME
 #   TARGET
@@ -18,11 +23,16 @@ endmacro()
 macro(lib_router)
     if(${LIBRARY_NAME} STREQUAL gtest)
         gtest_lib()
-    elseif(${LIBRARY_NAME} EQUAL postgresql)
-    elseif(${LIBRARY_NAME} EQUAL crow)
-    elseif(${LIBRARY_NAME} EQUAL mailio)
-    elseif(${LIBRARY_NAME} EQUAL boost)
-    elseif(${LIBRARY_NAME} EQUAL vulkan)
+    elseif(${LIBRARY_NAME} STREQUAL postgresql)
+        # Not implemented
+    elseif(${LIBRARY_NAME} STREQUAL crow)
+        # Not implemented
+    elseif(${LIBRARY_NAME} STREQUAL mailio)
+        # Not implemented
+    elseif(${LIBRARY_NAME} STREQUAL boost)
+        # Not implemented
+    elseif(${LIBRARY_NAME} STREQUAL vulkan)
+        vulkan_lib()
     else()
         message(FATAL_ERROR "Unsupported library name '${LIBRARY_NAME}'!")
     endif()
