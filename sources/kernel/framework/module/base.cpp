@@ -8,7 +8,7 @@ core::Base::Base()
 {
     VariableStorage::init();
     CommandHandler::init();
-    Printer::init();
+    Printer::initer();
 
     m_is_running_var_num = addBoolVariable("is_running");
     setVariable(m_is_running_var_num, true);
