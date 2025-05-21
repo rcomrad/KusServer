@@ -7,9 +7,11 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
+  build-and-test:
+    strategy:
+      matrix:
+        build_name: ["kernel", "_test"]
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - uses: lukka/get-cmake@latest
@@ -21,9 +23,13 @@ jobs:
         run: |
           rm -f cmake_config.cmake
           echo 'set(VCPKG_ROOT ~/vcpkg)' > cmake_config.cmake
-          echo 'set(TASK kernel)' >> cmake_config.cmake
+          echo 'set(TASK ${{matrix.build_name}})' >> cmake_config.cmake
       - name: build
         run: cmake -B build -S . && cmake --build build
+      - name: run tests
+        run: ./bin/${{matrix.build_name}}_test.exe
+    
+
     
 
     
