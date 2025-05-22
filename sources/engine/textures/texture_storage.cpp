@@ -35,10 +35,21 @@ TextureStorage::addTexture(std::string_view file_path,
     }
 }
 
-std::shared_ptr<Texture>
+std::optional<std::shared_ptr<Texture>>
 TextureStorage::getTexture(const std::string& texture_name) const
 {
-    return m_texture_storage.find(texture_name).operator*().second;
+    std::optional<std::shared_ptr<Texture>> res;
+    auto it = m_texture_storage.find(texture_name);
+    if (it == m_texture_storage.end())
+    {
+        std::cout << texture_name << " cant find in texture storage\n";
+    }
+    else
+    {
+        res.emplace(it.operator*().second);
+    }
+
+    return res;
 }
 
 }; // namespace kusengine

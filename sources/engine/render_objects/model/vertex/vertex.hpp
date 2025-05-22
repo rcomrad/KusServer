@@ -1,19 +1,13 @@
 #ifndef VERTEX_HPP
 #define VERTEX_HPP
-
-#include <glm/glm.hpp>
 #include <vulkan/vulkan.hpp>
 
 #include <initializer_list>
 
+#include "vec.hpp"
+
 namespace kusengine
 {
-
-struct MyVec2
-{
-    float x;
-    float y;
-};
 
 struct UniversalVertexAttributes
 {
@@ -22,6 +16,10 @@ struct UniversalVertexAttributes
 
     static constexpr int count_floats = 4;
 };
+
+bool
+operator==(const UniversalVertexAttributes& left,
+           const UniversalVertexAttributes& right);
 
 class VertexDescription
 {
@@ -40,14 +38,17 @@ private:
 
 class UniversalVertex
 {
+    friend bool operator==(const UniversalVertex& left,
+                           const UniversalVertex& right);
+
 public:
     UniversalVertex() = default;
 
     UniversalVertex(float x, float y);
 
-    UniversalVertex(const glm::vec2& position,
-                    const glm::vec3& color,
-                    const glm::vec2& text_position);
+    UniversalVertex(const MyVec2& position,
+                    const MyVec3& color,
+                    const MyVec3& text_position);
 
     UniversalVertex& setPosition(float x, float y);
     UniversalVertex& setTexturePosition(float x, float y);

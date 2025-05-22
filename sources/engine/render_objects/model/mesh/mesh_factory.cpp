@@ -11,9 +11,9 @@ MeshFactory::getInstance()
 }
 
 Mesh
-MeshFactory::createUniversalRectangleMesh(const glm::vec2& position,
-                                          const glm::vec2& size,
-                                          const glm::vec3& color)
+MeshFactory::createUniversalRectangleMesh(const MyVec2& position,
+                                          const MyVec2& size,
+                                          const MyVec3& color)
 {
 
     UniversalVertex left_top_vertex(position.x, position.y);

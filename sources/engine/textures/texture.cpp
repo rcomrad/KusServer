@@ -52,7 +52,7 @@ Texture::loadTexture(std::string_view file_path)
                                       vk::SamplerAddressMode::eRepeat, //
                                       vk::SamplerAddressMode::eRepeat, //
                                       0.0f,                            //
-                                      false,                            //
+                                      false,                           //
                                       16.0f,                           //
                                       false,                           //
                                       vk::CompareOp::eNever, 0.0f,     //
@@ -83,9 +83,24 @@ Texture::allocDescriptorSet(const vk::DescriptorPool& pool,
     LOGICAL_DEVICE.updateDescriptorSets(1, &descriptorWrite, 0, nullptr);
 }
 
-const vk::DescriptorSet&
-Texture::getDescriptorSet() const
+// const vk::DescriptorSet&
+// Texture::getDescriptorSet() const
+// {
+//     return m_descriptor_set.get();
+// }
+
+void
+Texture::bind(const vk::CommandBuffer& command_buffer,
+              const vk::PipelineLayout& pipelayout) const
 {
-    return m_descriptor_set.get();
+    command_buffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
+                                      pipelayout, 1u, 1,
+                                      &(m_descriptor_set.get()), 0, nullptr);
+}
+
+bool
+operator==(const Texture& left, const Texture& right)
+{
+    return (left.m_descriptor_set.get() == right.m_descriptor_set.get());
 }
 }; // namespace kusengine

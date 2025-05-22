@@ -14,15 +14,17 @@ class MeshCombiner
 public:
     MeshCombiner();
 
-    void combine(const std::vector<std::pair<Model, int>>& models);
+    void combine(const std::vector<std::pair<Model, uint32_t>>& models);
 
     void bindBuffers(const vk::CommandBuffer& command_buffer) const;
 
-    void draw(const vk::CommandBuffer& command_buffer, int index) const;
+    void draw(const vk::CommandBuffer& command_buffer, uint32_t index) const;
 
 private:
     struct RangeInfo
     {
+        RangeInfo();
+
         uint32_t vertex_offset;
         uint32_t index_count;
         uint32_t first_index;
@@ -32,13 +34,7 @@ private:
 
     std::vector<RangeInfo> m_ranges_info;
 
-    void calculateCounts(const std::vector<std::pair<Model, int>>& models);
-
     bool has_data_flag;
-
-    uint32_t m_index_count;
-
-    uint32_t m_vertex_count;
 
     GpuVertexBuffer m_mesh_buffer;
 

@@ -1,12 +1,13 @@
 #ifndef MESH_HPP
 #define MESH_HPP
-
-#include "engine/model/vertex/vertex.hpp"
+#include "engine/render_objects/model/vertex/vertex.hpp"
 
 namespace kusengine
 {
 class Mesh
 {
+    friend bool operator==(const Mesh& left, const Mesh& right);
+
 public:
     Mesh() = default;
 
@@ -15,16 +16,17 @@ public:
 
     void setIndices(const std::vector<uint32_t>& indices);
 
-    const std::vector<UniversalVertexAttributes>& getVertices() const;
-    const std::vector<uint32_t>& getIndices() const;
-
-    uint32_t getVertexCount() const;
+    void pushData(std::vector<UniversalVertexAttributes>& vertices,
+                  std::vector<uint32_t>& indices) const;
 
 private:
     std::vector<UniversalVertexAttributes> m_vertices;
 
     std::vector<uint32_t> m_indices;
 };
+
+bool
+operator==(const Mesh& left, const Mesh& right);
 
 }; // namespace kusengine
 

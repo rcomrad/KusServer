@@ -290,8 +290,7 @@ SwapChain::drawFrame(uint32_t frame_index,
 
     m_frames[frame_index].waitForFence();
 
-    m_frames[frame_index].updateUniformData(scene.ubo());
-    m_frames[frame_index].updateDynamicObjectsData(scene.dynamicObjectsData());
+    scene.updateFrame(m_frames[frame_index]);
 
     uint32_t image_index;
 

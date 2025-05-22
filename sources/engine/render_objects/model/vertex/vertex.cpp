@@ -47,9 +47,9 @@ UniversalVertex::UniversalVertex(float x, float y)
     setPosition(x, y);
 }
 
-UniversalVertex::UniversalVertex(const glm::vec2& position,
-                                 const glm::vec3& color,
-                                 const glm::vec2& text_position)
+UniversalVertex::UniversalVertex(const MyVec2& position,
+                                 const MyVec3& color,
+                                 const MyVec3& text_position)
 {
     setPosition(position.x, position.y);
 }
@@ -72,6 +72,19 @@ const UniversalVertexAttributes* const
 UniversalVertex::data() const
 {
     return &m_attributes;
+}
+
+bool
+operator==(const UniversalVertexAttributes& left,
+           const UniversalVertexAttributes& right)
+{
+    return left.pos == right.pos && left.text_pos == right.text_pos;
+}
+
+bool
+operator==(const UniversalVertex& left, const UniversalVertex& right)
+{
+    return left.m_attributes == right.m_attributes;
 }
 
 }; // namespace kusengine

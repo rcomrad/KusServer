@@ -13,15 +13,18 @@ namespace kusengine
 {
 class Texture
 {
+    friend bool operator==(const Texture& left, const Texture& right);
+
 public:
-    const void* const data();
+    // const void* const data();
 
     void loadTexture(std::string_view file_path);
 
     void allocDescriptorSet(const vk::DescriptorPool&,
                             const vk::DescriptorSetLayout&);
 
-    const vk::DescriptorSet& getDescriptorSet() const;
+    void bind(const vk::CommandBuffer& command_buffer,
+              const vk::PipelineLayout& pipelayout) const;
 
 private:
     int m_width;
@@ -33,6 +36,9 @@ private:
 
     vk::UniqueDescriptorSet m_descriptor_set;
 };
+
+bool
+operator==(const Texture& left, const Texture& right);
 }; // namespace kusengine
 
 #endif // TEXTURE_HPP
