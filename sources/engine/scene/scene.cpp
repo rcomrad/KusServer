@@ -71,9 +71,9 @@ Scene::create(float width, float height, const TextureStorage& texture_storage)
         return;
     }
 
-    RenderObject render_object(MESH_FACTORY.createUniversalRectangleMesh(
-                                   {0, 0}, {0.7, 0.5}, {0.f, 1.f, 1.f}),
-                               cat_texture.value());
+    RenderObject render_object(
+        MESH_FACTORY.createUniversalRectangleMesh({0, 0}, {0.7, 0.5}),
+        cat_texture.value());
 
     m_model_storage.addRenderObject(render_object);
 
