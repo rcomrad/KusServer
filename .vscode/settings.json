@@ -107,6 +107,8 @@
         "xtree": "cpp",
         "xutility": "cpp",
         "filesystem": "cpp",
-        "forward_list": "cpp"
-    }
+        "forward_list": "cpp",
+        "queue": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }
