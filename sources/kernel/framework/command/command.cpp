@@ -2,16 +2,7 @@
 
 //------------------------------------------------------------------------------
 
-#include "kernel/framework/logging/logging.hpp"
-
-//------------------------------------------------------------------------------
-
-core::Command&
-core::Command::setContext(Context&& a_context) noexcept
-{
-    m_context = std::move(a_context);
-    return *this;
-}
+#include "kernel/framework/logger/include_me.hpp"
 
 //------------------------------------------------------------------------------
 
@@ -21,10 +12,9 @@ core::Command::noArgs() noexcept
     if (m_check_result && arguments.size())
     {
         m_check_result = false;
-        PRINT_CMD_CONTEXT_ERR(*this, m_context,
-                              "Command '%s' does not accept any arguments "
-                              "(received '%s' argument).",
-                              value, *arguments.begin());
+        LOG_ERROR("Command '%s' does not accept any arguments "
+                  "(received '%s' argument).",
+                  value, *arguments.begin());
     }
     return *this;
 }
@@ -35,11 +25,9 @@ core::Command::noVars() noexcept
     if (m_check_result && variables.size())
     {
         m_check_result = false;
-        PRINT_CMD_CONTEXT_ERR(*this, m_context,
-                              "Command '%s' does not accept any variables "
-                              "(received '%s'='%s' variable).",
-                              value, variables.begin()->first,
-                              variables.begin()->second);
+        LOG_ERROR("Command '%s' does not accept any variables "
+                  "(received '%s'='%s' variable).",
+                  value, variables.begin()->first, variables.begin()->second);
     }
     return *this;
 }
@@ -52,8 +40,7 @@ core::Command::hasArgs() noexcept
     if (m_check_result && arguments.empty())
     {
         m_check_result = false;
-        PRINT_CMD_CONTEXT_ERR(*this, m_context,
-                              "The '%s' command requires arguments.", value)
+        LOG_ERROR("The '%s' command requires arguments.", value)
     }
     return *this;
 }
@@ -64,8 +51,7 @@ core::Command::hasVars() noexcept
     if (m_check_result && variables.empty())
     {
         m_check_result = false;
-        PRINT_CMD_CONTEXT_ERR(*this, m_context,
-                              "The '%s' command requires variables.", value)
+        LOG_ERROR("The '%s' command requires variables.", value)
     }
     return *this;
 }
@@ -78,12 +64,10 @@ core::Command::argMinCount(int a_size) noexcept
     if (m_check_result && arguments.size() < a_size)
     {
         m_check_result = false;
-        PRINT_CMD_CONTEXT_ERR(
-            *this, m_context,
-            "The number of arguments for '%s' command is incorrect. "
-            "The expected number of arguments is at least %d, "
-            "the actual number of arguments is %lu.",
-            value, a_size, arguments.size());
+        LOG_ERROR("The number of arguments for '%s' command is incorrect. "
+                  "The expected number of arguments is at least %d, "
+                  "the actual number of arguments is %lu.",
+                  value, a_size, arguments.size());
     }
     return *this;
 }
@@ -94,12 +78,10 @@ core::Command::varMinCount(int a_size) noexcept
     if (m_check_result && variables.size() < a_size)
     {
         m_check_result = false;
-        PRINT_CMD_CONTEXT_ERR(
-            *this, m_context,
-            "The number of arguments for '%s' command is incorrect. "
-            "The expected number of arguments is at least %d, "
-            "the actual number of arguments is %lu.",
-            value, a_size, variables.size());
+        LOG_ERROR("The number of arguments for '%s' command is incorrect. "
+                  "The expected number of arguments is at least %d, "
+                  "the actual number of arguments is %lu.",
+                  value, a_size, variables.size());
     }
     return *this;
 }
@@ -119,12 +101,10 @@ core::Command::varCount(int a_size) noexcept
     if (m_check_result && variables.size() != a_size)
     {
         m_check_result = false;
-        PRINT_CMD_CONTEXT_ERR(
-            *this, m_context,
-            "The number of variables for '%s' command is incorrect. "
-            "The expected number of variables is %d, "
-            "the actual number of variables is %lu.",
-            value, a_size, variables.size());
+        LOG_ERROR("The number of variables for '%s' command is incorrect. "
+                  "The expected number of variables is %d, "
+                  "the actual number of variables is %lu.",
+                  value, a_size, variables.size());
     }
     return *this;
 }
@@ -144,12 +124,10 @@ core::Command::argCount(const std::set<int>& a_sizes) noexcept
             expect += std::to_string(i);
         }
         m_check_result = false;
-        PRINT_CMD_CONTEXT_ERR(
-            *this, m_context,
-            "The number of arguments for '%s' command is incorrect. "
-            "The expected number of arguments is %s, "
-            "the actual number of arguments is %lu.",
-            value, expect, arguments.size());
+        LOG_ERROR("The number of arguments for '%s' command is incorrect. "
+                  "The expected number of arguments is %s, "
+                  "the actual number of arguments is %lu.",
+                  value, expect, arguments.size());
     }
     return *this;
 }
@@ -186,19 +164,16 @@ core::Command::getArgumentAsNumberBase(int a_arg_num,
         }
         catch (const std::exception& e)
         {
-            PRINT_CMD_CONTEXT_ERR(
-                *this, m_context,
-                "Unable to parse '%s' number, exception '%s'.",
-                arguments[a_arg_num], e.what());
+            LOG_ERROR("Unable to parse '%s' number, exception '%s'.",
+                      arguments[a_arg_num], e.what());
             m_check_result = false;
         }
 
         if (a_max_check_flag && result >= a_max_val)
         {
-            PRINT_CMD_CONTEXT_ERR(*this, m_context,
-                                  "Too large argument number."
-                                  "Expected no more than %lu, got %lu",
-                                  a_max_val, result);
+            LOG_ERROR("Too large argument number."
+                      "Expected no more than %lu, got %lu",
+                      a_max_val, result);
             m_check_result = false;
         }
     }

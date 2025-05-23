@@ -2,6 +2,7 @@
 
 #include <thread>
 
+#include "kernel/framework/logger/include_me.hpp"
 #include "kernel/framework/module/kernel.hpp"
 #include "kernel/framework/module/thread_module.hpp"
 #include "kernel/utility/synchronization/yield.hpp"
@@ -87,7 +88,12 @@ public:
 protected:
     void runKernel() override
     {
-        std::thread kernel_run([]() { KERNEL.run(); });
+        std::thread kernel_run(
+            []()
+            {
+                LOGGER_INIT("external_kill");
+                KERNEL.run();
+            });
         while (!Base::moduleIsActive())
         {
             util::Yield::small();

@@ -2,7 +2,7 @@
 
 //--------------------------------------------------------------------------------
 
-#include "kernel/utility/common/exception.hpp"
+#include "kernel/framework/logger/include_me.hpp"
 
 #include "module.hpp"
 #include "register.hpp"

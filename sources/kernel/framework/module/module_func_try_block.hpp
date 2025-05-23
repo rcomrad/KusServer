@@ -1,6 +1,6 @@
 #include <stdexcept>
 
-#include "kernel/framework/logging/logging.hpp"
+#include "kernel/framework/logger/include_me.hpp"
 
 #define TRY_BLOCK(expression, phase, on_error)                            \
     try                                                                   \

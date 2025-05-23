@@ -4,7 +4,7 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "kernel/framework/logging/logging.hpp"
+#include "kernel/framework/logger/include_me.hpp"
 
 int
 main(int argc, char** argv)
@@ -14,12 +14,7 @@ main(int argc, char** argv)
         ::testing::InitGoogleTest(&argc, argv);
         ::testing::InitGoogleMock(&argc, argv);
 
-        // ::testing::GTEST_FLAG(filter) = "WebTest.a_plus_b";
-        // ::testing::GTEST_FLAG(filter) = "WebTest.*";
-        // ::testing::GTEST_FLAG(filter) = "UTestTablePrint.*";
-        // ::testing::GTEST_FLAG(filter) = "NumPrefixTreeTest.*";
-        // ::testing::GTEST_FLAG(filter) = "PipeExample.*";
-        // ::testing::GTEST_FLAG(filter) = "EngineTest.*";
+        // ::testing::GTEST_FLAG(filter) = "UTablePrinter.*";
     }
     catch (const std::runtime_error& err)
     {

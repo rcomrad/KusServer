@@ -1,5 +1,6 @@
 #include "base.hpp"
 
+#include "kernel/framework/logger/include_me.hpp"
 #include "kernel/utility/synchronization/yield.hpp"
 
 //--------------------------------------------------------------------------------
@@ -8,7 +9,7 @@ core::Base::Base()
 {
     VariableStorage::init();
     CommandHandler::init();
-    Printer::init();
+    LOGGER_INIT("main_loop");
 
     m_is_running_var_num = addBoolVariable("is_running");
     setVariable(m_is_running_var_num, true);

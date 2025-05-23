@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "kernel/framework/logging/logging.hpp"
+#include "kernel/framework/logger/include_me.hpp"
 
 namespace onto
 {

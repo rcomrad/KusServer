@@ -1,4 +1,4 @@
-#include "kernel/utility/type/lifecycle_manager.hpp"
+#include "kernel/utility/type/declaration/lifecycle_manager.hpp"
 
 #include <iostream>
 

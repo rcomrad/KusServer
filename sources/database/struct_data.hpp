@@ -1,6 +1,6 @@
 #pragma once
 
-#include "kernel/utility/type/base.hpp"
+#include "kernel/utility/type/type_id.hpp"
 
 namespace data
 {

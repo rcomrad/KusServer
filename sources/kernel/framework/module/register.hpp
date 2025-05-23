@@ -5,7 +5,7 @@
 #include <memory>
 #include <vector>
 
-#include "kernel/utility/common/holy_trinity.hpp"
+#include "kernel/utility/defines/holy_trinity.hpp"
 
 #include "module.hpp"
 
@@ -26,7 +26,8 @@ public:
     template <typename... Args>
     ModuleRegister(Args&&... args)
     {
-        global_modules.emplace_back(std::make_unique<T>(std::forward<Args>(args)...));
+        global_modules.emplace_back(
+            std::make_unique<T>(std::forward<Args>(args)...));
     }
 };
 } // namespace core

@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-#include "kernel/framework/logging/logging.hpp"
+#include "kernel/framework/logger/include_me.hpp"
 #include "kernel/string/string_malloc.hpp"
 #include "pqxx/nontransaction"
 

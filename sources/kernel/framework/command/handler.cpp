@@ -4,12 +4,36 @@
 
 #include <memory>
 
-#include "kernel/framework/logging/include_me.hpp"
+#include "kernel/framework/logger/include_me.hpp"
 #include "kernel/framework/module/callback_storage.hpp"
 #include "kernel/framework/module/kernel.hpp"
 #include "kernel/framework/module/state_storage.hpp"
-#include "kernel/utility/common/exception.hpp"
 #include "kernel/utility/string/slicer.hpp"
+
+//--------------------------------------------------------------------------------
+
+core::CommandHandler::CommandInfo::CommandInfo(int a_caller_num,
+                                               CommandCaller* a_obj,
+                                               const char* a_desc,
+                                               const char* a_args)
+    : caller_num(a_caller_num), obj(a_obj), desc(a_desc), args(a_args)
+{
+}
+
+void
+core::CommandHandler::CommandInfo::print() const
+{
+    auto& arg_cell = addCell(args)
+                         .setName(" ")
+                         .alignmentLeft()
+                         .addPrefix("Args: ")
+                         .setDefault("/* no args */");
+    // addCell(desc).alignmentRight();
+    addSubline();
+    addCell(arg_cell, desc).alignmentLeft();
+    addSubline();
+    getKeyInfo().setName("command").alignmentRight().setSeparator('|');
+}
 
 //--------------------------------------------------------------------------------
 
@@ -53,7 +77,8 @@ core::CommandHandler::registrateCommand(int a_caller_num,
                                         const char* a_description,
                                         const char* a_args)
 {
-    m_command_info[a_name] = {a_caller_num, a_obj, a_description, a_args};
+    m_command_info.try_emplace(a_name, a_caller_num, a_obj, a_description,
+                               a_args);
 }
 
 void
@@ -87,6 +112,8 @@ core::CommandHandler::execIfAvailable() const
 void
 core::CommandHandler::processCommand(Command& a_command) const
 {
+    TeeLogger tee(a_command.m_result_buffer);
+
     auto it = m_command_info.find(a_command.value);
     if (it != m_command_info.end())
     {
@@ -115,10 +142,8 @@ core::CommandHandler::processCommand(Command& a_command) const
     }
     else
     {
-        PRINT_CMD_ERR(
-            a_command,
-            "Unable to apply command '%s'. No suitable command handler",
-            a_command.value);
+        LOG_CMD("Unable to apply command '%s'. No suitable command handler",
+                a_command.value);
     }
 
     a_command.callResultFunc();
@@ -135,65 +160,14 @@ core::CommandHandler::processCommand(Command& a_command) const
 void
 core::CommandHandler::help(core::Command& a_command)
 {
-    std::string info;
-    auto descriptions = sliceHelpDescription();
-    int cnt           = 0;
-    for (const auto& i : m_command_info)
-    {
-        if (i.first == "___internal_test")
-        {
-            continue;
-        }
-
-        int init_size = info.size();
-        int buff_size = 100;
-
-        info.resize(init_size + buff_size);
-        int printed_count =
-            snprintf(info.data() + init_size, buff_size, "  %4d) %15s | %s",
-                     cnt + 1, i.first.data(), i.second.args);
-        info.resize(init_size + printed_count);
-
-        info += descriptions[cnt++];
-        info.push_back('\n');
-    }
-    info.shrink_to_fit();
-    PRINT_CMD_MSG(a_command, "\nKusSystem command list:\n%s", info);
+    LOG_CMD("KusSystem command list:\n%s", buildTable().get());
 }
 
-std::vector<std::string>
-core::CommandHandler::sliceHelpDescription() const
+void
+core::CommandHandler::print() const
 {
-    std::vector<std::string> result;
-    for (const auto& i : m_command_info)
-    {
-        int buff_size               = strlen(i.second.desc) + 100;
-        std::unique_ptr<char[]> buf = std::make_unique<char[]>(buff_size);
-
-        // TODO: const a_from_str
-        auto sentence = util::Slicer::safeProcess(
-            const_cast<char*>(i.second.desc), buf.get(), ".");
-        for (int i = 1; i < sentence.size(); ++i)
-        {
-            sentence[i] = std::string_view(sentence[i].data() + 1,
-                                           sentence[i].size() - 1);
-        }
-
-        int tab_size = 24;
-        buff_size += sentence.size() * 10 + tab_size;
-        result.emplace_back();
-        result.back().resize(buff_size, 0);
-        int actual_size = 0;
-        for (auto& j : sentence)
-        {
-            actual_size += snprintf(result.back().data() + actual_size,
-                                    buff_size - actual_size, "\n%*s|\t%s.",
-                                    tab_size, "", j.data());
-        }
-        result.back().resize(actual_size);
-        result.back().push_back('\n');
-    }
-    return result;
+    setDefaultSeparator(' ');
+    addTableConrainer(m_command_info);
 }
 
 //--------------------------------------------------------------------------------
@@ -203,7 +177,7 @@ core::CommandHandler::sliceHelpDescription() const
 void
 core::CommandHandler::test(core::Command& a_command)
 {
-    PRINT_CMD_MSG(a_command, "Test successful!");
+    LOG_CMD("Test successful!");
 }
 
 //--------------------------------------------------------------------------------

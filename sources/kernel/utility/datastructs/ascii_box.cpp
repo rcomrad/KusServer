@@ -1,6 +1,6 @@
 #include "ascii_box.hpp"
 
-#include "kernel/framework/logging/logging.hpp"
+#include "kernel/framework/logger/include_me.hpp"
 
 util::ASCIIBox::ASCIIBox()
 {

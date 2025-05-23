@@ -2,7 +2,8 @@
 
 //------------------------------------------------------------------------------
 
-#include "kernel/framework/logging/logging.hpp"
+#include "kernel/framework/logger/include_me.hpp"
+#include "kernel/framework/module/kernel.hpp"
 #include "kernel/utility/synchronization/yield.hpp"
 
 #include "module_func_try_block.hpp"
@@ -76,6 +77,8 @@ core::ThreadModule::isRunning() const noexcept
 void
 core::ThreadModule::threadLoop() noexcept
 {
+    LOGGER_INIT(getName());
+
     bool flag = true;
     while (flag)
     {

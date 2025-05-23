@@ -4,7 +4,7 @@
 
 #include <memory>
 
-#include "kernel/utility/common/holy_trinity.hpp"
+#include "kernel/utility/defines/holy_trinity.hpp"
 
 #include "command_data.hpp"
 

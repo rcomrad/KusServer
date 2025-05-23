@@ -2,8 +2,8 @@
 
 //------------------------------------------------------------------------------
 
+#include "kernel/framework/logger/include_me.hpp"
 #include "kernel/framework/module/kernel.hpp"
-#include "kernel/utility/common/exception.hpp"
 
 //------------------------------------------------------------------------------
 

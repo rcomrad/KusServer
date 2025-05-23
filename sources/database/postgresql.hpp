@@ -2,8 +2,8 @@
 
 //--------------------------------------------------------------------------------
 
-#include "kernel/utility/common/holy_trinity.hpp"
-#include "kernel/utility/type/base.hpp"
+#include "kernel/utility/defines/holy_trinity.hpp"
+#include "kernel/utility/type/type_id.hpp"
 #include "pqxx/pqxx"
 
 #include "credentials.hpp"

@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #include "kernel/framework/command/input_buffer.hpp"
+#include "kernel/framework/module/kernel.hpp"
 #include "kernel/utility/file_system/file.hpp"
 #include "kernel/utility/file_system/path.hpp"
 #include "kernel/utility/file_system/path_storage.hpp"
@@ -77,7 +78,7 @@ core::StateStorage::setStateType(const std::string& a_comm, StateType a_type)
 void
 core::StateStorage::dumpState()
 {
-    FILE_WRITER(dumped, COMMAND_FILE_NAME);
+    util::FileWrite dumped(COMMAND_FILE_NAME);
     dumpContainer(dumped, m_base_commands);
     dumpContainer(dumped, m_argument_commands);
     dumpContainer(dumped, m_variable_commands);

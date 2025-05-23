@@ -3,10 +3,12 @@
 //--------------------------------------------------------------------------------
 
 #include <array>
-#include <string>
 #include <map>
+#include <string>
 #include <unordered_set>
 #include <vector>
+
+#include "kernel/framework/logger/include_me.hpp"
 
 #include "command.hpp"
 #include "command_caller.hpp"
@@ -17,7 +19,7 @@
 namespace core
 {
 
-class CommandHandler : public CommandCaller
+class CommandHandler : public CommandCaller, TablePrinter
 {
 public:
     CommandHandler();
@@ -39,19 +41,26 @@ protected:
 private:
     mutable std::mutex m_buffers_mutex;
     std::unordered_set<InputBuffer*> m_inp_buffers;
-    struct CommandInfo
+    struct CommandInfo : TablePrinter
     {
+        CommandInfo(int a_caller_num,
+                    CommandCaller* a_obj,
+                    const char* a_desc,
+                    const char* a_args);
+
         int caller_num;
         CommandCaller* obj;
         const char* desc;
         const char* args;
+
+        void print() const final;
     };
     std::map<std::string, CommandInfo> m_command_info;
 
-    std::vector<std::string> sliceHelpDescription() const;
-
     COMMAND_HANDLER(help, 0);
     COMMAND_HANDLER(test, 1);
+
+    void print() const final;
 };
 
 } // namespace core

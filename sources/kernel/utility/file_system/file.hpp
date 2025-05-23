@@ -6,7 +6,7 @@
 #include <string>
 #include <string_view>
 
-#include "kernel/utility/common/holy_trinity.hpp"
+#include "kernel/utility/defines/holy_trinity.hpp"
 
 //------------------------------------------------------------------------------
 

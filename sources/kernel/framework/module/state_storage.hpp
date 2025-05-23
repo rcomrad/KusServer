@@ -8,7 +8,7 @@
 #include <unordered_map>
 
 #include "kernel/framework/command/command_data.hpp"
-#include "kernel/utility/common/holy_trinity.hpp"
+#include "kernel/utility/defines/holy_trinity.hpp"
 #include "kernel/utility/file_system/file_write.hpp"
 
 #include "command_sets.hpp"

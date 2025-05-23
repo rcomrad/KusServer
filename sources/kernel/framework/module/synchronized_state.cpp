@@ -1,13 +1,12 @@
 #include "synchronized_state.hpp"
 
-#include "kernel/framework/logging/include_me.hpp"
+#include "kernel/framework/logger/include_me.hpp"
 
 core::SynchronizedState::SynchronizedState()
     : m_base_state(State::CREATED), m_thread_state(State::CREATED)
 {
 }
 
-#include <format>
 #include <iostream>
 
 bool
@@ -45,6 +44,7 @@ core::SynchronizedState::threadTrySitchTo(State a_state) noexcept
 bool
 core::SynchronizedState::checkThreadValidity() noexcept
 {
-    // std::cout << std::format("Validity: {}\n", State(m_base_state) < State::__FINISHED);
+    // std::cout << std::format("Validity: {}\n", State(m_base_state) <
+    // State::__FINISHED);
     return State(m_base_state) < State::__FINISHED;
 }

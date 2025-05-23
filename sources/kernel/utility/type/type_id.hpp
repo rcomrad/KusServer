@@ -6,11 +6,9 @@
 
 using namespace std::literals;
 
-using word_t = long;
-using addr_t = uint64_t;
-
 namespace util
 {
+
 enum class TypeID
 {
     NUN,
@@ -30,4 +28,5 @@ enum class TypeID
     BOOL,
     END
 };
+
 } // namespace util

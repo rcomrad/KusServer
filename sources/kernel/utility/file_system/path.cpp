@@ -8,8 +8,7 @@
 #include "path_values.hpp"
 
 std::string
-util::Path::getName(std::string_view a_path,
-                    const core::Context& a_context) noexcept
+util::Path::getName(std::string_view a_path) noexcept
 {
     std::string result;
     result.reserve(a_path.size());
@@ -31,9 +30,8 @@ util::Path::getName(std::string_view a_path,
     }
     if (result.empty())
     {
-        CONTEXT_ERROR(a_context,
-                      "There is no file or folder at the end of the path: '%s'",
-                      a_path);
+        LOG_ERROR("There is no file or folder at the end of the path: '%s'",
+                  a_path);
     }
     else
     {
@@ -71,15 +69,7 @@ util::Path::normalizeFolderPath(std::string_view a_path,
 std::string
 util::Path::getRelativeToApp(std::string_view a_path, bool is_folder) noexcept
 {
-    // std::string result;
-    // DECLARE_LOCAL_CONTEXT;
-    // auto app_path =
-    //     PathStorage::getFolderPath(util::APP_PATH_NAME, &context_local);
-    // result = combine(is_folder, app_path.value(), a_path);
-    // return result;
-
     std::string result;
-    DECLARE_LOCAL_CONTEXT;
     auto& app_path = KERNEL.getFolderPath(APP_PATH_NAME);
     result         = combine(is_folder, app_path, a_path);
     return result;

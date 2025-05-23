@@ -1,10 +1,9 @@
 #include "storage.hpp"
 
 #include "kernel/framework/command/include_me.hpp"
-#include "kernel/framework/logging/logging.hpp"
+#include "kernel/framework/logger/include_me.hpp"
 #include "kernel/framework/module/kernel.hpp"
 #include "kernel/framework/module/state_storage.hpp"
-#include "kernel/utility/common/exception.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -143,7 +142,7 @@ core::VariableStorage::getCurrentOffset() const noexcept
 void
 core::VariableStorage::setCommandHandler(core::Command& a_command)
 {
-    CMD_ASSERT(hasVars().noArgs());
+    a_command.hasVars().noArgs();
 
     for (const auto& i : a_command.variables)
     {
@@ -157,17 +156,15 @@ core::VariableStorage::setCommandHandler(core::Command& a_command)
 
             if (res)
             {
-                PRINT_CMD_MSG(
-                    a_command,
+                LOG_CMD(
                     "Successfully assigned value '%s' (%d) to variable '%s'",
                     it->second, var.getValue(), it->first);
             }
             else
             {
-                PRINT_CMD_ERR(a_command,
-                              "Unable to set value for '%s' variable: "
-                              "corrupted variable value '%s'",
-                              it->first, it->second);
+                LOG_ERROR("Unable to set value for '%s' variable: "
+                          "corrupted variable value '%s'",
+                          it->first, it->second);
             }
         }
     }
@@ -176,7 +173,7 @@ core::VariableStorage::setCommandHandler(core::Command& a_command)
 void
 core::VariableStorage::showVarCommandHandler(core::Command& a_command)
 {
-    CMD_ASSERT(noVars());
+    a_command.noVars();
     loadVars(a_command);
 
     std::string result;
@@ -185,20 +182,20 @@ core::VariableStorage::showVarCommandHandler(core::Command& a_command)
         auto it = m_name_to_var_dict.find(i);
         if (it == m_name_to_var_dict.end())
         {
-            PRINT_CMD_ERR(a_command, "There is no variable named '%s'.", i);
+            LOG_ERROR("There is no variable named '%s'.", i);
             return;
         }
         m_variables[it->second].addValueInfo(result);
     }
 
     // TODO: remove first \n
-    PRINT_CMD_MSG(a_command, "\nVariable list:\n%sList end", result);
+    LOG_CMD("Variable list:\n%sList end", result);
 }
 
 void
 core::VariableStorage::varHelpCommandHandler(core::Command& a_command)
 {
-    CMD_ASSERT(noVars());
+    a_command.noVars();
     loadVars(a_command);
 
     std::string result;
@@ -207,14 +204,14 @@ core::VariableStorage::varHelpCommandHandler(core::Command& a_command)
         auto it = m_name_to_var_dict.find(i);
         if (it == m_name_to_var_dict.end())
         {
-            PRINT_CMD_ERR(a_command, "There is no variable named '%s'.", i);
+            LOG_ERROR("There is no variable named '%s'.", i);
             return;
         }
         m_variables[it->second].addValueMap(result);
     }
 
     // TODO: remove first \n
-    PRINT_CMD_MSG(a_command, "\nVariable list:\n%sList end", result);
+    LOG_CMD("Variable list:\n%sList end", result);
 }
 
 void
