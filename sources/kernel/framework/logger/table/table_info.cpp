@@ -70,7 +70,8 @@ core::TableInfo::clear()
     m_subline_indx = 0;
     m_columns.clear();
     m_sublines.clear();
-    m_result = nullptr;
+    m_result        = nullptr;
+    m_printing_head = true;
 }
 
 void
@@ -93,11 +94,14 @@ core::TableInfo::prepareForPrinting()
     m_result.get()[0]    = m_separator;
     m_buffer             = m_result.get() + 1;
 
-    for (; m_column_indx < m_columns.size(); ++m_column_indx)
+    if (m_printing_head)
     {
-        m_columns[m_column_indx].printHead(&m_buffer);
+        for (; m_column_indx < m_columns.size(); ++m_column_indx)
+        {
+            m_columns[m_column_indx].printHead(&m_buffer);
+        }
+        newLine();
     }
-    newLine();
 }
 
 std::unique_ptr<char[]>
@@ -120,6 +124,12 @@ core::ColumnInfo&
 core::TableInfo::getKeyInfo()
 {
     return m_columns[0].turnOn();
+}
+
+void
+core::TableInfo::noHead()
+{
+    m_printing_head = false;
 }
 
 //------------------------------------------------------------------------------

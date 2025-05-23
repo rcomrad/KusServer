@@ -2,7 +2,7 @@
 
 #include <cstdarg>
 
-#include "kernel/framework/module/kernel.hpp"
+#include "kernel/framework/core/kernel.hpp"
 #include "kernel/utility/file_system/path_values.hpp"
 
 #include "level.hpp"
@@ -63,17 +63,21 @@ core::Logger::popTeeBuffer() noexcept
 //------------------------------------------------------------------------------
 
 void
-core::Logger::writeLog(LogLevel a_level, const char* format, ...) noexcept
+core::Logger::writeLog(LogLevel a_level, const char* a_format, ...) noexcept
 {
     if (a_level >= g_log_level)
     {
         va_list args;
-        va_start(args, format);
-        vfprintf(m_stream, format, args);
+        va_start(args, a_format);
+        vfprintf(m_stream, a_format, args);
         va_end(args);
         fflush(m_stream);
     }
+}
 
+void
+core::Logger::teeLog(LogLevel a_level, const char* a_format, ...) noexcept
+{
     if (a_level >= LogLevel::ERROR || a_level == LogLevel::CMD)
     {
         while (!m_tee_buffers.empty())
@@ -82,15 +86,15 @@ core::Logger::writeLog(LogLevel a_level, const char* format, ...) noexcept
             popTeeBuffer();
 
             va_list args_count;
-            va_start(args_count, format);
-            int count = vsnprintf(nullptr, 0, format, args_count);
+            va_start(args_count, a_format);
+            int count = vsnprintf(nullptr, 0, a_format, args_count);
             va_end(args_count);
 
             buffer = std::make_unique<char[]>(count + 1);
 
             va_list args_print;
-            va_start(args_print, format);
-            vsprintf(buffer.get(), format, args_print);
+            va_start(args_print, a_format);
+            vsprintf(buffer.get(), a_format, args_print);
             va_end(args_print);
         }
     }

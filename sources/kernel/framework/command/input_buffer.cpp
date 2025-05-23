@@ -1,6 +1,6 @@
 #include "input_buffer.hpp"
 
-#include "kernel/framework/module/kernel.hpp"
+#include "kernel/framework/core/kernel.hpp"
 
 core::InputBuffer::InputBuffer() noexcept : m_command(nullptr)
 {

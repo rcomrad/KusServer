@@ -21,3 +21,9 @@ core::TablePrinter::getKeyInfo() const
 {
     return TABLE_INFO.getKeyInfo();
 }
+
+void
+core::TablePrinter::noHead() const
+{
+    return TABLE_INFO.noHead();
+}

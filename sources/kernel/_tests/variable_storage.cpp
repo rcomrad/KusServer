@@ -1,4 +1,4 @@
-#include "kernel/framework/module/kernel.hpp"
+#include "kernel/framework/core/kernel.hpp"
 #include "kernel/tester/kernel_fixture.hpp"
 
 namespace kustest

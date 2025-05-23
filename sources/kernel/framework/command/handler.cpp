@@ -4,10 +4,9 @@
 
 #include <memory>
 
+#include "kernel/framework/core/kernel.hpp"
 #include "kernel/framework/logger/include_me.hpp"
-#include "kernel/framework/module/callback_storage.hpp"
-#include "kernel/framework/module/kernel.hpp"
-#include "kernel/framework/module/state_storage.hpp"
+#include "kernel/framework/state/state_storage.hpp"
 #include "kernel/utility/string/slicer.hpp"
 
 //--------------------------------------------------------------------------------
@@ -23,16 +22,15 @@ core::CommandHandler::CommandInfo::CommandInfo(int a_caller_num,
 void
 core::CommandHandler::CommandInfo::print() const
 {
-    auto& arg_cell = addCell(args)
-                         .setName(" ")
-                         .alignmentLeft()
-                         .addPrefix("Args: ")
-                         .setDefault("/* no args */");
+    auto& arg_cell =
+        addCell(args).alignmentLeft().addPrefix("Args: ").setDefault(
+            "/* no args */");
     // addCell(desc).alignmentRight();
     addSubline();
     addCell(arg_cell, desc).alignmentLeft();
     addSubline();
-    getKeyInfo().setName("command").alignmentRight().setSeparator('|');
+    getKeyInfo().alignmentRight().setSeparator('|');
+    noHead();
 }
 
 //--------------------------------------------------------------------------------
@@ -137,13 +135,14 @@ core::CommandHandler::processCommand(Command& a_command) const
         if (!a_command.execResultIsError())
         {
             KERNEL.stateProcess(&a_command);
+            LOG_INFO("      command '%s' applied successfully",
+                     a_command.value);
         }
-        LOG_INFO("      command '%s' was applied", a_command.value);
     }
     else
     {
-        LOG_CMD("Unable to apply command '%s'. No suitable command handler",
-                a_command.value);
+        LOG_ERROR("Unable to apply command '%s'. No suitable command handler",
+                  a_command.value);
     }
 
     a_command.callResultFunc();
@@ -160,14 +159,15 @@ core::CommandHandler::processCommand(Command& a_command) const
 void
 core::CommandHandler::help(core::Command& a_command)
 {
-    LOG_CMD("KusSystem command list:\n%s", buildTable().get());
+    LOG_CMD("%s", buildTable().get());
 }
 
 void
 core::CommandHandler::print() const
 {
     setDefaultSeparator(' ');
-    addTableConrainer(m_command_info);
+    addTableConrainer(m_command_info,
+                      std::unordered_set<std::string>{"___internal_test"});
 }
 
 //--------------------------------------------------------------------------------

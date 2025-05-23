@@ -1,9 +1,9 @@
 #include "storage.hpp"
 
 #include "kernel/framework/command/include_me.hpp"
+#include "kernel/framework/core/kernel.hpp"
 #include "kernel/framework/logger/include_me.hpp"
-#include "kernel/framework/module/kernel.hpp"
-#include "kernel/framework/module/state_storage.hpp"
+#include "kernel/framework/state/state_storage.hpp"
 
 //--------------------------------------------------------------------------------
 

@@ -2,8 +2,8 @@
 
 #include <thread>
 
+#include "kernel/framework/core/kernel.hpp"
 #include "kernel/framework/logger/include_me.hpp"
-#include "kernel/framework/module/kernel.hpp"
 #include "kernel/framework/module/thread_module.hpp"
 #include "kernel/utility/synchronization/yield.hpp"
 

@@ -2,7 +2,7 @@
 
 #include <thread>
 
-#include "kernel/framework/module/kernel.hpp"
+#include "kernel/framework/core/kernel.hpp"
 #include "kernel/utility/synchronization/yield.hpp"
 
 #include "definitions.hpp"

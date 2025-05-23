@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <vector>
 
+#include "kernel/framework/command/handler.hpp"
 #include "kernel/framework/logger/include_me.hpp"
 #include "kernel/tester/commands_fixture.hpp"
 
@@ -213,6 +214,65 @@ TEST_F(UTablePrinter, keyed_subline)
     EXPECT_STREQ(answer.data(), result.get());
 
     result = list.buildTable();
+    ASSERT_NE(result.get(), nullptr);
+    EXPECT_STREQ(answer.data(), result.get());
+}
+
+class TestCommandHandler : public core::CommandHandler
+{
+public:
+    auto buildTable()
+    {
+        return core::CommandHandler::buildTable();
+    }
+};
+
+TEST_F(UTablePrinter, command_handler_help)
+{
+    // clang-format off
+    std::string answer =
+        "      help | Args: /* no args */                                                                                                                     \n"
+        "           | Displays a list of all available commands.                                                                                              \n"
+        "           |                                                                                                                                         \n"
+        "  var_help | Args: [variable_name]...                                                                                                                \n"
+        "           | Print the possible values of the variables. If the variable names are not specified, print all the variable and their possible values.  \n"
+        "           |                                                                                                                                         \n"
+        "   var_set | Args: variable_name=variable_value...                                                                                                   \n"
+        "           | Assign a value to the specified variable.                                                                                               \n"
+        "           |                                                                                                                                         \n"
+        "  var_show | Args: [variable_name]...                                                                                                                \n"
+        "           | Print the current value for the specified variable. If no name is specified, all variables will be selected.                            \n"
+        "           |                                                                                                                                         \n";
+    // clang-format on
+
+    TestCommandHandler handler;
+    handler.registrateCommand(
+        0, "___internal_test", nullptr,
+        "This command is used in unit tests. Don't use it. It's meaningless.",
+        "");
+    handler.registrateCommand(0, "help", nullptr,
+                              "Displays a list of all available commands.", "");
+    handler.registrateCommand(0, "var_set", nullptr,
+                              "Assign a value to the specified variable.",
+                              "variable_name=variable_value...");
+    handler.registrateCommand(
+        0, "var_show", nullptr,
+        "Print the current value for the specified variable. If no "
+        "name is specified, all variables will be selected.",
+        "[variable_name]...");
+    handler.registrateCommand(
+        0, "var_help", nullptr,
+        "Print the possible values of the variables. "
+        "If the variable names are not specified, "
+        "print all the variable and their possible values.",
+        "[variable_name]...");
+
+    auto result = handler.buildTable();
+
+    ASSERT_NE(result.get(), nullptr);
+    EXPECT_STREQ(answer.data(), result.get());
+
+    result = handler.buildTable();
     ASSERT_NE(result.get(), nullptr);
     EXPECT_STREQ(answer.data(), result.get());
 }

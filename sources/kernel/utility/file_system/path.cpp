@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-#include "kernel/framework/module/kernel.hpp"
+#include "kernel/framework/core/kernel.hpp"
 
 #include "path_storage.hpp"
 #include "path_values.hpp"

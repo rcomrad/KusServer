@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 #include "kernel/framework/command/input_buffer.hpp"
-#include "kernel/framework/module/kernel.hpp"
+#include "kernel/framework/core/kernel.hpp"
 #include "kernel/utility/file_system/file.hpp"
 #include "kernel/utility/file_system/path.hpp"
 #include "kernel/utility/file_system/path_storage.hpp"

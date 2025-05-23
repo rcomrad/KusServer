@@ -1,6 +1,6 @@
 #include "kernel_fixture.hpp"
 
-#include "kernel/framework/module/kernel.hpp"
+#include "kernel/framework/core/kernel.hpp"
 
 kustest::KernelFixture::KernelFixture()
 {

@@ -19,7 +19,7 @@
 namespace core
 {
 
-class CommandHandler : public CommandCaller, TablePrinter
+class CommandHandler : public CommandCaller, protected TablePrinter
 {
 public:
     CommandHandler();

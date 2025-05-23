@@ -3,7 +3,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "kernel/framework/module/kernel.hpp"
+#include "kernel/framework/core/kernel.hpp"
 
 #include "path_storage.hpp"
 
