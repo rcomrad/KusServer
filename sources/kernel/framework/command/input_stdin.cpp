@@ -2,8 +2,8 @@
 
 #include <iostream>
 
+#include "kernel/framework/core/kernel.hpp"
 #include "kernel/framework/logger/include_me.hpp"
-#include "kernel/framework/module/kernel.hpp"
 
 core::InputSTDIN::InputSTDIN()
 {

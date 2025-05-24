@@ -1,7 +1,7 @@
 #include "module.hpp"
 
+#include "kernel/framework/core/kernel.hpp"
 #include "kernel/framework/logger/include_me.hpp"
-#include "kernel/framework/module/kernel.hpp"
 
 #include "module_func_try_block.hpp"
 

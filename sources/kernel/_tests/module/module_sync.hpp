@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-#include "kernel/framework/module/kernel.hpp"
+#include "kernel/framework/core/kernel.hpp"
 #include "kernel/utility/synchronization/condvar.hpp"
 
 #include "definitions.hpp"

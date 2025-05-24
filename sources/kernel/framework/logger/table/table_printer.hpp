@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <unordered_set>
 
 #include "kernel/utility/type/containers/key_getter.hpp"
 #include "kernel/utility/type/containers/value_getter.hpp"
@@ -23,6 +24,16 @@ public:
     template <typename Container>
     void addTableConrainer(const Container& a_container) const
     {
+        std::unordered_set<std::decay_t<decltype(util::ContainerKey::exec(
+            a_container, a_container.begin()))>>
+            erased_keys;
+        addTableConrainer(a_container, erased_keys);
+    }
+
+    template <typename Container, typename Key>
+    void addTableConrainer(const Container& a_container,
+                           const std::unordered_set<Key>& a_erased_keys) const
+    {
         using getKey   = util::ContainerKey;
         using getValue = util::ContainerValue;
 
@@ -37,8 +48,9 @@ public:
         // for (const auto& i : a_container)
         for (auto it = a_container.cbegin(); it != a_container.cend(); ++it)
         {
-            const auto key    = getKey::exec(a_container, it);
+            const auto& key   = getKey::exec(a_container, it);
             const auto& value = getValue::exec(a_container, it);
+            if (a_erased_keys.count(key)) continue;
 
             TABLE_INFO.addCell(key);
             value.print();
@@ -52,6 +64,7 @@ public:
         {
             const auto& key   = getKey::exec(a_container, it);
             const auto& value = getValue::exec(a_container, it);
+            if (a_erased_keys.count(key)) continue;
 
             TABLE_INFO.addCell(key);
             value.print();
@@ -77,6 +90,8 @@ public:
     {
         return TABLE_INFO.addCell(a_parant, a_data);
     }
+
+    void noHead() const;
 
     // ColumnInfo& addRow(const TablePrinter& a_data) const
     // {

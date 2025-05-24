@@ -15,6 +15,7 @@ public:
     void nextStep();
     void addSubline();
     void finish();
+    void noHead();
 
     void clear();
     std::unique_ptr<char[]> getResult();
@@ -91,6 +92,7 @@ private:
     std::vector<ColumnInfo> m_sublines;
 
     char m_separator;
+    bool m_printing_head;
 
     char* m_buffer;
     std::unique_ptr<char[]> m_result;

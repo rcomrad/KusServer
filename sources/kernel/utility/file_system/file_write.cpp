@@ -3,8 +3,8 @@
 #include <cstdio>
 #include <stdarg.h>
 
+#include "kernel/framework/core/kernel.hpp"
 #include "kernel/framework/logger/include_me.hpp"
-#include "kernel/framework/module/kernel.hpp"
 
 util::FileWrite::FileWrite(const std::string& a_file_name)
 {

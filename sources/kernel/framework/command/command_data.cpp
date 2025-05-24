@@ -6,6 +6,7 @@ core::CommandData::CommandData(std::string&& a_comm_str) noexcept
 {
     m_data    = std::move(a_comm_str);
     auto args = util::Slicer::process(m_data, "; \n\t");
+    if (args.empty()) return;
 
     // first word is a command and processed separately
     value = args[0];

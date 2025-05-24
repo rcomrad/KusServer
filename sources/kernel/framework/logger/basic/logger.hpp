@@ -21,7 +21,9 @@ public:
 
     void pushTeeBuffer(std::unique_ptr<char[]>& a_buffer) noexcept;
     void popTeeBuffer() noexcept;
-    void writeLog(LogLevel a_level, const char* format, ...) noexcept;
+
+    void writeLog(LogLevel a_level, const char* a_format, ...) noexcept;
+    void teeLog(LogLevel a_level, const char* a_format, ...) noexcept;
 
 private:
     FILE* m_stream;

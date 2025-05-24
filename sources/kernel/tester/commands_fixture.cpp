@@ -3,7 +3,7 @@
 #include <string>
 #include <string_view>
 
-#include "kernel/framework/module/kernel.hpp"
+#include "kernel/framework/core/kernel.hpp"
 
 kustest::CommandsFixture::CommandsFixture()
 {
