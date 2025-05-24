@@ -89,7 +89,7 @@ core::TableInfo::prepareForPrinting()
     size += 2;
     size *= m_row_count;
 
-    m_result             = std::make_unique<char[]>(size + 1);
+    m_result             = std::make_unique<char[]>(size + 1 + 1);
     m_result.get()[size] = 0;
     m_result.get()[0]    = m_separator;
     m_buffer             = m_result.get() + 1;
@@ -121,9 +121,18 @@ core::TableInfo::setDefaultSeparator(char a_separator)
 }
 
 core::ColumnInfo&
-core::TableInfo::getKeyInfo()
+core::TableInfo::getKeyInfo(bool a_turn_on_flag)
 {
-    return m_columns[0].turnOn();
+    if (m_columns.empty())
+    {
+        int dummy = 0;
+        addCell(dummy).turnOff().setName("#").setSeparator(m_separator);
+    }
+    if (a_turn_on_flag)
+    {
+        m_columns.at(0).turnOn();
+    }
+    return m_columns.at(0);
 }
 
 void

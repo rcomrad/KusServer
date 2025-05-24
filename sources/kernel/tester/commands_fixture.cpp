@@ -5,25 +5,22 @@
 
 #include "kernel/framework/core/kernel.hpp"
 
-kustest::CommandsFixture::CommandsFixture()
+kustest::CommandsFixture::CommandsFixture() : m_is_running(false)
 {
     m_exec_thread = std::thread(&CommandsFixture::run, this);
+    m_is_running  = true;
 }
 
 kustest::CommandsFixture::~CommandsFixture()
 {
-    KERNEL.stop();
-    m_exec_thread.join();
+    terminateKernel();
 }
 
 std::string
 kustest::CommandsFixture::execCommand(const std::string& a_command)
 {
-    auto ptr_result = m_input_buffer.execCommand("test_command_handler");
-    std::string_view cv_result(ptr_result.get());
-    auto it           = cv_result.find(':');
-    auto tesxt_output = cv_result.substr(it + 2, cv_result.size());
-    std::string result(tesxt_output);
+    auto ptr_result = m_input_buffer.execCommand(a_command.data());
+    std::string result(ptr_result.get());
     while (result.size() && std::isspace(result.back()))
     {
         result.pop_back();
@@ -35,4 +32,15 @@ void
 kustest::CommandsFixture::run() const noexcept
 {
     EXPECT_NO_THROW(KERNEL.run());
+}
+
+void
+kustest::CommandsFixture::terminateKernel()
+{
+    if (m_is_running)
+    {
+        KERNEL.stop();
+        m_is_running = false;
+        m_exec_thread.join();
+    }
 }

@@ -180,3 +180,12 @@ core::Module::execute() noexcept
 }
 
 //------------------------------------------------------------------------------
+
+void
+core::Module::print() const
+{
+    addCell(m_name).setName("Module").alignmentRight().setSeparator(':');
+    addCell(getStateName(m_state)).setName("State").alignmentLeft();
+}
+
+//------------------------------------------------------------------------------

@@ -21,9 +21,6 @@ macro(load_build_config_file)
     message("-----------------------------------------\n\n")
 endmacro()
 
-
-
-
 macro(load_target_switch_file)
     message("\n\nTARGET SWITCH----------------------------")
     set(TARGET_SWITCH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_target_switch.cmake")
@@ -46,7 +43,13 @@ macro(load_target_switch_file)
             "    foreach(MODULE \$\{\$\{NAME\}_MODULES\})\n"
             "        include(\$\{CMAKE_CURRENT_SOURCE_DIR\}/sources/\$\{MODULE\}/_setup.cmake)\n"
             "    endforeach()\n"
-            "endmacro()\n\n"
+            "endmacro()\n"
+            "\n"
+            "check(_test)\n"
+            "check(engine)\n"
+            "check(kernel)\n"
+            "check(ontology)\n"
+            "check(server)\n"
         )
 
         #TODO: spaces in file path?

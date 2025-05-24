@@ -29,7 +29,7 @@ public:
 protected:
     void registrateBaseCommand(const char* a_name,
                                const char* a_description,
-                               const char* a_args);
+                               const char* a_args = "");
 
 private:
     int m_next_caller_num;

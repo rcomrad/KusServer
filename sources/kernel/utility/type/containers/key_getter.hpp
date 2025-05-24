@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <unordered_map>
 #include <vector>
 
 namespace util
@@ -21,6 +22,14 @@ public:
     static inline const Key& exec(
         const std::map<Key, Value>& a_container,
         typename std::map<Key, Value>::const_iterator a_iterator)
+    {
+        return a_iterator->first;
+    }
+
+    template <typename Key, typename Value>
+    static inline const Key& exec(
+        const std::unordered_map<Key, Value>& a_container,
+        typename std::unordered_map<Key, Value>::const_iterator a_iterator)
     {
         return a_iterator->first;
     }

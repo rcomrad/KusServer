@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <ranges>
 #include <vector>
 
 #include "kernel/framework/command/handler.hpp"
@@ -32,15 +33,15 @@ struct Adress : public core::TablePrinter
     void print() const override
     {
         building_info =
-            &addCell(building_numder).setName("building").alignmentRight();
+            addCell(building_numder).setName("building").alignmentRight();
         addCell(x).setName("x coord").alignmentRight();
         addCell(y).setName("y coord").alignmentMiddle();
         addCell(coord_hash).setName("hash").alignmentLeft();
-        street_info = &addCell(street_name).setName("street").alignmentLeft();
+        street_info = addCell(street_name).setName("street").alignmentLeft();
     }
 
-    mutable core::ColumnInfo* building_info;
-    mutable core::ColumnInfo* street_info;
+    mutable int building_info;
+    mutable int street_info;
 };
 
 template <typename T>
@@ -114,10 +115,10 @@ struct IncreasedAdress : public Adress, public AdditionalData
     {
         Adress::print();
         addSubline();
-        addCell(*building_info, building_year).alignmentMiddle();
-        addCell(*street_info, street_hash);
+        addCell(building_info, building_year).alignmentMiddle();
+        addCell(street_info, street_hash).alignmentLeft();
         addSubline();
-        addCell(*street_info, normalized_hash).alignmentRight();
+        addCell(street_info, normalized_hash).alignmentRight();
     }
 };
 
@@ -218,6 +219,78 @@ TEST_F(UTablePrinter, keyed_subline)
     EXPECT_STREQ(answer.data(), result.get());
 }
 
+struct ComplexData : public Adress
+{
+    ComplexData() = default;
+
+    ComplexData(const Adress& a_base, const KeyedIncreasedAdress& a_dereved)
+        : Adress(a_base), second_table(a_dereved)
+    {
+    }
+    KeyedIncreasedAdress second_table;
+
+    void print() const override
+    {
+        Adress::print();
+        addCell(second_table);
+    }
+};
+
+struct CombinedTable : public core::TablePrinter
+{
+public:
+    CombinedTable()
+    {
+        auto simpl_list = getData();
+        std::ranges::reverse(simpl_list);
+        auto complex_list = getComplexData<KeyedIncreasedAdress>();
+
+        for (int i = 0; i < std::min(simpl_list.size(), complex_list.size());
+             ++i)
+        {
+            m_data.emplace_back(simpl_list.at(i), complex_list.at(i));
+        }
+    }
+
+    void print() const override
+    {
+        addTableConrainer(m_data);
+    }
+
+private:
+    std::vector<ComplexData> m_data;
+};
+
+TEST_F(UTablePrinter, complex_table)
+{
+    // clang-format off
+    std::string answer =
+        "| # | building |  x coord  |    y coord    |    hash     |      street       | building  |  x coord  |    y coord    |    hash     |      street       |\n"
+        "| 0 |        0 |  0.000000 |  3464.435000  | 2355        | Kafki             |        32 |  3.650000 | 567567.867000 | 453453      | Abasov streat     |\n"
+        "|   |          |           |               |             |                   |   1961    |           |               |             | 3832116832        |\n"
+        "|   |          |           |               |             |                   |           |           |               |             |          7.657400 |\n"
+        "| 1 |    12345 | 78.345600 |   0.000000    | 0           | Slavy             |     35632 |  0.675000 |   27.000000   | 65782345845 | Koyaanisquatsiuth |\n"
+        "|   |          |           |               |             |                   |     0     |           |               |             | 4564              |\n"
+        "|   |          |           |               |             |                   |           |           |               |             |       1547.000000 |\n"
+        "| 2 |    35632 |  0.675000 |   27.000000   | 65782345845 | Koyaanisquatsiuth |     12345 | 78.345600 |   0.000000    | 0           | Slavy             |\n"
+        "|   |          |           |               |             |                   | 119611961 |           |               |             | 975375375373      |\n"
+        "|   |          |           |               |             |                   |           |           |               |             |         -0.990000 |\n"
+        "| 3 |       32 |  3.650000 | 567567.867000 | 453453      | Abasov streat     |         0 |  0.000000 |  3464.435000  | 2355        | Kafki             |\n"
+        "|   |          |           |               |             |                   |    -39    |           |               |             | 10                |\n"
+        "|   |          |           |               |             |                   |           |           |               |             |         27.576670 |\n";
+    // clang-format on
+
+    CombinedTable table;
+    auto result = table.buildTable();
+
+    ASSERT_NE(result.get(), nullptr);
+    EXPECT_STREQ(answer.data(), result.get());
+
+    result = table.buildTable();
+    ASSERT_NE(result.get(), nullptr);
+    EXPECT_STREQ(answer.data(), result.get());
+}
+
 class TestCommandHandler : public core::CommandHandler
 {
 public:
@@ -273,6 +346,44 @@ TEST_F(UTablePrinter, command_handler_help)
     EXPECT_STREQ(answer.data(), result.get());
 
     result = handler.buildTable();
+    ASSERT_NE(result.get(), nullptr);
+    EXPECT_STREQ(answer.data(), result.get());
+}
+
+struct SimpleArray : public core::TablePrinter
+{
+    std::vector<int> m_data = {5, -3, 4, -3, 0, 6, 9, 0};
+
+    void print() const override
+    {
+        setDefaultSeparator(' ');
+        getKeyInfo();
+        addTableConrainer(m_data);
+    }
+};
+
+TEST_F(UTablePrinter, simple_array)
+{
+    // clang-format off
+    std::string answer =
+        "  #  \n"
+        "  0  \n"
+        "  1  \n"
+        "  2  \n"
+        "  3  \n"
+        "  4  \n"
+        "  5  \n"
+        "  6  \n"
+        "  7  \n";
+    // clang-format on
+
+    SimpleArray array;
+    auto result = array.buildTable();
+
+    ASSERT_NE(result.get(), nullptr);
+    EXPECT_STREQ(answer.data(), result.get());
+
+    result = array.buildTable();
     ASSERT_NE(result.get(), nullptr);
     EXPECT_STREQ(answer.data(), result.get());
 }

@@ -1,4 +1,4 @@
-#include "kernel/tester/kernel_fixture.hpp"
+#include "kernel/tester/commands_fixture.hpp"
 
 //------------------------------------------------------------------------------
 
@@ -11,13 +11,13 @@
 namespace kustest
 {
 
-class UThreadModuleTest : public KernelFixture
+class UThreadModuleTest : public CommandsFixture
 {
 };
 
 TEST_F(UThreadModuleTest, singl_use_test)
 {
-    ThreadSelfCloser<SinglUseModule> tester;
+    ThreadSelfCloser<SinglUseModule> tester(*this);
     tester.setModuleStates({MState::NUN, MState::CREATED, MState::INITIALIZED,
                             MState::ALIVE, MState::CLOSING,
                             MState::TERMINATED});
@@ -30,7 +30,7 @@ TEST_F(UThreadModuleTest, singl_use_test)
 
 TEST_F(UThreadModuleTest, init_throw)
 {
-    ThreadModuleTester<InitThrowModule> tester;
+    ThreadModuleTester<InitThrowModule> tester(*this);
     tester.setModuleStates({MState::NUN, MState::CREATED, MState::KILLED});
     tester.setThreadStates({MState::NUN, MState::IDLE});
     tester.exec();
@@ -38,7 +38,7 @@ TEST_F(UThreadModuleTest, init_throw)
 
 TEST_F(UThreadModuleTest, no_loop_test)
 {
-    ThreadSelfCloser<NoLoopMode> tester;
+    ThreadSelfCloser<NoLoopMode> tester(*this);
     tester.setModuleStates({MState::NUN, MState::CREATED, MState::INITIALIZED,
                             MState::CLOSING, MState::TERMINATED});
     tester.setThreadStates({MState::NUN, MState::CREATED, MState::INITIALIZED,
@@ -49,7 +49,7 @@ TEST_F(UThreadModuleTest, no_loop_test)
 
 TEST_F(UThreadModuleTest, term_throw)
 {
-    ThreadSelfCloser<TerminateThrowModule> tester;
+    ThreadSelfCloser<TerminateThrowModule> tester(*this);
     tester.setModuleStates({MState::NUN, MState::CREATED, MState::INITIALIZED,
                             MState::ALIVE, MState::CLOSING, MState::KILLED});
     tester.setThreadStates({MState::NUN, MState::CREATED, MState::INITIALIZED,
@@ -60,7 +60,7 @@ TEST_F(UThreadModuleTest, term_throw)
 
 TEST_F(UThreadModuleTest, external_module_kill)
 {
-    ThreadExternalKillTester<InfinityModule> tester;
+    ThreadExternalKillTester<InfinityModule> tester(*this);
     tester.setModuleStates({MState::NUN, MState::CREATED, MState::INITIALIZED,
                             MState::ALIVE, MState::CLOSING,
                             MState::TERMINATED});

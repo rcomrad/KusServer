@@ -1,11 +1,7 @@
 #pragma once
 
-#include <thread>
-
 #include "kernel/framework/core/kernel.hpp"
-#include "kernel/utility/synchronization/yield.hpp"
 
-#include "definitions.hpp"
 #include "tester_thread.hpp"
 
 namespace kustest
@@ -13,13 +9,8 @@ namespace kustest
 
 class SynchronizationModule : public core::ThreadModule
 {
-public:
-    using core::ThreadModule::ThreadModule;
-
-    bool isActive()
-    {
-        return getState() >= MState::ALIVE && getThreadState() >= MState::ALIVE;
-    }
+    using Base = core::ThreadModule;
+    using Base::Base;
 
 protected:
     bool threadLoopBody() override
@@ -30,7 +21,8 @@ protected:
 
 class SynchronizationSelfClose : public SynchronizationModule
 {
-    using SynchronizationModule::SynchronizationModule;
+    using Base = SynchronizationModule;
+    using Base::Base;
 
 protected:
     bool threadLoopBody() override
@@ -47,17 +39,23 @@ private:
 template <template <typename> typename TestType>
 class ThreadModuleTester : public ThreadTester<TestType<SynchronizationModule>>
 {
+    using Base = ThreadTester<TestType<SynchronizationModule>>;
+    using Base::Base;
 };
 
 template <template <typename> typename TestType>
 class ThreadSelfCloser : public ThreadTester<TestType<SynchronizationSelfClose>>
 {
+    using Base = ThreadTester<TestType<SynchronizationSelfClose>>;
+    using Base::Base;
 };
 
 template <template <typename> typename TestType>
 class ThreadExternalKillTester
-    : public ExternalKill<ThreadTester, TestType<SynchronizationModule>>
+    : public ExternalKill<ThreadTester, TestType<SynchronizationModule>, 2>
 {
+    using Base = ExternalKill<ThreadTester, TestType<SynchronizationModule>, 2>;
+    using Base::Base;
 };
 
 } // namespace kustest

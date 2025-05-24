@@ -9,9 +9,9 @@ foreach(script ${cmake_scripts})
     include(${script})
 endforeach()
 
-flag_setup()
 load_build_config_file()
 
 project(KusSysteam)
 
+flag_setup()
 load_target_switch_file()

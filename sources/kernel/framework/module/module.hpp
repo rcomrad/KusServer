@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+#include "kernel/framework/logger/table/include_me.hpp"
 #include "kernel/utility/synchronization/condvar.hpp"
 #include "kernel/utility/type/declaration/lifecycle_manager.hpp"
 
@@ -17,7 +18,7 @@
 namespace core
 {
 
-class Module
+class Module : public TablePrinter
 {
 public:
     Module(const std::string& a_name);
@@ -48,6 +49,8 @@ private:
     SynchronizedState* m_sync_state;
 
     void changeState(State a_new_state) noexcept;
+
+    void print() const override;
 };
 
 } // namespace core

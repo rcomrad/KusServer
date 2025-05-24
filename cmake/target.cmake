@@ -95,27 +95,6 @@ macro(create_module MODULE_TYPE)
 
         set(LIBRARIES ${LIBRARIES} gtest)
     endforeach()
-
-    # all_files = find_all_files(SOURCES_PATH)
-
-    # create_target(NAME false)
-    # if (SOURCES_PATH_tests exist ) create_target(NAME true)
-
-    # add_executable(${TEST_NAME} "sources_main/main.cpp")
 endmacro()
 
 #-------------------------------------------------------------------------------
-
-# macro(create_executable NAME PATH)
-#     target_include_directories(${EXE_NAME} PUBLIC $(SOURSEC))
-
-# endmacro()
-
-# macro(create_exe NAME SOURSEC)
-
-# endmacro()
-
-
-# macro(create_exe NAME SOURSEC)
-
-# endmacro()

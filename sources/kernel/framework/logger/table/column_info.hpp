@@ -24,30 +24,28 @@ struct ColumnInfo
 
 public:
     template <typename T>
-    ColumnInfo(const T& a_data)
-        : count(0),
+    ColumnInfo(int a_indx, const T& a_data)
+        : m_indx(a_indx),
+          m_count(0),
           m_width(std::make_shared<int>(0)),
           m_separator('|'),
-          m_alignment(Alignment::NUN)
+          m_alignment(Alignment::RIGHT)
     {
         m_sizes.emplace_back(0);
         setName("---");
-        m_type_specifier = util::PrintSpecifier::exec(a_data);
-        alignmentRight();
+        resetType(a_data);
         turnOn();
         addPrefix("");
         setDefault("");
     }
 
     template <typename T>
-    ColumnInfo(ColumnInfo& a_parent, const T& a_data) : ColumnInfo(a_data)
+    ColumnInfo(int a_indx, ColumnInfo& a_parent, const T& a_data)
+        : ColumnInfo(a_indx, a_data)
     {
         m_width = a_parent.m_width;
         m_sizes.pop_back();
-
-        if (a_parent.m_alignment == Alignment::RIGHT) alignmentRight();
-        if (a_parent.m_alignment == Alignment::MIDDLE) alignmentMiddle();
-        if (a_parent.m_alignment == Alignment::LEFT) alignmentLeft();
+        alignmentSwitch(a_parent.m_alignment);
     }
 
     ColumnInfo& setName(const std::string& a_name);
@@ -64,6 +62,14 @@ public:
     ColumnInfo& setDefault(const char* a_default);
 
     template <typename T>
+    ColumnInfo& resetType(const T& a_data)
+    {
+        m_type_specifier = util::PrintSpecifier::exec(a_data);
+        alignmentSwitch(m_alignment);
+        return *this;
+    }
+
+    template <typename T>
     void takeIntoAccount(const T& a_data)
     {
         if (!m_is_printed) return;
@@ -77,7 +83,7 @@ public:
         if (!m_is_printed) return;
 
         std::string format("%*s%s%*s");
-        int spaces     = getWidth() - m_sizes.at(count++);
+        int spaces     = getWidth() - m_sizes.at(m_count++);
         int pad_len    = spaces / 2;
         int additional = spaces % 2 ? 0 : 1;
         *a_buffer += sprintf(*a_buffer, format.data(), pad_len - additional, "",
@@ -90,7 +96,7 @@ public:
         if (!m_is_printed) return;
         if (a_check_flag && util::PrintEmpty::exec(a_data) && m_default[0])
         {
-            m_sizes.at(count) = strlen(m_default);
+            m_sizes.at(m_count) = strlen(m_default);
             print(a_buffer, m_default, false);
             return;
         }
@@ -100,12 +106,12 @@ public:
             *a_buffer += sprintf(*a_buffer, m_format.data(), m_prefix,
                                  *m_width - 3 - +int(strlen(m_prefix)),
                                  util::PrintCaster::exec(a_data), m_separator);
-            count++;
+            m_count++;
         }
         else
         {
             int spaces =
-                *m_width - m_sizes.at(count++) - +int(strlen(m_prefix));
+                *m_width - m_sizes.at(m_count++) - +int(strlen(m_prefix));
             int pad_len    = spaces / 2;
             int additional = spaces % 2 ? 0 : 1;
             *a_buffer +=
@@ -117,8 +123,15 @@ public:
 
     void pass(char** a_buffer);
 
+    operator int()
+    {
+        return m_indx;
+    }
+
 private:
-    int count;
+    int m_indx;
+
+    int m_count;
     char m_separator;
     std::string m_name;
     Alignment m_alignment;
@@ -135,6 +148,7 @@ private:
     const char* m_default;
 
     void prepareFormat(Alignment a_alignment, const char* a_format);
+    void alignmentSwitch(Alignment a_alignment);
 };
 
 } // namespace core

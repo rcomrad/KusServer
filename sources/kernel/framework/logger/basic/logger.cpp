@@ -17,21 +17,51 @@ constexpr const char* LOGS_FILE_EXTENSION = "log";
 
 } // namespace
 
+FILE* core::Logger::default_stream = std::fopen("pre_init_log.log", "a");
+std::mutex core::Logger::default_mutex;
+
 //------------------------------------------------------------------------------
 
-core::Logger::Logger() noexcept : m_stream(nullptr)
+core::Logger::Logger() noexcept : m_stream(default_stream), m_is_shared(true)
 {
     m_tee_buffers.reserve(2);
 }
 
 core::Logger::~Logger()
 {
-    fflush(m_stream);
-    std::fclose(m_stream);
+    if (m_stream != default_stream)
+    {
+        std::fclose(m_stream);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void
+core::Logger::redirect(const std::string& a_name) noexcept
+{
+    if (m_stream != default_stream)
+    {
+        std::fclose(m_stream);
+    }
+    m_is_shared = false;
+    redirectImpl(a_name, &m_stream);
 }
 
 void
-core::Logger::init(const std::string& a_name) noexcept
+core::Logger::redirectDefault(const std::string& a_name) noexcept
+{
+    static bool flag = false;
+    if (!flag)
+    {
+        std::fclose(default_stream);
+        redirectImpl(a_name, &default_stream);
+        flag = true;
+    }
+}
+
+void
+core::Logger::redirectImpl(const std::string& a_name, FILE** s_stream) noexcept
 {
     KERNEL.addFolder(util::DATA_FOLDER_NAME, LOGS_FOLDER_NAME);
 
@@ -40,7 +70,7 @@ core::Logger::init(const std::string& a_name) noexcept
     log_file_name += LOGS_FILE_EXTENSION;
 
     auto& path = KERNEL.addFile(LOGS_FOLDER_NAME, log_file_name);
-    m_stream   = std::fopen(path.c_str(), "w");
+    *s_stream  = std::fopen(path.c_str(), "w");
 }
 
 //------------------------------------------------------------------------------
@@ -67,11 +97,13 @@ core::Logger::writeLog(LogLevel a_level, const char* a_format, ...) noexcept
 {
     if (a_level >= g_log_level)
     {
+        if (m_is_shared) default_mutex.lock();
         va_list args;
         va_start(args, a_format);
         vfprintf(m_stream, a_format, args);
         va_end(args);
         fflush(m_stream);
+        if (m_is_shared) default_mutex.unlock();
     }
 }
 

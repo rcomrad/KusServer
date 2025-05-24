@@ -1,4 +1,4 @@
-#include "yield.hpp"
+#include "sleep.hpp"
 
 #include <chrono>
 #include <thread>
@@ -6,19 +6,25 @@
 using namespace std::chrono_literals;
 
 void
-util::Yield::large() noexcept
+util::Sleep::large() noexcept
 {
     std::this_thread::sleep_for(1000ms);
 }
 
 void
-util::Yield::medium() noexcept
+util::Sleep::medium() noexcept
 {
     std::this_thread::sleep_for(200ms);
 }
 
 void
-util::Yield::small() noexcept
+util::Sleep::small() noexcept
 {
     std::this_thread::sleep_for(10ms);
+}
+
+void
+util::Sleep::yield() noexcept
+{
+    std::this_thread::yield();
 }
