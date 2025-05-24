@@ -8,7 +8,7 @@
 
 #include "kernel/framework/command/include_me.hpp"
 // #include "kernel/utility/common/exception.hpp"
-#include "kernel/utility/defines/holy_trinity.hpp"
+#include "kernel/utility/macroses/holy_trinity.hpp"
 
 #include "variable.hpp"
 

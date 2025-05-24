@@ -6,7 +6,7 @@
 #include <string_view>
 
 #include "kernel/framework/logger/include_me.hpp"
-#include "kernel/utility/defines/holy_trinity.hpp"
+#include "kernel/utility/macroses/holy_trinity.hpp"
 
 static inline constexpr const char PATH_SEPARATOR = '/';
 

@@ -89,7 +89,7 @@ core::TableInfo::prepareForPrinting()
     size += 2;
     size *= m_row_count;
 
-    m_result             = std::make_unique<char[]>(size + 1);
+    m_result             = std::make_unique<char[]>(size + 1 + 1);
     m_result.get()[size] = 0;
     m_result.get()[0]    = m_separator;
     m_buffer             = m_result.get() + 1;

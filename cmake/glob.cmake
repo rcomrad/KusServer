@@ -24,7 +24,7 @@ macro(get_subdirectory_list RESULT_VAR DIR)
 
     set(RESULT "")
     foreach(OBJ ${OBJ_LIST})
-        if(IS_DIRECTORY ${curdir}/${OBJ})
+        if(IS_DIRECTORY ${OBJ})
             list(APPEND RESULT ${OBJ})
         endif()
     endforeach()

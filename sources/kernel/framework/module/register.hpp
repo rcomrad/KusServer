@@ -5,7 +5,7 @@
 #include <memory>
 #include <vector>
 
-#include "kernel/utility/defines/holy_trinity.hpp"
+#include "kernel/utility/macroses/holy_trinity.hpp"
 
 #include "module.hpp"
 

@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "kernel/utility/datastructs/num_prefix_tree.hpp"
-#include "kernel/utility/defines/holy_trinity.hpp"
+#include "kernel/utility/macroses/holy_trinity.hpp"
 #include "nodes/node.hpp"
 
 #include "context.hpp"

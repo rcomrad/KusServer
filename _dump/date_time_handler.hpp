@@ -1,6 +1,6 @@
 #pragma once
 
-#include "kernel/utility/defines/holy_trinity.hpp"
+#include "kernel/utility/macroses/holy_trinity.hpp"
 
 #include "date_time.hpp"
 
