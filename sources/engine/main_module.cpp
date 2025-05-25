@@ -4,9 +4,13 @@
 
 #include <iostream>
 
+// core::ModuleRegister<engine::MainModule> engine::MainModule::reg;
+
 void
 engine::MainModule::threadInitialize()
 {
+    std::cout << "inside" << std::endl;
+
     VkApplicationInfo appInfo = {};
     appInfo.sType             = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pApplicationName  = "Pong";
@@ -22,6 +26,10 @@ engine::MainModule::threadInitialize()
     if (result == VK_SUCCESS)
     {
         std::cout << "Successfully created vulkan instance" << std::endl;
+    }
+    else
+    {
+        std::cout << "ERROR" << std::endl;
     }
 }
 
