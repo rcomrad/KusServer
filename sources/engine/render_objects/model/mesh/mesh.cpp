@@ -15,18 +15,18 @@ Mesh::setVertices(const std::vector<UniversalVertex>& vertices)
         m_vertices[i] = *(vertices[i].data());
     }
 }
-void
-Mesh::setVertices(const std::initializer_list<UniversalVertex>& vertices)
-{
-    size_t size = vertices.size();
+// void
+// Mesh::setVertices(const std::initializer_list<UniversalVertex>& vertices)
+// {
+//     size_t size = vertices.size();
 
-    m_vertices.resize(size);
+//     m_vertices.resize(size);
 
-    for (size_t i = 0; i < size; ++i)
-    {
-        m_vertices[i] = *((vertices.begin() + i)->data());
-    }
-}
+//     for (size_t i = 0; i < size; ++i)
+//     {
+//         m_vertices[i] = *((vertices.begin() + i)->data());
+//     }
+// }
 
 void
 Mesh::setIndices(const std::vector<uint32_t>& indices)

@@ -7,14 +7,14 @@ void
 Image::create(float width, float height)
 {
     vk::ImageCreateInfo image_info(
-        {}, vk::ImageType::e2D, vk::Format::eR8G8B8A8Srgb,
+        {}, vk::ImageType::e2D, vk::Format::eR8G8B8A8Unorm,
         {static_cast<uint32_t>(width), static_cast<uint32_t>(height), 1}, 1, 1,
         vk::SampleCountFlagBits::e1, vk::ImageTiling::eOptimal,
         vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
         vk::SharingMode::eExclusive);
 
     m_image  = LOGICAL_DEVICE.createImageUnique(image_info);
-    m_format = vk::Format::eR8G8B8A8Srgb;
+    m_format = vk::Format::eR8G8B8A8Unorm;
 
     vk::MemoryRequirements image_mem_requirements =
         LOGICAL_DEVICE.getImageMemoryRequirements(m_image.get());

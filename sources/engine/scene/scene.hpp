@@ -4,8 +4,9 @@
 #include "engine/render_objects/model/model_storage.hpp"
 #include "engine/render_objects/objects_data/uniform_buffer_object.hpp"
 #include "engine/render_objects/render_object.hpp"
-#include "engine/textures/texture_storage.hpp"
 #include "engine/renderer/swap_chain_frame.hpp"
+#include "engine/textures/texture_storage.hpp"
+
 #include "camera.hpp"
 
 namespace kusengine
@@ -21,10 +22,10 @@ public:
                 const TextureStorage& texture_storage_ptr);
 
     void render(const vk::CommandBuffer& command_buffer,
-                const vk::PipelineLayout& pipelayout) const;
+                const vk::PipelineLayout& pipelayout,
+                SwapChainFrame& frame) const;
 
     const UBO& ubo() const;
-
 
     const Camera2D& camera() const;
 
@@ -45,7 +46,7 @@ private:
     const TextureStorage* m_texture_storage_ptr;
 
     // Models
-    std::vector<std::pair<RenderObject, uint32_t>> m_render_objects;
+    std::vector<RenderObject> m_render_objects;
     ModelStorage m_model_storage;
 
     // MeshCombiner m_mesh_combiner;

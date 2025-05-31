@@ -14,6 +14,10 @@ public:
     Mesh createUniversalRectangleMesh(const MyVec2& position,
                                       const MyVec2& size);
 
+    Mesh createUniversalTriangleMesh(const MyVec2& first,
+                                     const MyVec2& second,
+                                     const MyVec2& third);
+
 private:
     MeshFactory() = default;
 };

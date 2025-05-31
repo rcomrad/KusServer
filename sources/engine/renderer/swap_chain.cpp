@@ -78,10 +78,10 @@ SwapChain::choosePresentMode(
 {
     for (vk::PresentModeKHR presentMode : available_present_modes)
     {
-        // if (presentMode == vk::PresentModeKHR::eImmediate)
-        // {
-        //     return presentMode;
-        // }
+        if (presentMode == vk::PresentModeKHR::eImmediate)
+        {
+            return presentMode;
+        }
         if (presentMode == vk::PresentModeKHR::eMailbox)
         {
             return presentMode;
@@ -240,7 +240,7 @@ SwapChain::present(uint32_t index, const vk::Semaphore* wait_sems)
 void
 SwapChain::recordCommandBuffer(const vk::PipelineLayout& pipelayout,
                                const Scene& scene,
-                               const SwapChainFrame& frame)
+                               SwapChainFrame& frame)
 {
     const vk::CommandBuffer& command_buffer_ref =
         frame.commandBuffer().commandBuffer();
@@ -275,7 +275,7 @@ SwapChain::recordCommandBuffer(const vk::PipelineLayout& pipelayout,
         vk::PipelineBindPoint::eGraphics,
         render_pass_ref.graphicsPipeline().pipeline());
 
-    scene.render(command_buffer_ref, pipelayout);
+    scene.render(command_buffer_ref, pipelayout, frame);
 
     command_buffer_ref.endRenderPass();
 

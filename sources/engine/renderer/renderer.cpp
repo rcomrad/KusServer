@@ -52,6 +52,9 @@ Renderer::loadTextures(TextureStorage& texture_storage)
 
     texture_storage.addTexture(resources_path + "engine_textures/eye.png",
                                m_descriptor_manager);
+
+    texture_storage.addTexture(resources_path + "engine_textures/zvezda.png",
+                               m_descriptor_manager);
 }
 
 bool

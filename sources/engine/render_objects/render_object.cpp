@@ -3,7 +3,7 @@
 namespace kusengine
 {
 
-RenderObject::RenderObject(const Mesh& mesh,
+RenderObject::RenderObject(std::shared_ptr<const Mesh> mesh,
                            std::shared_ptr<const Texture> texture)
     : dynamics_data_ptr(nullptr)
 {
@@ -28,13 +28,15 @@ RenderObject::setDynamicsData(const ObjectDynamicsData& dd)
     if (dynamics_data_ptr) *dynamics_data_ptr = dd;
 }
 
-void
+int
 RenderObject::pushModelData(
     std::vector<std::pair<Model, uint32_t>>& models) const
 {
     auto it = std::find_if(models.begin(), models.end(),
                            [this](const std::pair<Model, uint32_t>& other)
                            { return this->m_model.compareData(other.first); });
+
+    int index = it - models.begin();
 
     if (it == models.end())
     {
@@ -44,6 +46,7 @@ RenderObject::pushModelData(
     {
         it->second += 1;
     }
+    return index;
 }
 
 }; // namespace kusengine

@@ -79,7 +79,7 @@ private:
     // Command buffer
     void recordCommandBuffer(const vk::PipelineLayout& pipelayout,
                              const Scene& scene,
-                             const SwapChainFrame& frame);
+                             SwapChainFrame& frame);
 
     //  Refs
     const RenderPass& render_pass_ref;

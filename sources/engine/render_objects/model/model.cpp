@@ -5,9 +5,14 @@
 
 namespace kusengine
 {
+// bool
+// ModelEqual::operator()(const Model& lhs, const Model& rhs) const
+// {
+//     return lhs.compareData(rhs);
+// }
 
 void
-Model::setMesh(const Mesh& mesh)
+Model::setMesh(std::shared_ptr<const Mesh> mesh)
 {
     m_mesh = mesh;
 }
@@ -28,7 +33,7 @@ void
 Model::pushMeshData(std::vector<UniversalVertexAttributes>& vertices,
                     std::vector<uint32_t>& indices) const
 {
-    m_mesh.pushData(vertices, indices);
+    m_mesh->pushData(vertices, indices);
 }
 
 bool

@@ -12,13 +12,16 @@ namespace kusengine
 class RenderObject
 {
 public:
-    RenderObject(const Mesh& mesh, std::shared_ptr<const Texture> texture);
+    // RenderObject() = default;
+
+    RenderObject(std::shared_ptr<const Mesh> mesh,
+                 std::shared_ptr<const Texture> texture);
 
     void linkDynamicsData(ObjectDynamicsData* const dd_ref);
 
     void setDynamicsData(const ObjectDynamicsData& dd);
 
-    void pushModelData(std::vector<std::pair<Model, uint32_t>>& models) const;
+    int pushModelData(std::vector<std::pair<Model, uint32_t>>& models) const;
 
     // bool compareModelData(const Model& other_model) const;
 

@@ -59,7 +59,7 @@ Texture::loadTexture(std::string_view file_path)
                                       std::numeric_limits<float>::max(),
                                       vk::BorderColor::eFloatOpaqueBlack);
 
-    m_sampler = LOGICAL_DEVICE.createSamplerUnique(vk::SamplerCreateInfo());
+    m_sampler = LOGICAL_DEVICE.createSamplerUnique(samplerInfo);
 }
 
 void

@@ -38,6 +38,7 @@ MeshCombiner::combine(const std::vector<std::pair<Model, uint32_t>>& models)
         range_info.instance_count = model.second;
 
         m_ranges_info.emplace_back(range_info);
+        range_info.first_instance += model.second;
     }
 
     if (all_vertices.size() == 0 || all_indices.size() == 0) return;

@@ -10,6 +10,8 @@ namespace kusengine
 
 struct ObjectDynamicsData
 {
+    ObjectDynamicsData() = default;
+    ObjectDynamicsData(const MyVec3& col, const MyVec2& pos);
     MyVec3 color;
     float padding1;
     MyVec2 position;

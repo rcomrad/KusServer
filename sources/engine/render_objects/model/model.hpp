@@ -9,7 +9,7 @@ namespace kusengine
 class Model
 {
 public:
-    void setMesh(const Mesh& mesh);
+    void setMesh(std::shared_ptr<const Mesh> mesh);
 
     void setTexture(std::shared_ptr<const Texture> texture);
 
@@ -21,11 +21,23 @@ public:
 
     bool compareData(const Model&) const;
 
+    Model& operator=(const Model& other) = default;
+
 private:
-    Mesh m_mesh;
+    std::shared_ptr<const Mesh> m_mesh;
     std::shared_ptr<const Texture> m_texture;
 };
 
-}; // namespace kusengine
+// struct ModelEqual
+// {
+//     bool operator()(const Model& lhs, const Model& rhs) const;
+// };
 
+// template <>
+// class std::hash<Model>
+// {
+//     void operator()();
+// };
+
+} // namespace kusengine
 #endif // MODEL_HPP

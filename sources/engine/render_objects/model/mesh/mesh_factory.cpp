@@ -36,4 +36,27 @@ MeshFactory::createUniversalRectangleMesh(const MyVec2& position,
     return rectangle;
 }
 
+Mesh
+MeshFactory::createUniversalTriangleMesh(const MyVec2& first,
+                                         const MyVec2& second,
+                                         const MyVec2& third)
+{
+    UniversalVertex vertices[3];
+
+    vertices[0].setPosition(first.x, first.y);
+    vertices[0].setTexturePosition(0.5f, 0.f);
+    //
+    vertices[1].setPosition(second.x, second.y);
+    vertices[1].setTexturePosition(1.f, 1.f);
+    //
+    vertices[2].setPosition(third.x, third.y);
+    vertices[2].setTexturePosition(0.f, 1.f);
+
+    Mesh triangle;
+    triangle.setVertices({vertices[0], vertices[1], vertices[2]});
+    triangle.setIndices({0, 1, 2});
+
+    return triangle;
+}
+
 }; // namespace kusengine

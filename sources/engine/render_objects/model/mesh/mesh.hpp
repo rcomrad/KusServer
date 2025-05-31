@@ -12,7 +12,7 @@ public:
     Mesh() = default;
 
     void setVertices(const std::vector<UniversalVertex>& vertices);
-    void setVertices(const std::initializer_list<UniversalVertex>& vertices);
+    // void setVertices(const std::initializer_list<UniversalVertex>& vertices);
 
     void setIndices(const std::vector<uint32_t>& indices);
 
