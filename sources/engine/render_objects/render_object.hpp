@@ -12,6 +12,8 @@ namespace kusengine
 class RenderObject
 {
 public:
+    virtual ~RenderObject() = default;
+
     // RenderObject() = default;
 
     RenderObject(std::shared_ptr<const Mesh> mesh,

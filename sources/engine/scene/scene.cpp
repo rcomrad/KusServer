@@ -105,7 +105,7 @@ Scene::create(float width, float height, const TextureStorage& texture_storage)
             {0.f, 0.f}, {1.f, 2.f}, {-1.f, 2.f})),
         eye_texture.value());
 
-    int vec_size = 4 + 100000;
+    int vec_size = 4 + 10;
     m_render_objects.reserve(vec_size);
 
     auto star_mesh = std::make_shared<const Mesh>(
@@ -121,10 +121,8 @@ Scene::create(float width, float height, const TextureStorage& texture_storage)
         m_model_storage.addRenderObject(m_render_objects[i]);
 
         m_render_objects[i].setDynamicsData({
-            {float(rand() % 255) / 255.f, float(rand() % 255) / 255.f,
-             float(rand() % 255) / 255.f},
-
-            {float(rand() % 1000), float(rand() % 1000)}
+            {1.f, 1.f, 1.f},
+            {float(rand() % 30) / 10, float(rand() % 30) / 10}
         });
     }
     m_model_storage.fillBuffers();

@@ -4,7 +4,7 @@
 
 #include <initializer_list>
 
-#include "vec.hpp"
+#include "engine/vec.hpp"
 
 namespace kusengine
 {

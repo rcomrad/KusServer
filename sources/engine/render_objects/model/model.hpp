@@ -21,23 +21,10 @@ public:
 
     bool compareData(const Model&) const;
 
-    Model& operator=(const Model& other) = default;
-
 private:
     std::shared_ptr<const Mesh> m_mesh;
     std::shared_ptr<const Texture> m_texture;
 };
-
-// struct ModelEqual
-// {
-//     bool operator()(const Model& lhs, const Model& rhs) const;
-// };
-
-// template <>
-// class std::hash<Model>
-// {
-//     void operator()();
-// };
 
 } // namespace kusengine
 #endif // MODEL_HPP

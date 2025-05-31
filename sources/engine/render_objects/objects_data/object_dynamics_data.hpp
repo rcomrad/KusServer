@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "engine/render_objects/model/vertex/vec.hpp"
+#include "engine/vec.hpp"
 
 namespace kusengine
 {
