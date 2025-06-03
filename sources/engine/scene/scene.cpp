@@ -7,7 +7,7 @@
 #include <memory>
 #include <random>
 
-#include "engine/render_objects/model/mesh/mesh_factory.hpp"
+#include "engine/drawable/rectangle_shape.hpp"
 
 namespace kusengine
 {
@@ -16,7 +16,7 @@ void
 Scene::updateFrame(SwapChainFrame& frame) const
 {
     frame.updateUniformData(m_ubo);
-    frame.updateObjectsDynamicData(m_model_storage.objDynamicData());
+    // frame.updateObjectsDynamicData(m_system.objDynamicData());
 }
 
 void
@@ -58,74 +58,13 @@ Scene::update(float time)
 }
 
 void
-Scene::create(float width, float height, const TextureStorage& texture_storage)
+Scene::create(float width, float height)
 {
     m_clear_value.setColor(vk::ClearColorValue(0.4f, 0.3f, 0.1f, 1.f));
 
     m_camera.setAspectRatio(width / height);
     m_camera.recalculate();
     m_ubo.projection = m_camera.getViewProjection();
-
-    auto cat_texture = texture_storage.getTexture("cat.png");
-    if (cat_texture.has_value() == false)
-    {
-        std::cout << "Failed get cat.png texture\n";
-        return;
-    }
-    auto eye_texture = texture_storage.getTexture("eye.png");
-    if (eye_texture.has_value() == false)
-    {
-        std::cout << "Failed get eye.png texture\n";
-        return;
-    }
-    auto zvezda_texture = texture_storage.getTexture("zvezda.png");
-    if (zvezda_texture.has_value() == false)
-    {
-        std::cout << "Failed get zvezda.png texture\n";
-        return;
-    }
-
-    m_render_objects.emplace_back(
-        std::make_shared<const Mesh>(
-            MESH_FACTORY.createUniversalRectangleMesh({0.f, 0.f}, {2.f, 1.f})),
-        cat_texture.value());
-
-    m_render_objects.emplace_back(
-        std::make_shared<const Mesh>(
-            MESH_FACTORY.createUniversalRectangleMesh({0.f, 0.f}, {1.f, 3.f})),
-        eye_texture.value());
-
-    m_render_objects.emplace_back(
-        std::make_shared<const Mesh>(
-            MESH_FACTORY.createUniversalRectangleMesh({0.f, 0.f}, {1.f, 1.f})),
-        cat_texture.value());
-
-    m_render_objects.emplace_back(
-        std::make_shared<const Mesh>(MESH_FACTORY.createUniversalTriangleMesh(
-            {0.f, 0.f}, {1.f, 2.f}, {-1.f, 2.f})),
-        eye_texture.value());
-
-    int vec_size = 4 + 10;
-    m_render_objects.reserve(vec_size);
-
-    auto star_mesh = std::make_shared<const Mesh>(
-        MESH_FACTORY.createUniversalRectangleMesh({0.f, 0.f}, {1.f, 2.f}));
-
-    for (int i = 0; i < vec_size; ++i)
-    {
-        m_render_objects.emplace_back(star_mesh, zvezda_texture.value());
-    }
-
-    for (int i = 0; i < m_render_objects.size(); ++i)
-    {
-        m_model_storage.addRenderObject(m_render_objects[i]);
-
-        m_render_objects[i].setDynamicsData({
-            {1.f, 1.f, 1.f},
-            {float(rand() % 30) / 10, float(rand() % 30) / 10}
-        });
-    }
-    m_model_storage.fillBuffers();
 }
 
 const UBO&
@@ -145,9 +84,10 @@ Scene::render(const vk::CommandBuffer& command_buffer,
               const vk::PipelineLayout& pipelayout,
               SwapChainFrame& frame) const
 {
-    m_model_storage.bind(command_buffer);
+    // m_system.draw();
+    // m_model_storage.bind(command_buffer);
 
-    m_model_storage.draw(command_buffer, pipelayout);
+    // m_model_storage.draw(command_buffer, pipelayout);
 }
 
 void

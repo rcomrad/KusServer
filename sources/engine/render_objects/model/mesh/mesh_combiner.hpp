@@ -34,8 +34,6 @@ private:
 
     std::vector<RangeInfo> m_ranges_info;
 
-    bool has_data_flag;
-
     GpuVertexBuffer m_mesh_buffer;
 
     IndexBuffer m_index_buffer;

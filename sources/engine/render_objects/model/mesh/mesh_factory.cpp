@@ -11,22 +11,20 @@ MeshFactory::getInstance()
 }
 
 Mesh
-MeshFactory::createUniversalRectangleMesh(const MyVec2& position,
-                                          const MyVec2& size)
+MeshFactory::createUniversalMeshImpl(const glm::vec2& size)
 {
 
-    UniversalVertex left_top_vertex(position.x, position.y);
-    left_top_vertex.setTexturePosition(0, 0);
+    UniversalVertex left_top_vertex(0.f, 0.f);
+    left_top_vertex.setTexturePosition(0.f, 0.f);
     //
-    UniversalVertex right_top_vertex(position.x + size.x, position.y);
-    right_top_vertex.setTexturePosition(1, 0);
+    UniversalVertex right_top_vertex(size.x, 0.f);
+    right_top_vertex.setTexturePosition(1.f, 0.f);
     //
-    UniversalVertex right_bottom_vertex(position.x + size.x,
-                                        position.y + size.y);
-    right_bottom_vertex.setTexturePosition(1, 1);
+    UniversalVertex right_bottom_vertex(size.x, size.y);
+    right_bottom_vertex.setTexturePosition(1.f, 1.f);
     //
-    UniversalVertex left_bottom_vertex(position.x, position.y + size.y);
-    left_bottom_vertex.setTexturePosition(0, 1);
+    UniversalVertex left_bottom_vertex(0.f, size.y);
+    left_bottom_vertex.setTexturePosition(0.f, 1.f);
 
     Mesh rectangle;
     rectangle.setVertices({left_top_vertex, right_top_vertex,
@@ -37,13 +35,12 @@ MeshFactory::createUniversalRectangleMesh(const MyVec2& position,
 }
 
 Mesh
-MeshFactory::createUniversalTriangleMesh(const MyVec2& first,
-                                         const MyVec2& second,
-                                         const MyVec2& third)
+MeshFactory::createUniversalMeshImpl(const glm::vec2& second,
+                                     const glm::vec2& third)
 {
     UniversalVertex vertices[3];
 
-    vertices[0].setPosition(first.x, first.y);
+    vertices[0].setPosition(0.f, 0.f);
     vertices[0].setTexturePosition(0.5f, 0.f);
     //
     vertices[1].setPosition(second.x, second.y);

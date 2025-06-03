@@ -1,11 +1,9 @@
 #ifndef SCENE_HPP
 #define SCENE_HPP
 
-#include "engine/render_objects/model/model_storage.hpp"
+#include "engine/drawable/drawable_system.hpp"
 #include "engine/render_objects/objects_data/uniform_buffer_object.hpp"
-#include "engine/render_objects/render_object.hpp"
 #include "engine/renderer/swap_chain_frame.hpp"
-#include "engine/textures/texture_storage.hpp"
 
 #include "camera.hpp"
 
@@ -17,9 +15,7 @@ class Scene
 public:
     Scene() = default;
 
-    void create(float width,
-                float height,
-                const TextureStorage& texture_storage_ptr);
+    void create(float width, float height);
 
     void render(const vk::CommandBuffer& command_buffer,
                 const vk::PipelineLayout& pipelayout,
@@ -41,30 +37,10 @@ public:
 
 private:
     vk::ClearValue m_clear_value;
-    // Textures
 
-    const TextureStorage* m_texture_storage_ptr;
+    std::vector<std::unique_ptr<Drawable>> m_drawables;
 
-    // Models
-    std::vector<RenderObject> m_render_objects;
-    ModelStorage m_model_storage;
-
-    // MeshCombiner m_mesh_combiner;
-
-    // -----------  Models Data ----------- //
-
-    // std::vector<std::pair<Model, int>> m_models;
-    // std::vector<DynamicObjectData> m_dynamic_objects_data;
-
-    // ----------- Moving Data ------------ //
-
-    // std::vector<std::array<float, 3>>
-    //     circlec_moving_info; // angle, angle_speed, radius
-
-    // std::vector<std::array<float, 3>>
-    //     circlec_color_info; // speed for x, y, and z
-
-    // ------------------------------------- //
+    DrawableSystem m_system;
 
     UBO m_ubo;
 

@@ -43,13 +43,12 @@ App::initApp()
 
     if (!m_renderer.initRenderer(m_window)) return false;
 
-    m_renderer.loadTextures(m_texture_storage);
+    m_renderer.loadTextures();
 
     m_target_frame_time = 1 / 150.0;
 
     m_scene.create(static_cast<float>(m_renderer.swapchainExtent().width),
-                   static_cast<float>(m_renderer.swapchainExtent().height),
-                   m_texture_storage);
+                   static_cast<float>(m_renderer.swapchainExtent().height));
 
     return true;
 };

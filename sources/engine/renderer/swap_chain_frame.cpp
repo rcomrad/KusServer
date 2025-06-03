@@ -91,12 +91,10 @@ SwapChainFrame::updateUniformData(const UBO& ubo)
 }
 
 void
-SwapChainFrame::updateObjectsDynamicData(
-    const std::vector<ObjectDynamicsData>& data)
+SwapChainFrame::updateMBDD(const std::vector<MBDD>& data)
 {
-    m_storage_buffer.setData(data.data(),
-                             data.size() * sizeof(ObjectDynamicsData));
-    writeDescriptorSetODD();
+    m_storage_buffer.setData(data.data(), data.size() * sizeof(MBDD));
+    writeDescriptorSetMBDD();
 }
 
 void
@@ -119,7 +117,7 @@ SwapChainFrame::writeDescriptorSetUBO()
 }
 
 void
-SwapChainFrame::writeDescriptorSetODD()
+SwapChainFrame::writeDescriptorSetMBDD()
 {
     vk::DescriptorBufferInfo dob_buffer_info{};
     dob_buffer_info.buffer = m_storage_buffer.buffer();

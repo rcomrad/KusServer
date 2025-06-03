@@ -9,10 +9,10 @@ ModelStorage::ModelStorage()
 {
 }
 
-const std::vector<ObjectDynamicsData>&
-ModelStorage::objDynamicData() const
+const std::vector<MBDD>&
+ModelStorage::getMBDD() const
 {
-    return object_dynamics_data_vector;
+    return mbdd_data_vector;
 }
 
 void
@@ -20,10 +20,11 @@ ModelStorage::addRenderObject(RenderObject& render_object)
 {
     render_object.pushModelData(m_models);
 
-    object_dynamics_data_vector.emplace_back();
+    mbdd_data_vector.emplace_back();
 
-    render_object.linkDynamicsData(
-        &(object_dynamics_data_vector[object_dynamics_data_vector.size() - 1]));
+    int size = mbdd_data_vector.size();
+
+    render_object.linkData(&mbdd_data_vector[size - 1]);
 }
 
 void

@@ -4,15 +4,15 @@
 
 #include <initializer_list>
 
-#include "engine/vec.hpp"
+#include "glm/vec2.hpp"
 
 namespace kusengine
 {
 
 struct UniversalVertexAttributes
 {
-    MyVec2 pos;
-    MyVec2 text_pos;
+    glm::vec2 pos;
+    glm::vec2 text_pos;
 
     static constexpr int count_floats = 4;
 };
@@ -46,9 +46,7 @@ public:
 
     UniversalVertex(float x, float y);
 
-    UniversalVertex(const MyVec2& position,
-                    const MyVec3& color,
-                    const MyVec3& text_position);
+    UniversalVertex(const glm::vec2& position, const glm::vec2& text_position);
 
     UniversalVertex& setPosition(float x, float y);
     UniversalVertex& setTexturePosition(float x, float y);

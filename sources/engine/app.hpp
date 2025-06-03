@@ -29,12 +29,9 @@ public:
 private:
     Renderer m_renderer;
 
-    TextureStorage m_texture_storage;
-
     Window m_window;
 
     Scene m_scene;
-
 
     // Time
 

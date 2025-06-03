@@ -42,18 +42,18 @@ Renderer::createPipelineLayout()
 }
 
 void
-Renderer::loadTextures(TextureStorage& texture_storage)
+Renderer::loadTextures()
 {
     std::string resources_path =
         util::PathStorage::getFolderPath("resource").value().data();
 
-    texture_storage.addTexture(resources_path + "engine_textures/cat.png",
+    TEXTURE_STORAGE.addTexture(resources_path + "engine_textures/cat.png",
                                m_descriptor_manager);
 
-    texture_storage.addTexture(resources_path + "engine_textures/eye.png",
+    TEXTURE_STORAGE.addTexture(resources_path + "engine_textures/eye.png",
                                m_descriptor_manager);
 
-    texture_storage.addTexture(resources_path + "engine_textures/zvezda.png",
+    TEXTURE_STORAGE.addTexture(resources_path + "engine_textures/zvezda.png",
                                m_descriptor_manager);
 }
 

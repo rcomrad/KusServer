@@ -7,7 +7,7 @@
 #include "engine/buffers/uniform_buffer.hpp"
 #include "engine/commands/command_buffer.hpp"
 #include "engine/descriptors/descriptor_manager.hpp"
-#include "engine/render_objects/objects_data/object_dynamics_data.hpp"
+#include "engine/render_objects/objects_data/model_basic_dynamics_data.hpp"
 #include "engine/render_objects/objects_data/uniform_buffer_object.hpp"
 
 #include "synchronization_control.hpp"
@@ -46,12 +46,12 @@ public:
 
     void updateUniformData(const UBO& ubo);
 
-    void updateObjectsDynamicData(const std::vector<ObjectDynamicsData>& data);
+    void updateMBDD(const std::vector<MBDD>& data);
 
     void createDescriptorSet(const DescriptorManager& descriptor_manager);
 
     void writeDescriptorSetUBO();
-    void writeDescriptorSetODD();
+    void writeDescriptorSetMBDD();
 
     std::vector<vk::DescriptorSet> descriptorSets() const;
 

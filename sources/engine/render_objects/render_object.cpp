@@ -5,27 +5,16 @@ namespace kusengine
 
 RenderObject::RenderObject(std::shared_ptr<const Mesh> mesh,
                            std::shared_ptr<const Texture> texture)
-    : dynamics_data_ptr(nullptr)
+{
+    create(mesh, texture);
+}
+
+void
+RenderObject::create(std::shared_ptr<const Mesh> mesh,
+                     std::shared_ptr<const Texture> texture)
 {
     m_model.setMesh(mesh);
     m_model.setTexture(texture);
-}
-
-// bool
-// RenderObject::compareModelData(const Model& other_model) const
-// {
-// }
-
-void
-RenderObject::linkDynamicsData(ObjectDynamicsData* const dd_ref)
-{
-    dynamics_data_ptr = dd_ref;
-}
-
-void
-RenderObject::setDynamicsData(const ObjectDynamicsData& dd)
-{
-    if (dynamics_data_ptr) *dynamics_data_ptr = dd;
 }
 
 int

@@ -30,7 +30,7 @@ public:
 
     vk::Extent2D swapchainExtent() const;
 
-    void loadTextures(TextureStorage& texture_storage);
+    void loadTextures();
 
 private:
     int max_frames_in_flight;

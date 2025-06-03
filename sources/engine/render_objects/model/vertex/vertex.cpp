@@ -47,9 +47,8 @@ UniversalVertex::UniversalVertex(float x, float y)
     setPosition(x, y);
 }
 
-UniversalVertex::UniversalVertex(const MyVec2& position,
-                                 const MyVec3& color,
-                                 const MyVec3& text_position)
+UniversalVertex::UniversalVertex(const glm::vec2& position,
+                                 const glm::vec2& text_position)
 {
     setPosition(position.x, position.y);
 }

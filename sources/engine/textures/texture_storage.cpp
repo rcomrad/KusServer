@@ -6,6 +6,13 @@
 namespace kusengine
 {
 
+TextureStorage&
+TextureStorage::getInstance()
+{
+    static TextureStorage ts;
+    return ts;
+}
+
 void
 TextureStorage::addTexture(std::string_view file_path,
                            const DescriptorManager& descriptor_manager)
@@ -36,13 +43,13 @@ TextureStorage::addTexture(std::string_view file_path,
 }
 
 std::optional<std::shared_ptr<Texture>>
-TextureStorage::getTexture(const std::string& texture_name) const
+TextureStorage::getTexture(std::string_view keyval) const
 {
     std::optional<std::shared_ptr<Texture>> res;
-    auto it = m_texture_storage.find(texture_name);
+    auto it = m_texture_storage.find(keyval.data());
     if (it == m_texture_storage.end())
     {
-        std::cout << texture_name << " cant find in texture storage\n";
+        std::cout << keyval << " cant find in texture storage\n";
     }
     else
     {

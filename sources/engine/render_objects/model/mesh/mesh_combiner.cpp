@@ -14,7 +14,7 @@ MeshCombiner::RangeInfo::RangeInfo()
 {
 }
 
-MeshCombiner::MeshCombiner() : has_data_flag(false)
+MeshCombiner::MeshCombiner()
 {
 }
 
@@ -51,8 +51,6 @@ MeshCombiner::combine(const std::vector<std::pair<Model, uint32_t>>& models)
     m_index_buffer.setData(all_indices.data(),
                            all_indices.size() * sizeof(uint32_t));
 
-    has_data_flag = true;
-
     // std::cout << "Index count\t: " << m_ranges_info[0].index_count << "\n"
     //           << "instance count\t: " << m_ranges_info[0].instance_count <<
     //           "\n"
@@ -65,7 +63,6 @@ MeshCombiner::combine(const std::vector<std::pair<Model, uint32_t>>& models)
 void
 MeshCombiner::bindBuffers(const vk::CommandBuffer& command_buffer) const
 {
-    if (!has_data_flag) return;
     m_mesh_buffer.bind(command_buffer);
     m_index_buffer.bind(command_buffer);
 }
@@ -74,8 +71,6 @@ void
 MeshCombiner::draw(const vk::CommandBuffer& command_buffer,
                    uint32_t index) const
 {
-    if (!has_data_flag) return;
-
     m_index_buffer.draw(command_buffer, m_ranges_info[index].index_count,
                         m_ranges_info[index].instance_count,
                         m_ranges_info[index].first_index,
