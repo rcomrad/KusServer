@@ -38,9 +38,10 @@ public:
 private:
     vk::ClearValue m_clear_value;
 
-    std::vector<std::unique_ptr<Drawable>> m_drawables;
+    std::vector<std::shared_ptr<Drawable>> m_drawables;
 
     DrawableSystem m_system;
+    ModelStorage m_model_storage;
 
     UBO m_ubo;
 

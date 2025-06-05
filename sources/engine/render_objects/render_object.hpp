@@ -21,6 +21,10 @@ public:
 
     int pushModelData(std::vector<std::pair<Model, uint32_t>>& models) const;
 
+    void setMesh(std::shared_ptr<const Mesh> mesh);
+
+    void setTexure(std::shared_ptr<const Texture> texture);
+
 private:
     Model m_model;
 };

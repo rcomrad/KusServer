@@ -6,13 +6,10 @@
 namespace kusengine
 {
 
-Drawable::Drawable() : m_texture_name("empty.png")
-{
-}
-
 void
-Drawable::pushToDrawableSystem(DrawableSystem& sys)
+Drawable::pushModel(ModelStorage& model_storage)
 {
+    m_shape->pushModel(model_storage);
 }
 
 }; // namespace kusengine

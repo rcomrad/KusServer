@@ -27,34 +27,48 @@ namespace kusengine
 
 struct MBDD // use 4, not 3, because shader alligning
 {
+    MBDD();
     glm::vec4 color;
-    glm::mat4 rotation;
-    glm::mat4 scale;
-    glm::mat4 translation;
+    glm::mat4 model;
 };
 
 class ModelBasicDynamicsDataInterface
 {
 public:
-    ModelBasicDynamicsDataInterface() = default;
+    ModelBasicDynamicsDataInterface();
+
+    ~ModelBasicDynamicsDataInterface();
+
+    ModelBasicDynamicsDataInterface(
+        const ModelBasicDynamicsDataInterface& other);
+    ModelBasicDynamicsDataInterface(ModelBasicDynamicsDataInterface&& other);
+
+    ModelBasicDynamicsDataInterface& operator=(
+        const ModelBasicDynamicsDataInterface& other);
+    ModelBasicDynamicsDataInterface& operator=(
+        ModelBasicDynamicsDataInterface&& other);
 
     void linkData(MBDD* data);
 
     void setRotation(float angle);
 
-    void setColor(const glm::vec4& color, bool is_0_1_range = true);
-    void setColor(float r, float g, float b, float a, bool is_0_1_range = true);
+    void setColor(const glm::vec4& color);
+    void setColor(float r, float g, float b, float a);
 
-    void setScale(float scale_x, float scale_y, bool is_0_1_range = true);
-    void setScale(const glm::vec2& scale, bool is_0_1_range = true);
+    void setSize(float size_x, float size_y);
+    void setSize(const glm::vec2& size);
 
-    void setPosition(float pos_x, float pos_y, bool is_0_1_range = true);
-    void setPosition(const glm::vec2& position, bool is_0_1_range = true);
+    void setPosition(float pos_x, float pos_y);
+    void setPosition(const glm::vec2& position);
 
-    void setWindowSize(float x, float y);
+    void upd();
 
 private:
-    static glm::vec2 m_window_size;
+    glm::mat4 translate;
+    glm::mat4 rotate;
+    glm::mat4 scale;
+
+    bool is_linked;
 
     MBDD* m_data;
 };

@@ -3,29 +3,17 @@
 
 #include "engine/textures/texture.hpp"
 
-#include "drawable.hpp"
+#include "shape.hpp"
 
 namespace kusengine
 {
 
-class RectangleShape : public kusengine::Drawable
+class RectangleShape : public Shape
 {
 public:
-    RectangleShape() = default;
-
-    RectangleShape(const glm::vec2& position,
-                   const glm::vec2& size);
-
-    void setPosition(const glm::vec2& position);
-
-    void setSize(const glm::vec2& size);
+    RectangleShape();
 
 private:
-    void createBeforeGenerateUnique() override;
-
-    glm::vec2 m_position;
-
-    glm::vec2 m_size;
 };
 }; // namespace kusengine
 

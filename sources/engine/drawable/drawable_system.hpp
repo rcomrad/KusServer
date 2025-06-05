@@ -7,19 +7,29 @@
 
 namespace kusengine
 {
+class SwapChainFrame;
+
 class DrawableSystem
 {
 public:
-    void add(const Drawable* const NO_TEMPARARY);
+    // void add(Drawable* const NO_TEMPARARY);
 
-    void add(const std::vector<std::unique_ptr<Drawable>>* NO_TEMPARARY);
+    void add(const std::vector<std::shared_ptr<Drawable>>& NO_TEMPARARY);
 
     void generate();
+
+    void updateMBDD(SwapChainFrame& frame) const;
+
+    void draw(const vk::CommandBuffer& command_buffer,
+              const vk::PipelineLayout& pipelayout,
+              SwapChainFrame& frame) const;
 
 private:
     ModelStorage m_model_storage;
 
-    std::vector<const Drawable*> m_drawables;
+    std::vector<std::shared_ptr<Drawable>> m_drawables;
+
+    std::vector<MBDD> mbdd_data_vector;
 };
 }; // namespace kusengine
 

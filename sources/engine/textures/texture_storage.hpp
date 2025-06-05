@@ -12,17 +12,16 @@ class TextureStorage
 public:
     static TextureStorage& getInstance();
 
-    void addTexture(std::string_view folder_path,
+    void addTexture(const std::string& file_path,
                     const DescriptorManager& desc_manager);
 
-    std::optional<std::shared_ptr<Texture>> getTexture(
+    std::optional<std::shared_ptr<const Texture>> getTexture(
         std::string_view keyval) const;
 
 private:
     TextureStorage() = default;
 
-    std::unordered_map<std::string_view, std::shared_ptr<Texture>>
-        m_texture_storage;
+    std::unordered_map<std::string, std::shared_ptr<Texture>> m_texture_storage;
 };
 
 #define TEXTURE_STORAGE TextureStorage::getInstance()

@@ -6,9 +6,10 @@ layout(set = 0, binding = 0) uniform UBO {
 
 struct InstanceData
 {
-    vec3 color;
-    vec2 position;
+    vec4 color;
+    mat4 model;
 };
+
 
 layout(set = 0, binding = 1) readonly buffer InstanceDataBuffer {
 	InstanceData instance_data_array[];
@@ -18,15 +19,16 @@ layout(set = 0, binding = 1) readonly buffer InstanceDataBuffer {
 layout(location = 0) in vec2 vertexPosition;
 layout(location = 1) in vec2 vertexTextCoord;
 
-layout(location = 0) out vec3 fragColor;
+layout(location = 0) out vec4 fragColor;
 layout(location = 1) out vec2 fragTextCoord;
 
-void main() {
+void main() 
+{
+    mat4 model = dynamic_model_data.instance_data_array[gl_InstanceIndex].model;
 
-    vec2 instancePos = dynamic_model_data.instance_data_array[gl_InstanceIndex].position;
-    vec3 instanceColor = dynamic_model_data.instance_data_array[gl_InstanceIndex].color;
+    gl_Position = ubo.projection * model * vec4(vertexPosition, 0.0, 1.0);
 
-    gl_Position = ubo.projection * vec4(vertexPosition + instancePos, 0.0, 1.0);
-    fragColor = instanceColor;
+    fragColor = dynamic_model_data.instance_data_array[gl_InstanceIndex].color;
+
     fragTextCoord = vertexTextCoord;    
 }

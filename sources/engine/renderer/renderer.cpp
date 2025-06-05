@@ -55,6 +55,12 @@ Renderer::loadTextures()
 
     TEXTURE_STORAGE.addTexture(resources_path + "engine_textures/zvezda.png",
                                m_descriptor_manager);
+
+    TEXTURE_STORAGE.addTexture(resources_path + "engine_textures/empty.png",
+                               m_descriptor_manager);
+
+    TEXTURE_STORAGE.addTexture(resources_path + "engine_textures/button.png",
+                               m_descriptor_manager);
 }
 
 bool

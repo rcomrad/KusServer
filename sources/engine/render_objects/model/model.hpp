@@ -21,6 +21,8 @@ public:
 
     bool compareData(const Model&) const;
 
+    int pushThis(std::vector<std::pair<Model, uint32_t>>&);
+
 private:
     std::shared_ptr<const Mesh> m_mesh;
     std::shared_ptr<const Texture> m_texture;

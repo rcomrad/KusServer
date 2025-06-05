@@ -9,22 +9,10 @@ ModelStorage::ModelStorage()
 {
 }
 
-const std::vector<MBDD>&
-ModelStorage::getMBDD() const
-{
-    return mbdd_data_vector;
-}
-
 void
-ModelStorage::addRenderObject(RenderObject& render_object)
+ModelStorage::addModel(Model& model)
 {
-    render_object.pushModelData(m_models);
-
-    mbdd_data_vector.emplace_back();
-
-    int size = mbdd_data_vector.size();
-
-    render_object.linkData(&mbdd_data_vector[size - 1]);
+    model.pushThis(m_models);
 }
 
 void

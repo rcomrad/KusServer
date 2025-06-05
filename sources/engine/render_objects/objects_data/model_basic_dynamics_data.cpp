@@ -4,89 +4,138 @@
 namespace kusengine
 {
 
-glm::vec2 ModelBasicDynamicsDataInterface::m_window_size = {0, 0};
+ModelBasicDynamicsDataInterface::ModelBasicDynamicsDataInterface(
+    const ModelBasicDynamicsDataInterface& other)
+{
+    m_data    = new MBDD();
+    *m_data   = *other.m_data;
+    is_linked = false;
+
+    translate = other.translate;
+    rotate    = other.rotate;
+    scale     = other.scale;
+}
+
+ModelBasicDynamicsDataInterface::ModelBasicDynamicsDataInterface(
+    ModelBasicDynamicsDataInterface&& other)
+{
+    m_data       = other.m_data;
+    other.m_data = nullptr;
+    is_linked    = other.is_linked;
+
+    translate = std::move(other.translate);
+    rotate    = std::move(other.rotate);
+    scale     = std::move(other.scale);
+}
+
+ModelBasicDynamicsDataInterface&
+ModelBasicDynamicsDataInterface::operator=(
+    const ModelBasicDynamicsDataInterface& other)
+{
+    m_data    = new MBDD();
+    *m_data   = *other.m_data;
+    is_linked = false;
+
+    translate = other.translate;
+    rotate    = other.rotate;
+    scale     = other.scale;
+
+    return *this;
+}
+ModelBasicDynamicsDataInterface&
+ModelBasicDynamicsDataInterface::operator=(
+    ModelBasicDynamicsDataInterface&& other)
+{
+    m_data       = other.m_data;
+    other.m_data = nullptr;
+    is_linked    = other.is_linked;
+
+    translate = std::move(other.translate);
+    rotate    = std::move(other.rotate);
+    scale     = std::move(other.scale);
+    return *this;
+}
+
+MBDD::MBDD() : color(1.f, 1.f, 1.f, 1.f)
+{
+}
+
+ModelBasicDynamicsDataInterface::ModelBasicDynamicsDataInterface()
+    : translate(1.f), rotate(1.f), scale(1.f)
+{
+    m_data = new MBDD();
+
+    is_linked = false;
+}
+
+ModelBasicDynamicsDataInterface::~ModelBasicDynamicsDataInterface()
+{
+    if (is_linked == false) delete m_data;
+}
 
 void
-ModelBasicDynamicsDataInterface::setWindowSize(float x, float y)
+ModelBasicDynamicsDataInterface::upd()
 {
-    m_window_size.x = x;
-    m_window_size.y = y;
+    m_data->model = translate * rotate * scale;
 }
 
 void
 ModelBasicDynamicsDataInterface::linkData(MBDD* data)
 {
-    m_data = data;
+    if (data != m_data)
+    {
+        *data = *m_data;
+
+        if (is_linked == false)
+        {
+            delete m_data;
+        }
+
+        m_data    = data;
+        is_linked = true;
+    }
 }
 
 void
 ModelBasicDynamicsDataInterface::setRotation(float angle)
 {
-    m_data->rotation =
-        glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 0.0f, 1.0f));
+    rotate = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 0.0f, 1.0f));
 }
 
 void
-ModelBasicDynamicsDataInterface::setScale(float scale_x,
-                                          float scale_y,
-                                          bool is_0_1_range)
+ModelBasicDynamicsDataInterface::setSize(float size_x, float size_y)
 {
-    if (is_0_1_range == false)
-    {
-        scale_x /= m_window_size.x;
-        scale_y /= m_window_size.y;
-    }
-    m_data->scale = glm::scale(glm::mat4(1.0f), glm::vec3(scale_x, scale_y, 1));
+    scale = glm::scale(glm::mat4(1.0f), glm::vec3(size_x, size_y, 1));
 }
 
 void
-ModelBasicDynamicsDataInterface::setScale(const glm::vec2& scale,
-                                          bool is_0_1_range)
+ModelBasicDynamicsDataInterface::setSize(const glm::vec2& size)
 {
-    setScale(scale.x, scale.y, is_0_1_range);
+    setSize(size.x, size.y);
 }
 
 void
-ModelBasicDynamicsDataInterface::setPosition(float pos_x,
-                                             float pos_y,
-                                             bool is_0_1_range)
+ModelBasicDynamicsDataInterface::setPosition(float pos_x, float pos_y)
 {
-    if (is_0_1_range == false)
-    {
-        pos_x /= m_window_size.x;
-        pos_y /= m_window_size.y;
-    }
-    m_data->translation =
-        glm::translate(glm::mat4(1.0f), glm::vec3(pos_x, pos_y, 1.f));
+    translate = glm::translate(glm::mat4(1.0f), glm::vec3(pos_x, pos_y, 0.f));
 }
 
 void
-ModelBasicDynamicsDataInterface::setPosition(const glm::vec2& position,
-                                             bool is_0_1_range)
+ModelBasicDynamicsDataInterface::setPosition(const glm::vec2& position)
 {
-    setScale(position.x, position.y, is_0_1_range);
+    setPosition(position.x, position.y);
 }
 
 void
-ModelBasicDynamicsDataInterface::setColor(const glm::vec4& color,
-                                          bool is_0_1_range)
+ModelBasicDynamicsDataInterface::setColor(const glm::vec4& color)
 {
     m_data->color = color;
-
-    if (is_0_1_range == false)
-    {
-        m_data->color /= 255.f;
-    }
 }
 
 void
-ModelBasicDynamicsDataInterface::setColor(float r,
-                                          float g,
-                                          float b,
-                                          float a,
-                                          bool is_0_1_range)
+ModelBasicDynamicsDataInterface::setColor(float r, float g, float b, float a)
 {
-    setColor({r, g, b, a}, is_0_1_range);
+    setColor({r, g, b, a});
 }
 
 }; // namespace kusengine

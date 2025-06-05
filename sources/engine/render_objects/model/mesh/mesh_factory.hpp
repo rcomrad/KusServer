@@ -12,24 +12,21 @@ public:
     static MeshFactory& getInstance();
 
     template <typename... Args>
-    std::shared_ptr<Mesh> createUniversalMesh(Args&&... args);
+    std::shared_ptr<Mesh> createMesh(Args&&... args);
 
 private:
     std::vector<std::shared_ptr<Mesh>> created_meshes;
 
-    Mesh createUniversalMeshImpl(const glm::vec2& size); // rectangle
-
-    Mesh createUniversalMeshImpl(const glm::vec2& second,
-                                 const glm::vec2& third); // triangle
+    Mesh createMeshImpl(const glm::vec2& size); // rectangle
 
     MeshFactory() = default;
 };
 
 template <typename... Args>
 std::shared_ptr<Mesh>
-MeshFactory::createUniversalMesh(Args&&... args)
+MeshFactory::createMesh(Args&&... args)
 {
-    Mesh mesh = createUniversalMeshImpl(std::forward<Args>(args)...);
+    Mesh mesh = createMeshImpl(std::forward<Args>(args)...);
 
     std::shared_ptr<Mesh> result;
 

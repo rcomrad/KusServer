@@ -6,6 +6,26 @@
 namespace kusengine
 {
 
+int
+Model::pushThis(std::vector<std::pair<Model, uint32_t>>& models)
+{
+    auto it = std::find_if(models.begin(), models.end(),
+                           [this](const std::pair<Model, uint32_t>& other)
+                           { return this->compareData(other.first); });
+
+    int index = it - models.begin();
+
+    if (it == models.end())
+    {
+        models.emplace_back(*this, 1u);
+    }
+    else
+    {
+        it->second += 1;
+    }
+    return index;
+}
+
 void
 Model::setMesh(std::shared_ptr<const Mesh> mesh)
 {

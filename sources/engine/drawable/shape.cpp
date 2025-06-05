@@ -1,10 +1,55 @@
 #include "shape.hpp"
 
+#include "engine/render_objects/model/model_storage.hpp"
 namespace kusengine
 {
-void
-Shape::setTexture(std::string_view texture_name)
+
+Shape::Shape(std::shared_ptr<Mesh> mesh)
 {
-    m_texture_name = texture_name;
+    m_model.setMesh(mesh);
 }
+
+void
+Shape::pushModel(ModelStorage& model_storage)
+{
+    model_storage.addModel(m_model);
+}
+
+// void
+// Shape::setMesh(std::shared_ptr<Mesh> mesh)
+// {
+//     m_render_object.setMesh(mesh);
+// }
+
+// void
+// Shape::setPosition(float x, float y)
+// {
+//     m_render_object.setPosition(x, y);
+// }
+
+// void
+// Shape::setSize(float x, float y)
+// {
+//     m_render_object.setSize(x, y);
+// }
+
+// void
+// Shape::rotate(float angle)
+// {
+//     m_render_object.setRotation(angle);
+// }
+
+void
+Shape::loadTexture(std::string_view texture_name)
+{
+    auto texture_opt = TEXTURE_STORAGE.getTexture(texture_name);
+
+    if (texture_opt.has_value() == false)
+    {
+        texture_opt = TEXTURE_STORAGE.getTexture("empty.png");
+    }
+
+    m_model.setTexture(texture_opt.value());
+}
+
 }; // namespace kusengine

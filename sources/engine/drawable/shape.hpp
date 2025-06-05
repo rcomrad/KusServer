@@ -7,78 +7,65 @@
 
 namespace kusengine
 {
+
+class ModelStorage;
+
 class Shape
 {
 public:
-    virtual ~Shape();
+    virtual ~Shape() = default;
 
-    void setTexture(std::string_view texture_name);
+    Shape(std::shared_ptr<Mesh> mesh);
 
-    template <typename... Args>
-    void setPosition(Args&&... args);
+    void loadTexture(std::string_view texture_name);
 
-    template <typename... Args>
-    void setSize(Args&&... args);
-
-    template <typename... Args>
-    void rotate(Args&&... args);
-
-    template <typename... Args>
-    Shape(std::string_view texture_name, Args&&... args);
-
-protected:
-    template <typename... Args>
-    void create(Args&&... args);
+    void pushModel(ModelStorage&);
 
 private:
-    std::string m_texture_name;
-
-    RenderObject m_render_object;
+    Model m_model;
 };
 
-template <typename... Args>
-Shape::Shape(std::string_view texture_name, Args&&... args)
-    : m_texture_name(texture_name)
-{
-    create(args...);
-}
+// template <typename... Args>
+// Shape::Shape(std::string_view texture_name, Args&&... args)
+// {
+//     create(texture_name, args...);
+// }
 
-template <typename... Args>
-void
-Shape::create(Args&&... args)
-{
-    auto mesh        = MESH_FACTORY.createUniversalMesh(args...);
-    auto texture_opt = TEXTURE_STORAGE.getTexture(m_texture_name);
+// template <typename... MeshFactoryArgs>
+// void
+// Shape::create(std::string_view texture_name, MeshFactoryArgs&&... args)
+// {
+//     auto mesh        = MESH_FACTORY.createUniversalMesh(args...);
+//     auto texture_opt = TEXTURE_STORAGE.getTexture(texture_name);
 
-    if (texture_opt.has_value() == false)
-    {
-        m_texture_name = "empty.png";
-        texture_opt    = TEXTURE_STORAGE.getTexture("empty.png");
-    }
+//     if (texture_opt.has_value() == false)
+//     {
+//         texture_opt = TEXTURE_STORAGE.getTexture("empty.png");
+//     }
 
-    m_render_object.create(mesh, texture_opt.value());
-}
+//     m_render_object.create(mesh, texture_opt.value());
+// }
 
-template <typename... Args>
-void
-Shape::setPosition(Args&&... args)
-{
-    m_render_object.setPosition(std::forward<Args>(args)...);
-}
+// template <typename... Args>
+// void
+// Shape::setPosition(Args&&... args)
+// {
+//     m_render_object.setPosition(std::forward<Args>(args)...);
+// }
 
-template <typename... Args>
-void
-Shape::setSize(Args&&... args)
-{
-    m_render_object.setSize(std::forward<Args>(args)...);
-}
+// template <typename... Args>
+// void
+// Shape::setSize(Args&&... args)
+// {
+//     m_render_object.setScale(std::forward<Args>(args)...);
+// }
 
-template <typename... Args>
-void
-Shape::rotate(Args&&... args)
-{
-    m_render_object.setRotation(std::forward<Args>(args));
-}
+// template <typename... Args>
+// void
+// Shape::rotate(Args&&... args)
+// {
+//     m_render_object.setRotation(std::forward<Args>(args));
+// }
 }; // namespace kusengine
 
 #endif // SHAPE_HPP

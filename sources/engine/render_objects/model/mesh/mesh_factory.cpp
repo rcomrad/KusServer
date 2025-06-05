@@ -11,7 +11,7 @@ MeshFactory::getInstance()
 }
 
 Mesh
-MeshFactory::createUniversalMeshImpl(const glm::vec2& size)
+MeshFactory::createMeshImpl(const glm::vec2& size)
 {
 
     UniversalVertex left_top_vertex(0.f, 0.f);
@@ -34,26 +34,26 @@ MeshFactory::createUniversalMeshImpl(const glm::vec2& size)
     return rectangle;
 }
 
-Mesh
-MeshFactory::createUniversalMeshImpl(const glm::vec2& second,
-                                     const glm::vec2& third)
-{
-    UniversalVertex vertices[3];
+// Mesh
+// MeshFactory::createUniversalMeshImpl(const glm::vec2& second,
+//                                      const glm::vec2& third)
+// {
+//     UniversalVertex vertices[3];
 
-    vertices[0].setPosition(0.f, 0.f);
-    vertices[0].setTexturePosition(0.5f, 0.f);
-    //
-    vertices[1].setPosition(second.x, second.y);
-    vertices[1].setTexturePosition(1.f, 1.f);
-    //
-    vertices[2].setPosition(third.x, third.y);
-    vertices[2].setTexturePosition(0.f, 1.f);
+//     vertices[0].setPosition(0.f, 0.f);
+//     vertices[0].setTexturePosition(0.5f, 0.f);
+//     //
+//     vertices[1].setPosition(second.x, second.y);
+//     vertices[1].setTexturePosition(1.f, 1.f);
+//     //
+//     vertices[2].setPosition(third.x, third.y);
+//     vertices[2].setTexturePosition(0.f, 1.f);
 
-    Mesh triangle;
-    triangle.setVertices({vertices[0], vertices[1], vertices[2]});
-    triangle.setIndices({0, 1, 2});
+//     Mesh triangle;
+//     triangle.setVertices({vertices[0], vertices[1], vertices[2]});
+//     triangle.setIndices({0, 1, 2});
 
-    return triangle;
-}
+//     return triangle;
+// }
 
 }; // namespace kusengine

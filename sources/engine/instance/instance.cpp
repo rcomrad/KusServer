@@ -48,6 +48,7 @@ Instance::createInstance(std::string_view app_name)
 #ifdef _DEBUG
 
     extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+
     m_validation_layers.create();
 
 #endif // _DEBUG

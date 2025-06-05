@@ -14,7 +14,7 @@ TextureStorage::getInstance()
 }
 
 void
-TextureStorage::addTexture(std::string_view file_path,
+TextureStorage::addTexture(const std::string& file_path,
                            const DescriptorManager& descriptor_manager)
 {
 
@@ -42,7 +42,7 @@ TextureStorage::addTexture(std::string_view file_path,
     }
 }
 
-std::optional<std::shared_ptr<Texture>>
+std::optional<std::shared_ptr<const Texture>>
 TextureStorage::getTexture(std::string_view keyval) const
 {
     std::optional<std::shared_ptr<Texture>> res;

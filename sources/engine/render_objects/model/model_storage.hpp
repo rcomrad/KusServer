@@ -11,8 +11,6 @@
 
 namespace kusengine
 {
-
-class RenderObject;
 class SwapChainFrame;
 
 class ModelStorage
@@ -20,7 +18,7 @@ class ModelStorage
 public:
     ModelStorage();
 
-    void addRenderObject(RenderObject& render_object);
+    void addModel(Model& model);
 
     void fillBuffers();
 
@@ -29,15 +27,10 @@ public:
     void draw(const vk::CommandBuffer& command_buffer,
               const vk::PipelineLayout& pipelayout) const;
 
-    const std::vector<MBDD>& getMBDD() const;
-
 private:
     MeshCombiner m_mesh_combiner;
 
     std::vector<std::pair<Model, uint32_t>> m_models; // TODO: combine!
-
-    // TODO: unite
-    std::vector<MBDD> mbdd_data_vector;
 };
 }; // namespace kusengine
 

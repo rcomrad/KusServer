@@ -1,6 +1,7 @@
 #include "scene.hpp"
-
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include <iostream>
 #include <math.h>
@@ -8,6 +9,7 @@
 #include <random>
 
 #include "engine/drawable/rectangle_shape.hpp"
+#include "engine/gui/button.hpp"
 
 namespace kusengine
 {
@@ -16,12 +18,18 @@ void
 Scene::updateFrame(SwapChainFrame& frame) const
 {
     frame.updateUniformData(m_ubo);
-    // frame.updateObjectsDynamicData(m_system.objDynamicData());
+    m_system.updateMBDD(frame);
 }
 
 void
 Scene::update(float time)
 {
+
+    for (int i = 0; i < m_drawables.size(); ++i)
+    {
+        // m_drawables[0]->setColor({1.f, 1.f, (rand() % 255) / 255.f, 1.f});
+        m_drawables[0]->upd();
+    }
     // for (int i = 0; i < m_dynamic_objects_data.size(); ++i)
     // {
     //     m_dynamic_objects_data[i].position = {1, 1};
@@ -65,6 +73,20 @@ Scene::create(float width, float height)
     m_camera.setAspectRatio(width / height);
     m_camera.recalculate();
     m_ubo.projection = m_camera.getViewProjection();
+
+    // std::cout << "--------------------------\n";
+    // std::cout << glm::to_string(m_ubo.projection) << '\n';
+    // std::cout << "--------------------------\n";
+
+    //
+    m_drawables.emplace_back(
+        std::make_shared<Button>(glm::vec2{0.f, 0.f}, glm::vec2{3.f, 1.f}));
+
+    m_drawables.emplace_back(
+        std::make_shared<Button>(glm::vec2{0.f, 0.f}, glm::vec2{0.5f, 4.f}));
+
+    m_system.add(m_drawables);
+    m_system.generate();
 }
 
 const UBO&
@@ -84,10 +106,7 @@ Scene::render(const vk::CommandBuffer& command_buffer,
               const vk::PipelineLayout& pipelayout,
               SwapChainFrame& frame) const
 {
-    // m_system.draw();
-    // m_model_storage.bind(command_buffer);
-
-    // m_model_storage.draw(command_buffer, pipelayout);
+    m_system.draw(command_buffer, pipelayout, frame);
 }
 
 void
