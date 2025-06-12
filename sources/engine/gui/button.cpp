@@ -1,6 +1,6 @@
 #include "button.hpp"
 
-#include "engine/drawable/rectangle_shape.hpp"
+#include "engine/graphics/drawable/rectangle_shape.hpp"
 namespace kusengine
 {
 
@@ -10,6 +10,11 @@ Button::Button(const glm::vec2& position, const glm::vec2& size)
     setPosition(position.x, position.y);
     setSize(size.x, size.y);
     m_shape->loadTexture("button.png");
+}
+
+void
+Button::update()
+{
 }
 
 }; // namespace kusengine

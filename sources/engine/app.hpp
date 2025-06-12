@@ -4,10 +4,10 @@
 #include <memory>
 #include <vector>
 
-#include "engine/scene/camera.hpp"
-#include "engine/scene/scene.hpp"
-#include "renderer/renderer.hpp"
-#include "window/window.hpp"
+#include "engine/graphics/scene/camera.hpp"
+#include "engine/graphics/scene/scene.hpp"
+#include "graphics/renderer/renderer.hpp"
+#include "graphics/window/window.hpp"
 
 namespace kusengine
 {

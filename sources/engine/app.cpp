@@ -6,7 +6,7 @@
 #include <iostream>
 #include <utility>
 
-#include "shaders/shaders/shader.hpp"
+#include "graphics/shaders/shaders/shader.hpp"
 #include "utility/file_system/path_storage.hpp"
 
 #define COMPILE_SHADERS
@@ -20,13 +20,14 @@ App::compileShaders()
     auto sources_path = util::PathStorage::getFolderPath("sources");
 
     std::string vertex_shader_path = sources_path.value().data();
-    vertex_shader_path += "engine/shaders/spirv/vertex_shader.vert";
+    vertex_shader_path += "engine/graphics/shaders/spirv/vertex_shader.vert";
 
     std::string fragment_shader_path = sources_path.value().data();
-    fragment_shader_path += "engine/shaders/spirv/fragment_shader.frag";
+    fragment_shader_path +=
+        "engine/graphics/shaders/spirv/fragment_shader.frag";
 
-    auto dst_path =
-        std::format("{}{}", sources_path.value(), "engine/shaders/compiled/");
+    auto dst_path = std::format("{}{}", sources_path.value(),
+                                "engine/graphics/shaders/compiled/");
 
     Shader::getInstance().compile(vertex_shader_path, dst_path);
     Shader::getInstance().compile(fragment_shader_path, dst_path);
