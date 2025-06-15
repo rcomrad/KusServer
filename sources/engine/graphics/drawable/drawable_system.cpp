@@ -1,5 +1,7 @@
 #include "drawable_system.hpp"
 
+#include <iostream>
+
 #include "engine/graphics/renderer/swap_chain_frame.hpp"
 namespace kusengine
 {
@@ -20,29 +22,40 @@ void
 DrawableSystem::updateMBDD(SwapChainFrame& frame) const
 {
     if (is_empty) return;
-    frame.updateMBDD(mbdd_data_vector);
-}
 
-void
-DrawableSystem::setDrawableVector(
-    const std::vector<std::shared_ptr<Drawable>>& NO_TEMPARARY)
-{
-    if (NO_TEMPARARY.size() > 0) is_empty = false;
-    m_drawables = NO_TEMPARARY;
+    frame.updateMBDD(mbdd_data_vector);
 }
 
 void
 DrawableSystem::generate()
 {
     if (is_empty) return;
-    mbdd_data_vector.resize(m_drawables.size());
-    for (int i = 0; i < m_drawables.size(); ++i)
+    int count = m_drawables.size();
+
+    mbdd_data_vector.resize(count);
+
+    std::vector<std::pair<uint32_t, uint32_t>> inds(count);
+
+    for (int i = 0; i < count; ++i)
     {
         auto& drawable = m_drawables[i];
-        drawable->pushModel(m_model_storage);
-        drawable->linkData(&mbdd_data_vector[i]);
-        drawable->updModelMatrix();
+        auto index     = drawable->pushModel(m_model_storage);
+
+        inds[i].first  = i;
+        inds[i].second = index;
     }
+
+    std::sort(inds.begin(), inds.end(), [](const auto& left, const auto& right)
+              { return left.second < right.second; });
+
+    for (int i = 0; i < count; ++i)
+    {
+        int cor_index = inds[i].first;
+
+        m_drawables[cor_index]->linkData(&(mbdd_data_vector[i]));
+        m_drawables[i]->updModelMatrix();
+    }
+
     m_model_storage.fillBuffers();
 }
 

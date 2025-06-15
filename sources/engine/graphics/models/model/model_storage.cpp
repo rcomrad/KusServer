@@ -9,10 +9,10 @@ ModelStorage::ModelStorage()
 {
 }
 
-void
+uint32_t
 ModelStorage::addModel(Model& model)
 {
-    model.pushThis(m_models);
+    return model.pushThis(m_models);
 }
 
 void

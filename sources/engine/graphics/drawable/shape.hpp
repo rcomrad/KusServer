@@ -18,7 +18,12 @@ public:
 
     void loadTexture(std::string_view texture_name);
 
-    void pushModel(ModelStorage&);
+    uint32_t pushModel(ModelStorage&);
+
+    virtual std::unique_ptr<Shape> makeUniquePtrCopy() const = 0;
+
+protected:
+    virtual std::shared_ptr<Mesh> getMesh() = 0;
 
 private:
     Model m_model;

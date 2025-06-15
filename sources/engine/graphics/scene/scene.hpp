@@ -1,6 +1,7 @@
 #ifndef SCENE_HPP
 #define SCENE_HPP
 
+#include "engine/game_objects/game_objects_storage.hpp"
 #include "engine/graphics/drawable/drawable_system.hpp"
 #include "engine/graphics/models/dynamic_data/uniform_buffer_object.hpp"
 #include "engine/graphics/renderer/swap_chain_frame.hpp"
@@ -38,10 +39,9 @@ public:
 private:
     vk::ClearValue m_clear_value;
 
-    std::vector<std::shared_ptr<Drawable>> m_drawables;
+    GameObjectsStorage m_game_objects_storage;
 
     DrawableSystem m_system;
-    ModelStorage m_model_storage;
 
     UBO m_ubo;
 

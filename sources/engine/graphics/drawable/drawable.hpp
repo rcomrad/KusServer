@@ -18,9 +18,11 @@ public:
     template <typename DerivedShape>
     Drawable(DerivedShape&&);
 
-    void pushModel(ModelStorage& ms);
+    uint32_t pushModel(ModelStorage& ms);
 
-    virtual void update() = 0;
+    Drawable& operator=(const Drawable&);
+
+    Drawable(const Drawable&);
 
 protected:
     std::unique_ptr<Shape> m_shape;
@@ -29,7 +31,7 @@ protected:
 template <typename DerivedShape>
 Drawable::Drawable(DerivedShape&& shape)
 {
-    m_shape = std::make_unique<DerivedShape>(shape);
+    m_shape = std::make_unique<DerivedShape>(std::move(shape));
 }
 
 }; // namespace kusengine

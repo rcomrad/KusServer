@@ -13,7 +13,10 @@ class RectangleShape : public Shape
 public:
     RectangleShape();
 
+    std::unique_ptr<Shape> makeUniquePtrCopy() const override;
+
 private:
+    std::shared_ptr<Mesh> getMesh() override;
 };
 }; // namespace kusengine
 

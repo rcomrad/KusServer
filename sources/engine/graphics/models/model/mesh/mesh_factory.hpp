@@ -11,41 +11,19 @@ class MeshFactory
 public:
     static MeshFactory& getInstance();
 
-    template <typename... Args>
-    std::shared_ptr<Mesh> createMesh(Args&&... args);
+    std::shared_ptr<Mesh> getMesh(const std::vector<glm::vec2>& position_verts,
+                                  const std::vector<glm::vec2>& texture_verts,
+                                  const std::vector<uint32_t>& indices);
 
 private:
     std::vector<std::shared_ptr<Mesh>> created_meshes;
 
-    Mesh createMeshImpl(const glm::vec2& size); // rectangle
+    Mesh createMesh(const std::vector<glm::vec2>& position_verts,
+                    const std::vector<glm::vec2>& texture_verts,
+                    const std::vector<uint32_t>& indices);
 
     MeshFactory() = default;
 };
-
-template <typename... Args>
-std::shared_ptr<Mesh>
-MeshFactory::createMesh(Args&&... args)
-{
-    Mesh mesh = createMeshImpl(std::forward<Args>(args)...);
-
-    std::shared_ptr<Mesh> result;
-
-    auto it = std::find_if(created_meshes.begin(), created_meshes.end(),
-                           [&mesh](const std::shared_ptr<Mesh>& other)
-                           { return *other == mesh; });
-
-    if (it == created_meshes.end())
-    {
-        result = std::make_shared<Mesh>(mesh);
-        created_meshes.emplace_back(result);
-    }
-    else
-    {
-        result = *it;
-    }
-
-    return result;
-}
 
 #define MESH_FACTORY MeshFactory::getInstance()
 

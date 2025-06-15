@@ -12,6 +12,8 @@ namespace kusengine
 class ModelBasicDynamicsDataInterface : public MBDDIBuffer
 {
 public:
+    virtual ~ModelBasicDynamicsDataInterface() = default;
+
     ModelBasicDynamicsDataInterface();
 
     void setRotation(float angle);

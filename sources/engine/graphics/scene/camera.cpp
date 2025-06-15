@@ -20,9 +20,10 @@ Camera2D::recalculate()
     glm::mat4 projection =
         glm::ortho(-m_view_width / 2.0f, m_view_width / 2.0f,
                    -view_height / 2.0f, view_height / 2.0f, -1.0f, 1.0f);
+
     glm::mat4 view = glm::mat4(1.0f);
-    view           = glm::translate(view, glm::vec3(-m_position, 0.0f));
     view           = glm::scale(view, glm::vec3(m_zoom, m_zoom, 1.0f));
+    view           = glm::translate(view, glm::vec3(-m_position, 0.0f));
 
     return m_view_projection = projection * view;
 }

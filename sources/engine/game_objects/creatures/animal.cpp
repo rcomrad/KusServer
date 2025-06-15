@@ -1,0 +1,18 @@
+#include "animal.hpp"
+
+namespace kusengine
+{
+Animal::Animal(std::shared_ptr<const AnimalTemplate> temp,
+               const AnimalCreateArgs& args)
+    : Creature(args.current_hp, args.position), m_walk(args.walk)
+{
+    m_an_template = temp;
+    setSize(args.size);
+}
+void
+Animal::logic()
+{
+    m_walk.walk([this](float x, float y) { this->setPosition(x, y); },
+                m_position);
+}
+}; // namespace kusengine

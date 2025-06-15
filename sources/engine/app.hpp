@@ -4,7 +4,6 @@
 #include <memory>
 #include <vector>
 
-#include "engine/graphics/scene/camera.hpp"
 #include "engine/graphics/scene/scene.hpp"
 #include "graphics/renderer/renderer.hpp"
 #include "graphics/window/window.hpp"

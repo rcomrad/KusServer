@@ -9,12 +9,17 @@ Shape::Shape(std::shared_ptr<Mesh> mesh)
     m_model.setMesh(mesh);
 }
 
-void
+uint32_t
 Shape::pushModel(ModelStorage& model_storage)
 {
-    model_storage.addModel(m_model);
+    return model_storage.addModel(m_model);
 }
 
+// Shape::Type
+// Shape::getType() const noexcept
+// {
+//     return m_type;
+// }
 // void
 // Shape::setMesh(std::shared_ptr<Mesh> mesh)
 // {

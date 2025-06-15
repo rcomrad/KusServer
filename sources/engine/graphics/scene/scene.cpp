@@ -8,7 +8,9 @@
 #include <memory>
 #include <random>
 
+#include "engine/game_objects/block.hpp"
 #include "engine/graphics/drawable/rectangle_shape.hpp"
+#include "engine/gui/button.hpp"
 
 namespace kusengine
 {
@@ -23,10 +25,10 @@ Scene::updateFrame(SwapChainFrame& frame) const
 void
 Scene::update(float time)
 {
-    for (int i = 0; i < m_drawables.size(); ++i)
-    {
-        m_drawables[i]->update();
-    }
+    // for (int i = 0; i < m_drawables.size(); ++i)
+    // {
+    //     m_drawables[i]->update();
+    // }
     // for (int i = 0; i < m_dynamic_objects_data.size(); ++i)
     // {
     //     m_dynamic_objects_data[i].position = {1, 1};
@@ -71,18 +73,25 @@ Scene::create(float width, float height)
     m_camera.recalculate();
     m_ubo.projection = m_camera.getViewProjection();
 
-    // std::cout << "--------------------------\n";
-    // std::cout << glm::to_string(m_ubo.projection) << '\n';
-    // std::cout << "--------------------------\n";
+    // -- camera init end -- //
 
-    //
-    // m_drawables.emplace_back(
-    //     std::make_shared<Button>(glm::vec2{0.f, 0.f}, glm::vec2{3.f, 1.f}));
+    {
+        // Block stone_block(Block::Type::STONE);
+        // m_drawables.emplace_back(std::make_shared<Block>(stone_block));
 
-    // m_drawables.emplace_back(
-    //     std::make_shared<Button>(glm::vec2{0.f, 0.f}, glm::vec2{2.f, 4.f}));
+        // Block wood_block(Block::Type::WOOD);
+        // wood_block.setPosition({2.f, 3.f});
+        // m_drawables.emplace_back(std::make_shared<Block>(wood_block));
+        // wood_block.setPosition({1.f, 3.f});
+        // m_drawables.emplace_back(std::make_shared<Block>(wood_block));
+        // wood_block.setPosition({2.f, 2.f});
+        // m_drawables.emplace_back(std::make_shared<Block>(wood_block));
+    }
 
-    // m_system.add(m_drawables);
+    m_game_objects_storage.loadData("objects_data/game_objects.json");
+
+    m_game_objects_storage.pushToDrawableSystem(m_system);
+
     m_system.generate();
 }
 

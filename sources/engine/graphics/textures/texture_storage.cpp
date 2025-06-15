@@ -1,8 +1,14 @@
 #include "texture_storage.hpp"
 
+#include <nlohmann/json.hpp>
+
+#include <fstream>
 #include <iostream>
 
 #include "utility/file_system/path_storage.hpp"
+
+using json = nlohmann::json;
+
 namespace kusengine
 {
 
@@ -11,6 +17,27 @@ TextureStorage::getInstance()
 {
     static TextureStorage ts;
     return ts;
+}
+
+void
+TextureStorage::loadTextures(std::string filename,
+                             const DescriptorManager& desc_manager)
+{
+    auto res_path = util::PathStorage::getFolderPath("resource").value();
+
+    filename = res_path.data() + filename;
+
+    std::ifstream file(filename);
+    json data = json::parse(file);
+
+    std::vector<std::string> paths = data["texture_paths"];
+
+    for (auto& path : paths)
+    {
+        addTexture(
+            std::format("{}{}{}", res_path.data(), "engine_textures/", path),
+            desc_manager);
+    }
 }
 
 void

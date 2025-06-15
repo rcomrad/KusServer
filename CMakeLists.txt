@@ -53,6 +53,8 @@ macro(create_exe NAME)
     target_link_libraries(${EXE_NAME} PRIVATE ${Boost_LIBRARIES})
     target_link_libraries(${EXE_NAME} PRIVATE glm::glm)
     target_include_directories(${EXE_NAME} PRIVATE ${Stb_INCLUDE_DIR})
+    target_link_libraries(${EXE_NAME} PRIVATE nlohmann_json::nlohmann_json)
+
 
 
     # Output file name settings
@@ -81,6 +83,7 @@ find_package(Vulkan REQUIRED)
 find_package(Crow CONFIG REQUIRED)
 find_package(Boost REQUIRED system filesystem)
 find_package(Stb REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
 
 # Sources include
 add_executable(${PROJECT_NAME} "sources_main/main.cpp")

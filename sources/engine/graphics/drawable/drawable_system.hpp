@@ -15,7 +15,18 @@ public:
     // void add(Drawable* const NO_TEMPARARY);
     DrawableSystem();
 
-    void setDrawableVector(const std::vector<std::shared_ptr<Drawable>>& NO_TEMPARARY);
+    template <typename DerivedDrawable>
+    void setDrawableVector(
+        const std::vector<std::shared_ptr<DerivedDrawable>>& NO_TEMPARARY)
+    {
+        if (NO_TEMPARARY.size() > 0) is_empty = false;
+
+        m_drawables.reserve(NO_TEMPARARY.size());
+        for (int i = 0; i < NO_TEMPARARY.size(); ++i)
+        {
+            m_drawables.emplace_back(NO_TEMPARARY[i]);
+        }
+    }
 
     void generate();
 

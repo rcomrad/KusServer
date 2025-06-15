@@ -12,9 +12,9 @@ Button::Button(const glm::vec2& position, const glm::vec2& size)
     m_shape->loadTexture("button.png");
 }
 
-void
-Button::update()
-{
-}
+// void
+// Button::update()
+// {
+// }
 
 }; // namespace kusengine

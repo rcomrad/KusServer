@@ -18,7 +18,7 @@ class ModelStorage
 public:
     ModelStorage();
 
-    void addModel(Model& model);
+    uint32_t addModel(Model& model);
 
     void fillBuffers();
 
@@ -29,6 +29,8 @@ public:
 
 private:
     MeshCombiner m_mesh_combiner;
+
+    // std::vector<uint32_t> m_order;
 
     std::vector<std::pair<Model, uint32_t>> m_models; // TODO: combine!
 };

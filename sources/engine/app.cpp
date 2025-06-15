@@ -6,6 +6,7 @@
 #include <iostream>
 #include <utility>
 
+#include "engine/game_objects/templates/template_storage.hpp"
 #include "graphics/shaders/shaders/shader.hpp"
 #include "utility/file_system/path_storage.hpp"
 
@@ -39,6 +40,7 @@ App::initApp()
 #ifdef COMPILE_SHADERS
     compileShaders();
 #endif
+    TEMPLATE_STORAGE.loadData();
 
     if (!m_window.initWindow(WIDTH, HEIGHT, "Simple app window")) return false;
 

@@ -44,23 +44,8 @@ Renderer::createPipelineLayout()
 void
 Renderer::loadTextures()
 {
-    std::string resources_path =
-        util::PathStorage::getFolderPath("resource").value().data();
-
-    TEXTURE_STORAGE.addTexture(resources_path + "engine_textures/cat.png",
-                               m_descriptor_manager);
-
-    TEXTURE_STORAGE.addTexture(resources_path + "engine_textures/eye.png",
-                               m_descriptor_manager);
-
-    TEXTURE_STORAGE.addTexture(resources_path + "engine_textures/zvezda.png",
-                               m_descriptor_manager);
-
-    TEXTURE_STORAGE.addTexture(resources_path + "engine_textures/empty.png",
-                               m_descriptor_manager);
-
-    TEXTURE_STORAGE.addTexture(resources_path + "engine_textures/button.png",
-                               m_descriptor_manager);
+    TEXTURE_STORAGE.loadTextures("engine_textures/texture_paths.json",
+                                 m_descriptor_manager);
 }
 
 bool
