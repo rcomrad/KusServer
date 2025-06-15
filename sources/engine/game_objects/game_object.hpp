@@ -12,12 +12,11 @@ class GameObject : public Drawable
 {
 public:
     template <typename DerivedShape>
-    GameObject(DerivedShape&& ds)
-        : Drawable(std::move(ds))
+    GameObject(DerivedShape&& ds) : Drawable(std::move(ds))
     {
     }
 
-    virtual void logic() = 0;
+    virtual void logic(float elapsed_time) = 0;
 
 protected:
 };

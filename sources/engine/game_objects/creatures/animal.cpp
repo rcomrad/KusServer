@@ -8,11 +8,15 @@ Animal::Animal(std::shared_ptr<const AnimalTemplate> temp,
 {
     m_an_template = temp;
     setSize(args.size);
+
+    m_shape->loadTexture(args.texture_name);
 }
 void
-Animal::logic()
+Animal::logic(float elapsed_time)
 {
     m_walk.walk([this](float x, float y) { this->setPosition(x, y); },
-                m_position);
+                m_position, m_an_template->walk_speed, elapsed_time);
+
+    updModelMatrix();
 }
 }; // namespace kusengine

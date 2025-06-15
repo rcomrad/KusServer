@@ -20,7 +20,7 @@ Block::Block(std::shared_ptr<const BlockTemplate> bl_temp,
 }
 
 void
-Block::logic()
+Block::logic(float elapsed_time)
 {
 }
 

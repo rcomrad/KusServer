@@ -17,7 +17,9 @@ public:
 
     void loadData(std::string filename);
 
-    void pushToDrawableSystem(DrawableSystem& dr_system);
+    void pushToDrawableSystem(DrawableSystem& dr_system) const;
+
+    void update(float elapsed_time);
 
 private:
     void loadBlocks(const nlohmann::json_abi_v3_11_3::json& objects);

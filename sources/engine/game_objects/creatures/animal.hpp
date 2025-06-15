@@ -25,7 +25,7 @@ public:
     Animal(std::shared_ptr<const AnimalTemplate> temp,
            const AnimalCreateArgs& args);
 
-    void logic() override;
+    void logic(float elapsed_time) override;
 
 private:
     std::shared_ptr<const AnimalTemplate> m_an_template;

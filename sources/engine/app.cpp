@@ -61,7 +61,7 @@ App::getLoopTime()
 {
     double current_time = glfwGetTime();
 
-    return std::exchange(m_last_time, current_time) - current_time;
+    return current_time - std::exchange(m_last_time, current_time);
 }
 
 void
@@ -90,11 +90,11 @@ App::loopBody()
 
     m_window.calculateFrameRate();
 
-    float time = getLoopTime();
+    float el_time = getLoopTime();
 
-    m_window.handleEvents(m_scene, time);
+    m_window.handleEvents(m_scene, el_time);
 
-    m_scene.update(time);
+    m_scene.update(el_time);
 
     return true;
 }

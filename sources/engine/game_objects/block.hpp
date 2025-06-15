@@ -23,7 +23,7 @@ public:
     Block(std::shared_ptr<const BlockTemplate> bl_temp,
           const BlockCreateArgs& args);
 
-    void logic() override;
+    void logic(float elapsed_time) override;
 
     // bool readParameters(std::stringstream& ss) override;
 

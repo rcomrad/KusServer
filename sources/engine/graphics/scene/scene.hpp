@@ -28,7 +28,7 @@ public:
 
     void moveCamera(float x, float y, float z);
 
-    void update(float time);
+    void update(float elapsed_time);
 
     void updateFrame(SwapChainFrame& frame) const;
 

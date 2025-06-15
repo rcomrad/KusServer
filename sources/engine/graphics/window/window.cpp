@@ -134,36 +134,37 @@ Window::handleEvents(Scene& scene, float time)
 
     if (glfwGetKey(m_window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        x                  = 2 * time;
+        x = -2 * time;
+
         camera_action_flag = true;
     }
     if (glfwGetKey(m_window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        x = -2 * time;
+        x = 2 * time;
 
         camera_action_flag = true;
     }
     if (glfwGetKey(m_window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        y = 2 * time;
+        y = -2 * time;
 
         camera_action_flag = true;
     }
     if (glfwGetKey(m_window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        y = -2 * time;
+        y = 2 * time;
 
         camera_action_flag = true;
     }
     if (glfwGetKey(m_window, GLFW_KEY_UP) == GLFW_PRESS)
     {
-        z = -time;
+        z = time;
 
         camera_action_flag = true;
     }
     if (glfwGetKey(m_window, GLFW_KEY_DOWN) == GLFW_PRESS)
     {
-        z = time;
+        z = -time;
 
         camera_action_flag = true;
     }

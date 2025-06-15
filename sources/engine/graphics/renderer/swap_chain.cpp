@@ -78,10 +78,10 @@ SwapChain::choosePresentMode(
 {
     for (vk::PresentModeKHR presentMode : available_present_modes)
     {
-        if (presentMode == vk::PresentModeKHR::eImmediate)
-        {
-            return presentMode;
-        }
+        // if (presentMode == vk::PresentModeKHR::eImmediate)
+        // {
+        //     return presentMode;
+        // }
         if (presentMode == vk::PresentModeKHR::eMailbox)
         {
             return presentMode;

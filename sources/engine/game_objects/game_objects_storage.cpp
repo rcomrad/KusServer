@@ -55,9 +55,9 @@ GameObjectsStorage::loadAnimals(const nlohmann::json_abi_v3_11_3::json& objects)
         args.current_hp  = obj["current_hp"];
 
         std::vector<Walk::StopInfo> stops_info;
-        objects["walk"].size(); // ?
+        obj["walk"].size(); // ?
         // stops_info.reserve();
-        for (auto& stop : objects["walk"])
+        for (auto& stop : obj["walk"])
         {
             glm::vec2 pos = {stop["position"]["x"], stop["position"]["y"]};
             float t       = stop["wait_time"];
@@ -96,7 +96,10 @@ GameObjectsStorage::loadData(std::string filename)
         {
             loadBlocks(objects);
         }
-        else if (chapter_name == "animals")
+    }
+    for (auto& [chapter_name, objects] : data["game_objects"].items())
+    {
+        if (chapter_name == "animals")
         {
             loadAnimals(objects);
         }
@@ -104,9 +107,18 @@ GameObjectsStorage::loadData(std::string filename)
 }
 
 void
-GameObjectsStorage::pushToDrawableSystem(DrawableSystem& dr_system)
+GameObjectsStorage::pushToDrawableSystem(DrawableSystem& dr_system) const
 {
     dr_system.setDrawableVector(m_game_objects_storage);
+}
+
+void
+GameObjectsStorage::update(float elapsed_time)
+{
+    for (auto& obj : m_game_objects_storage)
+    {
+        obj->logic(elapsed_time);
+    }
 }
 
 }; // namespace kusengine

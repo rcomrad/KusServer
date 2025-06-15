@@ -23,45 +23,9 @@ Scene::updateFrame(SwapChainFrame& frame) const
 }
 
 void
-Scene::update(float time)
+Scene::update(float elapsed_time)
 {
-    // for (int i = 0; i < m_drawables.size(); ++i)
-    // {
-    //     m_drawables[i]->update();
-    // }
-    // for (int i = 0; i < m_dynamic_objects_data.size(); ++i)
-    // {
-    //     m_dynamic_objects_data[i].position = {1, 1};
-    //     m_dynamic_objects_data[i].color    = {1, 1, 1};
-    // circlec_moving_info[i][0] += circlec_moving_info[i][1] * time;
-
-    // m_dynamic_objects_data[i].position.x =
-    //     std::cos(circlec_moving_info[i][0] / 180 * 3.14) *
-    //     circlec_moving_info[i][2];
-
-    // m_dynamic_objects_data[i].position.y =
-    //     std::sin(circlec_moving_info[i][0] / 180 * 3.14) *
-    //     circlec_moving_info[i][2];
-
-    // float& x = m_dynamic_objects_data[i].color.x;
-    // float& y = m_dynamic_objects_data[i].color.y;
-    // float& z = m_dynamic_objects_data[i].color.z;
-
-    // auto updColorChannel =
-    //     [time](float& color_channel, float& color_changing_speed)
-    // {
-    //     color_channel += time * color_changing_speed;
-    //     if (color_channel > 1 || color_channel < 0)
-    //     {
-    //         color_channel = std::clamp(color_channel, 0.f, 1.f);
-    //         color_changing_speed *= -1;
-    //     }
-    // };
-
-    // updColorChannel(x, circlec_color_info[i][0]);
-    // updColorChannel(y, circlec_color_info[i][1]);
-    // updColorChannel(z, circlec_color_info[i][2]);
-    // }
+    m_game_objects_storage.update(elapsed_time);
 }
 
 void
@@ -74,19 +38,6 @@ Scene::create(float width, float height)
     m_ubo.projection = m_camera.getViewProjection();
 
     // -- camera init end -- //
-
-    {
-        // Block stone_block(Block::Type::STONE);
-        // m_drawables.emplace_back(std::make_shared<Block>(stone_block));
-
-        // Block wood_block(Block::Type::WOOD);
-        // wood_block.setPosition({2.f, 3.f});
-        // m_drawables.emplace_back(std::make_shared<Block>(wood_block));
-        // wood_block.setPosition({1.f, 3.f});
-        // m_drawables.emplace_back(std::make_shared<Block>(wood_block));
-        // wood_block.setPosition({2.f, 2.f});
-        // m_drawables.emplace_back(std::make_shared<Block>(wood_block));
-    }
 
     m_game_objects_storage.loadData("objects_data/game_objects.json");
 
