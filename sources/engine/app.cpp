@@ -6,8 +6,9 @@
 #include <iostream>
 #include <utility>
 
-#include "engine/game_objects/templates/template_storage.hpp"
-#include "graphics/shaders/shaders/shader.hpp"
+// #include "engine/game_objects/templates/template_storage.hpp"
+#include "render_manager/render_manager.hpp"
+#include "render_manager/shaders/shaders/shader.hpp"
 #include "utility/file_system/path_storage.hpp"
 
 #define COMPILE_SHADERS
@@ -21,17 +22,18 @@ App::compileShaders()
     auto sources_path = util::PathStorage::getFolderPath("sources");
 
     std::string vertex_shader_path = sources_path.value().data();
-    vertex_shader_path += "engine/graphics/shaders/spirv/vertex_shader.vert";
+    vertex_shader_path +=
+        "engine/render_manager/shaders/spirv/vertex_shader.vert";
 
     std::string fragment_shader_path = sources_path.value().data();
     fragment_shader_path +=
-        "engine/graphics/shaders/spirv/fragment_shader.frag";
+        "engine/render_manager/shaders/spirv/fragment_shader.frag";
 
     auto dst_path = std::format("{}{}", sources_path.value(),
-                                "engine/graphics/shaders/compiled/");
+                                "engine/render_manager/shaders/compiled/");
 
-    Shader::getInstance().compile(vertex_shader_path, dst_path);
-    Shader::getInstance().compile(fragment_shader_path, dst_path);
+    render::shader::compile(vertex_shader_path, dst_path);
+    render::shader::compile(fragment_shader_path, dst_path);
 }
 
 bool
@@ -40,18 +42,15 @@ App::initApp()
 #ifdef COMPILE_SHADERS
     compileShaders();
 #endif
-    TEMPLATE_STORAGE.loadData();
 
-    if (!m_window.initWindow(WIDTH, HEIGHT, "Simple app window")) return false;
-
-    if (!m_renderer.initRenderer(m_window)) return false;
-
-    m_renderer.loadTextures();
-
-    m_target_frame_time = 1 / 150.0;
-
-    m_scene.create(static_cast<float>(m_renderer.swapchainExtent().width),
-                   static_cast<float>(m_renderer.swapchainExtent().height));
+    try
+    {
+        m_window.initWindow(WIDTH, HEIGHT, "MyWindow");
+        render::RenderManager::getInstance().init(m_window);
+    }
+    catch (...)
+    {
+    }
 
     return true;
 };
@@ -84,17 +83,9 @@ App::loopBody()
         return false;
     }
 
-    float x = 0, y = 0;
-
-    m_renderer.drawFrame(m_window, m_scene);
-
     m_window.calculateFrameRate();
 
     float el_time = getLoopTime();
-
-    m_window.handleEvents(m_scene, el_time);
-
-    m_scene.update(el_time);
 
     return true;
 }

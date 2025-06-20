@@ -4,9 +4,7 @@
 #include <memory>
 #include <vector>
 
-#include "engine/graphics/scene/scene.hpp"
-#include "graphics/renderer/renderer.hpp"
-#include "graphics/window/window.hpp"
+#include "window/window.hpp"
 
 namespace kusengine
 {
@@ -26,11 +24,9 @@ public:
     static constexpr int WIDTH = 800;
 
 private:
-    Renderer m_renderer;
+    // Renderer m_renderer;
 
     Window m_window;
-
-    Scene m_scene;
 
     // Time
 
