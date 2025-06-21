@@ -85,19 +85,19 @@ SwapChainFrame::createFrameBuffer(const vk::RenderPass& renderpass,
         LOGICAL_DEVICE_INSTANCE.createFramebufferUnique(framebufferInfo);
 }
 
-void
-SwapChainFrame::updateUniformData(const UBO& ubo)
-{
-    m_uniform_buffer.setData(&ubo, sizeof(UBO));
-    writeDescriptorSetUBO();
-}
+// void
+// SwapChainFrame::updateUniformData(const UBO& ubo)
+// {
+//     m_uniform_buffer.setData(&ubo, sizeof(UBO));
+//     writeDescriptorSetUBO();
+// }
 
-void
-SwapChainFrame::updateMBDD(const std::vector<MBDD>& data)
-{
-    m_storage_buffer.setData(data.data(), data.size() * sizeof(MBDD));
-    writeDescriptorSetMBDD();
-}
+// void
+// SwapChainFrame::updateMBDD(const std::vector<MBDD>& data)
+// {
+//     m_storage_buffer.setData(data.data(), data.size() * sizeof(MBDD));
+//     writeDescriptorSetMBDD();
+// }
 
 void
 SwapChainFrame::writeDescriptorSetUBO()

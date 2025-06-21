@@ -8,27 +8,92 @@ namespace kusengine
 {
 namespace render
 {
+
+template <typename VertexType>
 class Model
 {
 public:
-    void setMesh(std::shared_ptr<const Mesh> mesh);
+    Model() = default;
 
-    void setTexture(std::shared_ptr<const Texture> texture);
+    void setMesh(const Mesh<VertexType>* const mesh_ptr);
 
-    void pushMeshData(std::vector<UniversalVertexAttributes>&,
+    void setTexture(const Texture* const texture_ptr);
+
+    void bindTexture(const vk::CommandBuffer& command_buffer,
+                     const vk::PipelineLayout& pipelayout) const;
+
+    bool compareData(const Model<VertexType>&) const;
+
+    void pushMeshData(std::vector<typename VertexType::Attributes>&,
                       std::vector<uint32_t>&) const;
 
-    void bind(const vk::CommandBuffer& command_buffer,
-              const vk::PipelineLayout& pipelayout) const;
-
-    bool compareData(const Model&) const;
-
-    int pushThis(std::vector<std::pair<Model, uint32_t>>&) const;
+    int pushThis(std::vector<std::pair<Model<VertexType>, uint32_t>>&) const;
 
 private:
-    std::shared_ptr<const Mesh> m_mesh;
-    std::shared_ptr<const Texture> m_texture;
+    const Mesh<VertexType>* m_mesh;
+    const Texture* m_texture;
 };
+
+template <typename VertexType>
+int
+Model<VertexType>::pushThis(
+    std::vector<std::pair<Model<VertexType>, uint32_t>>& models) const
+{
+    auto it = std::find_if(models.begin(), models.end(),
+                           [this](const std::pair<Model, uint32_t>& other)
+                           { return this->compareData(other.first); });
+
+    int index = it - models.begin();
+
+    if (it == models.end())
+    {
+        models.emplace_back(*this, 1u);
+    }
+    else
+    {
+        it->second += 1;
+    }
+    return index;
+}
+
+template <typename VertexType>
+void
+Model<VertexType>::setMesh(const Mesh<VertexType>* const mesh_ptr)
+{
+    m_mesh = mesh_ptr;
+}
+
+template <typename VertexType>
+void
+Model<VertexType>::setTexture(const Texture* const texture_ptr)
+{
+    m_texture = texture_ptr;
+}
+
+template <typename VertexType>
+void
+Model<VertexType>::bindTexture(const vk::CommandBuffer& command_buffer,
+                               const vk::PipelineLayout& pipelayout) const
+{
+    m_texture->bind(command_buffer, pipelayout);
+}
+
+template <typename VertexType>
+void
+Model<VertexType>::pushMeshData(
+    std::vector<typename VertexType::Attributes>& vertices,
+    std::vector<uint32_t>& indices) const
+{
+    m_mesh->pushData(vertices, indices);
+}
+
+template <typename VertexType>
+bool
+Model<VertexType>::compareData(const Model& other) const
+{
+    return *m_mesh == *other.m_mesh && *m_texture == *other.m_texture;
+}
+
 }; // namespace render
-} // namespace kusengine
+}; // namespace kusengine
 #endif // MODEL_HPP

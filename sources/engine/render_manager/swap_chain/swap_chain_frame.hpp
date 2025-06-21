@@ -16,13 +16,6 @@ namespace render
 {
 class SwapChain;
 
-class UBO
-{
-};
-class MBDD
-{
-};
-
 class SwapChainFrame
 {
 public:
@@ -51,9 +44,9 @@ public:
 
     // Resourcers
 
-    void updateUniformData(const UBO& ubo);
+    // void updateUniformData(const UBO& ubo);
 
-    void updateMBDD(const std::vector<MBDD>& data);
+    // void updateMBDD(const std::vector<MBDD>& data);
 
     void createDescriptorSet(const DescriptorManager& descriptor_manager);
 
