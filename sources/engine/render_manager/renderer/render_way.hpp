@@ -23,6 +23,9 @@ public:
 
     const DescriptorManager& descManager() const noexcept;
 
+    void bind(const vk::CommandBuffer& command_buffer,
+              const std::vector<vk::DescriptorSet>& desc_sets) const;
+
 private:
     RenderPass m_render_pass;
 

@@ -14,7 +14,7 @@ public:
 
     void create();
 
-    const vk::CommandBuffer& commandBuffer() const;
+    const vk::CommandBuffer& commandBuffer() const noexcept;
 
 private:
     vk::UniqueCommandBuffer m_command_buffer;

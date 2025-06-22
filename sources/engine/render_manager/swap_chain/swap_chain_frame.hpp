@@ -24,7 +24,7 @@ public:
     void createFrameBuffer(const vk::RenderPass& render_pass,
                            const vk::Extent2D& extent);
 
-    const CommandBuffer& commandBuffer() const noexcept;
+    const vk::CommandBuffer& commandBuffer() const noexcept;
 
     const SynchronizationControl& synControl() const noexcept;
 
@@ -44,9 +44,18 @@ public:
 
     // Resourcers
 
-    // void updateUniformData(const UBO& ubo);
-
-    // void updateMBDD(const std::vector<MBDD>& data);
+    template <typename UBOType>
+    void updateUBO(const UBOType& ubo)
+    {
+        m_uniform_buffer.setData(&ubo, sizeof(UBOType));
+        writeDescriptorSetUBO();
+    }
+    template <typename MBDDType>
+    void updateMBDD(const std::vector<MBDDType>& data)
+    {
+        m_storage_buffer.setData(data.data(), data.size() * sizeof(MBDDType));
+        writeDescriptorSetMBDD();
+    }
 
     void createDescriptorSet(const DescriptorManager& descriptor_manager);
 

@@ -187,13 +187,13 @@ SwapChain::createSwapChainFrames(const RenderWayStorage& render_way_storage)
     {
         m_frames[i].createImage(images[i], m_format);
         m_frames[i].createFrameBuffer(
-            render_way_storage.getRenderWay(RenderWayTypes::UNIVERSAL)
+            render_way_storage.getRenderWay(RenderWayType::UNIVERSAL)
                 ->renderPass(),
             m_extent);
         m_frames[i].createCommandBuffer();
         m_frames[i].createSynchronization();
         m_frames[i].createDescriptorSet(
-            render_way_storage.getRenderWay(RenderWayTypes::UNIVERSAL)
+            render_way_storage.getRenderWay(RenderWayType::UNIVERSAL)
                 ->descManager());
     }
     return images.size();
@@ -230,70 +230,39 @@ SwapChain::present(uint32_t index, const vk::Semaphore* wait_sems)
 }
 
 void
-SwapChain::recordCommandBuffer(const vk::PipelineLayout& pipelayout,
-                               SwapChainFrame& frame,
-                               const RenderPass& render_pass)
+SwapChain::recordCommandBuffer(SwapChainFrame& frame,
+                               const RenderWay& render_way)
 {
-    // const vk::CommandBuffer& command_buffer_ref =
-    //     frame.commandBuffer().commandBuffer();
+    const vk::CommandBuffer& command_buffer_ref = frame.commandBuffer();
 
-    // command_buffer_ref.reset();
+    command_buffer_ref.reset();
 
-    // vk::CommandBufferBeginInfo beginInfo = {};
+    vk::CommandBufferBeginInfo beginInfo = {};
 
-    // command_buffer_ref.begin(beginInfo);
+    command_buffer_ref.begin(beginInfo);
 
-    // vk::RenderPassBeginInfo renderPassInfo = {};
-    // renderPassInfo.renderPass              = render_pass.renderPass();
-    // renderPassInfo.framebuffer             = frame.framebuffer();
+    vk::RenderPassBeginInfo renderPassInfo = {};
+    renderPassInfo.renderPass              = render_way.renderPass();
+    renderPassInfo.framebuffer             = frame.framebuffer();
 
-    // renderPassInfo.renderArea.offset.x = 0;
-    // renderPassInfo.renderArea.offset.y = 0;
-    // renderPassInfo.renderArea.extent   = extent();
+    renderPassInfo.renderArea.offset.x = 0;
+    renderPassInfo.renderArea.offset.y = 0;
+    renderPassInfo.renderArea.extent   = extent();
 
-    // renderPassInfo.clearValueCount = 1;
-    // vk::ClearValue clear_value{vk::ClearColorValue(1.f, 1.f, 1.f, 1.f)};
+    renderPassInfo.clearValueCount = 1;
+    vk::ClearValue clear_value{vk::ClearColorValue(1.f, 1.f, 1.f, 1.f)};
 
-    // renderPassInfo.pClearValues = &clear_value;
+    renderPassInfo.pClearValues = &clear_value;
 
-    // command_buffer_ref.beginRenderPass(&renderPassInfo,
-    //                                    vk::SubpassContents::eInline);
+    command_buffer_ref.beginRenderPass(&renderPassInfo,
+                                       vk::SubpassContents::eInline);
 
-    // auto ds = frame.descriptorSets();
+    render_way.bind(command_buffer_ref, frame.descriptorSets());
 
-    // command_buffer_ref.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
-    //                                       pipelayout, 0u, ds.size(),
-    //                                       ds.data(), 0, nullptr); // frame
-    //                                       resources
+    command_buffer_ref.endRenderPass();
 
-    // // command_buffer_ref.bindPipeline(vk::PipelineBindPoint::eGraphics, );
-
-    // command_buffer_ref.endRenderPass();
-
-    // command_buffer_ref.end();
+    command_buffer_ref.end();
 }
 
-void
-SwapChain::drawFrame(uint32_t frame_index, const Renderer& renderer)
-{
-
-    // renderer.render();
-    // m_frames[frame_index].waitForFence();
-
-    // uint32_t image_index;
-
-    // auto acquire_res = LOGICAL_DEVICE_INSTANCE.acquireNextImageKHR(
-    //     m_swapchain.get(), UINT64_MAX,
-    //     m_frames[frame_index].synControl().imageAvailable(), nullptr);
-
-    // image_index = acquire_res.value;
-
-    // // recordCommandBuffer(pipelayout, m_frames[frame_index], render_pass);
-
-    // m_frames[frame_index].submitCommandBuffer();
-
-    // present(image_index,
-    // m_frames[frame_index].synControl().signalSemaphores());
-}
 }; // namespace render
 }; // namespace kusengine

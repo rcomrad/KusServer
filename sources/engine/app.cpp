@@ -6,9 +6,6 @@
 #include <iostream>
 #include <utility>
 
-#include "render_manager/drawable/drawable_system.hpp"
-#include "render_manager/drawable/universal/universal_drawable.hpp"
-#include "render_manager/dynamics_data/mbddi_buffer/mbdd_structs.hpp"
 #include "render_manager/render_manager.hpp"
 #include "render_manager/shaders/shaders/shader.hpp"
 #include "utility/file_system/path_storage.hpp"
@@ -53,11 +50,6 @@ App::initApp()
     catch (...)
     {
     }
-
-    render::UniversalDrawable un_drawable;
-
-    render::DrawableSystem<render::UniversalDrawable, render::UniversalMBDD>
-        un_drawable_system;
 
     return true;
 };

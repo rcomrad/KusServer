@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 #include "render_way.hpp"
-#include "render_way_types.hpp"
+#include "render_way_type.hpp"
 
 namespace kusengine
 {
@@ -14,17 +14,17 @@ namespace render
 class RenderWayStorage
 {
 public:
-
     RenderWayStorage() = default;
 
     void create(const vk::Extent2D& extent, vk::Format format);
 
-    const RenderWay* const getRenderWay(RenderWayTypes type) const;
+    const RenderWay* const getRenderWay(RenderWayType type) const;
 
 private:
-    RenderWay getUniversalRenderWay(const vk::Extent2D& extent, vk::Format format);
+    RenderWay getUniversalRenderWay(const vk::Extent2D& extent,
+                                    vk::Format format);
 
-    std::unordered_map<RenderWayTypes, RenderWay> m_pipelines;
+    std::unordered_map<RenderWayType, RenderWay> m_pipelines;
 };
 }; // namespace render
 }; // namespace kusengine

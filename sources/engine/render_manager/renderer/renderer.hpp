@@ -1,19 +1,32 @@
 #ifndef RENDERER_HPP
 #define RENDERER_HPP
 
-#include "engine/render_manager/renderer/render_way_types.hpp"
+#include <string>
+#include <string_view>
+
+#include "engine/render_manager/renderer/render_way_type.hpp"
 
 namespace kusengine
 {
 namespace render
 {
-class Renderer
+class RenderInfo
 {
 public:
-    Renderer() = default;
+    RenderInfo() = default;
+
+    void setRenderWayType(RenderWayType rwt);
+
+    void setName(std::string_view name);
+
+    std::string_view getName() const noexcept;
+
+    RenderWayType getenderWayType() const noexcept;
 
 private:
-    RenderWayTypes m_render_way_type;
+    std::string m_name;
+
+    RenderWayType m_render_way_type;
 };
 }; // namespace render
 }; // namespace kusengine

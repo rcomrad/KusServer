@@ -60,12 +60,12 @@ RenderWayStorage::getUniversalRenderWay(const vk::Extent2D& extent,
 void
 RenderWayStorage::create(const vk::Extent2D& extent, vk::Format format)
 {
-    m_pipelines[RenderWayTypes::UNIVERSAL] =
+    m_pipelines[RenderWayType::UNIVERSAL] =
         getUniversalRenderWay(extent, format);
 }
 
 const RenderWay* const
-RenderWayStorage::getRenderWay(RenderWayTypes type) const
+RenderWayStorage::getRenderWay(RenderWayType type) const
 {
     const RenderWay* res = nullptr;
 

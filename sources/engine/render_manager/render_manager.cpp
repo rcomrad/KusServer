@@ -48,9 +48,13 @@ RenderManager::shutdown()
 // --------- draw -------- //
 
 void
-RenderManager::draw(const Renderer& renderer)
+RenderManager::draw()
 {
     frame_number = (frame_number + 1) % max_frames_in_flight;
+
+    // auto render_info = renderer.getInfo();
+
+    // m_swap_chain.drawFrame(frame_number, );
 }
 
 // ----------------------- //

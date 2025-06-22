@@ -8,7 +8,7 @@
 #include "engine/render_manager/commands/command_pool.hpp"
 #include "engine/render_manager/renderer/render_way.hpp"
 #include "engine/render_manager/renderer/render_way_storage.hpp"
-#include "engine/render_manager/renderer/render_way_types.hpp"
+#include "engine/render_manager/renderer/render_way_type.hpp"
 #include "engine/render_manager/renderer/renderer.hpp"
 
 #include "swap_chain_frame.hpp"
@@ -34,6 +34,7 @@ public:
 
     // bool recreate(const Window& window, const Instance& instance);
 
+    // TODO: map framebuffers
     size_t createSwapChainFrames(const RenderWayStorage& render_way_storage);
 
     void createSurface(const kusengine::Window& window,
@@ -49,7 +50,10 @@ public:
     const vk::SwapchainKHR& swapchain() const noexcept;
     //
 
-    void drawFrame(uint32_t frame_index, const Renderer& renderer);
+    template <typename T_DrawableSystem>
+    void drawFrame(uint32_t frame_index,
+                   const RenderWay& render_way,
+                   const T_DrawableSystem& dr_system);
 
 private:
     bool present(uint32_t index, const vk::Semaphore* wait_sems);
@@ -68,9 +72,8 @@ private:
         const vk::PresentModeKHR& present_mode,
         const vk::SurfaceCapabilitiesKHR& capabilities) const noexcept;
     // Command buffer
-    void recordCommandBuffer(const vk::PipelineLayout& pipelayout,
-                             SwapChainFrame& frame,
-                             const RenderPass& render_pass);
+    void recordCommandBuffer(SwapChainFrame& frame,
+                             const RenderWay& render_way);
     // Surface
 
     vk::UniqueSurfaceKHR m_surface;
@@ -85,6 +88,32 @@ private:
     vk::Format m_format;
     vk::Extent2D m_extent;
 };
+
+template <typename T_DrawableSystem>
+void
+SwapChain::drawFrame(uint32_t frame_index,
+                     const RenderWay& render_way,
+                     const T_DrawableSystem& dr_system)
+{
+    dr_system.update(m_frames[frame_index]);
+
+    m_frames[frame_index].waitForFence();
+
+    uint32_t image_index;
+
+    auto acquire_res = LOGICAL_DEVICE_INSTANCE.acquireNextImageKHR(
+        m_swapchain.get(), UINT64_MAX,
+        m_frames[frame_index].synControl().imageAvailable(), nullptr);
+
+    image_index = acquire_res.value;
+
+    recordCommandBuffer(m_frames[frame_index], render_way);
+
+    m_frames[frame_index].submitCommandBuffer();
+
+    present(image_index, m_frames[frame_index].synControl().signalSemaphores());
+}
+
 }; // namespace render
 }; // namespace kusengine
 

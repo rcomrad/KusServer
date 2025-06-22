@@ -32,10 +32,10 @@ SwapChainFrame::synControl() const noexcept
     return m_sync_control;
 }
 
-const CommandBuffer&
+const vk::CommandBuffer&
 SwapChainFrame::commandBuffer() const noexcept
 {
-    return m_command_buffer;
+    return m_command_buffer.commandBuffer();
 }
 
 const vk::Framebuffer&
@@ -84,20 +84,6 @@ SwapChainFrame::createFrameBuffer(const vk::RenderPass& renderpass,
     m_framebuffer =
         LOGICAL_DEVICE_INSTANCE.createFramebufferUnique(framebufferInfo);
 }
-
-// void
-// SwapChainFrame::updateUniformData(const UBO& ubo)
-// {
-//     m_uniform_buffer.setData(&ubo, sizeof(UBO));
-//     writeDescriptorSetUBO();
-// }
-
-// void
-// SwapChainFrame::updateMBDD(const std::vector<MBDD>& data)
-// {
-//     m_storage_buffer.setData(data.data(), data.size() * sizeof(MBDD));
-//     writeDescriptorSetMBDD();
-// }
 
 void
 SwapChainFrame::writeDescriptorSetUBO()

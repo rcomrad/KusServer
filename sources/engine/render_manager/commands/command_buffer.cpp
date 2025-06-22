@@ -16,7 +16,7 @@ CommandBuffer::create()
 }
 
 const vk::CommandBuffer&
-CommandBuffer::commandBuffer() const
+CommandBuffer::commandBuffer() const noexcept
 {
     return m_command_buffer.get();
 }

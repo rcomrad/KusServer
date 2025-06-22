@@ -2,6 +2,7 @@
 #define DRAWABLE_SYSTEM_HPP
 
 #include "engine/render_manager/model/model_storage.hpp"
+#include "engine/render_manager/swap_chain/swap_chain_frame.hpp"
 
 #include "basic_drawable.hpp"
 
@@ -9,38 +10,38 @@ namespace kusengine
 {
 namespace render
 {
-class SwapChainFrame;
 
-template <typename DrawableType, typename MBBDType>
+template <typename DrawableType_, typename MBBDType, typename UBOType>
 class DrawableSystem
 {
 public:
+
     DrawableSystem() = default;
 
     template <typename Iterator>
     void resetDrawables(Iterator begin, Iterator end);
 
-    void updateMBDD(SwapChainFrame& frame) const;
+    void update(SwapChainFrame& frame) const;
 
     void draw(const vk::CommandBuffer& command_buffer,
               const vk::PipelineLayout& pipelayout,
               SwapChainFrame& frame) const;
 
 private:
-    void generate();
-
     bool is_empty;
 
-    ModelStorage<typename DrawableType::VertexType> m_model_storage;
+    UBOType m_ubo;
+
+    ModelStorage<typename DrawableType_::VertexType> m_model_storage;
 
     std::vector<MBBDType> mbdd_data_vector;
 };
 
-template <typename DrawableType, typename MBBDType>
+template <typename DrawableType_, typename MBBDType, typename UBOType>
 template <typename Iterator>
 void
-DrawableSystem<DrawableType, MBBDType>::resetDrawables(Iterator begin,
-                                                       Iterator end)
+DrawableSystem<DrawableType_, MBBDType, UBOType>::resetDrawables(Iterator begin,
+                                                                Iterator end)
 {
     uint32_t count = end - begin;
     mbdd_data_vector.resize(count);
@@ -68,7 +69,23 @@ DrawableSystem<DrawableType, MBBDType>::resetDrawables(Iterator begin,
 
     m_model_storage.fillBuffers();
 }
+template <typename DrawableType_, typename MBBDType, typename UBOType>
+void
+DrawableSystem<DrawableType_, MBBDType, UBOType>::update(
+    SwapChainFrame& frame) const
+{
+    frame.updateMBDD(mbdd_data_vector);
+    frame.updateUBO(m_ubo);
+}
 
+template <typename DrawableType_, typename MBBDType, typename UBOType>
+void
+DrawableSystem<DrawableType_, MBBDType, UBOType>::draw(
+    const vk::CommandBuffer& command_buffer,
+    const vk::PipelineLayout& pipelayout,
+    SwapChainFrame& frame) const
+{
+}
 }; // namespace render
 }; // namespace kusengine
 
