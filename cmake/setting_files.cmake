@@ -45,13 +45,8 @@ macro(load_target_switch_file)
             "    endforeach()\n"
             "endmacro()\n"
             "\n"
-            "check(_test)\n"
-            "check(engine)\n"
-            "check(kernel)\n"
-            "check(ontology)\n"
-            "check(server)\n"
         )
-
+        
         #TODO: spaces in file path?
         message("\tFound:")
         foreach(DIR ${SUBDIRS})
