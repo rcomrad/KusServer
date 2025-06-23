@@ -3,7 +3,9 @@
 #include "kernel/framework/logger/include_me.hpp"
 
 core::SynchronizedState::SynchronizedState()
-    : m_base_state(State::CREATED), m_thread_state(State::CREATED)
+    : m_base_state(State::CREATED),
+      m_thread_state(State::CREATED),
+      m_history({core::State::NUN})
 {
 }
 
@@ -21,7 +23,6 @@ core::SynchronizedState::baseTrySitchTo(State a_state) noexcept
     {
         m_base_state = a_state;
     }
-    // std::cout << std::format("Base: {} {}\n", int(a_state), result);
     return result;
 }
 
@@ -36,15 +37,27 @@ core::SynchronizedState::threadTrySitchTo(State a_state) noexcept
     if (result)
     {
         m_thread_state = a_state;
+        const std::lock_guard lock(m_history_mutex);
+        m_history.emplace_back(a_state);
     }
-    // std::cout << std::format("Child: {} {}\n", int(a_state), result);
     return result;
 }
 
 bool
 core::SynchronizedState::checkThreadValidity() noexcept
 {
-    // std::cout << std::format("Validity: {}\n", State(m_base_state) <
-    // State::__FINISHED);
     return State(m_base_state) < State::__FINISHED;
+}
+
+core::State
+core::SynchronizedState::getThreadState() const noexcept
+{
+    return m_thread_state;
+}
+
+const std::vector<core::State>&
+core::SynchronizedState::getThreadHistory() const noexcept
+{
+    const std::lock_guard lock(m_history_mutex);
+    return m_history;
 }

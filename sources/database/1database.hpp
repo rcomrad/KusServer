@@ -2,7 +2,7 @@
 
 // //--------------------------------------------------------------------------------
 
-// #include "kernel/utility/defines/holy_trinity.hpp"
+// #include "kernel/utility/macroses/holy_trinity.hpp"
 // #include "kernel/framework/module.hpp"
 
 // #include "database_connection.hpp"

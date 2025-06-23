@@ -23,12 +23,14 @@ public:
     virtual void threadTerminate();
 
     bool isRunning() const noexcept;
-    State getThreadState() const noexcept;
-    const std::vector<State>& getThreadStateHistory() const noexcept;
+
+    core::State getThreadState() const noexcept;
+    const std::vector<State>& getThreadHistory() const noexcept;
 
 private:
     std::atomic<bool> m_is_running;
     std::thread m_thread;
+
     ThreadModuleInterface m_thread_module;
     SynchronizedState m_sync_state;
 

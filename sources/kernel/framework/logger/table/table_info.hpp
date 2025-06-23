@@ -23,10 +23,10 @@ public:
     template <typename Data>
     void addKey(const Data& a_data)
     {
-        addCell(a_data).setName("#").turnOff().setSeparator(m_separator);
+        getKeyInfo(false).resetType(a_data);
     }
 
-    ColumnInfo& getKeyInfo();
+    ColumnInfo& getKeyInfo(bool a_turn_on_flag = true);
 
     template <typename Data>
     ColumnInfo& addCell(const Data& a_data)
@@ -34,7 +34,7 @@ public:
         switch (m_step)
         {
             case Step::CONSTRUCT:
-                m_columns.emplace_back(a_data);
+                m_columns.emplace_back(m_columns.size(), a_data);
                 m_columns.back().setSeparator(m_separator);
                 break;
             case Step::CALCULATE:
@@ -49,19 +49,20 @@ public:
     }
 
     template <typename Data>
-    ColumnInfo& addCell(ColumnInfo& a_parant, const Data& a_data)
+    ColumnInfo& addCell(int a_parant, const Data& a_data)
     {
+        ColumnInfo& parant = m_columns.at(a_parant);
         switch (m_step)
         {
             case Step::CONSTRUCT:
-                m_sublines.emplace_back(a_parant, a_data);
+                m_sublines.emplace_back(m_columns.size(), parant, a_data);
                 m_sublines.back().setSeparator(m_separator);
                 break;
             case Step::CALCULATE:
                 m_sublines.at(m_subline_indx).takeIntoAccount(a_data);
                 break;
             case Step::PRINT:
-                for (; m_column_indx < (&a_parant - &m_columns.front());
+                for (; m_column_indx < (&parant - &m_columns.front());
                      ++m_column_indx)
                 {
                     m_columns.at(m_column_indx).pass(&m_buffer);

@@ -1,13 +1,17 @@
 #pragma once
 
+#include <atomic>
 #include <thread>
 
 #include "kernel/framework/core/kernel.hpp"
 #include "kernel/framework/logger/include_me.hpp"
 #include "kernel/framework/module/thread_module.hpp"
-#include "kernel/utility/synchronization/yield.hpp"
+#include "kernel/tester/commands_fixture.hpp"
+#include "kernel/utility/synchronization/condvar.hpp"
+#include "kernel/utility/synchronization/sleep.hpp"
 
 #include "definitions.hpp"
+#include "module_constructor.hpp"
 
 namespace kustest
 {
@@ -16,7 +20,13 @@ template <typename TestType>
 class SyncTester
 {
 public:
-    SyncTester() = default;
+    SyncTester(CommandsFixture& a_fixture) : m_fixture(a_fixture)
+    {
+    }
+
+    ~SyncTester()
+    {
+    }
 
     void setModuleStates(const std::initializer_list<MState>& a_required_list)
     {
@@ -25,59 +35,55 @@ public:
 
     virtual void exec()
     {
-        core::ModuleRegister<TestType> reg;
-        auto& module = getModule();
-        m_module     = &module;
-        KERNEL.reloadModules();
-
-        wait();
-        check(m_answer, module.getStateHistory(), module.getState(), "module");
+        util::Condvar has_started;
+        auto& module = *ModuleConstructor::create<TestType>(has_started);
+        m_fixture.execCommand("mod_add test");
+        has_started.wait();
+        endTest();
+        // wait(0); // 1 or 2
+        checkStates(module);
     }
 
 protected:
-    virtual void runKernel()
+    CommandsFixture& m_fixture;
+
+    virtual void checkStates(const core::Module& a_module)
     {
-        KERNEL.runWhileDoesSmth();
+        checkImpl(m_answer, a_module.getStateHistory(), a_module.getState(),
+                  "sync");
     }
 
-    virtual void wait()
+    void checkImpl(const std::vector<MState>& a_answer,
+                   const std::vector<MState>& a_result,
+                   MState a_final_state,
+                   const std::string& a_level)
     {
-        runKernel();
+        EXPECT_EQ(a_result, a_answer) << a_level;
+        EXPECT_EQ(a_final_state, a_answer.back()) << a_level;
     }
 
-    bool moduleIsActive()
+    virtual void endTest()
     {
-        return m_module->isActive();
+        wait(0);
     }
 
-    void check(const std::vector<MState>& a_answer,
-               const std::vector<MState>& a_result,
-               MState a_final_state,
-               const std::string& a_name)
+    void wait(int a_count)
     {
-        EXPECT_EQ(a_result, a_answer) << a_name;
-        EXPECT_EQ(a_final_state, a_answer.back()) << a_name;
-    }
-
-    core::ThreadModule& getThreadModule() const noexcept
-    {
-        return *dynamic_cast<core::ThreadModule*>(m_module);
+        util::Sleep::medium();
+        while (std::stoi(m_fixture.execCommand("mod_active_count")) != a_count)
+        {
+            util::Sleep::yield();
+        }
     }
 
 private:
-    TestType* m_module;
     std::vector<MState> m_answer;
     std::vector<MState> m_results;
-
-    TestType& getModule()
-    {
-        TestType* module_ptr =
-            dynamic_cast<TestType*>(global_modules.begin()->get());
-        return *module_ptr;
-    }
 };
 
-template <template <typename> typename BaseType, typename ChildType>
+template <template <typename> typename BaseType,
+          typename ChildType,
+          size_t ThreadCount = 1>
 class ExternalKill : public BaseType<ChildType>
 {
     using Base = BaseType<ChildType>;
@@ -86,20 +92,10 @@ public:
     using Base::Base;
 
 protected:
-    void runKernel() override
+    void endTest() final
     {
-        std::thread kernel_run(
-            []()
-            {
-                LOGGER_INIT("external_kill");
-                KERNEL.run();
-            });
-        while (!Base::moduleIsActive())
-        {
-            util::Yield::small();
-        }
-        KERNEL.stop();
-        kernel_run.join();
+        Base::wait(ThreadCount);
+        Base::m_fixture.terminateKernel();
     }
 };
 

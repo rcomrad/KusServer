@@ -1,5 +1,5 @@
 #pragma once
 
+#include "constructor.hpp"
 #include "module.hpp"
-#include "register.hpp"
 #include "thread_module.hpp"

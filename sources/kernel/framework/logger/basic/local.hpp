@@ -13,4 +13,4 @@ public:
 
 } // namespace core
 
-#define LOGGER_INIT(name) core::LocalLogger::getLogger().init(name)
+#define LOGGER_REDIRECT(name) core::LocalLogger::getLogger().redirect(name)

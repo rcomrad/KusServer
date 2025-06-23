@@ -35,7 +35,7 @@ public:
 
 protected:
     void init();
-    void execIfAvailable() const;
+    bool execIfAvailable() const;
     void processCommand(Command& a_command) const;
 
 private:

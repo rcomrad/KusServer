@@ -4,7 +4,7 @@
 
 #include "kernel/framework/command/command_extend.hpp"
 #include "kernel/framework/module/module.hpp"
-#include "kernel/utility/defines/holy_trinity.hpp"
+#include "kernel/utility/macroses/holy_trinity.hpp"
 #include "kernel/utility/type/declaration/lifecycle_manager.hpp"
 
 #include "connection_pool.hpp"

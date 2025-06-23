@@ -26,14 +26,14 @@ public:
     ~Base();
 
     void run();
-    void runWhileDoesSmth();
+    bool doWork();
     bool isRunning() const;
     void stop();
 
     void listenSTDIN() noexcept;
 
 private:
-    size_t m_is_running_var_num;
+    int m_is_running_var_num;
     util::LifecycleManager<InputSTDIN> m_stdin;
 };
 

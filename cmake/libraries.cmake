@@ -37,5 +37,3 @@ macro(lib_router)
         message(FATAL_ERROR "Unsupported library name '${LIBRARY_NAME}'!")
     endif()
 endmacro()
-
-

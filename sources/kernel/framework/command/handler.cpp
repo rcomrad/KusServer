@@ -25,11 +25,9 @@ core::CommandHandler::CommandInfo::print() const
     auto& arg_cell =
         addCell(args).alignmentLeft().addPrefix("Args: ").setDefault(
             "/* no args */");
-    // addCell(desc).alignmentRight();
     addSubline();
     addCell(arg_cell, desc).alignmentLeft();
     addSubline();
-    getKeyInfo().alignmentRight().setSeparator('|');
     noHead();
 }
 
@@ -79,7 +77,7 @@ core::CommandHandler::registrateCommand(int a_caller_num,
                                a_args);
 }
 
-void
+bool
 core::CommandHandler::execIfAvailable() const
 {
     std::optional<Command*> cmd_opt;
@@ -97,9 +95,10 @@ core::CommandHandler::execIfAvailable() const
 
     if (!cmd_opt.has_value())
     {
-        return;
+        return false;
     }
     processCommand(*cmd_opt.value());
+    return true;
 }
 
 #define CALL_CASE(num)                             \
@@ -165,6 +164,7 @@ core::CommandHandler::help(core::Command& a_command)
 void
 core::CommandHandler::print() const
 {
+    getKeyInfo().alignmentRight().setSeparator('|');
     setDefaultSeparator(' ');
     addTableConrainer(m_command_info,
                       std::unordered_set<std::string>{"___internal_test"});

@@ -1,7 +1,7 @@
 #include "base.hpp"
 
 #include "kernel/framework/logger/include_me.hpp"
-#include "kernel/utility/synchronization/yield.hpp"
+#include "kernel/utility/synchronization/sleep.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -9,7 +9,7 @@ core::Base::Base()
 {
     VariableStorage::init();
     CommandHandler::init();
-    LOGGER_INIT("main_loop");
+    core::LocalLogger::getLogger().redirectDefault("main");
 
     m_is_running_var_num = addBoolVariable("is_running");
     setVariable(m_is_running_var_num, true);
@@ -27,24 +27,19 @@ core::Base::run()
 {
     while (isRunning())
     {
-        execIfAvailable();
-        makeModulesTick();
-        util::Yield::small();
+        doWork();
+        util::Sleep::yield();
     }
     terminateModules();
 }
 
-void
-core::Base::runWhileDoesSmth()
+bool
+core::Base::doWork()
 {
-    size_t old_work = 1, cur_work = 1;
-    while (isRunning() && old_work > 0)
-    {
-        old_work = cur_work;
-        execIfAvailable();
-        cur_work = makeModulesTick();
-    }
-    terminateModules();
+    bool result = false;
+    result |= execIfAvailable();
+    result |= makeModulesTick();
+    return result;
 }
 
 bool

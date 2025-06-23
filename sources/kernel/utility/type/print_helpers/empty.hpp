@@ -40,6 +40,11 @@ public:
     {
         return a_data.empty();
     }
+
+    static inline bool exec(const std::unique_ptr<char[]>& a_data)
+    {
+        return strlen(a_data.get()) == 0;
+    }
 };
 
 } // namespace util

@@ -2,48 +2,42 @@
 
 //--------------------------------------------------------------------------------
 
-// #include <atomic>
-// #include <vector>
+#include <atomic>
 #include <memory>
 #include <vector>
 
+#include "kernel/framework/command/command_caller.hpp"
+#include "kernel/framework/logger/table/include_me.hpp"
+
 #include "module.hpp"
-
-// #include "kernel/utility/synchronization/condvar.hpp"
-
-// #include "module_interface.hpp"
 
 //--------------------------------------------------------------------------------
 
 namespace core
 {
 
-class ModuleRegistry
+class ModuleRegistry : public CommandCaller, public TablePrinter
 {
 public:
     ModuleRegistry() noexcept;
     ~ModuleRegistry() = default;
-    void reloadModules();
-    
-
-    // void exec();
-    // void cloaseApp() noexcept;
-    // void addModule(Module* a_module_ptr);
 
 protected:
     void init();
-    size_t makeModulesTick();
+    bool makeModulesTick();
     void terminateModules();
 
 private:
-    bool m_is_started;
-    size_t m_alive_count;
+    std::atomic<int> m_alive_count;
     std::vector<std::unique_ptr<Module>> m_modules;
-    // util::Condvar m_all_closed;
-    // std::atomic<bool> m_app_is_working;
 
-    // std::vector<Module*> m_modules;
-    // std::vector<Module::TaskFP> m_tasks;
+    COMMAND_HANDLER(modAdd, 0);
+    COMMAND_HANDLER(modList, 1);
+    COMMAND_HANDLER(modInfo, 2);
+    COMMAND_HANDLER(modAll, 3);
+    COMMAND_HANDLER(modActiveCount, 4);
+
+    void print() const final;
 };
 
 } // namespace core

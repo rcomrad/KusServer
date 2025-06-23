@@ -1,9 +1,11 @@
 #pragma once
 
+#include <atomic>
 #include <stdexcept>
 
 #include "kernel/framework/core/kernel.hpp"
 #include "kernel/utility/synchronization/condvar.hpp"
+#include "kernel/utility/synchronization/sleep.hpp"
 
 #include "definitions.hpp"
 
@@ -14,11 +16,17 @@ template <typename ModuleType>
 class SinglUseModule : public ModuleType
 {
 public:
-    SinglUseModule() : ModuleType("test_module")
+    SinglUseModule(util::Condvar& a_has_started)
+        : ModuleType("test_module"), m_has_started(a_has_started)
     {
     }
 
 protected:
+    void initialize() override
+    {
+        m_has_started.notify();
+    }
+
     bool loopBody() override
     {
         return m_loop_cnt++ < 1;
@@ -26,11 +34,15 @@ protected:
 
 private:
     int m_loop_cnt = 0;
+    util::Condvar& m_has_started;
 };
 
 template <typename ModuleType>
 class InfinityModule : public SinglUseModule<ModuleType>
 {
+    using Base = SinglUseModule<ModuleType>;
+    using Base::Base;
+
 protected:
     bool loopBody() override
     {
@@ -39,35 +51,28 @@ protected:
 };
 
 template <typename ModuleType>
-class SelfExitModule : public SinglUseModule<ModuleType>
-{
-protected:
-    void terminate() override
-    {
-        KERNEL.stop();
-    }
-};
-
-template <typename ModuleType>
 class NoLoopMode : public SinglUseModule<ModuleType>
 {
+    using Base = SinglUseModule<ModuleType>;
+    using Base::Base;
+
 protected:
     bool loopBody() final
     {
         return false;
-    }
-    void terminate() final
-    {
-        KERNEL.stop();
     }
 };
 
 template <typename ModuleType>
 class InitThrowModule : public SinglUseModule<ModuleType>
 {
+    using Base = SinglUseModule<ModuleType>;
+    using Base::Base;
+
 private:
     void initialize() final
     {
+        Base::initialize();
         throw std::runtime_error("Test exception");
     }
 };
@@ -76,6 +81,7 @@ template <typename ModuleType, int TermCount>
 class LoopThrowModule : public SinglUseModule<ModuleType>
 {
     using Base = SinglUseModule<ModuleType>;
+    using Base::Base;
 
 protected:
     bool loopBody() override
@@ -101,16 +107,23 @@ private:
 template <typename ModuleType>
 class FirstLoopThrowModule : public LoopThrowModule<ModuleType, 0>
 {
+    using Base = LoopThrowModule<ModuleType, 0>;
+    using Base::Base;
 };
 
 template <typename ModuleType>
 class SecondLoopThrowModule : public LoopThrowModule<ModuleType, 1>
 {
+    using Base = LoopThrowModule<ModuleType, 1>;
+    using Base::Base;
 };
 
 template <typename ModuleType>
 class TerminateThrowModule : public SinglUseModule<ModuleType>
 {
+    using Base = SinglUseModule<ModuleType>;
+    using Base::Base;
+
 private:
     void terminate() final
     {

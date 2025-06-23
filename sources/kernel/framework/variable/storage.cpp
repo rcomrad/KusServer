@@ -9,7 +9,7 @@
 
 template <typename T>
 void
-core::VariableStorage::setVariableTamplate(size_t a_number, T a_value)
+core::VariableStorage::setVariableTamplate(int a_number, T a_value)
 {
     varIdCheck(a_number);
     if (!m_variables[a_number].setValue(a_value))
@@ -20,11 +20,11 @@ core::VariableStorage::setVariableTamplate(size_t a_number, T a_value)
 }
 
 template <typename... Args>
-size_t
+int
 core::VariableStorage::addVariableInfoTamplate(const std::string& a_var_name,
                                                Args... args)
 {
-    size_t retult = m_variables.size();
+    int retult = m_variables.size();
     m_variables.emplace_back(a_var_name, args...);
     m_name_to_var_dict[a_var_name] = retult;
     return retult;
@@ -59,7 +59,7 @@ core::VariableStorage::init()
 //--------------------------------------------------------------------------------
 
 void
-core::VariableStorage::varIdCheck(size_t a_value_num) const
+core::VariableStorage::varIdCheck(int a_value_num) const
 {
     if (a_value_num >= m_variables.size())
     {
@@ -69,31 +69,31 @@ core::VariableStorage::varIdCheck(size_t a_value_num) const
 }
 
 void
-core::VariableStorage::setVariable(size_t a_number, bool a_value)
+core::VariableStorage::setVariable(int a_number, bool a_value)
 {
     setVariableTamplate(a_number, a_value);
 }
 
 void
-core::VariableStorage::setVariable(size_t a_number, int a_value)
+core::VariableStorage::setVariable(int a_number, int a_value)
 {
     setVariableTamplate(a_number, a_value);
 }
 
 void
-core::VariableStorage::setVariable(size_t a_number, const char* a_value)
+core::VariableStorage::setVariable(int a_number, const char* a_value)
 {
     setVariableTamplate(a_number, std::string(a_value));
 }
 
 void
-core::VariableStorage::setVariable(size_t a_number, const std::string& a_value)
+core::VariableStorage::setVariable(int a_number, const std::string& a_value)
 {
     setVariableTamplate(a_number, a_value);
 }
 
 int
-core::VariableStorage::getVariable(size_t a_number) const
+core::VariableStorage::getVariable(int a_number) const
 {
     varIdCheck(a_number);
     int result = m_variables[a_number].getValue();
@@ -102,13 +102,13 @@ core::VariableStorage::getVariable(size_t a_number) const
 
 //--------------------------------------------------------------------------------
 
-size_t
+int
 core::VariableStorage::addVariableInfo(const std::string& a_var_name)
 {
     return addVariableInfoTamplate(a_var_name);
 }
 
-size_t
+int
 core::VariableStorage::addVariableInfo(const std::string& a_var_name,
                                        int a_min_value,
                                        int a_max_value)
@@ -116,14 +116,14 @@ core::VariableStorage::addVariableInfo(const std::string& a_var_name,
     return addVariableInfoTamplate(a_var_name, a_min_value, a_max_value);
 }
 
-size_t
+int
 core::VariableStorage::addVariableInfo(const std::string& a_var_name,
                                        const std::vector<std::string>& a_values)
 {
     return addVariableInfoTamplate(a_var_name, a_values);
 }
 
-size_t
+int
 core::VariableStorage::addBoolVariable(const std::string& a_var_name)
 {
     return addVariableInfoTamplate(a_var_name, true);
@@ -131,7 +131,7 @@ core::VariableStorage::addBoolVariable(const std::string& a_var_name)
 
 //--------------------------------------------------------------------------------
 
-size_t
+int
 core::VariableStorage::getCurrentOffset() const noexcept
 {
     return m_variables.size();

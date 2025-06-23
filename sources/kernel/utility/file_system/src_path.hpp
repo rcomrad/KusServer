@@ -1,8 +1,12 @@
 #include <string.h>
 #include <string>
 
-#define __FILENAME__ \
-    (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+// TODO: constexpr
+
+#define __FILENAME__                  \
+    (strrchr(__FILE__, '/')           \
+         ? strrchr(__FILE__, '/') + 1 \
+         : (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__))
 
 #define __FOLDERNAME_CHR__ util::getSourceFolderNameChr(__FILE__)
 #define __FOLDERNAME_STR__ util::getSourceFolderNameStr(__FILE__)

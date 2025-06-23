@@ -9,6 +9,7 @@ template <typename ChildType>
 class ThreadTester : public SyncTester<ChildType>
 {
     using Base = SyncTester<ChildType>;
+    using Base::Base;
 
 public:
     ThreadTester() = default;
@@ -18,27 +19,18 @@ public:
         m_answer = std::vector<MState>(a_required_list);
     }
 
-    void exec() override
+    void checkStates(const core::Module& a_module) final
     {
-        Base::exec();
-        auto& module = Base::getThreadModule();
-        Base::check(m_answer, module.getThreadStateHistory(),
-                    module.getThreadState(), "thread");
-    }
+        Base::checkStates(a_module);
 
-protected:
-    void wait() override
-    {
-        Base::wait();
-        while (Base::getThreadModule().isRunning())
-        {
-            util::Yield::small();
-        }
+        const auto& thread_module =
+            dynamic_cast<const core::ThreadModule&>(a_module);
+        Base::checkImpl(m_answer, thread_module.getThreadHistory(),
+                        thread_module.getThreadState(), "thread");
     }
 
 private:
     std::vector<MState> m_answer;
-    std::vector<MState> m_results;
 };
 
 } // namespace kustest

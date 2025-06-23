@@ -7,8 +7,7 @@
 #include <vector>
 
 #include "kernel/framework/command/include_me.hpp"
-// #include "kernel/utility/common/exception.hpp"
-#include "kernel/utility/defines/holy_trinity.hpp"
+#include "kernel/utility/macroses/holy_trinity.hpp"
 
 #include "variable.hpp"
 
@@ -29,21 +28,21 @@ class VariableStorage : public CommandCaller
 public:
     VariableStorage();
 
-    void setVariable(size_t a_number, bool a_value);
-    void setVariable(size_t a_number, int a_value);
-    void setVariable(size_t a_number, const char* a_value);
-    void setVariable(size_t a_number, const std::string& a_value);
-    int getVariable(size_t a_number) const;
+    void setVariable(int a_number, bool a_value);
+    void setVariable(int a_number, int a_value);
+    void setVariable(int a_number, const char* a_value);
+    void setVariable(int a_number, const std::string& a_value);
+    int getVariable(int a_number) const;
 
-    size_t addVariableInfo(const std::string& a_var_name);
-    size_t addVariableInfo(const std::string& a_var_name,
-                           int a_min_value,
-                           int a_max_value);
-    size_t addVariableInfo(const std::string& a_var_name,
-                           const std::vector<std::string>& a_values);
-    size_t addBoolVariable(const std::string& a_var_name);
+    int addVariableInfo(const std::string& a_var_name);
+    int addVariableInfo(const std::string& a_var_name,
+                        int a_min_value,
+                        int a_max_value);
+    int addVariableInfo(const std::string& a_var_name,
+                        const std::vector<std::string>& a_values);
+    int addBoolVariable(const std::string& a_var_name);
 
-    size_t getCurrentOffset() const noexcept;
+    int getCurrentOffset() const noexcept;
 
 protected:
     void init();
@@ -53,29 +52,14 @@ private:
     std::vector<Variable> m_variables;
     std::unordered_map<std::string, int> m_name_to_var_dict;
 
-    void varIdCheck(size_t a_value_num) const;
+    void varIdCheck(int a_value_num) const;
     void loadVars(core::Command& a_command) const;
 
     template <typename T>
-    void setVariableTamplate(size_t a_number, T a_value);
-    // {
-    //     varIdCheck(a_number);
-    //     if (!m_variables[a_number].setValue(a_value))
-    //     {
-    //         // THROW("Failed to set value '{}' for '{}' variable.",
-    //         a_value,
-    //         //       m_variables[a_number].getName());
-    //     }
-    // }
+    void setVariableTamplate(int a_number, T a_value);
 
     template <typename... Args>
-    size_t addVariableInfoTamplate(const std::string& a_var_name, Args... args);
-    // {
-    //     size_t retult = m_variables.size();
-    //     m_variables.emplace_back(a_var_name, args...);
-    //     m_name_to_var_dict[a_var_name] = retult;
-    //     return retult;
-    // }
+    int addVariableInfoTamplate(const std::string& a_var_name, Args... args);
 
     COMMAND_HANDLER(setCommandHandler, 0);
     COMMAND_HANDLER(showVarCommandHandler, 1);

@@ -42,6 +42,11 @@ public:
         return a_data.size();
     }
 
+    static inline int exec(const std::unique_ptr<char[]>& a_data)
+    {
+        return std::strlen(a_data.get());
+    }
+
 private:
     template <typename T>
     static inline int intSize(T a_data)

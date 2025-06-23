@@ -10,9 +10,6 @@ macro(collect_src)
 
     if (NOT ${IS_TEST})
         list(FILTER project_sources EXCLUDE REGEX "_tests/*")
-        # if (${TARGET} MATCHES "kernel")
-        #     list(FILTER project_sources EXCLUDE REGEX "tester/*")
-        # endif()
     endif()
     
     target_include_directories(${TARGET} PUBLIC "sources/")
@@ -24,7 +21,7 @@ macro(get_subdirectory_list RESULT_VAR DIR)
 
     set(RESULT "")
     foreach(OBJ ${OBJ_LIST})
-        if(IS_DIRECTORY ${curdir}/${OBJ})
+        if(IS_DIRECTORY ${OBJ})
             list(APPEND RESULT ${OBJ})
         endif()
     endforeach()

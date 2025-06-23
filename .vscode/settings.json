@@ -116,6 +116,8 @@
         "hash_map": "cpp",
         "hash_set": "cpp",
         "slist": "cpp",
-        "expected": "cpp"
+        "expected": "cpp",
+        "xmemory": "cpp",
+        "xstring": "cpp"
     }
 }

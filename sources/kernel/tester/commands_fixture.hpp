@@ -11,13 +11,16 @@ namespace kustest
 
 class CommandsFixture : public KernelFixture
 {
+public:
+    void terminateKernel();
+    std::string execCommand(const std::string& a_command);
+
 protected:
     CommandsFixture();
     ~CommandsFixture();
 
-    std::string execCommand(const std::string& a_command);
-
 private:
+    std::atomic<bool> m_is_running;
     std::thread m_exec_thread;
     core::InputBuffer m_input_buffer;
 

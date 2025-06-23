@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <regex>
+#include <utility>
 
 //------------------------------------------------------------------------------
 
@@ -21,6 +22,16 @@ core::ColumnInfo::setSeparator(char a_separator)
 }
 
 //------------------------------------------------------------------------------
+
+void
+core::ColumnInfo::alignmentSwitch(Alignment a_alignment)
+{
+    auto align = std::exchange(m_alignment, Alignment::NUN);
+
+    if (align == Alignment::RIGHT) alignmentRight();
+    if (align == Alignment::MIDDLE) alignmentMiddle();
+    if (align == Alignment::LEFT) alignmentLeft();
+}
 
 core::ColumnInfo&
 core::ColumnInfo::alignmentRight()

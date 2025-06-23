@@ -39,6 +39,11 @@ public:
     {
         return a_data.data();
     }
+
+    static inline const char* exec(const std::unique_ptr<char[]>& a_data)
+    {
+        return a_data.get();
+    }
 };
 
 } // namespace util

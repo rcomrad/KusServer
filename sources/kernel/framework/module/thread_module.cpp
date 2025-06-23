@@ -4,7 +4,7 @@
 
 #include "kernel/framework/core/kernel.hpp"
 #include "kernel/framework/logger/include_me.hpp"
-#include "kernel/utility/synchronization/yield.hpp"
+#include "kernel/utility/synchronization/sleep.hpp"
 
 #include "module_func_try_block.hpp"
 
@@ -57,13 +57,13 @@ core::ThreadModule::threadTerminate()
 core::State
 core::ThreadModule::getThreadState() const noexcept
 {
-    return m_thread_module.getState();
+    return m_sync_state.getThreadState();
 }
 
 const std::vector<core::State>&
-core::ThreadModule::getThreadStateHistory() const noexcept
+core::ThreadModule::getThreadHistory() const noexcept
 {
-    return m_thread_module.getStateHistory();
+    return m_sync_state.getThreadHistory();
 }
 
 //------------------------------------------------------------------------------
@@ -77,8 +77,6 @@ core::ThreadModule::isRunning() const noexcept
 void
 core::ThreadModule::threadLoop() noexcept
 {
-    LOGGER_INIT(getName());
-
     bool flag = true;
     while (flag)
     {
@@ -87,7 +85,7 @@ core::ThreadModule::threadLoop() noexcept
             m_thread_module.close();
         }
         flag = m_thread_module.execute();
-        util::Yield::small();
+        util::Sleep::yield();
     }
     m_is_running = false;
 }
