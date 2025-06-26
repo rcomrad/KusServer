@@ -6,6 +6,8 @@
 #include <vector>
 
 #include "engine/render_manager/commands/command_pool.hpp"
+#include "engine/render_manager/descriptors/descriptor_manager.hpp"
+#include "engine/render_manager/renderer/render_system.hpp"
 #include "engine/render_manager/renderer/renderer.hpp"
 
 #include "swap_chain_frame.hpp"
@@ -31,8 +33,8 @@ public:
 
     // bool recreate(const Window& window, const Instance& instance);
 
-    // TODO: map framebuffers
-    size_t createSwapChainFrames();
+    size_t createSwapChainFrames(const RenderSystem& render_system,
+                                 const DescriptorManager& desc_manager);
 
     void createSurface(const kusengine::Window& window,
                        const Instance& instance) noexcept(false);

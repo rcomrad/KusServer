@@ -8,45 +8,36 @@
 #include "engine/render_manager/buffers/storage_buffer.hpp"
 #include "engine/render_manager/buffers/uniform_buffer.hpp"
 #include "engine/render_manager/commands/command_buffer.hpp"
-#include "engine/render_manager/descriptors/descriptor_manager.hpp"
 
 #include "synchronization_control.hpp"
 
-namespace kusengine
-{
-namespace render
+namespace kusengine::render
 {
 class SwapChain;
+class DescriptorAllocator;
 
 class SwapChainFrame
 {
 public:
-    void addFrameBuffer(std::string_view key,
-                        const vk::RenderPass& render_pass,
-                        const vk::Extent2D& extent);
-
     const vk::CommandBuffer& commandBuffer() const& noexcept;
 
     const SynchronizationControl& synControl() const& noexcept;
 
     const std::vector<vk::DescriptorSet>& descriptorSets() const& noexcept;
 
+    void addFrameBuffer(std::string_view key,
+                        const vk::RenderPass& render_pass,
+                        const vk::Extent2D& extent);
+
     const vk::Framebuffer& getBuffer(const std::string& key) const&;
 
-    // const vk::Framebuffer& framebuffer() const noexcept;
-
-    // Image part
     void createImage(const vk::Image& image, const vk::Format& format);
 
     void createSynchronization();
 
-    // Command Buffer
     void createCommandBuffer();
 
-    void waitForFence();
-
-    void submitCommandBuffer();
-
+    void createDescriptorSet(const DescriptorAllocator& desc_alloc);
     // Resourcers
 
     template <typename UBOType>
@@ -62,10 +53,13 @@ public:
         writeDescriptorSetMBDD();
     }
 
-    void createDescriptorSet(const DescriptorManager& descriptor_manager);
-
     void writeDescriptorSetUBO();
     void writeDescriptorSetMBDD();
+
+    //
+    void waitForFence();
+
+    void submitCommandBuffer();
 
 private:
     SynchronizationControl m_sync_control;
@@ -79,10 +73,10 @@ private:
     // Resources
 
     UniformBuffer m_uniform_buffer;
-    std::vector<vk::DescriptorSet> m_descriptor_sets;
 
     StorageBuffer m_storage_buffer;
+    std::vector<vk::DescriptorSet> m_descriptor_sets;
 };
-}; // namespace render
-}; // namespace kusengine
+
+}; // namespace kusengine::render
 #endif // SWAP_CHAIN_FRAME_HPP

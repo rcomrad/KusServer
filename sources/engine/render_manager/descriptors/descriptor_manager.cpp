@@ -55,6 +55,12 @@ DescriptorManager::setupDefaultBindingsData()
                  default_fragment_shader_bindings_data);
 }
 
+void
+DescriptorManager::translateDescriptorDataToFrame(SwapChainFrame& frame) const
+{
+    frame.createDescriptorSet(
+        m_descriptor_allocator_storage.at("default_vertex_shader"));
+}
 // void
 // DescriptorManager::init(
 //     const std::vector<std::vector<DescriptorBindingData>>& bindings)

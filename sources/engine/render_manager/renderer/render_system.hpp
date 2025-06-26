@@ -30,6 +30,8 @@ public:
 
     void setExtent(const vk::Extent2D& extent);
 
+    void translateRenderPassesToFrame(SwapChainFrame& frame) const;
+
 private:
     vk::UniquePipelineLayout makePipelineLayout(
         const std::vector<vk::DescriptorSetLayout>& layouts);

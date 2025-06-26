@@ -36,9 +36,10 @@ RenderManager::init(const kusengine::Window& window)
     m_render_system.setup(m_descriptor_manager, m_swap_chain.extent(),
                           m_swap_chain.format());
 
-    frame_number = 0;
+    max_frames_in_flight = m_swap_chain.createSwapChainFrames(
+        m_render_system, m_descriptor_manager);
 
-    max_frames_in_flight = m_swap_chain.createSwapChainFrames();
+    frame_number = 0;
 }
 
 void

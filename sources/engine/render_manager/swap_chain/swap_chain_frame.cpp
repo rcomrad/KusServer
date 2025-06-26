@@ -2,14 +2,13 @@
 
 #include <iostream>
 
+#include "engine/render_manager/descriptors/descriptor_manager.hpp"
+
 #include "swap_chain.hpp"
 #include "synchronization_control.hpp"
-
-namespace kusengine
+namespace kusengine::render
 {
 
-namespace render
-{
 // void
 // SwapChainFrame::fillDescriptorSets(std::vector<vk::DescriptorSet>& d_sets)
 // const
@@ -133,19 +132,9 @@ SwapChainFrame::writeDescriptorSetMBDD()
 }
 
 void
-SwapChainFrame::createDescriptorSet(const DescriptorManager& descriptor_manager)
+SwapChainFrame::createDescriptorSet(const DescriptorAllocator& desc_alloc)
 {
-
-    vk::DescriptorSetAllocateInfo allocationInfo;
-
-    // allocationInfo.descriptorPool =
-    //     descriptor_manager.descriptorConstructs()[0].pool.descriptorPool();
-    // allocationInfo.descriptorSetCount = 1;
-    // allocationInfo.pSetLayouts =
-    //     &(descriptor_manager.descriptorSetLayoutVector()[0]);
-
-    m_descriptor_sets =
-        LOGICAL_DEVICE_INSTANCE.allocateDescriptorSets(allocationInfo);
+    desc_alloc.allocate(m_descriptor_sets[0]);
 }
 
 void
@@ -190,5 +179,5 @@ SwapChainFrame::submitCommandBuffer()
     DEVICE_INSTANCE.getQueue("graphics")
         .submit(submitInfo, m_sync_control.inFlightFence());
 }
-}; // namespace render
-}; // namespace kusengine
+
+}; // namespace kusengine::render

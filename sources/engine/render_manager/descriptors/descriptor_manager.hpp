@@ -6,6 +6,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "engine/render_manager/swap_chain/swap_chain_frame.hpp"
+
 #include "descriptor_allocator.hpp"
 
 namespace kusengine::render
@@ -21,6 +23,8 @@ public:
         const std::string& key) const& noexcept;
 
     void setup();
+
+    void translateDescriptorDataToFrame(SwapChainFrame& frame) const;
 
 private:
     void setupDefaultBindingsData();

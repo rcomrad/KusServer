@@ -15,6 +15,8 @@ public:
 
     void allocate(vk::UniqueDescriptorSet& set) const;
 
+    void allocate(vk::DescriptorSet& set) const;
+
 private:
     DescriptorSetLayout m_layout;
     DescriptorPool m_pool;

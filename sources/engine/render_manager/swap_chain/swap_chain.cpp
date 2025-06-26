@@ -177,7 +177,8 @@ SwapChain::create(uint32_t width, uint32_t height)
 }
 
 size_t
-SwapChain::createSwapChainFrames()
+SwapChain::createSwapChainFrames(const RenderSystem& render_system,
+                                 const DescriptorManager& desc_manager)
 {
     auto images =
         LOGICAL_DEVICE_INSTANCE.getSwapchainImagesKHR(m_swapchain.get());
@@ -186,15 +187,14 @@ SwapChain::createSwapChainFrames()
     for (int i = 0; i < images.size(); ++i)
     {
         m_frames[i].createImage(images[i], m_format);
-        // m_frames[i].createFrameBuffer(
-        //     render_way_storage.getRenderWay(RenderWayType::UNIVERSAL)
-        //         ->renderPass(),
-        // m_extent);
+
+        render_system.translateRenderPassesToFrame(m_frames[i]);
+
         m_frames[i].createCommandBuffer();
         m_frames[i].createSynchronization();
-        // m_frames[i].createDescriptorSet(
-        //     render_way_storage.getRenderWay(RenderWayType::UNIVERSAL)
-        //         ->descManager());
+
+        desc_manager.translateDescriptorDataToFrame(m_frames[i]);
+
     }
     return images.size();
 }

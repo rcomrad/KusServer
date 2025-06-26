@@ -114,6 +114,16 @@ RenderSystem::setExtent(const vk::Extent2D& extent)
 }
 
 void
+RenderSystem::translateRenderPassesToFrame(SwapChainFrame& frame) const
+{
+    for (auto& pass : m_render_passes)
+    {
+        frame.addFrameBuffer(pass.first, pass.second.get()->renderPass(),
+                             m_extent);
+    }
+}
+
+void
 RenderSystem::execute(const SwapChainFrame& frame,
                       const std::string& pass_name,
                       const vk::CommandBuffer& cmd)
