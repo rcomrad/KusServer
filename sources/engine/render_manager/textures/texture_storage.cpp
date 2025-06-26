@@ -9,9 +9,9 @@
 
 using json = nlohmann::json;
 
-namespace kusengine
+namespace kusengine::render
 {
-namespace render{
+
 TextureStorage&
 TextureStorage::getInstance()
 {
@@ -56,9 +56,9 @@ TextureStorage::addTexture(const std::string& file_path,
     {
         auto text_ptr = std::make_shared<Texture>();
         text_ptr->loadTexture(file_path);
-        text_ptr->allocDescriptorSet(
-            descriptor_manager.descriptorConstructs()[1].pool.descriptorPool(),
-            descriptor_manager.descriptorSetLayoutVector()[1]);
+
+        text_ptr->allocDescriptorSet("default_fragment_shader",
+                                     descriptor_manager);
 
         m_texture_storage[texture_name] = text_ptr;
     }
@@ -85,6 +85,4 @@ TextureStorage::getTexture(std::string_view keyval) const
 
     return res;
 }
-}; // namespace render
-
-}; // namespace kusengine
+}; // namespace kusengine::render

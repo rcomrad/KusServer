@@ -8,7 +8,7 @@ namespace kusengine
 {
 namespace render
 {
-struct UniversalMBDD // use 4, not 3, because shader alligning
+struct MODEL4x4_COLOR_MBDD // use 4, not 3, because shader alligning
 {
     glm::vec4 color = {1.f, 1.f, 1.f, 1.f};
     glm::mat4 model = {1};

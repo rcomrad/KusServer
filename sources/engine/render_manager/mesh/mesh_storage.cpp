@@ -12,9 +12,8 @@ MeshStorage::MeshStorage()
 {
 }
 
-const Mesh<UniversalVertex>* const
-MeshStorage::getMeshImpl(std::string_view key,
-                         EmptyStruct<UniversalVertex>) const
+const Mesh<VertexP1UV1>* const
+MeshStorage::getMeshImpl(std::string_view key, EmptyStruct<VertexP1UV1>) const
 {
     auto it = m_universal_mesh_storage.find(key.data());
 
@@ -29,10 +28,10 @@ MeshStorage::getMeshImpl(std::string_view key,
 
 void
 MeshStorage::addMeshImpl(const std::vector<uint32_t>& indices,
-                         const std::vector<UniversalVertex>& vertices,
+                         const std::vector<VertexP1UV1>& vertices,
                          const std::string& key)
 {
-    m_universal_mesh_storage[key] = Mesh<UniversalVertex>(indices, vertices);
+    m_universal_mesh_storage[key] = Mesh<VertexP1UV1>(indices, vertices);
 }
 
 }; // namespace render

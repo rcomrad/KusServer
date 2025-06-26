@@ -1,41 +1,70 @@
 #include "descriptor_manager.hpp"
 
-namespace kusengine
+namespace kusengine::render
 {
-namespace render
-{
-const std::vector<vk::DescriptorSetLayout>&
-DescriptorManager::descriptorSetLayoutVector() const noexcept
-{
-    return m_vk_layouts;
-}
-
-const std::vector<DescriptorManager::DescriptorConstruct>&
-DescriptorManager::descriptorConstructs() const noexcept
-{
-    return m_descriptor_constructors;
-}
 
 void
-DescriptorManager::addDescriptorConstruct(
+DescriptorManager::addAllocator(
+    const std::string& key,
     const std::vector<DescriptorBindingData>& binding_data)
 {
-    DescriptorConstruct construct;
-    construct.layout.create(binding_data);
-    construct.pool.create(binding_data, 100, 100);
-    m_descriptor_constructors.emplace_back(std::move(construct));
+    m_descriptor_allocator_storage[key].init(binding_data);
+}
+
+const DescriptorAllocator&
+DescriptorManager::getAllocator(const std::string& key) const& noexcept
+{
+    return m_descriptor_allocator_storage.at(key);
 }
 
 void
-DescriptorManager::init(
-    const std::vector<std::vector<DescriptorBindingData>>& bindings)
+DescriptorManager::setup()
 {
-    for (int i = 0; i < bindings.size(); ++i)
-    {
-        addDescriptorConstruct(bindings[0]);
-        m_vk_layouts.emplace_back(
-            m_descriptor_constructors[i].layout.descriptorSetLayout());
-    }
+    setupDefaultBindingsData();
 }
-}; // namespace render
-}; // namespace kusengine
+
+void
+DescriptorManager::setupDefaultBindingsData()
+{
+    std::vector<DescriptorBindingData> default_vertex_shader_bindings_data;
+    default_vertex_shader_bindings_data[0].count         = 1;
+    default_vertex_shader_bindings_data[0].binding_index = 0;
+    default_vertex_shader_bindings_data[0].stage =
+        vk::ShaderStageFlagBits::eVertex;
+    default_vertex_shader_bindings_data[0].type =
+        vk::DescriptorType::eUniformBuffer;
+
+    default_vertex_shader_bindings_data[0].count         = 1;
+    default_vertex_shader_bindings_data[0].binding_index = 1;
+    default_vertex_shader_bindings_data[0].stage =
+        vk::ShaderStageFlagBits::eVertex;
+    default_vertex_shader_bindings_data[0].type =
+        vk::DescriptorType::eStorageBuffer;
+
+    addAllocator("default_vertex_shader", default_vertex_shader_bindings_data);
+
+    std::vector<DescriptorBindingData> default_fragment_shader_bindings_data;
+    default_fragment_shader_bindings_data[0].count         = 1;
+    default_fragment_shader_bindings_data[0].binding_index = 0;
+    default_fragment_shader_bindings_data[0].stage =
+        vk::ShaderStageFlagBits::eFragment;
+    default_fragment_shader_bindings_data[0].type =
+        vk::DescriptorType::eCombinedImageSampler;
+
+    addAllocator("default_fragment_shader",
+                 default_fragment_shader_bindings_data);
+}
+
+// void
+// DescriptorManager::init(
+//     const std::vector<std::vector<DescriptorBindingData>>& bindings)
+// {
+//     for (int i = 0; i < bindings.size(); ++i)
+//     {
+//         addDescriptorConstruct(bindings[0]);
+//         m_vk_layouts.emplace_back(
+//             m_descriptor_constructors[i].layout.descriptorSetLayout());
+//     }
+// }
+
+}; // namespace kusengine::render

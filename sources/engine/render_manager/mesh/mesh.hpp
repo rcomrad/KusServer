@@ -1,48 +1,51 @@
 #ifndef MESH_HPP
 #define MESH_HPP
-#include "engine/render_manager/vertex/vertex.hpp"
+
+#include <vector>
 
 namespace kusengine
 {
 namespace render
 {
 
-template <typename VertexType>
+template <typename VertexT>
 class Mesh
 {
-    friend bool operator==(const Mesh& left, const Mesh& right);
+    template <typename opVertexT>
+    friend bool operator==(const Mesh<opVertexT>& left,
+                           const Mesh<opVertexT>& right);
 
 public:
     Mesh() = default;
 
     Mesh(const std::vector<uint32_t>& indices,
-         const std::vector<VertexType>& vertices);
+         const std::vector<VertexT>& vertices);
 
-    void setVertices(const std::vector<VertexType>& vertices);
+    void setVertices(const std::vector<VertexT>& vertices);
     // void setVertices(const std::initializer_list<UniversalVertex>& vertices);
 
     void setIndices(const std::vector<uint32_t>& indices);
 
-    void pushData(std::vector<typename VertexType::Attributes>& vertices,
+    void pushData(std::vector<typename VertexT::Attributes>& vertices,
                   std::vector<uint32_t>& indices) const;
 
 private:
-    std::vector<typename VertexType::Attributes> m_vertices;
+    std::vector<typename VertexT::Attributes> m_vertices;
 
     std::vector<uint32_t> m_indices;
 };
 
-template <typename VertexType>
-Mesh<VertexType>::Mesh(const std::vector<uint32_t>& indices,
-                       const std::vector<VertexType>& vertices)
+template <typename VertexT>
+Mesh<VertexT>::Mesh(const std::vector<uint32_t>& indices,
+                    const std::vector<VertexT>& vertices)
 {
     setIndices(indices);
     setVertices(vertices);
 }
 
-template <typename VertexType>
+template <typename VertexT>
 void
-Mesh<VertexType>::setVertices(const std::vector<VertexType>& vertices)
+Mesh<VertexT>::setVertices(const std::vector<VertexT>& vertices)
 {
     size_t size = vertices.size();
 
@@ -54,17 +57,16 @@ Mesh<VertexType>::setVertices(const std::vector<VertexType>& vertices)
     }
 }
 
-template <typename VertexType>
+template <typename VertexT>
 void
-Mesh<VertexType>::setIndices(const std::vector<uint32_t>& indices)
+Mesh<VertexT>::setIndices(const std::vector<uint32_t>& indices)
 {
     m_indices = indices;
 }
-template <typename VertexType>
+template <typename VertexT>
 void
-Mesh<VertexType>::pushData(
-    std::vector<typename VertexType::Attributes>& vertices,
-    std::vector<uint32_t>& indices) const
+Mesh<VertexT>::pushData(std::vector<typename VertexT::Attributes>& vertices,
+                        std::vector<uint32_t>& indices) const
 {
     // Vertices
 
@@ -87,9 +89,9 @@ Mesh<VertexType>::pushData(
               indices.data() + old_ind_size);
 }
 
-template <typename VertexType>
+template <typename VertexT>
 bool
-operator==(const Mesh<VertexType>& left, const Mesh<VertexType>& right)
+operator==(const Mesh<VertexT>& left, const Mesh<VertexT>& right)
 {
     return left.m_vertices == right.m_vertices &&
            left.m_indices == right.m_indices;

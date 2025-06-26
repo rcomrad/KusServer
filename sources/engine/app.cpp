@@ -22,11 +22,11 @@ App::compileShaders()
 
     std::string vertex_shader_path = sources_path.value().data();
     vertex_shader_path +=
-        "engine/render_manager/shaders/spirv/vertex_shader.vert";
+        "engine/render_manager/shaders/spirv/default_vertex_shader.vert";
 
     std::string fragment_shader_path = sources_path.value().data();
     fragment_shader_path +=
-        "engine/render_manager/shaders/spirv/fragment_shader.frag";
+        "engine/render_manager/shaders/spirv/default_fragment_shader.frag";
 
     auto dst_path = std::format("{}{}", sources_path.value(),
                                 "engine/render_manager/shaders/compiled/");
@@ -50,6 +50,8 @@ App::initApp()
     catch (...)
     {
     }
+
+    render::RenderManager::getInstance().registerScene(&m_scene);
 
     return true;
 };

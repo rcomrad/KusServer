@@ -3,43 +3,35 @@
 
 #include <vulkan/vulkan.hpp>
 
-#include <map>
+#include <string>
+#include <unordered_map>
 
-#include "descriptor_pool.hpp"
-#include "descriptor_set_layout.hpp"
+#include "descriptor_allocator.hpp"
 
-namespace kusengine
+namespace kusengine::render
 {
-namespace render
-{
+
 class DescriptorManager
 {
 public:
-    struct DescriptorConstruct
-    {
-        DescriptorSetLayout layout;
-        DescriptorPool pool;
-    };
+    void addAllocator(const std::string& key,
+                      const std::vector<DescriptorBindingData>& binding_data);
 
-    DescriptorManager() = default;
+    const DescriptorAllocator& getAllocator(
+        const std::string& key) const& noexcept;
 
-    void init(const std::vector<std::vector<DescriptorBindingData>>& bindings);
-
-    const std::vector<vk::DescriptorSetLayout>& descriptorSetLayoutVector()
-        const noexcept;
-
-    const std::vector<DescriptorConstruct>& descriptorConstructs()
-        const noexcept;
+    void setup();
 
 private:
+    void setupDefaultBindingsData();
+
     void addDescriptorConstruct(
         const std::vector<DescriptorBindingData>& binding_data);
 
-    std::vector<DescriptorConstruct> m_descriptor_constructors;
-
-    std::vector<vk::DescriptorSetLayout> m_vk_layouts;
+    std::unordered_map<std::string, DescriptorAllocator>
+        m_descriptor_allocator_storage;
 };
-}; // namespace render
-}; // namespace kusengine
+
+}; // namespace kusengine::render
 
 #endif // DESCRIPTOR_MANAGER_HPP

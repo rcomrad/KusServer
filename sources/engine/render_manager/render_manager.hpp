@@ -1,29 +1,23 @@
 #ifndef RENDER_MANAGER_HPP
 #define RENDER_MANAGER_HPP
 
-// universal drawable system
-#include "engine/render_manager/drawable/basic_drawable.hpp"
-#include "engine/render_manager/drawable/drawable_system.hpp"
-#include "engine/render_manager/drawable/drawable_system_storage.hpp"
-#include "engine/render_manager/drawable/universal/universal_drawable.hpp"
-#include "engine/render_manager/dynamics_data/mbddi_buffer/mbdd_structs.hpp"
-#include "engine/render_manager/dynamics_data/uniform_buffer_object.hpp"
 //
-#include "engine/render_manager/descriptors/descriptor_manager.hpp"
-#include "engine/render_manager/instance/instance.hpp"
-#include "engine/render_manager/swap_chain/swap_chain.hpp"
-#include "renderer/render_way_storage.hpp"
+#include "descriptors/descriptor_manager.hpp"
+#include "instance/instance.hpp"
 #include "renderer/renderer.hpp"
+#include "swap_chain/swap_chain.hpp"
 //
+#include "drawable/drawable_system_storage.hpp"
+#include "drawable/drawable_usings.hpp"
+#include "renderer/render_system.hpp"
+#include "scene/basic_scene.hpp"
+
 namespace kusengine
 {
 class Window;
 
 namespace render
 {
-
-using UniversalDrawableSystem =
-    DrawableSystem<UniversalDrawable, UniversalMBDD, UBO>;
 
 class RenderManager
 {
@@ -42,7 +36,9 @@ private:
     //
     // --------- draw -------- //
 public:
-    void draw();
+    void registerScene(BasicScene* const basic_scene);
+
+    void draw(BasicScene* const basic_scene);
 
 private:
     int max_frames_in_flight;
@@ -52,10 +48,11 @@ private:
 
     SwapChain m_swap_chain;
 
-    RenderWayStorage m_render_way_storage;
+    RenderSystem m_render_system;
 
-    DrawableSystemStorage<UniversalDrawableSystem>
-        m_universal_drawable_system_storage;
+    DrawableSystemStorage<DrawableSystem_P1UV1_TRS> m_drawable_system_storage;
+
+    DescriptorManager m_descriptor_manager;
 
     // ----------------------- //
     //

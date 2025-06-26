@@ -8,11 +8,12 @@
 namespace kusengine
 {
 
-namespace render{
+namespace render
+{
 
 struct DescriptorBindingData
 {
-    int index;
+    int binding_index;
     vk::DescriptorType type;
     int count;
     vk::ShaderStageFlags stage;

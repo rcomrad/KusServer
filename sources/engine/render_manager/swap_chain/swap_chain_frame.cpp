@@ -21,28 +21,34 @@ namespace render
 // }
 
 const std::vector<vk::DescriptorSet>&
-SwapChainFrame::descriptorSets() const noexcept
+SwapChainFrame::descriptorSets() const& noexcept
 {
     return m_descriptor_sets;
 }
 
 const SynchronizationControl&
-SwapChainFrame::synControl() const noexcept
+SwapChainFrame::synControl() const& noexcept
 {
     return m_sync_control;
 }
 
 const vk::CommandBuffer&
-SwapChainFrame::commandBuffer() const noexcept
+SwapChainFrame::commandBuffer() const& noexcept
 {
     return m_command_buffer.commandBuffer();
 }
 
 const vk::Framebuffer&
-SwapChainFrame::framebuffer() const noexcept
+SwapChainFrame::getBuffer(const std::string& key) const&
 {
-    return m_framebuffer.get();
+    return m_framebuffers.at(key).get();
 }
+
+// const vk::Framebuffer&
+// SwapChainFrame::framebuffer() const noexcept
+// {
+//     return m_framebuffer.get();
+// }
 
 void
 SwapChainFrame::createImage(const vk::Image& image, const vk::Format& format)
@@ -67,8 +73,9 @@ SwapChainFrame::createImage(const vk::Image& image, const vk::Format& format)
 }
 
 void
-SwapChainFrame::createFrameBuffer(const vk::RenderPass& renderpass,
-                                  const vk::Extent2D& extent)
+SwapChainFrame::addFrameBuffer(std::string_view key,
+                               const vk::RenderPass& renderpass,
+                               const vk::Extent2D& extent)
 {
     std::vector<vk::ImageView> attachments = {m_view.get()};
 
@@ -81,7 +88,7 @@ SwapChainFrame::createFrameBuffer(const vk::RenderPass& renderpass,
     framebufferInfo.height          = extent.height;
     framebufferInfo.layers          = 1;
 
-    m_framebuffer =
+    m_framebuffers[key.data()] =
         LOGICAL_DEVICE_INSTANCE.createFramebufferUnique(framebufferInfo);
 }
 
@@ -131,11 +138,11 @@ SwapChainFrame::createDescriptorSet(const DescriptorManager& descriptor_manager)
 
     vk::DescriptorSetAllocateInfo allocationInfo;
 
-    allocationInfo.descriptorPool =
-        descriptor_manager.descriptorConstructs()[0].pool.descriptorPool();
-    allocationInfo.descriptorSetCount = 1;
-    allocationInfo.pSetLayouts =
-        &(descriptor_manager.descriptorSetLayoutVector()[0]);
+    // allocationInfo.descriptorPool =
+    //     descriptor_manager.descriptorConstructs()[0].pool.descriptorPool();
+    // allocationInfo.descriptorSetCount = 1;
+    // allocationInfo.pSetLayouts =
+    //     &(descriptor_manager.descriptorSetLayoutVector()[0]);
 
     m_descriptor_sets =
         LOGICAL_DEVICE_INSTANCE.allocateDescriptorSets(allocationInfo);

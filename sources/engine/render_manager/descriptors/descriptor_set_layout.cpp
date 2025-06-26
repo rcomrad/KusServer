@@ -17,7 +17,7 @@ DescriptorSetLayout::create(const std::vector<DescriptorBindingData>& data)
     for (int i = 0; i < data.size(); i++)
     {
         vk::DescriptorSetLayoutBinding layout_binding;
-        layout_binding.binding            = data[i].index;
+        layout_binding.binding            = data[i].binding_index;
         layout_binding.descriptorType     = data[i].type;
         layout_binding.descriptorCount    = data[i].count;
         layout_binding.stageFlags         = data[i].stage;
@@ -33,7 +33,8 @@ DescriptorSetLayout::create(const std::vector<DescriptorBindingData>& data)
     try
     {
         m_descriptor_set_layout =
-            LOGICAL_DEVICE_INSTANCE.createDescriptorSetLayoutUnique(layout_info);
+            LOGICAL_DEVICE_INSTANCE.createDescriptorSetLayoutUnique(
+                layout_info);
     }
     catch (vk::SystemError err)
     {

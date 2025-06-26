@@ -65,24 +65,21 @@ Texture::loadTexture(std::string_view file_path)
 }
 
 void
-Texture::allocDescriptorSet(const vk::DescriptorPool& pool,
-                            const vk::DescriptorSetLayout& layout)
+Texture::allocDescriptorSet(const std::string& alloc_name,
+                            const DescriptorManager& desc_manager)
 {
-    vk::DescriptorSetAllocateInfo allocInfo(pool, 1, &layout);
 
-    m_descriptor_set =
-        std::move(LOGICAL_DEVICE_INSTANCE.allocateDescriptorSetsUnique(allocInfo)[0]);
+    desc_manager.getAllocator(alloc_name).allocate(m_descriptor_set);
 
     vk::DescriptorImageInfo imageInfo(m_sampler.get(), m_image.view(),
                                       vk::ImageLayout::eShaderReadOnlyOptimal);
-
-    // Обновляем дескриптор
     vk::WriteDescriptorSet descriptorWrite(
         m_descriptor_set.get(), 0, 0, 1,
         vk::DescriptorType::eCombinedImageSampler, &imageInfo, nullptr,
         nullptr);
 
-    LOGICAL_DEVICE_INSTANCE.updateDescriptorSets(1, &descriptorWrite, 0, nullptr);
+    LOGICAL_DEVICE_INSTANCE.updateDescriptorSets(1, &descriptorWrite, 0,
+                                                 nullptr);
 }
 
 // const vk::DescriptorSet&

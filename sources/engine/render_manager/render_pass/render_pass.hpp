@@ -7,18 +7,30 @@ namespace kusengine
 {
 namespace render
 {
+
+struct RenderPassConfigInfo
+{
+    vk::Format swap_chain_format;
+};
+
 class RenderPass
 {
 public:
     RenderPass() = default;
 
-    void init(vk::Format swap_chain_format);
+    RenderPass(const RenderPassConfigInfo& render_pass_info);
+
+    void create(const RenderPassConfigInfo& render_pass_info);
 
     const vk::RenderPass& renderPass() const;
 
-private:
-    void createRenderPass(vk::Format swap_chain_format);
+    void begin(const vk::CommandBuffer& cmd,
+               const vk::Framebuffer& framebuffer,
+               const vk::Extent2D& extent);
 
+    void end(const vk::CommandBuffer& cmd);
+
+private:
     vk::UniqueRenderPass m_render_pass;
 };
 }; // namespace render

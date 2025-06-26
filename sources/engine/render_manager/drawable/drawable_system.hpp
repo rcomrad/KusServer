@@ -11,10 +11,11 @@ namespace kusengine
 namespace render
 {
 
-template <typename DrawableType_, typename MBBDType, typename UBOType>
+template <typename DrawableT, typename MBBDType, typename UBOType>
 class DrawableSystem
 {
 public:
+    using DrawableType = DrawableT;
 
     DrawableSystem() = default;
 
@@ -24,24 +25,23 @@ public:
     void update(SwapChainFrame& frame) const;
 
     void draw(const vk::CommandBuffer& command_buffer,
-              const vk::PipelineLayout& pipelayout,
-              SwapChainFrame& frame) const;
+              const vk::PipelineLayout& pipelayout) const;
 
 private:
     bool is_empty;
 
     UBOType m_ubo;
 
-    ModelStorage<typename DrawableType_::VertexType> m_model_storage;
+    ModelStorage<typename DrawableT::VertexType> m_model_storage;
 
     std::vector<MBBDType> mbdd_data_vector;
 };
 
-template <typename DrawableType_, typename MBBDType, typename UBOType>
+template <typename DrawableT, typename MBBDType, typename UBOType>
 template <typename Iterator>
 void
-DrawableSystem<DrawableType_, MBBDType, UBOType>::resetDrawables(Iterator begin,
-                                                                Iterator end)
+DrawableSystem<DrawableT, MBBDType, UBOType>::resetDrawables(Iterator begin,
+                                                             Iterator end)
 {
     uint32_t count = end - begin;
     mbdd_data_vector.resize(count);
@@ -50,8 +50,8 @@ DrawableSystem<DrawableType_, MBBDType, UBOType>::resetDrawables(Iterator begin,
     auto it = begin;
     for (uint32_t i = 0; i < count; i++)
     {
-        auto& drawable = (it++).get();
-        auto index     = drawable->pushModel(m_model_storage);
+        auto& drawable = *((it++)->get());
+        auto index     = drawable.pushModel(m_model_storage);
 
         inds[i].first  = i;
         inds[i].second = index;
@@ -63,28 +63,29 @@ DrawableSystem<DrawableType_, MBBDType, UBOType>::resetDrawables(Iterator begin,
     {
         auto cor_index = inds[i].first;
 
-        (begin + cor_index).get()->linkData(&(mbdd_data_vector[i]));
-        (begin + cor_index).get()->updModelMatrix();
+        (begin + cor_index)->get()->linkData(&(mbdd_data_vector[i]));
+        (begin + cor_index)->get()->updModelMatrix();
     }
 
     m_model_storage.fillBuffers();
 }
-template <typename DrawableType_, typename MBBDType, typename UBOType>
+template <typename DrawableT, typename MBBDType, typename UBOType>
 void
-DrawableSystem<DrawableType_, MBBDType, UBOType>::update(
+DrawableSystem<DrawableT, MBBDType, UBOType>::update(
     SwapChainFrame& frame) const
 {
     frame.updateMBDD(mbdd_data_vector);
     frame.updateUBO(m_ubo);
 }
 
-template <typename DrawableType_, typename MBBDType, typename UBOType>
+template <typename DrawableT, typename MBBDType, typename UBOType>
 void
-DrawableSystem<DrawableType_, MBBDType, UBOType>::draw(
+DrawableSystem<DrawableT, MBBDType, UBOType>::draw(
     const vk::CommandBuffer& command_buffer,
-    const vk::PipelineLayout& pipelayout,
-    SwapChainFrame& frame) const
+    const vk::PipelineLayout& pipelayout) const
 {
+    m_model_storage.bind(command_buffer);
+    m_model_storage.draw(command_buffer);
 }
 }; // namespace render
 }; // namespace kusengine

@@ -5,18 +5,17 @@
 #define GLM_FORCE_RADIANS
 
 #include "engine/render_manager/dynamics_data/mbddi_buffer/mbdd_structs.hpp"
-#include "engine/render_manager/dynamics_data/mbddi_buffer/mbddi_buffer.hpp"
+
+#include "base_mbddi.hpp"
 
 namespace kusengine
 {
 namespace render
 {
-class UniversalMBDDI : public MBDDIBuffer<UniversalMBDD>
+class TRS_MBDDI : public BaseMBDDI<MODEL4x4_COLOR_MBDD>
 {
 public:
-    virtual ~UniversalMBDDI() = default;
-
-    UniversalMBDDI() = default;
+    virtual ~TRS_MBDDI() = default;
 
     void setRotation(float angle);
 

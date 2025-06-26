@@ -3,6 +3,8 @@
 
 #include <vulkan/vulkan.hpp>
 
+#include <unordered_map>
+
 #include "engine/render_manager/buffers/storage_buffer.hpp"
 #include "engine/render_manager/buffers/uniform_buffer.hpp"
 #include "engine/render_manager/commands/command_buffer.hpp"
@@ -19,16 +21,19 @@ class SwapChain;
 class SwapChainFrame
 {
 public:
-    SwapChainFrame() = default;
+    void addFrameBuffer(std::string_view key,
+                        const vk::RenderPass& render_pass,
+                        const vk::Extent2D& extent);
 
-    void createFrameBuffer(const vk::RenderPass& render_pass,
-                           const vk::Extent2D& extent);
+    const vk::CommandBuffer& commandBuffer() const& noexcept;
 
-    const vk::CommandBuffer& commandBuffer() const noexcept;
+    const SynchronizationControl& synControl() const& noexcept;
 
-    const SynchronizationControl& synControl() const noexcept;
+    const std::vector<vk::DescriptorSet>& descriptorSets() const& noexcept;
 
-    const vk::Framebuffer& framebuffer() const noexcept;
+    const vk::Framebuffer& getBuffer(const std::string& key) const&;
+
+    // const vk::Framebuffer& framebuffer() const noexcept;
 
     // Image part
     void createImage(const vk::Image& image, const vk::Format& format);
@@ -62,14 +67,12 @@ public:
     void writeDescriptorSetUBO();
     void writeDescriptorSetMBDD();
 
-    const std::vector<vk::DescriptorSet>& descriptorSets() const noexcept;
-
 private:
     SynchronizationControl m_sync_control;
     CommandBuffer m_command_buffer;
 
     //
-    vk::UniqueFramebuffer m_framebuffer;
+    std::unordered_map<std::string, vk::UniqueFramebuffer> m_framebuffers;
 
     vk::UniqueImageView m_view;
 

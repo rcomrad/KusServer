@@ -8,6 +8,11 @@ namespace kusengine
 namespace render
 {
 
+RenderPass::RenderPass(const RenderPassConfigInfo& render_pass_info)
+{
+    create(render_pass_info);
+}
+
 const vk::RenderPass&
 RenderPass::renderPass() const
 {
@@ -15,11 +20,11 @@ RenderPass::renderPass() const
 }
 
 void
-RenderPass::createRenderPass(vk::Format swap_chain_format)
+RenderPass::create(const RenderPassConfigInfo& render_pass_info)
 {
     vk::AttachmentDescription colorAttachment = {};
     colorAttachment.flags          = vk::AttachmentDescriptionFlags();
-    colorAttachment.format         = swap_chain_format;
+    colorAttachment.format         = render_pass_info.swap_chain_format;
     colorAttachment.samples        = vk::SampleCountFlagBits::e1;
     colorAttachment.loadOp         = vk::AttachmentLoadOp::eClear;
     colorAttachment.storeOp        = vk::AttachmentStoreOp::eStore;
@@ -50,9 +55,36 @@ RenderPass::createRenderPass(vk::Format swap_chain_format)
 }
 
 void
-RenderPass::init(vk::Format swap_chain_format)
+RenderPass::begin(const vk::CommandBuffer& cmd,
+                  const vk::Framebuffer& framebuffer,
+                  const vk::Extent2D& extent)
 {
-    createRenderPass(swap_chain_format);
+    cmd.reset();
+
+    vk::CommandBufferBeginInfo beginInfo = {};
+
+    cmd.begin(beginInfo);
+
+    vk::RenderPassBeginInfo renderPassInfo = {};
+    renderPassInfo.renderPass              = m_render_pass.get();
+    renderPassInfo.framebuffer             = framebuffer;
+
+    renderPassInfo.renderArea.offset.x = 0;
+    renderPassInfo.renderArea.offset.y = 0;
+    renderPassInfo.renderArea.extent   = extent;
+
+    renderPassInfo.clearValueCount = 1;
+    vk::ClearValue clear_value{vk::ClearColorValue(1.f, 1.f, 1.f, 1.f)};
+
+    renderPassInfo.pClearValues = &clear_value;
+
+    cmd.beginRenderPass(&renderPassInfo, vk::SubpassContents::eInline);
+}
+
+void
+RenderPass::end(const vk::CommandBuffer& cmd)
+{
+    cmd.endRenderPass();
 }
 }; // namespace render
 }; // namespace kusengine

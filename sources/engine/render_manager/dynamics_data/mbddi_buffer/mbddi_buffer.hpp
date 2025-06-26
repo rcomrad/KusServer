@@ -7,10 +7,12 @@ namespace kusengine
 {
 namespace render
 {
-template <typename MBDDType>
+template <typename MBDD_T>
 class MBDDIBuffer
 {
 public:
+    using MBDDtype = MBDD_T;
+
     virtual ~MBDDIBuffer();
 
     MBDDIBuffer();
@@ -21,44 +23,42 @@ public:
     MBDDIBuffer& operator=(const MBDDIBuffer& other);
     MBDDIBuffer& operator=(MBDDIBuffer&& other) noexcept;
 
-    void linkData(MBDDType* data);
-
 protected:
-    bool is_link;
+    MBDD_T* m_data;
 
-    MBDDType* m_data;
+    bool is_link;
 };
 
-template <typename MBDDType>
-MBDDIBuffer<MBDDType>::MBDDIBuffer() : is_link(false)
+template <typename MBDD_T>
+MBDDIBuffer<MBDD_T>::MBDDIBuffer() : is_link(false)
 {
-    m_data = new MBDDType();
+    m_data = new MBDD_T();
 }
 
-template <typename MBDDType>
-MBDDIBuffer<MBDDType>::~MBDDIBuffer()
+template <typename MBDD_T>
+MBDDIBuffer<MBDD_T>::~MBDDIBuffer()
 {
     if (is_link == false) delete m_data;
 }
 
-template <typename MBDDType>
-MBDDIBuffer<MBDDType>::MBDDIBuffer(const MBDDIBuffer& other)
+template <typename MBDD_T>
+MBDDIBuffer<MBDD_T>::MBDDIBuffer(const MBDDIBuffer& other)
 {
     *this = other;
 }
 
-template <typename MBDDType>
-MBDDIBuffer<MBDDType>::MBDDIBuffer(MBDDIBuffer&& other) noexcept
+template <typename MBDD_T>
+MBDDIBuffer<MBDD_T>::MBDDIBuffer(MBDDIBuffer&& other) noexcept
 {
     *this = std::move(other);
 }
 
-template <typename MBDDType>
-MBDDIBuffer<MBDDType>&
-MBDDIBuffer<MBDDType>::operator=(const MBDDIBuffer& other)
+template <typename MBDD_T>
+MBDDIBuffer<MBDD_T>&
+MBDDIBuffer<MBDD_T>::operator=(const MBDDIBuffer& other)
 {
-    MBDDType* temp = new MBDDType();
-    *temp          = *other.m_data;
+    MBDD_T* temp = new MBDD_T();
+    *temp        = *other.m_data;
 
     // -- Kolb line -- //
     if (is_link == false) delete m_data;
@@ -68,9 +68,9 @@ MBDDIBuffer<MBDDType>::operator=(const MBDDIBuffer& other)
     return *this;
 }
 
-template <typename MBDDType>
-MBDDIBuffer<MBDDType>&
-MBDDIBuffer<MBDDType>::operator=(MBDDIBuffer&& other) noexcept
+template <typename MBDD_T>
+MBDDIBuffer<MBDD_T>&
+MBDDIBuffer<MBDD_T>::operator=(MBDDIBuffer&& other) noexcept
 {
     if (is_link == false) delete m_data;
     m_data       = other.m_data;
@@ -78,24 +78,6 @@ MBDDIBuffer<MBDDType>::operator=(MBDDIBuffer&& other) noexcept
     is_link      = other.is_link;
 
     return *this;
-}
-
-template <typename MBDDType>
-void
-MBDDIBuffer<MBDDType>::linkData(MBDDType* data)
-{
-    if (data != m_data)
-    {
-        MBDDType temp = *m_data;
-
-        // -- Kolb line -- //
-
-        if (is_link == false) delete m_data;
-        std::swap(*data, temp);
-
-        m_data  = data;
-        is_link = true;
-    }
 }
 }; // namespace render
 }; // namespace kusengine

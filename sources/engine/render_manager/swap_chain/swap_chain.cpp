@@ -177,7 +177,7 @@ SwapChain::create(uint32_t width, uint32_t height)
 }
 
 size_t
-SwapChain::createSwapChainFrames(const RenderWayStorage& render_way_storage)
+SwapChain::createSwapChainFrames()
 {
     auto images =
         LOGICAL_DEVICE_INSTANCE.getSwapchainImagesKHR(m_swapchain.get());
@@ -186,15 +186,15 @@ SwapChain::createSwapChainFrames(const RenderWayStorage& render_way_storage)
     for (int i = 0; i < images.size(); ++i)
     {
         m_frames[i].createImage(images[i], m_format);
-        m_frames[i].createFrameBuffer(
-            render_way_storage.getRenderWay(RenderWayType::UNIVERSAL)
-                ->renderPass(),
-            m_extent);
+        // m_frames[i].createFrameBuffer(
+        //     render_way_storage.getRenderWay(RenderWayType::UNIVERSAL)
+        //         ->renderPass(),
+        // m_extent);
         m_frames[i].createCommandBuffer();
         m_frames[i].createSynchronization();
-        m_frames[i].createDescriptorSet(
-            render_way_storage.getRenderWay(RenderWayType::UNIVERSAL)
-                ->descManager());
+        // m_frames[i].createDescriptorSet(
+        //     render_way_storage.getRenderWay(RenderWayType::UNIVERSAL)
+        //         ->descManager());
     }
     return images.size();
 }
@@ -229,40 +229,40 @@ SwapChain::present(uint32_t index, const vk::Semaphore* wait_sems)
     return true;
 }
 
-void
-SwapChain::recordCommandBuffer(SwapChainFrame& frame,
-                               const RenderWay& render_way)
-{
-    const vk::CommandBuffer& command_buffer_ref = frame.commandBuffer();
+// void
+// SwapChain::recordCommandBuffer(SwapChainFrame& frame,
+//                                const RenderWay& render_way)
+// {
+//     const vk::CommandBuffer& command_buffer_ref = frame.commandBuffer();
 
-    command_buffer_ref.reset();
+//     command_buffer_ref.reset();
 
-    vk::CommandBufferBeginInfo beginInfo = {};
+//     vk::CommandBufferBeginInfo beginInfo = {};
 
-    command_buffer_ref.begin(beginInfo);
+//     command_buffer_ref.begin(beginInfo);
 
-    vk::RenderPassBeginInfo renderPassInfo = {};
-    renderPassInfo.renderPass              = render_way.renderPass();
-    renderPassInfo.framebuffer             = frame.framebuffer();
+//     vk::RenderPassBeginInfo renderPassInfo = {};
+//     renderPassInfo.renderPass              = render_way.renderPass();
+//     renderPassInfo.framebuffer             = frame.framebuffer();
 
-    renderPassInfo.renderArea.offset.x = 0;
-    renderPassInfo.renderArea.offset.y = 0;
-    renderPassInfo.renderArea.extent   = extent();
+//     renderPassInfo.renderArea.offset.x = 0;
+//     renderPassInfo.renderArea.offset.y = 0;
+//     renderPassInfo.renderArea.extent   = extent();
 
-    renderPassInfo.clearValueCount = 1;
-    vk::ClearValue clear_value{vk::ClearColorValue(1.f, 1.f, 1.f, 1.f)};
+//     renderPassInfo.clearValueCount = 1;
+//     vk::ClearValue clear_value{vk::ClearColorValue(1.f, 1.f, 1.f, 1.f)};
 
-    renderPassInfo.pClearValues = &clear_value;
+//     renderPassInfo.pClearValues = &clear_value;
 
-    command_buffer_ref.beginRenderPass(&renderPassInfo,
-                                       vk::SubpassContents::eInline);
+//     command_buffer_ref.beginRenderPass(&renderPassInfo,
+//                                        vk::SubpassContents::eInline);
 
-    render_way.bind(command_buffer_ref, frame.descriptorSets());
+//     render_way.bind(command_buffer_ref, frame.descriptorSets());
 
-    command_buffer_ref.endRenderPass();
+//     command_buffer_ref.endRenderPass();
 
-    command_buffer_ref.end();
-}
+//     command_buffer_ref.end();
+// }
 
 }; // namespace render
 }; // namespace kusengine

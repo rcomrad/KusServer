@@ -31,12 +31,14 @@ RenderManager::init(const kusengine::Window& window)
 
     m_swap_chain.create(window_extent.width, window_extent.height);
 
-    m_render_way_storage.create(m_swap_chain.extent(), m_swap_chain.format());
+    m_descriptor_manager.setup();
+
+    m_render_system.setup(m_descriptor_manager, m_swap_chain.extent(),
+                          m_swap_chain.format());
 
     frame_number = 0;
 
-    max_frames_in_flight =
-        m_swap_chain.createSwapChainFrames(m_render_way_storage);
+    max_frames_in_flight = m_swap_chain.createSwapChainFrames();
 }
 
 void
@@ -48,9 +50,21 @@ RenderManager::shutdown()
 // --------- draw -------- //
 
 void
-RenderManager::draw()
+RenderManager::registerScene(BasicScene* const basic_scene)
+{
+    basic_scene->registerThis(m_drawable_system_storage);
+}
+
+void
+RenderManager::draw(BasicScene* const basic_scene)
 {
     frame_number = (frame_number + 1) % max_frames_in_flight;
+
+    // m_render_system.execute();
+
+    // auto render_info = basic_scene->getRenderInfo();
+
+    // basic_scene->draw()
 
     // auto render_info = renderer.getInfo();
 

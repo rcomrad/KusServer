@@ -5,9 +5,9 @@
 
 #include "texture.hpp"
 
-namespace kusengine
+namespace kusengine::render
 {
-    namespace render{
+
 class TextureStorage
 {
 public:
@@ -29,7 +29,7 @@ private:
 };
 
 #define TEXTURE_STORAGE TextureStorage::getInstance()
-}; // namespace render
+
 }; // namespace kusengine
 
 #endif // TEXTURE_STORAGE_HPP

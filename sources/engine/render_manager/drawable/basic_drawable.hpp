@@ -9,12 +9,12 @@ namespace kusengine
 {
 namespace render
 {
-template <typename VertexType_, typename MBDDInterfaceType_>
-class BasicDrawable : public MBDDInterfaceType_
+template <typename VertexT_, typename MBDDInterfaceT_>
+class BasicDrawable : public MBDDInterfaceT_
 {
 public:
-    using VertexType        = VertexType_;
-    using MBDDInterfaceType = MBDDInterfaceType_;
+    using VertexType        = VertexT_;
+    using MBDDInterfaceType = MBDDInterfaceT_;
 
     virtual ~BasicDrawable() = default;
 
@@ -30,25 +30,25 @@ protected:
     Model<VertexType> m_model;
 };
 
-template <typename VertexType_, typename MBDDInterfaceType_>
+template <typename VertexT_, typename MBDDInterfaceT_>
 uint32_t
-BasicDrawable<VertexType_, MBDDInterfaceType_>::pushModel(
+BasicDrawable<VertexT_, MBDDInterfaceT_>::pushModel(
     ModelStorage<VertexType>& ms)
 {
-    ms.addModel(m_model);
+    return ms.addModel(m_model);
 }
 
-template <typename VertexType_, typename MBDDInterfaceType_>
+template <typename VertexT_, typename MBDDInterfaceT_>
 void
-BasicDrawable<VertexType_, MBDDInterfaceType_>::setMesh(
+BasicDrawable<VertexT_, MBDDInterfaceT_>::setMesh(
     const Mesh<VertexType>* const mesh_ptr)
 {
     m_model.setMesh(mesh_ptr);
 }
 
-template <typename VertexType_, typename MBDDInterfaceType_>
+template <typename VertexT_, typename MBDDInterfaceT_>
 void
-BasicDrawable<VertexType_, MBDDInterfaceType_>::setTexture(
+BasicDrawable<VertexT_, MBDDInterfaceT_>::setTexture(
     const Texture* const texture_ptr)
 {
     m_model.setTexture(texture_ptr);

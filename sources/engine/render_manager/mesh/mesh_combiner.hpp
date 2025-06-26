@@ -20,17 +20,17 @@ struct RangeInfo
     uint32_t first_instance;
 };
 
-template <typename VertexType>
+template <typename VertexT>
 class Model;
 
-template <typename VertexType>
+template <typename VertexT>
 class MeshCombiner
 {
 public:
     MeshCombiner() = default;
 
     void combine(
-        const std::vector<std::pair<Model<VertexType>, uint32_t>>& models);
+        const std::vector<std::pair<Model<VertexT>, uint32_t>>& models);
 
     void bindBuffers(const vk::CommandBuffer& command_buffer) const;
 
@@ -44,12 +44,12 @@ private:
     IndexBuffer m_index_buffer;
 };
 
-template <typename VertexType>
+template <typename VertexT>
 void
-MeshCombiner<VertexType>::combine(
-    const std::vector<std::pair<Model<VertexType>, uint32_t>>& models)
+MeshCombiner<VertexT>::combine(
+    const std::vector<std::pair<Model<VertexT>, uint32_t>>& models)
 {
-    std::vector<VertexType> all_vertices;
+    std::vector<typename VertexT::Attributes> all_vertices;
     std::vector<uint32_t> all_indices;
 
     m_ranges_info.reserve(models.size());
@@ -69,28 +69,29 @@ MeshCombiner<VertexType>::combine(
         range_info.first_instance += model.second;
     }
 
+    if (all_vertices.size() == 0 || all_indices.size() == 0) return;
+
     m_mesh_buffer.setDataTrowStagingBuffer(
-        all_vertices.data(), all_vertices.size() *
-                                 VertexType::Attributes::count_floats *
-                                 sizeof(float));
+        all_vertices.data(),
+        all_vertices.size() * VertexT::countFloats() * sizeof(float));
 
     m_index_buffer.setData(all_indices.data(),
                            all_indices.size() * sizeof(uint32_t));
 }
 
-template <typename VertexType>
+template <typename VertexT>
 void
-MeshCombiner<VertexType>::bindBuffers(
+MeshCombiner<VertexT>::bindBuffers(
     const vk::CommandBuffer& command_buffer) const
 {
     m_mesh_buffer.bind(command_buffer);
     m_index_buffer.bind(command_buffer);
 }
 
-template <typename VertexType>
+template <typename VertexT>
 void
-MeshCombiner<VertexType>::draw(const vk::CommandBuffer& command_buffer,
-                               uint32_t index) const
+MeshCombiner<VertexT>::draw(const vk::CommandBuffer& command_buffer,
+                            uint32_t index) const
 {
     m_index_buffer.draw(command_buffer, m_ranges_info[index].index_count,
                         m_ranges_info[index].instance_count,
