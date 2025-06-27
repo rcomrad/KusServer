@@ -26,7 +26,7 @@ DescriptorManager::setup()
 void
 DescriptorManager::setupDefaultBindingsData()
 {
-    std::vector<DescriptorBindingData> default_vertex_shader_bindings_data;
+    std::vector<DescriptorBindingData> default_vertex_shader_bindings_data(2);
     default_vertex_shader_bindings_data[0].count         = 1;
     default_vertex_shader_bindings_data[0].binding_index = 0;
     default_vertex_shader_bindings_data[0].stage =
@@ -34,16 +34,16 @@ DescriptorManager::setupDefaultBindingsData()
     default_vertex_shader_bindings_data[0].type =
         vk::DescriptorType::eUniformBuffer;
 
-    default_vertex_shader_bindings_data[0].count         = 1;
-    default_vertex_shader_bindings_data[0].binding_index = 1;
-    default_vertex_shader_bindings_data[0].stage =
+    default_vertex_shader_bindings_data[1].count         = 1;
+    default_vertex_shader_bindings_data[1].binding_index = 1;
+    default_vertex_shader_bindings_data[1].stage =
         vk::ShaderStageFlagBits::eVertex;
-    default_vertex_shader_bindings_data[0].type =
+    default_vertex_shader_bindings_data[1].type =
         vk::DescriptorType::eStorageBuffer;
 
     addAllocator("default_vertex_shader", default_vertex_shader_bindings_data);
 
-    std::vector<DescriptorBindingData> default_fragment_shader_bindings_data;
+    std::vector<DescriptorBindingData> default_fragment_shader_bindings_data(1);
     default_fragment_shader_bindings_data[0].count         = 1;
     default_fragment_shader_bindings_data[0].binding_index = 0;
     default_fragment_shader_bindings_data[0].stage =

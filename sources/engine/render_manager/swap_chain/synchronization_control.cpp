@@ -23,6 +23,8 @@ SynchronizationControl::create()
 
     in_flight_fence = LOGICAL_DEVICE_INSTANCE.createFenceUnique(fenceInfo);
 }
+
+
 const vk::Semaphore* const
 SynchronizationControl::waitSemaphores() const
 {

@@ -1,4 +1,4 @@
-#include "texture_storage.hpp"
+#include "texture_manager.hpp"
 
 #include <nlohmann/json.hpp>
 
@@ -12,15 +12,8 @@ using json = nlohmann::json;
 namespace kusengine::render
 {
 
-TextureStorage&
-TextureStorage::getInstance()
-{
-    static TextureStorage ts;
-    return ts;
-}
-
 void
-TextureStorage::loadTextures(std::string filename,
+TextureManager::loadTextures(std::string filename,
                              const DescriptorManager& desc_manager)
 {
     auto res_path = util::PathStorage::getFolderPath("resource").value();
@@ -41,7 +34,7 @@ TextureStorage::loadTextures(std::string filename,
 }
 
 void
-TextureStorage::addTexture(const std::string& file_path,
+TextureManager::addTexture(const std::string& file_path,
                            const DescriptorManager& descriptor_manager)
 {
 
@@ -70,7 +63,7 @@ TextureStorage::addTexture(const std::string& file_path,
 }
 
 std::optional<std::shared_ptr<const Texture>>
-TextureStorage::getTexture(std::string_view keyval) const
+TextureManager::getTexture(std::string_view keyval) const
 {
     std::optional<std::shared_ptr<Texture>> res;
     auto it = m_texture_storage.find(keyval.data());

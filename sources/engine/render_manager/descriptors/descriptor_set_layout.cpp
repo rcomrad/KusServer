@@ -22,7 +22,7 @@ DescriptorSetLayout::create(const std::vector<DescriptorBindingData>& data)
         layout_binding.descriptorCount    = data[i].count;
         layout_binding.stageFlags         = data[i].stage;
         layout_binding.pImmutableSamplers = nullptr;
-        layout_bindings.push_back(layout_binding);
+        layout_bindings.emplace_back(layout_binding);
     }
 
     vk::DescriptorSetLayoutCreateInfo layout_info;
@@ -30,16 +30,8 @@ DescriptorSetLayout::create(const std::vector<DescriptorBindingData>& data)
     layout_info.bindingCount = data.size();
     layout_info.pBindings    = layout_bindings.data();
 
-    try
-    {
-        m_descriptor_set_layout =
-            LOGICAL_DEVICE_INSTANCE.createDescriptorSetLayoutUnique(
-                layout_info);
-    }
-    catch (vk::SystemError err)
-    {
-        std::cerr << "Failed to create Descriptor set layout\n";
-    }
+    m_descriptor_set_layout =
+        LOGICAL_DEVICE_INSTANCE.createDescriptorSetLayoutUnique(layout_info);
 }
 
 const vk::DescriptorSetLayout&

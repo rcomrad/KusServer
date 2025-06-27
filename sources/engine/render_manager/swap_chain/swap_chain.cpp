@@ -12,26 +12,33 @@ namespace kusengine
 
 namespace render
 {
+
+SwapChainFrame&
+SwapChain::getFrame(int index) & noexcept
+{
+    return m_frames[index];
+}
+
 const vk::SurfaceKHR&
-SwapChain::surface() const noexcept
+SwapChain::surface() const& noexcept
 {
     return m_surface.get();
 }
 
-vk::Extent2D
-SwapChain::extent() const noexcept
+const vk::Extent2D&
+SwapChain::extent() const& noexcept
 {
     return m_extent;
 }
 
-vk::Format
-SwapChain::format() const noexcept
+const vk::Format&
+SwapChain::format() const& noexcept
 {
     return m_format;
 }
 
 const vk::SwapchainKHR&
-SwapChain::swapchain() const noexcept
+SwapChain::swapchain() const& noexcept
 {
     return m_swapchain.get();
 }
@@ -72,10 +79,10 @@ SwapChain::choosePresentMode(
 {
     for (vk::PresentModeKHR presentMode : available_present_modes)
     {
-        // if (presentMode == vk::PresentModeKHR::eImmediate)
-        // {
-        //     return presentMode;
-        // }
+        if (presentMode == vk::PresentModeKHR::eImmediate)
+        {
+            return presentMode;
+        }
         if (presentMode == vk::PresentModeKHR::eMailbox)
         {
             return presentMode;
@@ -194,7 +201,6 @@ SwapChain::createSwapChainFrames(const RenderSystem& render_system,
         m_frames[i].createSynchronization();
 
         desc_manager.translateDescriptorDataToFrame(m_frames[i]);
-
     }
     return images.size();
 }

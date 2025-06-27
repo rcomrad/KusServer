@@ -5,7 +5,8 @@
 
 namespace kusengine
 {
-    namespace render{
+namespace render
+{
 struct UBO
 {
     glm::mat4 projection;

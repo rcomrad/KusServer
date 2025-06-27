@@ -1,17 +1,21 @@
 #include "basic_scene.hpp"
 
-namespace kusengine
-{
-namespace render
+#include "engine/render_manager/render_manager.hpp"
+
+namespace kusengine::render
 {
 
-BasicScene::BasicScene()
+void
+BasicScene::create()
 {
     m_scene_name = "my_scene";
 
-    std::get<ScenePartVector<Drawable_P1UV1_TRS>>(m_scenes).resize(1);
-    std::get<ScenePartVector<Drawable_P1UV1_TRS>>(m_scenes)[0]
-        .render_info.setName("random");
+    Drawable_P1UV1_TRS base{};
+    // base.setTexture();
+    // base.setMesh();
+
+    m_drawable_system.resetDrawables(drawables_p1_uv1.begin(),
+                                     drawables_p1_uv1.end());
 }
 
 void
@@ -19,16 +23,31 @@ BasicScene::setSceneName(std::string_view new_scene_name)
 {
     m_scene_name = new_scene_name.data();
 }
+
+void
+BasicScene::updMbddFrame(SwapChainFrame& frame) const
+{
+    auto& mbdd_vec = m_drawable_system.getMBDD();
+    if (mbdd_vec.empty()) return;
+    frame.updateMBDD(mbdd_vec);
+}
+
+void
+BasicScene::bind(const vk::CommandBuffer& cmd) const
+{
+    m_drawable_system.bind(cmd);
+}
+
+void
+BasicScene::draw(const vk::CommandBuffer& cmd,
+                 const vk::PipelineLayout& layout) const
+{
+    m_drawable_system.draw(cmd, layout);
+}
 // void
 // BasicScene::setRenderInfo(const RenderInfo& render_info)
 // {
 //     m_render_info = render_info;
 // }
 
-// const RenderInfo&
-// BasicScene::getRenderInfo() const noexcept
-// {
-//     return m_render_info;
-// }
-}; // namespace render
-}; // namespace kusengine
+}; // namespace kusengine::render

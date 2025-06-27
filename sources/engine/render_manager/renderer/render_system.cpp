@@ -21,13 +21,12 @@ RenderSystem::setup(const DescriptorManager& desc_manager,
 }
 
 vk::UniquePipelineLayout
-RenderSystem::makePipelineLayout(
-    const std::vector<vk::DescriptorSetLayout>& layouts)
+RenderSystem::makePipelineLayout(int count, vk::DescriptorSetLayout* data)
 {
-    vk::PipelineLayoutCreateInfo layout_info;
+    vk::PipelineLayoutCreateInfo layout_info{};
 
-    layout_info.setSetLayoutCount(layouts.size());
-    layout_info.setPSetLayouts(layouts.data());
+    layout_info.setSetLayoutCount(count);
+    layout_info.setPSetLayouts(data);
 
     return LOGICAL_DEVICE_INSTANCE.createPipelineLayoutUnique(layout_info);
 }
@@ -41,34 +40,37 @@ RenderSystem::setupDefaultPipeline(const DescriptorManager& desc_manager)
     PipelineConfigInfo info;
     info.extent = m_extent;
 
-    std::vector<vk::DescriptorSetLayout> layouts = {
+    std::array<vk::DescriptorSetLayout, 2> layouts = {
         desc_manager.getAllocator("default_vertex_shader").layout(),
         desc_manager.getAllocator("default_fragment_shader").layout()};
 
-    info.pipeline_layout = makePipelineLayout(layouts);
+    info.pipeline_layout = makePipelineLayout(layouts.size(), layouts.data());
 
-    info.fragment_shader_path =
-        sources_folder +
-        "engine/render_manager/shaders/compiled/default_fragment_shader";
+    info.fragment_shader_path = sources_folder +
+                                "engine/render_manager/shaders/compiled/"
+                                "default_fragment_shader.frag.spv";
 
     info.vertex_shader_path =
         sources_folder +
-        "engine/render_manager/shaders/compiled/default_vertex_shader";
+        "engine/render_manager/shaders/compiled/default_vertex_shader.vert.spv";
 
     info.vertex_binding_description =
         VertexP1UV1::Description::getBindingDescription();
     info.vertex_attribute_descriptions =
         VertexP1UV1::Description::getAttributeDescriptions();
 
-    m_pipelines["default"] = std::make_unique<Pipeline>(
-        std::move(info), m_render_passes.at("default").get()->renderPass());
+    auto& r_pass = m_render_passes.at("default");
+
+    m_pipelines["default"] =
+        std::make_unique<Pipeline>(std::move(info), r_pass.get()->renderPass());
 }
 
 void
 RenderSystem::setupDefaultRenderPass()
 {
     RenderPassConfigInfo info;
-    info.swap_chain_format = m_format;
+    info.swap_chain_format     = m_format;
+    m_render_passes["default"] = std::make_unique<RenderPass>(info);
 }
 
 void
@@ -126,15 +128,24 @@ RenderSystem::translateRenderPassesToFrame(SwapChainFrame& frame) const
 void
 RenderSystem::execute(const SwapChainFrame& frame,
                       const std::string& pass_name,
-                      const vk::CommandBuffer& cmd)
+                      const vk::CommandBuffer& cmd,
+                      const std::function<void()>& bd_lambda)
 {
     auto& pass = m_render_passes.at(pass_name);
 
     pass->begin(cmd, frame.getBuffer(pass_name), m_extent);
 
-    // Здесь будет привязка пайплайнов и вызовы отрисовки
+    bd_lambda();
 
     pass->end(cmd);
+}
+
+const vk::PipelineLayout&
+RenderSystem::bindPipeline(const std::string& key,
+                           const vk::CommandBuffer& cmd) const &
+{
+    m_pipelines.at(key)->bind(cmd);
+    return m_pipelines.at(key)->layout();
 }
 
 } // namespace kusengine::render

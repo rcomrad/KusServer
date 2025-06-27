@@ -11,7 +11,7 @@ namespace kusengine
 namespace render
 {
 
-template <typename DrawableT, typename MBBDType, typename UBOType>
+template <typename DrawableT, typename MBBDType>
 class DrawableSystem
 {
 public:
@@ -22,29 +22,33 @@ public:
     template <typename Iterator>
     void resetDrawables(Iterator begin, Iterator end);
 
-    void update(SwapChainFrame& frame) const;
+    // void update(SwapChainFrame& frame) const;
+
+    void bind(const vk::CommandBuffer& command_buffer) const;
 
     void draw(const vk::CommandBuffer& command_buffer,
-              const vk::PipelineLayout& pipelayout) const;
+              const vk::PipelineLayout& layout) const;
+
+    const std::vector<MBBDType>& getMBDD() const& noexcept;
 
 private:
-    bool is_empty;
-
-    UBOType m_ubo;
+    bool is_empty = true;
 
     ModelStorage<typename DrawableT::VertexType> m_model_storage;
 
     std::vector<MBBDType> mbdd_data_vector;
 };
 
-template <typename DrawableT, typename MBBDType, typename UBOType>
+template <typename DrawableT, typename MBBDType>
 template <typename Iterator>
 void
-DrawableSystem<DrawableT, MBBDType, UBOType>::resetDrawables(Iterator begin,
-                                                             Iterator end)
+DrawableSystem<DrawableT, MBBDType>::resetDrawables(Iterator begin,
+                                                    Iterator end)
 {
     uint32_t count = end - begin;
     mbdd_data_vector.resize(count);
+
+    if (count != 0) is_empty = false;
 
     std::vector<std::pair<uint32_t, uint32_t>> inds(count);
     auto it = begin;
@@ -69,24 +73,40 @@ DrawableSystem<DrawableT, MBBDType, UBOType>::resetDrawables(Iterator begin,
 
     m_model_storage.fillBuffers();
 }
-template <typename DrawableT, typename MBBDType, typename UBOType>
+// template <typename DrawableT, typename MBBDType>
+// void
+// DrawableSystem<DrawableT, MBBDType>::update(SwapChainFrame& frame) const
+// {
+//     frame.updateMBDD(mbdd_data_vector);
+//     frame.updateUBO(m_ubo);
+// }
+
+template <typename DrawableT, typename MBBDType>
 void
-DrawableSystem<DrawableT, MBBDType, UBOType>::update(
-    SwapChainFrame& frame) const
+DrawableSystem<DrawableT, MBBDType>::bind(
+    const vk::CommandBuffer& command_buffer) const
 {
-    frame.updateMBDD(mbdd_data_vector);
-    frame.updateUBO(m_ubo);
+    if (is_empty) return;
+    m_model_storage.bind(command_buffer);
 }
 
-template <typename DrawableT, typename MBBDType, typename UBOType>
+template <typename DrawableT, typename MBBDType>
 void
-DrawableSystem<DrawableT, MBBDType, UBOType>::draw(
+DrawableSystem<DrawableT, MBBDType>::draw(
     const vk::CommandBuffer& command_buffer,
-    const vk::PipelineLayout& pipelayout) const
+    const vk::PipelineLayout& layout) const
 {
-    m_model_storage.bind(command_buffer);
-    m_model_storage.draw(command_buffer);
+    if(is_empty) return;
+    m_model_storage.draw(command_buffer, layout);
 }
+
+template <typename DrawableT, typename MBBDType>
+const std::vector<MBBDType>&
+DrawableSystem<DrawableT, MBBDType>::getMBDD() const& noexcept
+{
+    return mbdd_data_vector;
+}
+
 }; // namespace render
 }; // namespace kusengine
 

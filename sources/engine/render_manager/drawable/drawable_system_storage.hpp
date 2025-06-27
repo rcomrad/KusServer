@@ -17,6 +17,9 @@ public:
     template <typename Iterator>
     void add(const std::string& key, Iterator begin, Iterator end);
 
+    const DrawableSystem_T& getDrawableSystem(
+        const std::string& key) const& noexcept;
+
 private:
     std::unordered_map<std::string, DrawableSystem_T> m_dr_system_storage;
 };
@@ -33,6 +36,14 @@ DrawableSystemStorage<DrawableSystem_T>::add(const std::string& key,
         throw "drawable_system added second time\n";
     }
     m_dr_system_storage[key].resetDrawables(begin, end);
+}
+
+template <typename DrawableSystem_T>
+const DrawableSystem_T&
+DrawableSystemStorage<DrawableSystem_T>::getDrawableSystem(
+    const std::string& key) const& noexcept
+{
+    return m_dr_system_storage.at(key);
 }
 
 }; // namespace render

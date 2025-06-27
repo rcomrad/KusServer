@@ -61,6 +61,9 @@ public:
 
     void submitCommandBuffer();
 
+    void bind(const vk::CommandBuffer& cmd,
+              const vk::PipelineLayout& layout) const;
+
 private:
     SynchronizationControl m_sync_control;
     CommandBuffer m_command_buffer;

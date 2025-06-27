@@ -233,6 +233,7 @@ Pipeline::create(PipelineConfigInfo&& pipeline_config_info,
     create_pipeline_info.basePipelineHandle = nullptr;
 
     //  Make the Pipeline
+    create_pipeline_info.layout = m_layout.get();
 
     m_pipeline =
         LOGICAL_DEVICE_INSTANCE
@@ -247,7 +248,8 @@ Pipeline::create(PipelineConfigInfo&& pipeline_config_info,
 vk::PipelineVertexInputStateCreateInfo
 Pipeline::vertexInputState(
     const vk::VertexInputBindingDescription& vertex_binding_description,
-    const std::vector<vk::VertexInputAttributeDescription>& vertex_attribute_description)
+    const std::vector<vk::VertexInputAttributeDescription>&
+        vertex_attribute_description)
 {
     vk::PipelineVertexInputStateCreateInfo vertex_input_info{};
     vertex_input_info.flags = vk::PipelineVertexInputStateCreateFlags();

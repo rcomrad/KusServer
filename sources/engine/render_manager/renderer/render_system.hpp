@@ -1,6 +1,7 @@
 #ifndef RENDER_SYSTEM_HPP
 #define RENDER_SYSTEM_HPP
 
+#include <functional>
 #include <memory>
 #include <unordered_map>
 
@@ -15,7 +16,8 @@ class RenderSystem
 {
 public:
     void setup(const DescriptorManager& desc_manager,
-               const vk::Extent2D& extent, const vk::Format& format);
+               const vk::Extent2D& extent,
+               const vk::Format& format);
 
     void registerPipeline(std::string_view key,
                           std::string_view render_pass,
@@ -26,15 +28,18 @@ public:
 
     void execute(const SwapChainFrame& swap_chain,
                  const std::string& pass_name,
-                 const vk::CommandBuffer& cmd);
+                 const vk::CommandBuffer& cmd,
+                 const std::function<void()>& bd_lambda);
 
     void setExtent(const vk::Extent2D& extent);
 
     void translateRenderPassesToFrame(SwapChainFrame& frame) const;
 
+    const vk::PipelineLayout& bindPipeline(const std::string& key, const vk::CommandBuffer& cmd) const &;
+
 private:
-    vk::UniquePipelineLayout makePipelineLayout(
-        const std::vector<vk::DescriptorSetLayout>& layouts);
+    vk::UniquePipelineLayout makePipelineLayout(int count,
+                                                vk::DescriptorSetLayout* data);
 
     void setupDefaultPipeline(const DescriptorManager& desc_manager);
     void setupDefaultRenderPass();

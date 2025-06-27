@@ -12,8 +12,7 @@ namespace render
 {
 using DrawableSystem_P1UV1_TRS =
     DrawableSystem<Drawable_P1UV1_TRS,
-                   Drawable_P1UV1_TRS::MBDDInterfaceType::MBDDtype,
-                   UBO>;
+                   Drawable_P1UV1_TRS::MBDDInterfaceType::MBDDtype>;
 };
 }; // namespace kusengine
 

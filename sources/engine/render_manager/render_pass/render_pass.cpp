@@ -85,6 +85,8 @@ void
 RenderPass::end(const vk::CommandBuffer& cmd)
 {
     cmd.endRenderPass();
+
+    cmd.end();
 }
 }; // namespace render
 }; // namespace kusengine

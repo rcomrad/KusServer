@@ -132,9 +132,11 @@ SwapChainFrame::writeDescriptorSetMBDD()
 }
 
 void
-SwapChainFrame::createDescriptorSet(const DescriptorAllocator& desc_alloc)
+SwapChainFrame::createDescriptorSet(
+    const DescriptorAllocator& default_desc_alloc)
 {
-    desc_alloc.allocate(m_descriptor_sets[0]);
+    m_descriptor_sets.resize(1);
+    default_desc_alloc.allocate(m_descriptor_sets[0]);
 }
 
 void
@@ -178,6 +180,15 @@ SwapChainFrame::submitCommandBuffer()
 
     DEVICE_INSTANCE.getQueue("graphics")
         .submit(submitInfo, m_sync_control.inFlightFence());
+}
+
+void
+SwapChainFrame::bind(const vk::CommandBuffer& cmd,
+                     const vk::PipelineLayout& layout) const
+{
+    cmd.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, layout, 0u,
+                           m_descriptor_sets.size(), m_descriptor_sets.data(),
+                           0, nullptr);
 }
 
 }; // namespace kusengine::render

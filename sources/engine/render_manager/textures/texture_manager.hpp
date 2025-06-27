@@ -8,11 +8,9 @@
 namespace kusengine::render
 {
 
-class TextureStorage
+class TextureManager
 {
 public:
-    static TextureStorage& getInstance();
-
     std::optional<std::shared_ptr<const Texture>> getTexture(
         std::string_view keyval) const;
 
@@ -23,13 +21,10 @@ private:
     void addTexture(const std::string& file_path,
                     const DescriptorManager& desc_manager);
 
-    TextureStorage() = default;
-
     std::unordered_map<std::string, std::shared_ptr<Texture>> m_texture_storage;
 };
 
-#define TEXTURE_STORAGE TextureStorage::getInstance()
 
-}; // namespace kusengine
+}; // namespace kusengine::render
 
 #endif // TEXTURE_STORAGE_HPP

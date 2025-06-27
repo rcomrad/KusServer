@@ -38,15 +38,22 @@ public:
 
     void createSurface(const kusengine::Window& window,
                        const Instance& instance) noexcept(false);
+
+    template <typename MBDDType, typename UBOType>
+    void updateFrame(int index,
+                     const std::vector<MBDDType>& mbdd_vector,
+                     const UBOType& ubo);
     // get
 
-    const vk::SurfaceKHR& surface() const noexcept;
+    SwapChainFrame& getFrame(int index) & noexcept;
 
-    vk::Extent2D extent() const noexcept;
+    const vk::SurfaceKHR& surface() const& noexcept;
 
-    vk::Format format() const noexcept;
+    const vk::Extent2D& extent() const& noexcept;
 
-    const vk::SwapchainKHR& swapchain() const noexcept;
+    const vk::Format& format() const& noexcept;
+
+    const vk::SwapchainKHR& swapchain() const& noexcept;
     //
 
 private:
@@ -80,6 +87,16 @@ private:
     vk::Format m_format;
     vk::Extent2D m_extent;
 };
+
+template <typename MBDDType, typename UBOType>
+void
+SwapChain::updateFrame(int index,
+                       const std::vector<MBDDType>& mbdd_vector,
+                       const UBOType& ubo)
+{
+    m_frames[index].updateMBDD(mbdd_vector);
+    m_frames[index].updateUBO(ubo);
+}
 
 }; // namespace render
 }; // namespace kusengine

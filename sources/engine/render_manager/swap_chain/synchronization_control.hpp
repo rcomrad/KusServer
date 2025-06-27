@@ -5,14 +5,13 @@
 
 namespace kusengine
 {
-    namespace render{
+namespace render
+{
 class Device;
 
 class SynchronizationControl
 {
 public:
-    SynchronizationControl() = default;
-
     void create();
 
     const vk::Semaphore* const waitSemaphores() const;

@@ -3,10 +3,9 @@
 
 #include <vulkan/vulkan.hpp>
 
-namespace kusengine
+namespace kusengine::render
 {
-    namespace render
-{
+
 class Device;
 
 class CommandPool
@@ -14,7 +13,7 @@ class CommandPool
 public:
     static CommandPool& getInstance();
 
-    bool create();
+    void create();
 
     vk::UniqueCommandBuffer allocateCommandBuffer() const;
 
@@ -25,7 +24,7 @@ private:
 };
 
 #define COMMAND_POOL CommandPool::getInstance()
-}; // namespace render
+
 }; // namespace kusengine
 
 #endif // COMMAND_POOL_HPP

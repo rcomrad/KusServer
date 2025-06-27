@@ -47,11 +47,13 @@ App::initApp()
         m_window.initWindow(WIDTH, HEIGHT, "MyWindow");
         render::RenderManager::getInstance().init(m_window);
     }
-    catch (...)
+    catch (std::exception& exc)
     {
+        std::cout << exc.what();
+        return false;
     }
 
-    render::RenderManager::getInstance().registerScene(&m_scene);
+    // render::RenderManager::getInstance().registerScene(&m_scene);
 
     return true;
 };
@@ -88,12 +90,15 @@ App::loopBody()
 
     float el_time = getLoopTime();
 
+    render::RenderManager::getInstance().draw(&m_scene);
+
     return true;
 }
 
 void
 App::run()
 {
+    initApp();
     while (m_window.isOpen())
     {
         loopBody();

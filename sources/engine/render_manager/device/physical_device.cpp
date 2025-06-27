@@ -73,6 +73,7 @@ PhysicalDevice::choosePhysicalDevice(const Instance& instance,
         if (isSuitable(device) && supportMailBox(device, surface))
         {
             m_physical_device = device;
+            return;
         }
     }
     for (vk::PhysicalDevice device : available_devices)
@@ -80,7 +81,9 @@ PhysicalDevice::choosePhysicalDevice(const Instance& instance,
         if (isSuitable(device))
         {
             m_physical_device = device;
+            return;
         }
+        
     }
     throw std::exception("Could not choose phsical device\n");
 }
