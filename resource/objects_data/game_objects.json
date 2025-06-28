@@ -1,0 +1,73 @@
+{
+	"game_objects":
+	{
+		"blocks":
+		[
+		{
+			"type": "wood",
+			"position": {"x": 0, "y": 0},
+			"size": {"x": 1, "y":1},
+			"current_hp": 0
+		},
+		{
+			"type": "stone",
+			"position": {"x": 1, "y": 0},
+			"size": {"x": 1, "y": 2},
+			"current_hp": 1
+		},
+		{
+			"type": "wood",
+			"position": {"x": 2, "y": 0},
+			"size": {"x": 1, "y": 4},
+			"current_hp": 2
+		},
+		{
+			"type": "stone",
+			"position": {"x": 3, "y": 0},
+			"size": {"x": 1, "y": 3},
+			"current_hp": 3
+		},
+		{
+			"type": "wood",
+			"position": {"x": 4, "y": 0},
+			"size": {"x": 1, "y": 5},
+			"current_hp": 4
+		},
+		{
+			"type": "water",
+			"position": {"x": -4, "y": 0},
+			"size": {"x": 3, "y": 5},
+			"current_hp": 84
+		}
+		],
+		"animals":
+		[
+		{
+			"type": "cat",
+			"current_hp": 10,
+			"position": {"x": 0, "y": 0},
+			"size": {"x": 1, "y": 1.5},
+			"walk":
+			[
+			{
+				"position": {"x": 0, "y": -3},
+				"wait_time": 1.5
+			},
+			{
+				"position": {"x": 4, "y": 0},
+				"wait_time": 0.5
+			},
+			{
+				"position": {"x": -4, "y": 1},
+				"wait_time": 3
+			},
+			{
+				"position": {"x": 0.3, "y": 4},
+				"wait_time": 0
+			}
+			]
+			
+		}
+		]
+	}
+}
