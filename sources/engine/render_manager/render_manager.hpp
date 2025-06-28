@@ -11,6 +11,7 @@
 #include "commands/command_buffer.hpp"
 #include "drawable/drawable_system_storage.hpp"
 #include "drawable/drawable_usings.hpp"
+#include "mesh/mesh_manager.hpp"
 #include "renderer/render_system.hpp"
 #include "scene/basic_scene.hpp"
 #include "textures/texture_manager.hpp"
@@ -75,13 +76,32 @@ private:
     //
     // ------ resources ------ //
 public:
+    template <typename ResT>
+    struct ChooseResType
+    {
+    };
 
-    const kusengine::render::Texture *const getTexture() const;
+    template <typename ResT>
+    const ResT* const getResource(ChooseResType<ResT>&& res_type,
+                                  const std::string& key) const
+    {
+        return getResourceImpl(std::move(res_type), key);
+    }
 
     // const Mesh* getMesh() const;
 
 private:
     TextureManager m_texture_manager;
+    MeshManager m_mesh_manager;
+
+    const Texture* const getResourceImpl(
+        ChooseResType<Texture>&& rs,
+        const std::string& key) const; // texture
+
+    const Mesh<VertexP1UV1>* const getResourceImpl(
+        ChooseResType<Mesh<VertexP1UV1>>&& rs,
+        const std::string& key) const; // mesh<vertex 2d>
+
     // ----------------------- //
 private:
     RenderManager();

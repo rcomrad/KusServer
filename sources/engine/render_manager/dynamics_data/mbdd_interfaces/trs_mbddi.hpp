@@ -17,6 +17,8 @@ class TRS_MBDDI : public BaseMBDDI<MODEL4x4_COLOR_MBDD>
 public:
     virtual ~TRS_MBDDI() = default;
 
+    TRS_MBDDI();
+
     void setRotation(float angle);
 
     void setColor(const glm::vec4& color);

@@ -44,6 +44,11 @@ RenderManager::init(const kusengine::Window& window)
 
     frame_number = 0;
 
+    m_texture_manager.loadTextures("engine_textures/texture_paths.json",
+                                   m_descriptor_manager);
+
+    m_mesh_manager.loadMeshes();
+
     // camera
     m_ubo.projection = m_camera2d.recalculate();
 }
@@ -55,12 +60,6 @@ RenderManager::shutdown()
 // ----------------------- //
 //
 // --------- draw -------- //
-
-// void
-// RenderManager::registerScene(BasicScene* const basic_scene)
-// {
-//     basic_scene->registerThis(m_drawable_system_storage);
-// }
 
 void
 RenderManager::draw(BasicScene* const basic_scene)
@@ -119,6 +118,22 @@ RenderManager::draw(BasicScene* const basic_scene)
     frame_number = (frame_number + 1) % max_frames_in_flight;
 }
 
+// ----------------------- //
+//
+// ------ resources ------ //
+const Texture* const
+RenderManager::getResourceImpl(ChooseResType<Texture>&& rs,
+                               const std::string& key) const
+{
+    return m_texture_manager.getTexture(key);
+} // texture
+
+const Mesh<VertexP1UV1>* const
+RenderManager::getResourceImpl(ChooseResType<Mesh<VertexP1UV1>>&& rs,
+                               const std::string& key) const
+{
+    return m_mesh_manager.getMesh<VertexP1UV1>(key);
+} // mesh<vertex 2d>
 // ----------------------- //
 }; // namespace render
 }; // namespace kusengine

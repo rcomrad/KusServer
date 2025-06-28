@@ -6,6 +6,12 @@ namespace kusengine
 {
 namespace render
 {
+
+TRS_MBDDI::TRS_MBDDI()
+{
+    updModelMatrix();
+}
+
 void
 TRS_MBDDI::updModelMatrix()
 {

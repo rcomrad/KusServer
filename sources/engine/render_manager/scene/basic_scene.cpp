@@ -10,9 +10,19 @@ BasicScene::create()
 {
     m_scene_name = "my_scene";
 
+    auto& rm = RenderManager::getInstance();
+
     Drawable_P1UV1_TRS base{};
-    // base.setTexture();
-    // base.setMesh();
+
+    base.setTexture(
+        rm.getResource(RenderManager::ChooseResType<Texture>{}, "cat.png"));
+
+    base.setMesh(rm.getResource(
+        RenderManager::ChooseResType<Mesh<Drawable_P1UV1_TRS::VertexType>>{},
+        "rectangle"));   
+
+    drawables_p1_uv1.emplace_back(
+        std::make_unique<Drawable_P1UV1_TRS>(std::move(base)));
 
     m_drawable_system.resetDrawables(drawables_p1_uv1.begin(),
                                      drawables_p1_uv1.end());

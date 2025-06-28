@@ -53,7 +53,7 @@ App::initApp()
         return false;
     }
 
-    // render::RenderManager::getInstance().registerScene(&m_scene);
+    m_scene.create();
 
     return true;
 };

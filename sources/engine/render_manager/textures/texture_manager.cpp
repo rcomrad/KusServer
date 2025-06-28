@@ -47,13 +47,13 @@ TextureManager::addTexture(const std::string& file_path,
     }
     try
     {
-        auto text_ptr = std::make_shared<Texture>();
-        text_ptr->loadTexture(file_path);
+        Texture new_texture;
+        new_texture.loadTexture(file_path);
 
-        text_ptr->allocDescriptorSet("default_fragment_shader",
-                                     descriptor_manager);
+        new_texture.allocDescriptorSet("default_fragment_shader",
+                                       descriptor_manager);
 
-        m_texture_storage[texture_name] = text_ptr;
+        m_texture_storage[texture_name] = std::move(new_texture);
     }
     catch (std::runtime_error& error)
     {
@@ -62,20 +62,17 @@ TextureManager::addTexture(const std::string& file_path,
     }
 }
 
-std::optional<std::shared_ptr<const Texture>>
-TextureManager::getTexture(std::string_view keyval) const
+const Texture* const
+TextureManager::getTexture(const std::string& key) const
 {
-    std::optional<std::shared_ptr<Texture>> res;
-    auto it = m_texture_storage.find(keyval.data());
+    auto it = m_texture_storage.find(key);
     if (it == m_texture_storage.end())
     {
-        std::cout << keyval << " cant find in texture storage\n";
-    }
-    else
-    {
-        res.emplace(it.operator*().second);
+        std::cout << key << " cant find in texture storage\n";
+
+        return &(m_texture_storage.begin()->second);
     }
 
-    return res;
+    return &(it->second);
 }
 }; // namespace kusengine::render

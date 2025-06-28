@@ -11,8 +11,8 @@ namespace kusengine::render
 class TextureManager
 {
 public:
-    std::optional<std::shared_ptr<const Texture>> getTexture(
-        std::string_view keyval) const;
+    const Texture* const getTexture(
+        const std::string& key) const;
 
     void loadTextures(std::string filename,
                       const DescriptorManager& desc_manager);
@@ -21,7 +21,7 @@ private:
     void addTexture(const std::string& file_path,
                     const DescriptorManager& desc_manager);
 
-    std::unordered_map<std::string, std::shared_ptr<Texture>> m_texture_storage;
+    std::unordered_map<std::string, Texture> m_texture_storage;
 };
 
 

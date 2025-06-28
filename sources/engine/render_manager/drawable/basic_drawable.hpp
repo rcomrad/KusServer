@@ -18,8 +18,6 @@ public:
 
     virtual ~BasicDrawable() = default;
 
-    BasicDrawable() = default;
-
     uint32_t pushModel(ModelStorage<VertexType>& ms);
 
     void setMesh(const Mesh<VertexType>* const mesh_ptr);

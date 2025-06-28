@@ -12,6 +12,10 @@ public:
     using Description = VertexDescriptionT;
     using Attributes  = VertexAttributesT;
 
+    Vertex(const Attributes& attributes) : m_attributes(attributes)
+    {
+    }
+
     const Attributes* const data() const
     {
         return &m_attributes;

@@ -74,7 +74,7 @@ RenderPass::begin(const vk::CommandBuffer& cmd,
     renderPassInfo.renderArea.extent   = extent;
 
     renderPassInfo.clearValueCount = 1;
-    vk::ClearValue clear_value{vk::ClearColorValue(1.f, 1.f, 1.f, 1.f)};
+    vk::ClearValue clear_value{vk::ClearColorValue(0.f, 0.f, 0.f, 1.f)};
 
     renderPassInfo.pClearValues = &clear_value;
 

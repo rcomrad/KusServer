@@ -17,8 +17,6 @@ class DrawableSystem
 public:
     using DrawableType = DrawableT;
 
-    DrawableSystem() = default;
-
     template <typename Iterator>
     void resetDrawables(Iterator begin, Iterator end);
 
@@ -96,7 +94,7 @@ DrawableSystem<DrawableT, MBBDType>::draw(
     const vk::CommandBuffer& command_buffer,
     const vk::PipelineLayout& layout) const
 {
-    if(is_empty) return;
+    if (is_empty) return;
     m_model_storage.draw(command_buffer, layout);
 }
 

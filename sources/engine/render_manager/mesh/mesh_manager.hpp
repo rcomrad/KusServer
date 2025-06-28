@@ -8,22 +8,20 @@
 
 #include "mesh.hpp"
 
-namespace kusengine
-{
-namespace render
+namespace kusengine::render
 {
 
 // const Mesh<UniversalVertex>* const
 
 template <typename Type>
-struct EmptyStruct
+struct ChooseVertexType
 {
 };
 
-class MeshStorage
+class MeshManager
 {
 public:
-    MeshStorage();
+    void loadMeshes();
 
     template <typename VertexT>
     void addMesh(const std::vector<uint32_t>& indices,
@@ -39,8 +37,9 @@ private:
                      const std::vector<VertexP1UV1>& vertices,
                      const std::string& key);
 
-    const Mesh<VertexP1UV1>* const getMeshImpl(std::string_view key,
-                                               EmptyStruct<VertexP1UV1>) const;
+    const Mesh<VertexP1UV1>* const getMeshImpl(
+        std::string_view key,
+        ChooseVertexType<VertexP1UV1>) const;
 
     std::unordered_map<std::string, Mesh<VertexP1UV1>> m_universal_mesh_storage;
 
@@ -49,21 +48,20 @@ private:
 
 template <typename VertexT>
 const Mesh<VertexT>* const
-MeshStorage::getMesh(std::string_view key) const
+MeshManager::getMesh(std::string_view key) const
 {
-    return getMeshImpl(key, EmptyStruct<VertexT>{});
+    return getMeshImpl(key, ChooseVertexType<VertexT>{});
 }
 
 template <typename VertexT>
 void
-MeshStorage::addMesh(const std::vector<uint32_t>& indices,
+MeshManager::addMesh(const std::vector<uint32_t>& indices,
                      const std::vector<VertexT>& vertices,
                      const std::string& key)
 {
     return addMeshImpl(indices, vertices, key);
 }
 
-}; // namespace render
-}; // namespace kusengine
+}; // namespace kusengine::render
 
 #endif // MESH_FACTORY_HPP
