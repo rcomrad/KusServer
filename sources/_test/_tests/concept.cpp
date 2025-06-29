@@ -3,6 +3,7 @@
 #include <type_traits>
 
 #include "kernel/tester/fixture.hpp"
+#include "kernel/utility/type/concepts.hpp"
 
 namespace kustest
 {
@@ -78,12 +79,7 @@ to_str(const T& vec)
 //--------------------------------------------------------------------------------
 // Complex concept
 
-template <typename T>
-concept vec2d = requires(T t) {
-    { *t.begin()->begin() } -> std::convertible_to<char>;
-};
-
-template <vec2d T>
+template <util::Container2D T>
 std::string
 to_str(const T& vec)
 {

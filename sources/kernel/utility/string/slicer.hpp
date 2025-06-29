@@ -2,10 +2,9 @@
 
 //------------------------------------------------------------------------------
 
+#include <string>
 #include <string_view>
 #include <vector>
-
-#include "caster.hpp"
 
 //------------------------------------------------------------------------------
 
@@ -17,23 +16,19 @@ class Slicer
 public:
     Slicer() = delete;
 
-    static std::vector<std::string_view> process(
-        StringCaster a_str,
-        const char* a_delimiters,
-        const char* a_erase = "") noexcept;
-    // TODO: const a_from_str
-    static std::vector<std::string_view> safeProcess(
-        StringCaster a_from_str,
-        StringCaster a_to_str,
-        const char* a_delimiters,
-        const char* a_erase = "") noexcept;
+    static std::vector<std::string> copy(std::string_view a_str,
+                                         std::string_view a_delimiters);
 
-private:
-    static std::vector<std::string_view> baseProcess(
-        StringCaster a_from_str,
-        StringCaster a_to_str,
-        const char* a_delimiters,
-        const char* a_erase) noexcept;
+    static std::vector<std::string> copy(std::string_view a_str,
+                                         std::string_view a_delimiters,
+                                         std::string_view a_erase);
+
+    static std::vector<std::string_view> change(std::string_view a_str,
+                                                std::string_view a_delimiters);
+
+    static std::vector<std::string_view> change(std::string_view a_str,
+                                                std::string_view a_delimiters,
+                                                std::string_view a_erase);
 };
 
 } // namespace util

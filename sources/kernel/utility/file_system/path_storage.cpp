@@ -29,6 +29,8 @@ util::PathStorage::PathStorage()
 // Getting paths from the storage
 //------------------------------------------------------------------------------
 
+// TODO: exception
+
 const std::string&
 util::PathStorage::getFilePath(const std::string& a_file_name) const
 {
@@ -50,8 +52,8 @@ util::PathStorage::addFile(const std::string& a_parent_name,
                            const std::string& a_file_name)
 {
     // TODO: make it better
-    auto& parent_path                  = getFolderPath(a_parent_name);
-    return m_folder_paths[a_file_name] = parent_path + "/" + a_file_name;
+    auto& parent_path                 = getFolderPath(a_parent_name);
+    return m_files_paths[a_file_name] = parent_path + "/" + a_file_name;
 }
 
 const std::string&

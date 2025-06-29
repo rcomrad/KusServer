@@ -1,23 +1,22 @@
-#include "file_write.hpp"
+#include "file_read.hpp"
+
+#include <fstream>
 
 #include "kernel/framework/core/kernel.hpp"
 #include "kernel/framework/logger/include_me.hpp"
 
-util::FileWrite::FileWrite(const std::string& a_file_name)
+std::string
+util::FileRead::read(const std::string& a_file_name)
 {
     auto& file_path = KERNEL.getFilePath(a_file_name);
-    m_file          = std::fopen(file_path.data(), "w");
-    if (!m_file)
+    std::ifstream file(file_path);
+    if (!file.is_open())
     {
         THROW("Can't open file for write. Name: '%s', path: '%s'.", a_file_name,
               file_path);
     }
-}
 
-util::FileWrite::~FileWrite()
-{
-    if (m_file != nullptr)
-    {
-        std::fclose(m_file);
-    }
+    std::string result;
+    std::getline(file, result, '\0');
+    return result;
 }

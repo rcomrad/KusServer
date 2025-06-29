@@ -4,8 +4,8 @@
 
 #include "kernel/framework/command/handler.hpp"
 #include "kernel/framework/command/input_stdin.hpp"
+#include "kernel/framework/command/state_storage.hpp"
 #include "kernel/framework/module/registry.hpp"
-#include "kernel/framework/state/state_storage.hpp"
 #include "kernel/framework/variable/storage.hpp"
 #include "kernel/utility/file_system/path_storage.hpp"
 #include "kernel/utility/type/declaration/lifecycle_manager.hpp"

@@ -2,6 +2,9 @@
 
 //------------------------------------------------------------------------------
 
+#include <string>
+#include <string_view>
+
 #include "kernel/utility/type/type_id.hpp"
 
 //------------------------------------------------------------------------------
@@ -15,6 +18,8 @@ struct ASCIIBox
 
     ASCIIBox();
     ASCIIBox(const char* str);
+    ASCIIBox(std::string_view str);
+    ASCIIBox(const std::string& str);
 
     void set(const char* str);
 
