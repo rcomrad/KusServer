@@ -24,3 +24,49 @@ core::CommandData::CommandData(std::string&& a_comm_str) noexcept
         }
     }
 }
+
+std::string
+core::CommandData::toString() const noexcept
+{
+    std::string result(value);
+
+    for (auto& i : arguments)
+    {
+        result.push_back(' ');
+        result += i;
+    }
+
+    for (auto& i : variables)
+    {
+        result.push_back(' ');
+        result += i.first;
+        result.push_back('=');
+        result += i.second;
+    }
+
+    return result;
+}
+
+void
+core::CommandData::addArgs(const CommandData& a_other)
+{
+    arguments.insert(a_other.arguments.begin(), a_other.arguments.end());
+}
+
+void
+core::CommandData::resetArgs(const CommandData& a_other)
+{
+    arguments = a_other.arguments;
+}
+
+void
+core::CommandData::addVars(const CommandData& a_other)
+{
+    variables.insert(a_other.variables.begin(), a_other.variables.end());
+}
+
+void
+core::CommandData::resetVars(const CommandData& a_other)
+{
+    variables = a_other.variables;
+}

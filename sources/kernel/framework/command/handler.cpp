@@ -133,7 +133,7 @@ core::CommandHandler::processCommand(Command& a_command) const
 
         if (!a_command.execResultIsError())
         {
-            KERNEL.stateProcess(&a_command);
+            KERNEL.stateProcess(a_command);
             LOG_INFO("      command '%s' applied successfully",
                      a_command.value);
         }

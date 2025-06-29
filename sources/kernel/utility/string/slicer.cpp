@@ -2,67 +2,127 @@
 
 #include "kernel/utility/datastructs/ascii_box.hpp"
 
-std::vector<std::string_view>
-util::Slicer::process(StringCaster a_str,
-                      const char* a_delimiters,
-                      const char* a_erase) noexcept
+namespace
 {
-    return baseProcess(a_str, a_str, a_delimiters, a_erase);
+
+template <typename Res>
+Res
+util::Slicer::copyImpl(std::string_view a_str, const char* a_delimiters)
+{
+    Res result;
+    ASCIIBox delimiters(a_delimiters);
+    delimiters.set(static_cast<int8_t>(0));
+
+    int indx = 0;
+    int last = 0;
+    while (true)
+    {
+        char cur = a_str[indx++];
+        if (delimiters.get(cur))
+        {
+            if (last != indx)
+            {
+                result.emplace_back(last, indx);
+                ++indx;
+                last = indx;
+            }
+        }
+
+        if (!cur)
+        {
+            break;
+        }
+    }
+
+    return result;
+}
+
+}; // namespace
+
+std::vector<std::string>
+util::Slicer::copy(std::string_view a_str, const char* a_delimiters)
+{
+    return copyImpl<std::vector<std::string>>(a_str, a_delimiters);
 }
 
 std::vector<std::string_view>
-util::Slicer::safeProcess(StringCaster a_from_str,
-                          StringCaster a_to_str,
-                          const char* a_delimiters,
-                          const char* a_erase) noexcept
+util::Slicer::copy(std::string_view a_str,
+                   const char* a_delimiters,
+                   const char* a_erase)
 {
-    return baseProcess(a_from_str, a_to_str, a_delimiters, a_erase);
-}
-
-std::vector<std::string_view>
-util::Slicer::baseProcess(StringCaster a_from_str,
-                          StringCaster a_to_str,
-                          const char* a_delimiters,
-                          const char* a_erase) noexcept
-{
-    auto* from_str = a_from_str.obtain();
-    auto* to_str   = a_to_str.obtain(a_from_str);
-
     std::vector<std::string_view> result;
     ASCIIBox delimiters(a_delimiters);
     delimiters.set(static_cast<int8_t>(0));
     ASCIIBox erasors(a_erase);
 
-    char* left = to_str;
+    int indx = 0;
     while (true)
     {
-        auto from_cur = *from_str;
-        auto& to_cur  = *to_str;
-
-        if (!erasors.get(from_cur))
+        char cur = a_str[indx++];
+        if (!erasors.get(cur))
         {
-            if (delimiters.get(from_cur))
+            if (delimiters.get(cur))
             {
-                to_cur = 0;
-                if (left != to_str)
+                if (indx + 1 != a_str.size())
                 {
-                    result.emplace_back(left, to_str);
-                    ++to_str;
-                    left = to_str;
+                    result.emplace_back();
                 }
             }
             else
             {
-                to_cur = from_cur;
-                ++to_str;
+                result.back().push_back(cur);
             }
         }
 
-        if (from_cur)
+        if (!cur)
         {
-            ++from_str;
+            break;
         }
-        else
+    }
+
+    return result;
+}
+
+std::vector<std::string_view>
+util::Slicer::change(std::string_view a_str, const char* a_delimiters)
+{
+    return copyImpl<std::vector<std::string_view>>(a_str, a_delimiters);
+}
+
+std::vector<std::string_view>
+util::Slicer::change(std::string_view a_str,
+                     const char* a_delimiters,
+                     const char* a_erase)
+{
+    std::vector<std::string_view> result;
+    ASCIIBox delimiters(a_delimiters);
+    delimiters.set(static_cast<int8_t>(0));
+    ASCIIBox erasors(a_erase);
+
+    int indx = 0;
+    int to   = 0;
+    int last = 0;
+    while (true)
+    {
+        char cur = a_str[indx++];
+        if (!erasors.get(cur))
+        {
+            if (delimiters.get(cur))
+            {
+                if (last != to)
+                {
+                    result.emplace_back(last, to);
+                    ++to;
+                    last = to;
+                }
+            }
+            else
+            {
+                a_str[to++] = cur;
+            }
+        }
+
+        if (!cur)
         {
             break;
         }

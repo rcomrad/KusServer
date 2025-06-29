@@ -1,28 +1,28 @@
-#pragma once
+// #pragma once
 
-//------------------------------------------------------------------------------
+// //------------------------------------------------------------------------------
 
-#include <typeindex>
+// #include <typeindex>
 
-#include "kernel/utility/type/type_id.hpp"
+// #include "kernel/utility/type/type_id.hpp"
 
-//------------------------------------------------------------------------------
+// //------------------------------------------------------------------------------
 
-namespace util
-{
+// namespace util
+// {
 
-class PrintType
-{
-public:
-    static const char* process(int arg) noexcept;
-    static const char* process(double arg) noexcept;
-    static const char* process(const char* arg) noexcept;
+// class PrintType
+// {
+// public:
+//     static const char* process(int arg) noexcept;
+//     static const char* process(double arg) noexcept;
+//     static const char* process(const char* arg) noexcept;
 
-    static const char* process(std::type_index a_type) noexcept;
+//     static const char* process(std::type_index a_type) noexcept;
 
-    static const char* process(TypeID a_type) noexcept;
-};
+//     static const char* process(TypeID a_type) noexcept;
+// };
 
-} // namespace util
+// } // namespace util
 
-//------------------------------------------------------------------------------
+// //------------------------------------------------------------------------------

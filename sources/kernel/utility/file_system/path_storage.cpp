@@ -29,6 +29,8 @@ util::PathStorage::PathStorage()
 // Getting paths from the storage
 //------------------------------------------------------------------------------
 
+// TODO: exception
+
 const std::string&
 util::PathStorage::getFilePath(const std::string& a_file_name) const
 {

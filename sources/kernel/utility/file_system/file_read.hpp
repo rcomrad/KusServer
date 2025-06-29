@@ -10,11 +10,15 @@
 namespace util
 {
 
-class FileWrite
+class FileRead
 {
 public:
-    FileWrite(const std::string& a_file_name);
+    FileWrite() = delete;
     ~FileWrite();
+
+    
+const std::string& a_file_name
+
 
     template <typename T>
     void write(const T& a_container)
