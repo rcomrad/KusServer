@@ -1,5 +1,5 @@
-#ifndef UNIVERSAL_MBDDI_HPP
-#define UNIVERSAL_MBDDI_HPP
+#ifndef TRS_MBDDI_2D_HPP
+#define TRS_MBDDI_2D_HPP
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #define GLM_FORCE_RADIANS
@@ -12,12 +12,12 @@ namespace kusengine
 {
 namespace render
 {
-class TRS_MBDDI : public BaseMBDDI<MODEL4x4_COLOR_MBDD>
+class TRS_MBDDI_2D : public BaseMBDDI<MODEL4x4_COLOR_MBDD>
 {
 public:
-    virtual ~TRS_MBDDI() = default;
+    virtual ~TRS_MBDDI_2D() = default;
 
-    TRS_MBDDI();
+    TRS_MBDDI_2D();
 
     void setRotation(float angle);
 
@@ -40,4 +40,4 @@ private:
 }; // namespace render
 }; // namespace kusengine
 
-#endif // UNIVERSAL_MBDDI_HPP
+#endif // TRS_MBDDI_2D_HPP

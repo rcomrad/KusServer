@@ -32,16 +32,29 @@ public:
     const Mesh<VertexT>* const getMesh(std::string_view key) const;
 
 private:
-    // ----------- Universal Vertex Mesh ----------- //
+    // ----------- 2d Vertex Mesh ----------- //
     void addMeshImpl(const std::vector<uint32_t>& indices,
-                     const std::vector<VertexP1UV1>& vertices,
+                     const std::vector<Vertex2DP1UV1>& vertices,
                      const std::string& key);
 
-    const Mesh<VertexP1UV1>* const getMeshImpl(
+    const Mesh<Vertex2DP1UV1>* const getMeshImpl(
         std::string_view key,
-        ChooseVertexType<VertexP1UV1>) const;
+        ChooseVertexType<Vertex2DP1UV1>) const;
 
-    std::unordered_map<std::string, Mesh<VertexP1UV1>> m_universal_mesh_storage;
+    std::unordered_map<std::string, Mesh<Vertex2DP1UV1>>
+        m_2d_p1_uv1_mesh_storage;
+
+    // ----------- 3d Vertex Mesh ----------- //
+    void addMeshImpl(const std::vector<uint32_t>& indices,
+                     const std::vector<Vertex3DP1UV1>& vertices,
+                     const std::string& key);
+
+    const Mesh<Vertex3DP1UV1>* const getMeshImpl(
+        std::string_view key,
+        ChooseVertexType<Vertex3DP1UV1>) const;
+
+    std::unordered_map<std::string, Mesh<Vertex3DP1UV1>>
+        m_3d_p1_uv1_mesh_storage;
 
     // -----------  ----------- //
 };

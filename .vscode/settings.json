@@ -109,7 +109,11 @@
         "filesystem": "cpp",
         "forward_list": "cpp",
         "queue": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "cfenv": "cpp",
+        "complex": "cpp",
+        "coroutine": "cpp",
+        "stack": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

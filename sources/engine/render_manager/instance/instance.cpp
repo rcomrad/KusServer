@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "GLFW/glfw3.h"
+#include "engine/render_manager/device/device.hpp"
 
 namespace kusengine
 {
@@ -26,17 +27,19 @@ Instance::getAvailablePhysicalDevices() const
     return m_instance.get().enumeratePhysicalDevices();
 }
 
-bool
+void
 Instance::create(std::string_view app_name)
 {
-    if (!createInstance(app_name)) return false;
+    createInstance(app_name);
 
+    auto vkGetInstanceProcAddr =
+        dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
     dldi.init(m_instance.get(), vkGetInstanceProcAddr);
+
     createDebugMessenger();
-    return true;
 }
 
-bool
+void
 Instance::createInstance(std::string_view app_name)
 {
     uint32_t version = vk::makeApiVersion(0, 1, 0, 0);
@@ -54,26 +57,14 @@ Instance::createInstance(std::string_view app_name)
 
 #endif // _DEBUG
 
-    if (!m_validation_layers.supported(extensions))
-    {
-        return false;
-    }
+    m_validation_layers.supported(extensions);
 
     vk::InstanceCreateInfo instance_create_info = vk::InstanceCreateInfo(
         vk::InstanceCreateFlags(), &app_info, m_validation_layers.count(),
         m_validation_layers.data(), static_cast<uint32_t>(extensions.size()),
         extensions.data());
 
-    try
-    {
-        m_instance = vk::createInstanceUnique(instance_create_info);
-    }
-    catch (vk::SystemError err)
-    {
-        std::cerr << err.what() << '\n';
-        return false;
-    }
-    return true;
+    m_instance = vk::createInstanceUnique(instance_create_info);
 }
 
 std::vector<const char*>

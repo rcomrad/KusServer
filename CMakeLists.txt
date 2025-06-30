@@ -1,13 +1,19 @@
+
 #-------------------------------------------------------------------------------
 #                                   Project setup
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.21.3)
+cmake_minimum_required(VERSION 3.22.0)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/vcpkg_path.cmake)
-set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
+set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake")
+include("C:/vcpkg/scripts/buildsystems/vcpkg.cmake")
+
 
 project(KusSysteam)
+
+
+
 # project(KusSystem)
 
 #-------------------------------------------------------------------------------
@@ -75,9 +81,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Libraries include
 # find_package(mailio CONFIG REQUIRED)
 # find_package(libpqxx CONFIG REQUIRED)
-
-find_package(GTest CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
+find_package(GTest CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(Vulkan REQUIRED)
 find_package(Crow CONFIG REQUIRED)

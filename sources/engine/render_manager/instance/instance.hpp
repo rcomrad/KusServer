@@ -18,7 +18,7 @@ public:
 
     Instance() = default;
 
-    bool create(std::string_view app_name);
+    void create(std::string_view app_name);
 
     std::vector<vk::PhysicalDevice> getAvailablePhysicalDevices() const;
 
@@ -27,7 +27,7 @@ public:
 private:
     std::vector<const char*> getExtensions();
 
-    bool createInstance(std::string_view app_name);
+    void createInstance(std::string_view app_name);
 
     void createDebugMessenger();
 
@@ -35,7 +35,8 @@ private:
 
     ValidationLayers m_validation_layers;
 
-    vk::DispatchLoaderDynamic dldi;
+    vk::detail::DynamicLoader dl;
+    vk::detail::DispatchLoaderDynamic dldi;
 
     vk::DebugUtilsMessengerEXT m_debug_messenger;
 };

@@ -55,9 +55,9 @@ RenderSystem::setupDefaultPipeline(const DescriptorManager& desc_manager)
         "engine/render_manager/shaders/compiled/default_vertex_shader.vert.spv";
 
     info.vertex_binding_description =
-        VertexP1UV1::Description::getBindingDescription();
+        Vertex2DP1UV1::Description::getBindingDescription();
     info.vertex_attribute_descriptions =
-        VertexP1UV1::Description::getAttributeDescriptions();
+        Vertex2DP1UV1::Description::getAttributeDescriptions();
 
     auto& r_pass = m_render_passes.at("default");
 
@@ -142,7 +142,7 @@ RenderSystem::execute(const SwapChainFrame& frame,
 
 const vk::PipelineLayout&
 RenderSystem::bindPipeline(const std::string& key,
-                           const vk::CommandBuffer& cmd) const &
+                           const vk::CommandBuffer& cmd) const&
 {
     m_pipelines.at(key)->bind(cmd);
     return m_pipelines.at(key)->layout();

@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 
-#include "engine/render_manager/scene/basic_scene.hpp"
+#include "engine/render_manager/scene/basic_scene_2d.hpp"
 #include "window/window.hpp"
 
 namespace kusengine
@@ -29,7 +29,7 @@ private:
 
     Window m_window;
 
-    render::BasicScene m_scene;
+    render::BasicScene2D m_scene;
 
     // Time
 

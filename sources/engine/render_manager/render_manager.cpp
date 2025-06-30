@@ -128,12 +128,20 @@ RenderManager::getResourceImpl(ChooseResType<Texture>&& rs,
     return m_texture_manager.getTexture(key);
 } // texture
 
-const Mesh<VertexP1UV1>* const
-RenderManager::getResourceImpl(ChooseResType<Mesh<VertexP1UV1>>&& rs,
+const Mesh<Vertex2DP1UV1>* const
+RenderManager::getResourceImpl(ChooseResType<Mesh<Vertex2DP1UV1>>&& rs,
                                const std::string& key) const
 {
-    return m_mesh_manager.getMesh<VertexP1UV1>(key);
+    return m_mesh_manager.getMesh<Vertex2DP1UV1>(key);
 } // mesh<vertex 2d>
+
+const Mesh<Vertex3DP1UV1>* const
+RenderManager::getResourceImpl(ChooseResType<Mesh<Vertex3DP1UV1>>&& rs,
+                               const std::string& key) const
+{
+    return m_mesh_manager.getMesh<Vertex3DP1UV1>(key);
+} // mesh<vertex 3d>
+
 // ----------------------- //
 }; // namespace render
 }; // namespace kusengine

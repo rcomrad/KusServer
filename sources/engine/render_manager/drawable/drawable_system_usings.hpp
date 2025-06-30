@@ -10,10 +10,14 @@ namespace kusengine
 {
 namespace render
 {
-using DrawableSystem_P1UV1_TRS =
-    DrawableSystem<Drawable_P1UV1_TRS,
-                   Drawable_P1UV1_TRS::MBDDInterfaceType::MBDDtype>;
-};
+using DrawableSystem2D_P1UV1_TRS =
+    DrawableSystem<Drawable2D_P1UV1_TRS,
+                   Drawable2D_P1UV1_TRS::MBDDInterfaceType::MBDDtype>;
+
+using DrawableSystem3D_P1UV1_TRS =
+    DrawableSystem<Drawable3D_P1UV1_TRS,
+                   Drawable3D_P1UV1_TRS::MBDDInterfaceType::MBDDtype>;
+}; // namespace render
 }; // namespace kusengine
 
 #endif // DRAWABLE_SYSTEM_USINGS_HPP

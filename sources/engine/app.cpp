@@ -79,6 +79,7 @@ App::FPSLimit(const double& loop_time)
 bool
 App::loopBody()
 {
+    // std::cout << "run\n";
 
     if (!m_window.isOpen())
     {
