@@ -1,13 +1,19 @@
+
 #-------------------------------------------------------------------------------
 #                                   Project setup
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.21.3)
+cmake_minimum_required(VERSION 3.22.0)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/vcpkg_path.cmake)
-set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
+set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake")
+include("C:/vcpkg/scripts/buildsystems/vcpkg.cmake")
+
 
 project(KusSysteam)
+
+
+
 # project(KusSystem)
 
 #-------------------------------------------------------------------------------
@@ -21,6 +27,13 @@ if (${MSVC})
 else()
     set(OS "LINUS_LINUX")
 endif()
+
+if(MSVC)
+    add_compile_options(/Zc:__cplusplus)  # Для Visual Studio (MSVC)
+endif()
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #-------------------------------------------------------------------------------
 
@@ -45,10 +58,10 @@ macro(create_exe NAME)
     target_link_libraries(${EXE_NAME} PRIVATE Crow::Crow)
     target_link_libraries(${EXE_NAME} PRIVATE ${Boost_LIBRARIES})
     target_link_libraries(${EXE_NAME} PRIVATE glm::glm)
+    target_include_directories(${EXE_NAME} PRIVATE ${Stb_INCLUDE_DIR})
+    target_link_libraries(${EXE_NAME} PRIVATE nlohmann_json::nlohmann_json)
 
-    # target_link_libraries(${EXE_NAME} PRIVATE Vulkan::glslang)
-    # target_link_libraries(${EXE_NAME} PRIVATE Vulkan::dxc)
-    # target_link_libraries(${EXE_NAME} PRIVATE mailio)
+
 
     # Output file name settings
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
@@ -68,13 +81,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Libraries include
 # find_package(mailio CONFIG REQUIRED)
 # find_package(libpqxx CONFIG REQUIRED)
-
-find_package(GTest CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
+find_package(GTest CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(Vulkan REQUIRED)
 find_package(Crow CONFIG REQUIRED)
 find_package(Boost REQUIRED system filesystem)
+find_package(Stb REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
 
 # Sources include
 add_executable(${PROJECT_NAME} "sources_main/main.cpp")

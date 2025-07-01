@@ -107,6 +107,14 @@
         "xtree": "cpp",
         "xutility": "cpp",
         "filesystem": "cpp",
-        "forward_list": "cpp"
-    }
+        "forward_list": "cpp",
+        "queue": "cpp",
+        "valarray": "cpp",
+        "cfenv": "cpp",
+        "complex": "cpp",
+        "coroutine": "cpp",
+        "stack": "cpp",
+        "csetjmp": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }
