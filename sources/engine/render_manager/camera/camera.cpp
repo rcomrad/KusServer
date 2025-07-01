@@ -58,4 +58,4 @@ Camera2D::setViewWidth(float width)
     m_view_width = width;
 }
 
-}; // namespace kusengine
+}; // namespace kusengine::render

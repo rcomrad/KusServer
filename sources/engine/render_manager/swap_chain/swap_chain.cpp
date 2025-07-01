@@ -193,12 +193,12 @@ SwapChain::createSwapChainFrames(const RenderSystem& render_system,
     m_frames.resize(images.size());
     for (int i = 0; i < images.size(); ++i)
     {
-        m_frames[i].createImage(images[i], m_format);
+        m_frames[i].setupImages(images[i], m_format, m_extent);
 
         render_system.translateRenderPassesToFrame(m_frames[i]);
 
-        m_frames[i].createCommandBuffer();
-        m_frames[i].createSynchronization();
+        m_frames[i].setupCommandBuffer();
+        m_frames[i].setupSynchronization();
 
         desc_manager.translateDescriptorDataToFrame(m_frames[i]);
     }
@@ -234,41 +234,6 @@ SwapChain::present(uint32_t index, const vk::Semaphore* wait_sems)
     }
     return true;
 }
-
-// void
-// SwapChain::recordCommandBuffer(SwapChainFrame& frame,
-//                                const RenderWay& render_way)
-// {
-//     const vk::CommandBuffer& command_buffer_ref = frame.commandBuffer();
-
-//     command_buffer_ref.reset();
-
-//     vk::CommandBufferBeginInfo beginInfo = {};
-
-//     command_buffer_ref.begin(beginInfo);
-
-//     vk::RenderPassBeginInfo renderPassInfo = {};
-//     renderPassInfo.renderPass              = render_way.renderPass();
-//     renderPassInfo.framebuffer             = frame.framebuffer();
-
-//     renderPassInfo.renderArea.offset.x = 0;
-//     renderPassInfo.renderArea.offset.y = 0;
-//     renderPassInfo.renderArea.extent   = extent();
-
-//     renderPassInfo.clearValueCount = 1;
-//     vk::ClearValue clear_value{vk::ClearColorValue(1.f, 1.f, 1.f, 1.f)};
-
-//     renderPassInfo.pClearValues = &clear_value;
-
-//     command_buffer_ref.beginRenderPass(&renderPassInfo,
-//                                        vk::SubpassContents::eInline);
-
-//     render_way.bind(command_buffer_ref, frame.descriptorSets());
-
-//     command_buffer_ref.endRenderPass();
-
-//     command_buffer_ref.end();
-// }
 
 }; // namespace render
 }; // namespace kusengine

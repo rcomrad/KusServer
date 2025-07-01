@@ -26,7 +26,15 @@ Texture::loadTexture(std::string_view file_path)
     staging_buffer.setData(pixels, imageSize);
     stbi_image_free(pixels);
 
-    m_image.create(m_width, m_height);
+    ImageConfigInfo image_config_info = {
+        .format      = vk::Format::eR8G8B8A8Unorm,
+        .width       = static_cast<uint32_t>(m_width),
+        .height      = static_cast<uint32_t>(m_height),
+        .usage_flags = vk::ImageUsageFlagBits::eSampled |
+                       vk::ImageUsageFlagBits::eTransferDst |
+                       vk::ImageUsageFlagBits::eColorAttachment};
+
+    m_image.create(image_config_info);
 
     CommandBuffer command_buffer;
     command_buffer.create();
@@ -43,7 +51,9 @@ Texture::loadTexture(std::string_view file_path)
     queue.submit(1, &submitInfo, nullptr);
     queue.waitIdle();
 
-    m_image.createImageView();
+    ImageViewConfigInfo image_view_config_info = {
+        .aspect_mask = vk::ImageAspectFlagBits::eColor};
+    m_image.createImageView(image_view_config_info);
 
     // Sampler
     vk::SamplerCreateInfo samplerInfo({},                              //
@@ -57,7 +67,8 @@ Texture::loadTexture(std::string_view file_path)
                                       false,                           //
                                       16.0f,                           //
                                       false,                           //
-                                      vk::CompareOp::eNever, 0.0f,     //
+                                      vk::CompareOp::eNever,
+                                      0.0f, //
                                       std::numeric_limits<float>::max(),
                                       vk::BorderColor::eFloatOpaqueBlack);
 
@@ -65,11 +76,11 @@ Texture::loadTexture(std::string_view file_path)
 }
 
 void
-Texture::allocDescriptorSet(const std::string& alloc_name,
-                            const DescriptorManager& desc_manager)
+Texture::allocDescriptorSet(const DescriptorManager& desc_manager)
 {
 
-    desc_manager.getAllocator(alloc_name).allocate(m_descriptor_set);
+    desc_manager.getAllocator(DescriptorSetLayoutType::COMBINED_IMAGE_SAMPLER)
+        .allocate(m_descriptor_set);
 
     vk::DescriptorImageInfo imageInfo(m_sampler.get(), m_image.view(),
                                       vk::ImageLayout::eShaderReadOnlyOptimal);

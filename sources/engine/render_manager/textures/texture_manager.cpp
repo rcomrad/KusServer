@@ -50,8 +50,7 @@ TextureManager::addTexture(const std::string& file_path,
         Texture new_texture;
         new_texture.loadTexture(file_path);
 
-        new_texture.allocDescriptorSet("default_fragment_shader",
-                                       descriptor_manager);
+        new_texture.allocDescriptorSet(descriptor_manager);
 
         m_texture_storage[texture_name] = std::move(new_texture);
     }

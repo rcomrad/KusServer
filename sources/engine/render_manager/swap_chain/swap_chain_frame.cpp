@@ -50,25 +50,50 @@ SwapChainFrame::getBuffer(const std::string& key) const&
 // }
 
 void
-SwapChainFrame::createImage(const vk::Image& image, const vk::Format& format)
+SwapChainFrame::setupDepth(const vk::Extent2D& extent)
 {
-    vk::ImageViewCreateInfo create_image_view_info = {};
-    create_image_view_info.image                   = image;
-    create_image_view_info.viewType                = vk::ImageViewType::e2D;
-    create_image_view_info.format                  = format;
-    create_image_view_info.components.r = vk::ComponentSwizzle::eIdentity;
-    create_image_view_info.components.g = vk::ComponentSwizzle::eIdentity;
-    create_image_view_info.components.b = vk::ComponentSwizzle::eIdentity;
-    create_image_view_info.components.a = vk::ComponentSwizzle::eIdentity;
-    create_image_view_info.subresourceRange.aspectMask =
-        vk::ImageAspectFlagBits::eColor;
-    create_image_view_info.subresourceRange.baseMipLevel   = 0;
-    create_image_view_info.subresourceRange.levelCount     = 1;
-    create_image_view_info.subresourceRange.baseArrayLayer = 0;
-    create_image_view_info.subresourceRange.layerCount     = 1;
+    ImageConfigInfo image_config_info = {
+        .format      = vk::Format::eD32Sfloat,
+        .width       = extent.width,
+        .height      = extent.height,
+        .usage_flags = vk::ImageUsageFlagBits::eDepthStencilAttachment |
+                       vk::ImageUsageFlagBits::eTransferDst |
+                       vk::ImageUsageFlagBits::eSampled};
 
-    m_view =
-        LOGICAL_DEVICE_INSTANCE.createImageViewUnique(create_image_view_info);
+    m_depth_image.create(image_config_info);
+
+    ImageViewConfigInfo image_view_config_info = {
+        .aspect_mask = vk::ImageAspectFlagBits::eDepth};
+    m_depth_image.createImageView(image_view_config_info);
+}
+
+void
+SwapChainFrame::setupImages(const vk::Image& image,
+                            const vk::Format& format,
+                            const vk::Extent2D& extent)
+{
+    // view
+    {
+        vk::ImageViewCreateInfo create_image_view_info = {};
+        create_image_view_info.image                   = image;
+        create_image_view_info.viewType                = vk::ImageViewType::e2D;
+        create_image_view_info.format                  = format;
+        create_image_view_info.components.r = vk::ComponentSwizzle::eIdentity;
+        create_image_view_info.components.g = vk::ComponentSwizzle::eIdentity;
+        create_image_view_info.components.b = vk::ComponentSwizzle::eIdentity;
+        create_image_view_info.components.a = vk::ComponentSwizzle::eIdentity;
+        create_image_view_info.subresourceRange.aspectMask =
+            vk::ImageAspectFlagBits::eColor;
+        create_image_view_info.subresourceRange.baseMipLevel   = 0;
+        create_image_view_info.subresourceRange.levelCount     = 1;
+        create_image_view_info.subresourceRange.baseArrayLayer = 0;
+        create_image_view_info.subresourceRange.layerCount     = 1;
+
+        m_view = LOGICAL_DEVICE_INSTANCE.createImageViewUnique(
+            create_image_view_info);
+    }
+
+    setupDepth(extent);
 }
 
 void
@@ -76,7 +101,8 @@ SwapChainFrame::addFrameBuffer(std::string_view key,
                                const vk::RenderPass& renderpass,
                                const vk::Extent2D& extent)
 {
-    std::vector<vk::ImageView> attachments = {m_view.get()};
+    std::vector<vk::ImageView> attachments = {m_view.get(),
+                                              m_depth_image.view()};
 
     vk::FramebufferCreateInfo framebufferInfo;
     framebufferInfo.flags           = vk::FramebufferCreateFlags();
@@ -132,7 +158,7 @@ SwapChainFrame::writeDescriptorSetMBDD()
 }
 
 void
-SwapChainFrame::createDescriptorSet(
+SwapChainFrame::setupDescriptorSet(
     const DescriptorAllocator& default_desc_alloc)
 {
     m_descriptor_sets.resize(1);
@@ -140,13 +166,13 @@ SwapChainFrame::createDescriptorSet(
 }
 
 void
-SwapChainFrame::createCommandBuffer()
+SwapChainFrame::setupCommandBuffer()
 {
     m_command_buffer.create();
 }
 
 void
-SwapChainFrame::createSynchronization()
+SwapChainFrame::setupSynchronization()
 {
     m_sync_control.create();
 }

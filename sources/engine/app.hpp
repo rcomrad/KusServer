@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "engine/render_manager/scene/basic_scene_2d.hpp"
+#include "engine/render_manager/scene/basic_scene_3d.hpp"
 #include "window/window.hpp"
 
 namespace kusengine
@@ -29,12 +30,13 @@ private:
 
     Window m_window;
 
-    render::BasicScene2D m_scene;
-
-    // Time
+    render::BasicScene3D m_scene;
 
     void compileShaders();
 
+    void handleEvents(float el_time);
+
+    // Time
     double getLoopTime();
 
     void FPSLimit(const double& loop_time);

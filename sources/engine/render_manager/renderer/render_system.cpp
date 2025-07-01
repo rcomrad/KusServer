@@ -10,6 +10,7 @@ namespace kusengine::render
 
 void
 RenderSystem::setup(const DescriptorManager& desc_manager,
+                    const ShaderManager& shader_manager,
                     const vk::Extent2D& extent,
                     const vk::Format& format)
 {
@@ -17,7 +18,7 @@ RenderSystem::setup(const DescriptorManager& desc_manager,
     m_format = format;
 
     setupDefaultRenderPass();
-    setupDefaultPipeline(desc_manager);
+    setupDefaultPipelines(desc_manager, shader_manager);
 }
 
 vk::UniquePipelineLayout
@@ -32,51 +33,81 @@ RenderSystem::makePipelineLayout(int count, vk::DescriptorSetLayout* data)
 }
 
 void
-RenderSystem::setupDefaultPipeline(const DescriptorManager& desc_manager)
+RenderSystem::setupDefaultPipelines(const DescriptorManager& desc_manager,
+                                    const ShaderManager& shader_manager)
 {
-    std::string sources_folder =
-        util::PathStorage::getFolderPath("sources").value().data();
+    std::string shader_folder =
+        util::PathStorage::getFolderPath("shaders").value().data();
 
-    PipelineConfigInfo info;
-    info.extent = m_extent;
+    // for default 2D
+    {
+        PipelineConfigInfo info;
+        info.extent = m_extent;
 
-    std::array<vk::DescriptorSetLayout, 2> layouts = {
-        desc_manager.getAllocator("default_vertex_shader").layout(),
-        desc_manager.getAllocator("default_fragment_shader").layout()};
+        info.depth_test_enable = vk::False;
 
-    info.pipeline_layout = makePipelineLayout(layouts.size(), layouts.data());
+        std::array<vk::DescriptorSetLayout, 2> layouts = {
+            desc_manager.getAllocator(DescriptorSetLayoutType::UBO_x_STORAGE)
+                .layout(),
+            desc_manager
+                .getAllocator(DescriptorSetLayoutType::COMBINED_IMAGE_SAMPLER)
+                .layout()};
+        info.pipeline_layout =
+            makePipelineLayout(layouts.size(), layouts.data());
+        info.vertex_shader_type   = ShaderType::DEFAULT_2D_VERTEX;
+        info.fragment_shader_type = ShaderType::DEFAULT_FRAGMENT;
 
-    info.fragment_shader_path = sources_folder +
-                                "engine/render_manager/shaders/compiled/"
-                                "default_fragment_shader.frag.spv";
+        info.vertex_binding_description =
+            Vertex2DP1UV1::Description::getBindingDescription();
+        info.vertex_attribute_descriptions =
+            Vertex2DP1UV1::Description::getAttributeDescriptions();
 
-    info.vertex_shader_path =
-        sources_folder +
-        "engine/render_manager/shaders/compiled/default_vertex_shader.vert.spv";
+        registerPipeline("default_2d", "default", std::move(info),
+                         shader_manager);
+    }
+    // for default 3D
+    {
+        PipelineConfigInfo info;
+        info.extent = m_extent;
 
-    info.vertex_binding_description =
-        Vertex2DP1UV1::Description::getBindingDescription();
-    info.vertex_attribute_descriptions =
-        Vertex2DP1UV1::Description::getAttributeDescriptions();
+        info.depth_test_enable = vk::True;
 
-    auto& r_pass = m_render_passes.at("default");
+        std::array<vk::DescriptorSetLayout, 2> layouts = {
+            desc_manager.getAllocator(DescriptorSetLayoutType::UBO_x_STORAGE)
+                .layout(),
+            desc_manager
+                .getAllocator(DescriptorSetLayoutType::COMBINED_IMAGE_SAMPLER)
+                .layout()};
 
-    m_pipelines["default"] =
-        std::make_unique<Pipeline>(std::move(info), r_pass.get()->renderPass());
+        info.pipeline_layout =
+            makePipelineLayout(layouts.size(), layouts.data());
+        info.vertex_shader_type   = ShaderType::DEFAULT_3D_VERTEX;
+        info.fragment_shader_type = ShaderType::DEFAULT_FRAGMENT;
+
+        info.vertex_binding_description =
+            Vertex3DP1UV1::Description::getBindingDescription();
+        info.vertex_attribute_descriptions =
+            Vertex3DP1UV1::Description::getAttributeDescriptions();
+
+        registerPipeline("default_3d", "default", std::move(info),
+                         shader_manager);
+    }
 }
 
 void
 RenderSystem::setupDefaultRenderPass()
 {
     RenderPassConfigInfo info;
-    info.swap_chain_format     = m_format;
-    m_render_passes["default"] = std::make_unique<RenderPass>(info);
+    info.swap_chain_format = m_format;
+
+    registerRenderPass("default", info);
 }
 
 void
 RenderSystem::registerPipeline(std::string_view key,
                                std::string_view render_pass,
-                               PipelineConfigInfo&& pipeline_info)
+                               PipelineConfigInfo&& pipeline_info,
+                               const ShaderManager& shader_manager)
 {
     if (m_render_passes.find(render_pass.data()) == m_render_passes.end())
     {
@@ -86,7 +117,8 @@ RenderSystem::registerPipeline(std::string_view key,
     {
         m_pipelines[key.data()] = std::make_unique<Pipeline>(
             std::move(pipeline_info),
-            m_render_passes[render_pass.data()].get()->renderPass());
+            m_render_passes[render_pass.data()].get()->renderPass(),
+            shader_manager);
     }
     else
     {
@@ -144,6 +176,10 @@ const vk::PipelineLayout&
 RenderSystem::bindPipeline(const std::string& key,
                            const vk::CommandBuffer& cmd) const&
 {
+    if (m_pipelines.find(key) == m_pipelines.end())
+    {
+        throw std::exception((key + " does not exist\n").c_str());
+    }
     m_pipelines.at(key)->bind(cmd);
     return m_pipelines.at(key)->layout();
 }

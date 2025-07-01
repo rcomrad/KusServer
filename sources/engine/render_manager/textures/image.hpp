@@ -5,13 +5,28 @@
 
 namespace kusengine
 {
-    namespace render{
+namespace render
+{
+
+struct ImageConfigInfo
+{
+    vk::Format format;
+    uint32_t width;
+    uint32_t height;
+    vk::ImageUsageFlags usage_flags;
+};
+
+struct ImageViewConfigInfo
+{
+    vk::ImageAspectFlags aspect_mask;
+};
+
 class Image
 {
 public:
-    Image() = default;
+    void create(const ImageConfigInfo& config_info);
 
-    void create(float width, float height);
+    void createImageView(const ImageViewConfigInfo& config_info);
 
     vk::ImageMemoryBarrier memoryBarrier() const;
 
@@ -19,15 +34,13 @@ public:
                            const vk::CommandBuffer& command_buffer,
                            const vk::BufferImageCopy& region);
 
-    void createImageView();
-
     const vk::ImageView& view() const;
 
 private:
     vk::UniqueImage m_image;
-    vk::Format m_format;
     vk::UniqueImageView m_view;
     vk::DeviceMemory m_memory;
+    vk::Format m_format;
 };
 }; // namespace render
 }; // namespace kusengine

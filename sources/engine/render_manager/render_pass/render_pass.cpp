@@ -22,36 +22,60 @@ RenderPass::renderPass() const
 void
 RenderPass::create(const RenderPassConfigInfo& render_pass_info)
 {
-    vk::AttachmentDescription colorAttachment = {};
-    colorAttachment.flags          = vk::AttachmentDescriptionFlags();
-    colorAttachment.format         = render_pass_info.swap_chain_format;
-    colorAttachment.samples        = vk::SampleCountFlagBits::e1;
-    colorAttachment.loadOp         = vk::AttachmentLoadOp::eClear;
-    colorAttachment.storeOp        = vk::AttachmentStoreOp::eStore;
-    colorAttachment.stencilLoadOp  = vk::AttachmentLoadOp::eDontCare;
-    colorAttachment.stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
-    colorAttachment.initialLayout  = vk::ImageLayout::eUndefined;
-    colorAttachment.finalLayout    = vk::ImageLayout::ePresentSrcKHR;
+    // -- color -- //
 
-    vk::AttachmentReference colorAttachmentRef = {};
-    colorAttachmentRef.attachment              = 0;
-    colorAttachmentRef.layout = vk::ImageLayout::eColorAttachmentOptimal;
+    vk::AttachmentDescription color_attachment{};
+    color_attachment.flags          = vk::AttachmentDescriptionFlags();
+    color_attachment.format         = render_pass_info.swap_chain_format;
+    color_attachment.samples        = vk::SampleCountFlagBits::e1;
+    color_attachment.loadOp         = vk::AttachmentLoadOp::eClear;
+    color_attachment.storeOp        = vk::AttachmentStoreOp::eStore;
+    color_attachment.stencilLoadOp  = vk::AttachmentLoadOp::eDontCare;
+    color_attachment.stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
+    color_attachment.initialLayout  = vk::ImageLayout::eUndefined;
+    color_attachment.finalLayout    = vk::ImageLayout::ePresentSrcKHR;
 
-    vk::SubpassDescription subpass = {};
-    subpass.flags                  = vk::SubpassDescriptionFlags();
-    subpass.pipelineBindPoint      = vk::PipelineBindPoint::eGraphics;
-    subpass.colorAttachmentCount   = 1;
-    subpass.pColorAttachments      = &colorAttachmentRef;
+    vk::AttachmentReference color_attachment_ref{};
+    color_attachment_ref.attachment = 0;
+    color_attachment_ref.layout     = vk::ImageLayout::eColorAttachmentOptimal;
 
-    vk::RenderPassCreateInfo renderpassInfo = {};
-    renderpassInfo.flags                    = vk::RenderPassCreateFlags();
-    renderpassInfo.attachmentCount          = 1;
-    renderpassInfo.pAttachments             = &colorAttachment;
-    renderpassInfo.subpassCount             = 1;
-    renderpassInfo.pSubpasses               = &subpass;
+    // ----------- //
+    // -- depth -- //
+    vk::AttachmentDescription depth_attachment{};
+    depth_attachment.format        = vk::Format::eD32Sfloat;
+    depth_attachment.loadOp        = vk::AttachmentLoadOp::eClear;
+    depth_attachment.storeOp       = vk::AttachmentStoreOp::eDontCare;
+    depth_attachment.stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
+    depth_attachment.initialLayout = vk::ImageLayout::eUndefined;
+    depth_attachment.finalLayout =
+        vk::ImageLayout::eDepthStencilAttachmentOptimal;
+
+    vk::AttachmentReference depth_attachment_ref{};
+    depth_attachment_ref.attachment = 1;
+    depth_attachment_ref.layout =
+        vk::ImageLayout::eDepthStencilAttachmentOptimal;
+
+    // subpass //
+    vk::SubpassDescription subpass{};
+    subpass.flags                   = vk::SubpassDescriptionFlags();
+    subpass.pipelineBindPoint       = vk::PipelineBindPoint::eGraphics;
+    subpass.colorAttachmentCount    = 1;
+    subpass.pColorAttachments       = &color_attachment_ref;
+    subpass.pDepthStencilAttachment = &depth_attachment_ref;
+
+    vk::RenderPassCreateInfo renderpass_info{};
+    renderpass_info.flags           = vk::RenderPassCreateFlags();
+    renderpass_info.attachmentCount = 2;
+
+    vk::AttachmentDescription attachments[] = {color_attachment,
+                                               depth_attachment};
+
+    renderpass_info.pAttachments = attachments;
+    renderpass_info.subpassCount = 1;
+    renderpass_info.pSubpasses   = &subpass;
 
     m_render_pass =
-        LOGICAL_DEVICE_INSTANCE.createRenderPassUnique(renderpassInfo);
+        LOGICAL_DEVICE_INSTANCE.createRenderPassUnique(renderpass_info);
 }
 
 void
@@ -73,10 +97,14 @@ RenderPass::begin(const vk::CommandBuffer& cmd,
     renderPassInfo.renderArea.offset.y = 0;
     renderPassInfo.renderArea.extent   = extent;
 
-    renderPassInfo.clearValueCount = 1;
-    vk::ClearValue clear_value{vk::ClearColorValue(0.f, 0.f, 0.f, 1.f)};
+    std::array<vk::ClearValue, 2> clear_values{};
 
-    renderPassInfo.pClearValues = &clear_value;
+    clear_values[0].color        = vk::ClearColorValue{0.0f, 0.0f, 0.0f, 1.0f};
+    clear_values[1].depthStencil = vk::ClearDepthStencilValue{1.0f, 0};
+
+    renderPassInfo.clearValueCount = clear_values.size();
+
+    renderPassInfo.pClearValues = clear_values.data();
 
     cmd.beginRenderPass(&renderPassInfo, vk::SubpassContents::eInline);
 }

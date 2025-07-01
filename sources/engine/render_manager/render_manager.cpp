@@ -4,10 +4,12 @@
 
 #include "engine/render_manager/device/device.hpp"
 #include "engine/window/window.hpp"
-namespace kusengine
+
+#define COMPILE_SHADERS 1
+
+namespace kusengine::render
 {
-namespace render
-{
+
 RenderManager::RenderManager()
 {
 }
@@ -22,6 +24,8 @@ RenderManager::getInstance()
 void
 RenderManager::init(const kusengine::Window& window)
 {
+    m_shader_manager.setup(COMPILE_SHADERS);
+
     auto window_extent = window.getExtent();
 
     m_instance.create("KusEngine");
@@ -36,8 +40,8 @@ RenderManager::init(const kusengine::Window& window)
 
     m_descriptor_manager.setup();
 
-    m_render_system.setup(m_descriptor_manager, m_swap_chain.extent(),
-                          m_swap_chain.format());
+    m_render_system.setup(m_descriptor_manager, m_shader_manager,
+                          m_swap_chain.extent(), m_swap_chain.format());
 
     max_frames_in_flight = m_swap_chain.createSwapChainFrames(
         m_render_system, m_descriptor_manager);
@@ -50,7 +54,10 @@ RenderManager::init(const kusengine::Window& window)
     m_mesh_manager.loadMeshes();
 
     // camera
+    m_camera2d.setAspectRatio(window_extent.width / window_extent.height);
     m_ubo.projection = m_camera2d.recalculate();
+
+    m_ubo.projection = {1.f};
 }
 
 void
@@ -81,12 +88,13 @@ RenderManager::draw(BasicScene* const basic_scene)
     uint32_t image_index = acquire_res.value;
 
     // record part
-    auto& upd_cmd            = upd_frame.commandBuffer();
+    auto& upd_cmd = upd_frame.commandBuffer();
+
     auto binding_draw_lambda = [&scene    = basic_scene,
                                 &rend_sys = m_render_system, &frame = upd_frame,
                                 &cmd = upd_cmd]()
     {
-        auto& layout = rend_sys.bindPipeline("default", cmd);
+        auto& layout = rend_sys.bindPipeline("default_3d", cmd);
         scene->bind(cmd);
         frame.bind(cmd, layout);
         scene->draw(cmd, layout);
@@ -143,5 +151,16 @@ RenderManager::getResourceImpl(ChooseResType<Mesh<Vertex3DP1UV1>>&& rs,
 } // mesh<vertex 3d>
 
 // ----------------------- //
-}; // namespace render
-}; // namespace kusengine
+//
+// ------- camera ---------//
+
+void
+RenderManager::moveCamera(float x, float y, float z)
+{
+    m_camera2d.move({x, y});
+    m_camera2d.zoom(z);
+}
+
+// ----------------------- //
+
+}; // namespace kusengine::render

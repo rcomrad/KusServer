@@ -5,16 +5,16 @@ namespace kusengine::render
 
 void
 DescriptorManager::addAllocator(
-    const std::string& key,
+    DescriptorSetLayoutType sh_type,
     const std::vector<DescriptorBindingData>& binding_data)
 {
-    m_descriptor_allocator_storage[key].init(binding_data);
+    m_descriptor_allocator_storage[sh_type].init(binding_data);
 }
 
 const DescriptorAllocator&
-DescriptorManager::getAllocator(const std::string& key) const& noexcept
+DescriptorManager::getAllocator(DescriptorSetLayoutType sh_type) const& noexcept
 {
-    return m_descriptor_allocator_storage.at(key);
+    return m_descriptor_allocator_storage.at(sh_type);
 }
 
 void
@@ -41,7 +41,8 @@ DescriptorManager::setupDefaultBindingsData()
     default_vertex_shader_bindings_data[1].type =
         vk::DescriptorType::eStorageBuffer;
 
-    addAllocator("default_vertex_shader", default_vertex_shader_bindings_data);
+    addAllocator(DescriptorSetLayoutType::UBO_x_STORAGE,
+                 default_vertex_shader_bindings_data);
 
     std::vector<DescriptorBindingData> default_fragment_shader_bindings_data(1);
     default_fragment_shader_bindings_data[0].count         = 1;
@@ -51,15 +52,15 @@ DescriptorManager::setupDefaultBindingsData()
     default_fragment_shader_bindings_data[0].type =
         vk::DescriptorType::eCombinedImageSampler;
 
-    addAllocator("default_fragment_shader",
+    addAllocator(DescriptorSetLayoutType::COMBINED_IMAGE_SAMPLER,
                  default_fragment_shader_bindings_data);
 }
 
 void
 DescriptorManager::translateDescriptorDataToFrame(SwapChainFrame& frame) const
 {
-    frame.createDescriptorSet(
-        m_descriptor_allocator_storage.at("default_vertex_shader"));
+    frame.setupDescriptorSet(m_descriptor_allocator_storage.at(
+        DescriptorSetLayoutType::UBO_x_STORAGE));
 }
 // void
 // DescriptorManager::init(

@@ -189,4 +189,10 @@ Window::framebufferResizeCallback(GLFWwindow* glfw_window_ptr,
     window->m_height = height;
 }
 
+GLFWwindow*
+Window::get() const& noexcept
+{
+    return m_window;
+}
+
 }; // namespace kusengine

@@ -8,7 +8,6 @@
 #include "engine/render_manager/commands/command_pool.hpp"
 #include "engine/render_manager/descriptors/descriptor_manager.hpp"
 #include "engine/render_manager/renderer/render_system.hpp"
-#include "engine/render_manager/renderer/renderer.hpp"
 
 #include "swap_chain_frame.hpp"
 #include "synchronization_control.hpp"

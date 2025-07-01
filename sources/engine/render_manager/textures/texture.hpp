@@ -22,8 +22,7 @@ public:
 
     void loadTexture(std::string_view file_path);
 
-    void allocDescriptorSet(const std::string& alloc_name,
-                            const DescriptorManager& desc_manager);
+    void allocDescriptorSet(const DescriptorManager& desc_manager);
 
     void bind(const vk::CommandBuffer& command_buffer,
               const vk::PipelineLayout& pipelayout) const;

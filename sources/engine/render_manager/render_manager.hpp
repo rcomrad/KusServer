@@ -4,7 +4,6 @@
 //
 #include "descriptors/descriptor_manager.hpp"
 #include "instance/instance.hpp"
-#include "renderer/renderer.hpp"
 #include "swap_chain/swap_chain.hpp"
 //
 #include "camera/camera.hpp"
@@ -16,6 +15,8 @@
 #include "renderer/render_system.hpp"
 #include "scene/basic_scene.hpp"
 #include "textures/texture_manager.hpp"
+
+#include "shaders/shader_manager.hpp"
 
 namespace kusengine
 {
@@ -57,6 +58,8 @@ private:
 
     DescriptorManager m_descriptor_manager;
 
+    ShaderManager m_shader_manager;
+
     // ----------------------- //
     //
     // ------- resize -------- //
@@ -69,6 +72,8 @@ private:
     //
     // ------- camera -------- //
 public:
+    void moveCamera(float x, float y, float z);
+
 private:
     Camera2D m_camera2d;
 

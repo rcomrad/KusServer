@@ -7,7 +7,6 @@
 #include <utility>
 
 #include "render_manager/render_manager.hpp"
-#include "render_manager/shaders/shaders/shader.hpp"
 #include "utility/file_system/path_storage.hpp"
 
 #define COMPILE_SHADERS
@@ -15,32 +14,9 @@
 namespace kusengine
 {
 
-void
-App::compileShaders()
-{
-    auto sources_path = util::PathStorage::getFolderPath("sources");
-
-    std::string vertex_shader_path = sources_path.value().data();
-    vertex_shader_path +=
-        "engine/render_manager/shaders/spirv/default_vertex_shader.vert";
-
-    std::string fragment_shader_path = sources_path.value().data();
-    fragment_shader_path +=
-        "engine/render_manager/shaders/spirv/default_fragment_shader.frag";
-
-    auto dst_path = std::format("{}{}", sources_path.value(),
-                                "engine/render_manager/shaders/compiled/");
-
-    render::shader::compile(vertex_shader_path, dst_path);
-    render::shader::compile(fragment_shader_path, dst_path);
-}
-
 bool
 App::initApp()
 {
-#ifdef COMPILE_SHADERS
-    compileShaders();
-#endif
 
     try
     {
@@ -76,6 +52,59 @@ App::FPSLimit(const double& loop_time)
     }
 }
 
+void
+App::handleEvents(float el_time)
+{
+    glfwPollEvents();
+
+    bool camera_action_flag = false;
+
+    float x = 0, y = 0, z = 0;
+
+    auto window = m_window.get();
+
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    {
+        x = -2 * el_time;
+
+        camera_action_flag = true;
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    {
+        x = 2 * el_time;
+
+        camera_action_flag = true;
+    }
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    {
+        y = -2 * el_time;
+
+        camera_action_flag = true;
+    }
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    {
+        y = 2 * el_time;
+
+        camera_action_flag = true;
+    }
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+    {
+        z = el_time;
+
+        camera_action_flag = true;
+    }
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+    {
+        z = -el_time;
+
+        camera_action_flag = true;
+    }
+    if (camera_action_flag)
+    {
+        render::RenderManager::getInstance().moveCamera(x, y, z);
+    }
+}
+
 bool
 App::loopBody()
 {
@@ -90,6 +119,8 @@ App::loopBody()
     m_window.calculateFrameRate();
 
     float el_time = getLoopTime();
+
+    handleEvents(el_time);
 
     render::RenderManager::getInstance().draw(&m_scene);
 

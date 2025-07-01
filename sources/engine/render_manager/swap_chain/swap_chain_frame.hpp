@@ -8,6 +8,7 @@
 #include "engine/render_manager/buffers/storage_buffer.hpp"
 #include "engine/render_manager/buffers/uniform_buffer.hpp"
 #include "engine/render_manager/commands/command_buffer.hpp"
+#include "engine/render_manager/textures/image.hpp"
 
 #include "synchronization_control.hpp"
 
@@ -31,13 +32,15 @@ public:
 
     const vk::Framebuffer& getBuffer(const std::string& key) const&;
 
-    void createImage(const vk::Image& image, const vk::Format& format);
+    void setupImages(const vk::Image& image,
+                     const vk::Format& format,
+                     const vk::Extent2D& extent);
 
-    void createSynchronization();
+    void setupSynchronization();
 
-    void createCommandBuffer();
+    void setupCommandBuffer();
 
-    void createDescriptorSet(const DescriptorAllocator& desc_alloc);
+    void setupDescriptorSet(const DescriptorAllocator& desc_alloc);
     // Resourcers
 
     template <typename UBOType>
@@ -65,6 +68,8 @@ public:
               const vk::PipelineLayout& layout) const;
 
 private:
+    void setupDepth(const vk::Extent2D& extent);
+
     SynchronizationControl m_sync_control;
     CommandBuffer m_command_buffer;
 
@@ -72,6 +77,9 @@ private:
     std::unordered_map<std::string, vk::UniqueFramebuffer> m_framebuffers;
 
     vk::UniqueImageView m_view;
+
+    // depth
+    Image m_depth_image;
 
     // Resources
 

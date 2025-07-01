@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "engine/render_manager/device/device.hpp"
-#include "engine/render_manager/shaders/shaders/shader.hpp"
+#include "engine/render_manager/shaders/shader_manager.hpp"
 
 namespace kusengine
 {
@@ -19,8 +19,10 @@ struct PipelineConfigInfo
 {
     vk::UniquePipelineLayout pipeline_layout;
     vk::Extent2D extent;
-    std::string vertex_shader_path;
-    std::string fragment_shader_path;
+    ShaderType vertex_shader_type;
+    ShaderType fragment_shader_type;
+
+    vk::Bool32 depth_test_enable = vk::False;
 
     vk::VertexInputBindingDescription vertex_binding_description;
     std::vector<vk::VertexInputAttributeDescription>
@@ -31,21 +33,23 @@ class Pipeline
 {
 public:
     Pipeline(PipelineConfigInfo&& pipeline_config_info,
-             const vk::RenderPass& render_pass);
+             const vk::RenderPass& render_pass,
+             const ShaderManager& shader_manager);
 
     void create(PipelineConfigInfo&& pipeline_config_info,
-                const vk::RenderPass&
-                    render_pass); // rvalue because uniq pipeline layout
+                const vk::RenderPass& render_pass,
+                const ShaderManager&
+                    shader_manager); // rvalue because uniq pipeline layout
 
     void bind(const vk::CommandBuffer& cmd) const;
 
     const vk::PipelineLayout& layout() const noexcept;
 
 private:
-
     vk::PipelineVertexInputStateCreateInfo vertexInputState(
         const vk::VertexInputBindingDescription& vertex_binding_description,
-        const std::vector<vk::VertexInputAttributeDescription>& vertex_attribute_description);
+        const std::vector<vk::VertexInputAttributeDescription>&
+            vertex_attribute_description);
 
     vk::PipelineInputAssemblyStateCreateInfo inputAssemblyState();
     vk::PipelineRasterizationStateCreateInfo rasterizerState();

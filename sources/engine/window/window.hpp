@@ -44,6 +44,8 @@ public:
 
     void calculateFrameRate();
 
+    GLFWwindow* get() const& noexcept;
+
 private:
     static void framebufferResizeCallback(GLFWwindow* window,
                                           int width,

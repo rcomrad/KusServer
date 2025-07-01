@@ -16,9 +16,10 @@ Pipeline::bind(const vk::CommandBuffer& cmd) const
 }
 
 Pipeline::Pipeline(PipelineConfigInfo&& pipeline_config_info,
-                   const vk::RenderPass& render_pass)
+                   const vk::RenderPass& render_pass,
+                   const ShaderManager& shader_manager)
 {
-    create(std::move(pipeline_config_info), render_pass);
+    create(std::move(pipeline_config_info), render_pass, shader_manager);
 }
 
 const vk::PipelineLayout&
@@ -153,7 +154,8 @@ Pipeline::vertexShaderinfo(vk::ShaderStageFlagBits flag,
 
 void
 Pipeline::create(PipelineConfigInfo&& pipeline_config_info,
-                 const vk::RenderPass& render_pass)
+                 const vk::RenderPass& render_pass,
+                 const ShaderManager& shader_manager)
 {
     ////////////////////
     m_layout = std::move(pipeline_config_info.pipeline_layout);
@@ -181,8 +183,8 @@ Pipeline::create(PipelineConfigInfo&& pipeline_config_info,
 
     // Vertex Shader
 
-    vk::ShaderModule vertex_shader_module(
-        shader::createShaderModule(pipeline_config_info.vertex_shader_path));
+    vk::ShaderModule vertex_shader_module(shader_manager.createShaderModule(
+        pipeline_config_info.vertex_shader_type));
 
     shader_stages.push_back(vertexShaderinfo(vk::ShaderStageFlagBits::eVertex,
                                              vertex_shader_module));
@@ -204,8 +206,8 @@ Pipeline::create(PipelineConfigInfo&& pipeline_config_info,
 
     // Fragment Shader
 
-    vk::ShaderModule fragment_shader_module(
-        shader::createShaderModule(pipeline_config_info.fragment_shader_path));
+    vk::ShaderModule fragment_shader_module(shader_manager.createShaderModule(
+        pipeline_config_info.fragment_shader_type));
 
     shader_stages.push_back(vertexShaderinfo(vk::ShaderStageFlagBits::eFragment,
                                              fragment_shader_module));
@@ -229,8 +231,17 @@ Pipeline::create(PipelineConfigInfo&& pipeline_config_info,
     create_pipeline_info.renderPass = render_pass;
     create_pipeline_info.subpass    = 0;
 
-    // // Extra stuff
+    // Extra stuff
     create_pipeline_info.basePipelineHandle = nullptr;
+
+    // Depth Stencil
+    vk::PipelineDepthStencilStateCreateInfo depth_stencil_info{};
+    depth_stencil_info.depthTestEnable = pipeline_config_info.depth_test_enable;
+    depth_stencil_info.depthWriteEnable  = vk::True;
+    depth_stencil_info.depthCompareOp    = vk::CompareOp::eLess;
+    depth_stencil_info.stencilTestEnable = vk::True;
+
+    create_pipeline_info.pDepthStencilState = &depth_stencil_info;
 
     //  Make the Pipeline
     create_pipeline_info.layout = m_layout.get();
@@ -240,9 +251,9 @@ Pipeline::create(PipelineConfigInfo&& pipeline_config_info,
             .createGraphicsPipelineUnique(nullptr, create_pipeline_info)
             .value;
 
-    shader::destroyShaderModule(vertex_shader_module);
+    shader_manager.destroyShaderModule(vertex_shader_module);
 
-    shader::destroyShaderModule(fragment_shader_module);
+    shader_manager.destroyShaderModule(fragment_shader_module);
 }
 
 vk::PipelineVertexInputStateCreateInfo
