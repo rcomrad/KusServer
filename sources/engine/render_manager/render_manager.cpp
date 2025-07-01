@@ -54,9 +54,6 @@ RenderManager::init(const kusengine::Window& window)
     m_mesh_manager.loadMeshes();
 
     // camera
-    m_camera2d.setAspectRatio(window_extent.width / window_extent.height);
-    m_ubo.projection = m_camera2d.recalculate();
-
     m_ubo.projection = {1.f};
 }
 
@@ -69,7 +66,7 @@ RenderManager::shutdown()
 // --------- draw -------- //
 
 void
-RenderManager::draw(BasicScene* const basic_scene)
+RenderManager::draw(BasicScene* const basic_scene, const glm::mat4& projection)
 {
 
     auto& upd_frame = m_swap_chain.getFrame(frame_number);
@@ -77,7 +74,7 @@ RenderManager::draw(BasicScene* const basic_scene)
     upd_frame.waitForFence();
 
     // upd data
-    m_ubo.projection = m_camera2d.recalculate();
+    m_ubo.projection = projection;
     upd_frame.updateUBO(m_ubo);
     basic_scene->updMbddFrame(upd_frame);
 
@@ -154,12 +151,17 @@ RenderManager::getResourceImpl(ChooseResType<Mesh<Vertex3DP1UV1>>&& rs,
 //
 // ------- camera ---------//
 
-void
-RenderManager::moveCamera(float x, float y, float z)
-{
-    m_camera2d.move({x, y});
-    m_camera2d.zoom(z);
-}
+// Camera2D&
+// RenderManager::camera2D()
+// {
+//     return m_camera_2d;
+// }
+
+// Camera3D&
+// RenderManager::camera3D()
+// {
+//     return m_camera_3d;
+// }
 
 // ----------------------- //
 

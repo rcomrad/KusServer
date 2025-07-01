@@ -6,7 +6,6 @@
 #include "instance/instance.hpp"
 #include "swap_chain/swap_chain.hpp"
 //
-#include "camera/camera.hpp"
 #include "commands/command_buffer.hpp"
 #include "drawable/drawable_system_storage.hpp"
 #include "drawable/drawable_usings.hpp"
@@ -14,9 +13,8 @@
 #include "mesh/mesh_manager.hpp"
 #include "renderer/render_system.hpp"
 #include "scene/basic_scene.hpp"
-#include "textures/texture_manager.hpp"
-
 #include "shaders/shader_manager.hpp"
+#include "textures/texture_manager.hpp"
 
 namespace kusengine
 {
@@ -44,7 +42,7 @@ private:
 public:
     // void registerScene(BasicScene* const basic_scene);
 
-    void draw(BasicScene* const basic_scene);
+    void draw(BasicScene* const basic_scene, const glm::mat4& projection);
 
 private:
     int max_frames_in_flight;
@@ -72,11 +70,10 @@ private:
     //
     // ------- camera -------- //
 public:
-    void moveCamera(float x, float y, float z);
+    // Camera2D& camera2D();
+    // Camera3D& camera3D();
 
 private:
-    Camera2D m_camera2d;
-
     UBO m_ubo;
     // ----------------------- //
     //

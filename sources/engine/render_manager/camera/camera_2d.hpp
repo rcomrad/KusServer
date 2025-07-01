@@ -1,5 +1,5 @@
-#ifndef CAMERA_HPP
-#define CAMERA_HPP
+#ifndef CAMERA_2D_HPP
+#define CAMERA_2D_HPP
 
 #include <glm/glm.hpp>
 
@@ -32,4 +32,4 @@ private:
 };
 }; // namespace kusengine::render
 
-#endif // CAMERA_HPP
+#endif // CAMERA_2D_HPP

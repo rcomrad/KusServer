@@ -1,0 +1,18 @@
+[INFO ] C:\Users\User\source\repos\KusServer\sources\core\logging\printer.cpp| setOutputTypeNonstatic        [86  ] Log buffer changed to 'logs.txt' file
+[INFO ] C:\Users\User\source\repos\KusServer\sources\core\module\module.cpp| init                          [19  ] Begin 'command_handler' module initialization.
+[INFO ] C:\Users\User\source\repos\KusServer\sources\core\module\module.cpp| init                          [23  ]       'command_handler' module initialization finished.
+[INFO ] C:\Users\User\source\repos\KusServer\sources\core\module\module.cpp| init                          [19  ] Begin 'engine' module initialization.
+[INFO ] C:\Users\User\source\repos\KusServer\sources\core\module\module.cpp| init                          [23  ]       'engine' module initialization finished.
+[INFO ] C:\Users\User\source\repos\KusServer\sources\core\module\module.cpp| init                          [19  ] Begin 'olymp' module initialization.
+[INFO ] C:\Users\User\source\repos\KusServer\sources\core\module\module.cpp| init                          [23  ]       'olymp' module initialization finished.
+[INFO ] C:\Users\User\source\repos\KusServer\sources\core\module\module.cpp| init                          [19  ] Begin 'ontology' module initialization.
+[INFO ] C:\Users\User\source\repos\KusServer\sources\core\module\module.cpp| init                          [23  ]       'ontology' module initialization finished.
+[INFO ] C:\Users\User\source\repos\KusServer\sources\core\module\module.cpp| init                          [19  ] Begin 'server' module initialization.
+[INFO ] C:\Users\User\source\repos\KusServer\sources\core\module\module.cpp| init                          [23  ]       'server' module initialization finished.
+[INFO ] C:\Users\User\source\repos\KusServer\sources\core\module\module.cpp| run                           [37  ] Start 'command_handler' module
+[INFO ] C:\Users\User\source\repos\KusServer\sources\core\module\module.cpp| run                           [37  ] Start 'olymp' module
+[INFO ] C:\Users\User\source\repos\KusServer\sources\core\module\module.cpp| run                           [45  ]       'olymp' module finished.
+[INFO ] C:\Users\User\source\repos\KusServer\sources\core\module\module.cpp| run                           [37  ] Start 'ontology' module
+[INFO ] C:\Users\User\source\repos\KusServer\sources\core\module\module.cpp| run                           [45  ]       'ontology' module finished.
+[INFO ] C:\Users\User\source\repos\KusServer\sources\utility\string\parser.cpp| getLines                      [12  ] Parsing lines
+[INFO ] C:\Users\User\source\repos\KusServer\sources\core\module\module.cpp| run                           [37  ] Start 'server' module

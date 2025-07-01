@@ -5,6 +5,11 @@
 
 namespace kusengine
 {
+
+Window::MouseState Window::m_mouse_state{};
+render::Camera2D Window::m_camera_2d{};
+render::Camera3D Window::m_camera_3d{};
+
 Window::~Window()
 {
     glfwDestroyWindow(m_window);
@@ -86,6 +91,25 @@ Window::key_callback(GLFWwindow* window,
         }
     }
 }
+void
+Window::mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    if (m_mouse_state.first_move)
+    {
+        m_mouse_state.last_x     = static_cast<float>(xpos);
+        m_mouse_state.last_y     = static_cast<float>(ypos);
+        m_mouse_state.first_move = false;
+    }
+
+    float xoffset = static_cast<float>(xpos) - m_mouse_state.last_x;
+    float yoffset = m_mouse_state.last_y - static_cast<float>(ypos);
+
+    m_mouse_state.last_x = static_cast<float>(xpos);
+    m_mouse_state.last_y = static_cast<float>(ypos);
+
+    // Обработка движения камеры
+    m_camera_3d.processMouseMovement(xoffset, yoffset);
+}
 
 bool
 Window::initWindow(int width, int height, const std::string& title)
@@ -114,7 +138,19 @@ Window::initWindow(int width, int height, const std::string& title)
     glfwSetWindowUserPointer(m_window, this);
 
     glfwSetFramebufferSizeCallback(m_window, framebufferResizeCallback);
+
+    glfwSetCursorPosCallback(m_window, mouse_callback);
+    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    m_camera_3d.setAspectRatio(width / height);
+
     return true;
+}
+
+const render::Camera3D&
+Window::camera3D()
+{
+    return m_camera_3d;
 }
 
 bool

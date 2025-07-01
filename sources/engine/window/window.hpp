@@ -8,6 +8,8 @@
 #include <string>
 #include <vector>
 
+#include "engine/render_manager/camera/camera_2d.hpp"
+#include "engine/render_manager/camera/camera_3d.hpp"
 #include "engine/render_manager/instance/instance.hpp"
 
 namespace kusengine
@@ -46,6 +48,8 @@ public:
 
     GLFWwindow* get() const& noexcept;
 
+    static const render::Camera3D& camera3D();
+
 private:
     static void framebufferResizeCallback(GLFWwindow* window,
                                           int width,
@@ -56,6 +60,8 @@ private:
                              int scancode,
                              int action,
                              int mods);
+
+    static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
     std::string m_title;
 
@@ -73,6 +79,20 @@ private:
     double current_time;
     int num_frames;
     float frame_time;
+
+    // Mouse
+    struct MouseState
+    {
+        bool first_move  = true;
+        float last_x     = 0.0f;
+        float last_y     = 0.0f;
+        float smoothed_x = 0.0f;
+        float smoothed_y = 0.0f;
+    };
+
+    static MouseState m_mouse_state;
+    static render::Camera2D m_camera_2d;
+    static render::Camera3D m_camera_3d;
 };
 
 }; // namespace kusengine

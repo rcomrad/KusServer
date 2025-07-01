@@ -26,6 +26,7 @@ App::initApp()
     catch (std::exception& exc)
     {
         std::cout << exc.what();
+        std::cout << "\nInit exc\n";
         return false;
     }
 
@@ -58,51 +59,36 @@ App::handleEvents(float el_time)
     glfwPollEvents();
 
     bool camera_action_flag = false;
+    auto window             = m_window.get();
 
-    float x = 0, y = 0, z = 0;
-
-    auto window = m_window.get();
+    int dir;
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        x = -2 * el_time;
-
-        camera_action_flag = true;
+        dir = GLFW_KEY_A;
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        x = 2 * el_time;
-
-        camera_action_flag = true;
+        dir = GLFW_KEY_D;
     }
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        y = -2 * el_time;
-
-        camera_action_flag = true;
+        dir = GLFW_KEY_W;
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        y = 2 * el_time;
-
-        camera_action_flag = true;
+        dir = GLFW_KEY_S;
     }
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
     {
-        z = el_time;
-
-        camera_action_flag = true;
+        dir = GLFW_KEY_UP;
     }
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
     {
-        z = -el_time;
+        dir = GLFW_KEY_DOWN;
+    }
 
-        camera_action_flag = true;
-    }
-    if (camera_action_flag)
-    {
-        render::RenderManager::getInstance().moveCamera(x, y, z);
-    }
+    // m_window.camera3D();
 }
 
 bool
@@ -122,7 +108,8 @@ App::loopBody()
 
     handleEvents(el_time);
 
-    render::RenderManager::getInstance().draw(&m_scene);
+    render::RenderManager::getInstance().draw(
+        &m_scene, m_window.camera3D().getProjectionMatrix());
 
     return true;
 }
