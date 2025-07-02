@@ -1,10 +1,10 @@
 {
-	"texture_paths":
-	[
+	"texture_paths": [
 		"empty.png",
 		"material/stone.png",
 		"material/wood.png",
 		"material/water.png",
+		"material/cube.png",
 		"animals/cat.png"
 	]
 }

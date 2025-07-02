@@ -3,31 +3,26 @@
 
 #include <glm/glm.hpp>
 
+#include "basic_camera.hpp"
+
 namespace kusengine::render
 {
-class Camera2D
+class Camera2D : public BasicCamera
 {
 public:
-    Camera2D();
+    Camera2D(uint32_t width = 16, uint32_t height = 9);
 
-    void move(const glm::vec2& offset);
-
-    void zoom(float factor);
+    const glm::mat4& recalculate() & override;
 
     void setViewWidth(float width);
 
-    glm::mat4 getViewProjection() const;
-
-    glm::mat4 recalculate();
-
-    void setAspectRatio(float aspect_ratio);
+    void processKeyboard(int direction_num, float el_time);
 
 private:
-    glm::mat4 m_view_projection;
-
     glm::vec2 m_position;
+
     float m_zoom;
-    float m_aspect_ratio;
+
     float m_view_width;
 };
 }; // namespace kusengine::render

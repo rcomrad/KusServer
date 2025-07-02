@@ -7,7 +7,7 @@ namespace render
 bool
 operator==(const UBO& left, const UBO& right)
 {
-    return left.projection == right.projection;
+    return left.camera_matrix == right.camera_matrix;
 }
 }; // namespace render
 }; // namespace kusengine

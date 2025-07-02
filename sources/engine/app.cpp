@@ -22,6 +22,9 @@ App::initApp()
     {
         m_window.initWindow(WIDTH, HEIGHT, "MyWindow");
         render::RenderManager::getInstance().init(m_window);
+        render::RenderManager::getInstance().camera().switchTo("camera_3d");
+
+        m_mouse.init(m_window.get());
     }
     catch (std::exception& exc)
     {
@@ -56,12 +59,13 @@ App::FPSLimit(const double& loop_time)
 void
 App::handleEvents(float el_time)
 {
+
     glfwPollEvents();
 
     bool camera_action_flag = false;
     auto window             = m_window.get();
 
-    int dir;
+    int dir{};
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
@@ -87,8 +91,39 @@ App::handleEvents(float el_time)
     {
         dir = GLFW_KEY_DOWN;
     }
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+    {
+        dir = GLFW_KEY_SPACE;
+    }
+    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+    {
+        dir = GLFW_KEY_LEFT_CONTROL;
+    }
 
-    // m_window.camera3D();
+    auto& mouse_offset = m_mouse.update(m_window.get());
+
+    auto& camera =
+        render::RenderManager::getInstance().camera().getCurrentCamera();
+
+    auto type = camera->type();
+
+    if (type == render::BasicCamera::Type::DEFAULT_CAMERA_2D)
+    {
+        render::Camera2D* camera_2d =
+            static_cast<render::Camera2D*>(camera.get());
+
+        camera_2d->processKeyboard(dir, el_time);
+    }
+    else if (type == render::BasicCamera::Type::DEFAULT_CAMERA_3D)
+    {
+        render::Camera3D* camera_3d =
+            static_cast<render::Camera3D*>(camera.get());
+
+        camera_3d->processKeyboard(dir, el_time);
+
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+            camera_3d->processMouseMovement(mouse_offset);
+    }
 }
 
 bool
@@ -108,8 +143,7 @@ App::loopBody()
 
     handleEvents(el_time);
 
-    render::RenderManager::getInstance().draw(
-        &m_scene, m_window.camera3D().getProjectionMatrix());
+    render::RenderManager::getInstance().draw(&m_scene);
 
     return true;
 }

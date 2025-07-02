@@ -19,6 +19,8 @@ class BasicScene3D : public BasicScene
 public:
     void create() override;
 
+    void update();
+
     void updMbddFrame(SwapChainFrame& frame) const override;
 
     void bind(const vk::CommandBuffer& cmd) const override;

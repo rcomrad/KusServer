@@ -112,10 +112,11 @@ vk::PipelineColorBlendStateCreateInfo
 Pipeline::colorBlendState(
     vk::PipelineColorBlendAttachmentState& color_blend_attachment)
 {
-    color_blend_attachment.blendEnable = VK_TRUE;
+    color_blend_attachment.blendEnable = vk::True;
     color_blend_attachment.colorWriteMask =
         vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG |
         vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA;
+
     color_blend_attachment.srcColorBlendFactor = vk::BlendFactor::eSrcAlpha;
 
     color_blend_attachment.dstColorBlendFactor =
@@ -128,7 +129,7 @@ Pipeline::colorBlendState(
 
     vk::PipelineColorBlendStateCreateInfo color_blending = {};
     color_blending.flags             = vk::PipelineColorBlendStateCreateFlags();
-    color_blending.logicOpEnable     = VK_FALSE;
+    color_blending.logicOpEnable     = vk::False;
     color_blending.logicOp           = vk::LogicOp::eCopy;
     color_blending.attachmentCount   = 1;
     color_blending.pAttachments      = &color_blend_attachment;

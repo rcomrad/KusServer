@@ -28,7 +28,9 @@ void main()
 
     gl_Position = ubo.projection * model * vec4(vertexPosition, 1.0);
 
-    fragColor = dynamic_model_data.instance_data_array[gl_InstanceIndex].color;
+    vec4 color = dynamic_model_data.instance_data_array[gl_InstanceIndex].color;
+
+    fragColor = color;
 
     fragTextCoord = vertexTextCoord;    
 }

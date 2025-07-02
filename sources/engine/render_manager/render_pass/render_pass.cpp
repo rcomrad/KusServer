@@ -99,7 +99,7 @@ RenderPass::begin(const vk::CommandBuffer& cmd,
 
     std::array<vk::ClearValue, 2> clear_values{};
 
-    clear_values[0].color        = vk::ClearColorValue{0.0f, 0.0f, 0.0f, 1.0f};
+    clear_values[0].color        = vk::ClearColorValue{0.4f, 0.3f, 0.2f, 1.0f};
     clear_values[1].depthStencil = vk::ClearDepthStencilValue{1.0f, 0};
 
     renderPassInfo.clearValueCount = clear_values.size();

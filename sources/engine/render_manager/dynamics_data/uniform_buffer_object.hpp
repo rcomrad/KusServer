@@ -9,7 +9,7 @@ namespace render
 {
 struct UBO
 {
-    glm::mat4 projection;
+    glm::mat4 camera_matrix;
 };
 
 bool

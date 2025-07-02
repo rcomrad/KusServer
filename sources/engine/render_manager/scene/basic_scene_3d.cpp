@@ -5,31 +5,42 @@
 namespace kusengine::render
 {
 
-void
-BasicScene3D::create()
+Drawable3D_P1UV1_TRS
+generateCube()
 {
     auto& rm = RenderManager::getInstance();
-
     Drawable3D_P1UV1_TRS base{};
     base.setTexture(
-        rm.getResource(RenderManager::ChooseResType<Texture>{}, "cat.png"));
+        rm.getResource(RenderManager::ChooseResType<Texture>{}, "cube.png"));
 
     auto res = rm.getResource(
         RenderManager::ChooseResType<Mesh<Drawable3D_P1UV1_TRS::VertexType>>{},
         "cube");
-
     base.setMesh(res);
+    return base;
+}
 
-    drawables_3d_p1uv1_trs.emplace_back(
-        std::make_unique<Drawable3D_P1UV1_TRS>(base));
+void
+BasicScene3D::create()
+{
+    auto cube = generateCube();
+
+    for (int i = 0; i < 100; ++i)
+    {
+        drawables_3d_p1uv1_trs.emplace_back(
+            std::make_unique<Drawable3D_P1UV1_TRS>(cube));
+        drawables_3d_p1uv1_trs[i].get()->setPosition(i, i, i);
+    }
 
     m_drawable_system.resetDrawables(drawables_3d_p1uv1_trs.begin(),
                                      drawables_3d_p1uv1_trs.end());
 
-    // drawables_3d_p1uv1_trs[0]->setPosition(1.f, 1.f, 1.f);
-    // drawables_3d_p1uv1_trs[0]->setColor({1.f, 1.f, 1.f, 1.f});
-
     for (auto& dr : drawables_3d_p1uv1_trs) dr->updModelMatrix();
+}
+
+void
+BasicScene3D::update()
+{
 }
 
 void

@@ -11,13 +11,11 @@ namespace render
 
 struct RangeInfo
 {
-    RangeInfo();
-
-    uint32_t vertex_offset;
-    uint32_t index_count;
-    uint32_t first_index;
-    uint32_t instance_count;
-    uint32_t first_instance;
+    uint32_t vertex_offset  = 0;
+    uint32_t index_count    = 0;
+    uint32_t first_index    = 0;
+    uint32_t instance_count = 0;
+    uint32_t first_instance = 0;
 };
 
 template <typename VertexT>

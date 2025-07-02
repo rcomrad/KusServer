@@ -44,6 +44,10 @@ private:
     double m_target_frame_time;
 
     double m_last_time;
+
+    // Gui
+
+    gui::Mouse m_mouse;
 };
 }; // namespace kusengine
 

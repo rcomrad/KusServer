@@ -6,6 +6,7 @@
 #include "instance/instance.hpp"
 #include "swap_chain/swap_chain.hpp"
 //
+#include "camera/camera_manager.hpp"
 #include "commands/command_buffer.hpp"
 #include "drawable/drawable_system_storage.hpp"
 #include "drawable/drawable_usings.hpp"
@@ -42,7 +43,7 @@ private:
 public:
     // void registerScene(BasicScene* const basic_scene);
 
-    void draw(BasicScene* const basic_scene, const glm::mat4& projection);
+    void draw(BasicScene* const basic_scene);
 
 private:
     int max_frames_in_flight;
@@ -70,10 +71,11 @@ private:
     //
     // ------- camera -------- //
 public:
-    // Camera2D& camera2D();
-    // Camera3D& camera3D();
+    CameraManager& camera();
 
 private:
+    CameraManager m_camera_manager;
+
     UBO m_ubo;
     // ----------------------- //
     //

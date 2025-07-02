@@ -21,7 +21,7 @@ Vertex3DDescriptionP1UV1::getAttributeDescriptions()
     // Pos
     attribute_description[0].binding  = 0;
     attribute_description[0].location = 0;
-    attribute_description[0].format   = vk::Format::eR32G32Sfloat;
+    attribute_description[0].format   = vk::Format::eR32G32B32Sfloat;
     attribute_description[0].offset   = offsetof(Vertex3DAttributesP1UV1, pos);
 
     // TextPos
