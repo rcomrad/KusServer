@@ -11,6 +11,15 @@ util::ASCIIBox::ASCIIBox(const char* str) : ASCIIBox()
 {
     set(str);
 }
+util::ASCIIBox::ASCIIBox(std::string_view str) : ASCIIBox()
+{
+    set(str.data());
+}
+
+util::ASCIIBox::ASCIIBox(const std::string& str) : ASCIIBox()
+{
+    set(str.c_str());
+}
 
 void
 util::ASCIIBox::set(const char* str)

@@ -1,9 +1,9 @@
 #include "storage.hpp"
 
 #include "kernel/framework/command/include_me.hpp"
+#include "kernel/framework/command/state_storage.hpp"
 #include "kernel/framework/core/kernel.hpp"
 #include "kernel/framework/logger/include_me.hpp"
-#include "kernel/framework/state/state_storage.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -53,7 +53,7 @@ core::VariableStorage::init()
                           "print all the variable and their possible values.",
                           "[variable_name]...");
 
-    KERNEL.setStateType("var_set", StateStorage::StateType::COMMAND_VARS);
+    KERNEL.listenCommand("var_set", StateStorage::StateType::MERGE_VARS);
 }
 
 //--------------------------------------------------------------------------------

@@ -15,6 +15,23 @@ core::Base::Base()
     setVariable(m_is_running_var_num, true);
 
     ModuleRegistry::init();
+
+    // TODO: make it pretty
+    std::atomic<bool> flag = true;
+    std::thread kernel(
+        [&]()
+        {
+            while (flag)
+            {
+                doWork();
+                util::Sleep::yield();
+            }
+        });
+
+    applyCommands();
+
+    flag = false;
+    kernel.join();
 }
 
 core::Base::~Base()

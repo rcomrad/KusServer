@@ -2,6 +2,8 @@
 
 //--------------------------------------------------------------------------------
 
+#include "kernel/framework/command/state_storage.hpp"
+#include "kernel/framework/core/kernel.hpp"
 #include "kernel/framework/logger/include_me.hpp"
 
 #include "constructor.hpp"
@@ -29,6 +31,8 @@ core::ModuleRegistry::init()
     registrateBaseCommand("mod_all", "Displays all registered modules.");
     registrateBaseCommand("mod_active_count",
                           "Displays the number of currently active modules.");
+
+    KERNEL.listenCommand("mod_add", StateStorage::StateType::MERGE_ARGS);
 }
 
 //--------------------------------------------------------------------------------

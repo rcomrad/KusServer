@@ -6,8 +6,9 @@
 
 #include "kernel/framework/core/kernel.hpp"
 #include "kernel/framework/logger/include_me.hpp"
-#include "kernel/framework/state/state_storage.hpp"
 #include "kernel/utility/string/slicer.hpp"
+
+#include "state_storage.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -133,7 +134,7 @@ core::CommandHandler::processCommand(Command& a_command) const
 
         if (!a_command.execResultIsError())
         {
-            KERNEL.stateProcess(&a_command);
+            KERNEL.storeCommand(a_command);
             LOG_INFO("      command '%s' applied successfully",
                      a_command.value);
         }

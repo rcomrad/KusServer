@@ -2,70 +2,94 @@
 
 #include "kernel/utility/datastructs/ascii_box.hpp"
 
-std::vector<std::string_view>
-util::Slicer::process(StringCaster a_str,
-                      const char* a_delimiters,
-                      const char* a_erase) noexcept
+std::vector<std::string>
+util::Slicer::copy(std::string_view a_str, std::string_view a_delimiters)
 {
-    return baseProcess(a_str, a_str, a_delimiters, a_erase);
+    // TODO: parametrize copy, not call with empty a_erase
+    return copy(a_str, a_delimiters, "");
 }
 
-std::vector<std::string_view>
-util::Slicer::safeProcess(StringCaster a_from_str,
-                          StringCaster a_to_str,
-                          const char* a_delimiters,
-                          const char* a_erase) noexcept
+// TODO: substr faster?
+std::vector<std::string>
+util::Slicer::copy(std::string_view a_str,
+                   std::string_view a_delimiters,
+                   std::string_view a_erase)
 {
-    return baseProcess(a_from_str, a_to_str, a_delimiters, a_erase);
-}
-
-std::vector<std::string_view>
-util::Slicer::baseProcess(StringCaster a_from_str,
-                          StringCaster a_to_str,
-                          const char* a_delimiters,
-                          const char* a_erase) noexcept
-{
-    auto* from_str = a_from_str.obtain();
-    auto* to_str   = a_to_str.obtain(a_from_str);
-
-    std::vector<std::string_view> result;
+    std::vector<std::string> result{""};
     ASCIIBox delimiters(a_delimiters);
-    delimiters.set(static_cast<int8_t>(0));
     ASCIIBox erasors(a_erase);
 
-    char* left = to_str;
-    while (true)
+    for (auto c : a_str)
     {
-        auto from_cur = *from_str;
-        auto& to_cur  = *to_str;
-
-        if (!erasors.get(from_cur))
+        if (erasors.get(c))
         {
-            if (delimiters.get(from_cur))
-            {
-                to_cur = 0;
-                if (left != to_str)
-                {
-                    result.emplace_back(left, to_str);
-                    ++to_str;
-                    left = to_str;
-                }
-            }
-            else
-            {
-                to_cur = from_cur;
-                ++to_str;
-            }
+            continue;
         }
 
-        if (from_cur)
+        if (delimiters.get(c))
         {
-            ++from_str;
+            if (!result.back().empty())
+            {
+                result.emplace_back();
+            }
+            continue;
         }
-        else
+
+        result.back().push_back(c);
+    }
+
+    if (result.back().empty())
+    {
+        result.pop_back();
+    }
+
+    return result;
+}
+
+std::vector<std::string_view>
+util::Slicer::change(std::string_view a_str, std::string_view a_delimiters)
+{
+    // TODO: parametrize change, not call with empty a_erase
+    return change(a_str, a_delimiters, "");
+}
+
+std::vector<std::string_view>
+util::Slicer::change(std::string_view a_str,
+                     std::string_view a_delimiters,
+                     std::string_view a_erase)
+{
+    std::vector<std::string_view> result;
+    ASCIIBox delimiters(a_delimiters);
+    ASCIIBox erasors(a_erase);
+
+    auto str_ptr = const_cast<char*>(a_str.data());
+
+    int write = 0;
+    int last  = 0;
+    for (int i = 0; i < a_str.size(); ++i)
+    {
+        if (erasors.get(a_str[i]))
         {
-            break;
+            continue;
         }
+
+        if (delimiters.get(a_str[i]))
+        {
+            if (write - last > 0)
+            {
+                result.emplace_back(
+                    std::string_view(a_str).substr(last, write - last));
+                last = write;
+            }
+            continue;
+        }
+
+        str_ptr[write++] = a_str[i];
+    }
+
+    if (write - last > 0)
+    {
+        result.emplace_back(std::string_view(a_str).substr(last, write - last));
     }
 
     return result;
