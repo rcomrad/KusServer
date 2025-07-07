@@ -17,6 +17,7 @@ core::Base::Base()
     ModuleRegistry::init();
 
     // TODO: make it pretty
+    // move to run() - add new command buffer type
     std::atomic<bool> flag = true;
     std::thread kernel(
         [&]()

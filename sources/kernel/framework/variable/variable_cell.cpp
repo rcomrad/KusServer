@@ -1,10 +1,12 @@
-#include "variable.hpp"
+#include "variable_cell.hpp"
 
+#include "kernel/framework/logger/basic/include_me.hpp"
+#include "kernel/utility/string/conversion.hpp"
 #include "kernel/utility/string/normalize.hpp"
 
 //--------------------------------------------------------------------------------
 
-core::Variable::Variable(const std::string& a_var_name)
+core::VariableCell::VariableCell(const std::string& a_var_name)
     : m_name(a_var_name),
       m_value(0),
       m_type(Type::ANY),
@@ -13,14 +15,14 @@ core::Variable::Variable(const std::string& a_var_name)
 {
 }
 
-core::Variable::Variable(const std::string& a_var_name, bool dummy)
+core::VariableCell::VariableCell(const std::string& a_var_name, bool dummy)
     : m_name(a_var_name), m_value(0), m_type(Type::BOOL)
 {
 }
 
-core::Variable::Variable(const std::string& a_var_name,
-                         int a_min_value,
-                         int a_max_value)
+core::VariableCell::VariableCell(const std::string& a_var_name,
+                                 int a_min_value,
+                                 int a_max_value)
     : m_name(a_var_name),
       m_value(0),
       m_type(Type::RANGE),
@@ -29,19 +31,19 @@ core::Variable::Variable(const std::string& a_var_name,
 {
 }
 
-core::Variable::Variable(const std::string& a_var_name,
-                         const std::vector<std::string>& a_values)
+core::VariableCell::VariableCell(const std::string& a_var_name,
+                                 const std::vector<std::string>& a_values)
     : m_name(a_var_name), m_value(0), m_type(Type::WORD)
 {
     for (int i = 0; i < a_values.size(); ++i)
     {
         std::string key = a_values[i];
-        util::Normalize::notation(key, util::Normalize::Type::LOWER);
+        util::Normalize::change(key, util::Normalize::Type::LOWER);
         m_value_map.emplace(std::move(key), i);
     }
 }
 
-core::Variable::Variable(const Variable& other)
+core::VariableCell::VariableCell(const VariableCell& other)
 {
     m_name  = other.m_name;
     m_value = int(other.m_value);
@@ -62,94 +64,100 @@ core::Variable::Variable(const Variable& other)
 
 //--------------------------------------------------------------------------------
 
-bool
-core::Variable::setValue(bool a_new_value) noexcept
+void
+core::VariableCell::setValue(bool a_new_value) noexcept
 {
     m_value = a_new_value ? 1 : 0;
-    return true;
 }
 
-bool
-core::Variable::setValue(int a_new_value) noexcept
+void
+core::VariableCell::setValue(int a_new_value)
 {
-    bool result = false;
-    if (a_new_value > m_min_value && a_new_value < m_max_value)
+    if (a_new_value < m_min_value)
     {
-        m_value = a_new_value;
-        result  = true;
+        THROW("Failed to set value '%d' for '%s' variable. The value is too "
+              "low, minimum value is '%d'.",
+              a_new_value, m_name, m_min_value);
     }
-    return result;
+
+    if (a_new_value > m_max_value)
+    {
+        THROW("Failed to set value '%d' for '%s' variable. The value is too "
+              "large, maximum value is '%d'.",
+              a_new_value, m_name, m_min_value);
+    }
+
+    m_value = a_new_value;
 }
 
-bool
-core::Variable::setValue(const std::string& a_new_value)
+void
+core::VariableCell::setValue(std::string_view a_new_value)
 {
-    bool result;
     switch (m_type)
     {
         case Type::ANY:
-            result = setValue(std::stoi(a_new_value));
+            setValue(util::Conversion::stoi(a_new_value));
             break;
 
         case Type::RANGE:
-            result = setValue(std::stoi(a_new_value));
+            setValue(util::Conversion::stoi(a_new_value));
             break;
 
         case Type::WORD:
-            result = setWordValue(a_new_value);
+            setWordValue(a_new_value);
             break;
 
         case Type::BOOL:
-            result = setWordBool(a_new_value);
+            setWordBool(a_new_value);
             break;
     }
-    return result;
 }
 
-bool
-core::Variable::setWordValue(const std::string& a_new_value)
+void
+core::VariableCell::setWordValue(std::string_view a_new_value)
 {
-    bool result = false;
     auto norm_val =
-        util::Normalize::notation(a_new_value, util::Normalize::Type::LOWER);
+        util::Normalize::copy(a_new_value, util::Normalize::Type::LOWER);
     auto val_it = m_value_map.find(norm_val);
     if (val_it != m_value_map.end())
     {
-        m_value = val_it->second;
-        result  = true;
+        THROW("Failed to set value '%s' for '%s' variable: unknown value.",
+              a_new_value, m_name, m_min_value);
     }
-    return result;
+    m_value = val_it->second;
 }
 
-bool
-core::Variable::setWordBool(const std::string& a_new_value)
+void
+core::VariableCell::setWordBool(std::string_view a_new_value)
 {
-    bool result = false;
     auto norm_val =
-        util::Normalize::notation(a_new_value, util::Normalize::Type::LOWER);
+        util::Normalize::copy(a_new_value, util::Normalize::Type::LOWER);
     if (norm_val == "true")
     {
         m_value = 1;
-        result  = true;
     }
     else if (norm_val == "false")
     {
         m_value = 0;
-        result  = true;
     }
-    return result;
+    else
+    {
+        THROW("Failed to set value '%s' for '%s' variable: unknown value, only "
+              "'true' or 'false' available.",
+              a_new_value, m_name, m_min_value);
+    }
 }
 
 //--------------------------------------------------------------------------------
 
 int
-core::Variable::getValue() const noexcept
+core::VariableCell::getValue() const noexcept
 {
     return m_value;
 }
 
 const std::string&
-core::Variable::getName() const noexcept
+core::VariableCell::getName() const noexcept
 {
     return m_name;
 }
@@ -157,7 +165,7 @@ core::Variable::getName() const noexcept
 //--------------------------------------------------------------------------------
 
 void
-core::Variable::addValueInfo(std::string& result) const
+core::VariableCell::addValueInfo(std::string& result) const
 {
     result += "\t'";
     result += m_name;
@@ -167,7 +175,7 @@ core::Variable::addValueInfo(std::string& result) const
 }
 
 void
-core::Variable::addValueMap(std::string& result) const
+core::VariableCell::addValueMap(std::string& result) const
 {
     result += "\t'";
     result += m_name;
