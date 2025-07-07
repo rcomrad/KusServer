@@ -22,10 +22,8 @@ public:
         LOWER
     };
 
-    static void notation(char* a_str, Type a_type) noexcept;
-    static void notation(std::string& a_str, Type a_type) noexcept;
-    static void notation(std::string_view a_str, Type a_type) noexcept;
-    static std::string notation(const std::string& a_str, Type a_type) noexcept;
+    static std::string copy(std::string_view a_str, Type a_type) noexcept;
+    static void change(std::string& a_str, Type a_type) noexcept;
 
     // TODO: refactor for cyrilic
     static bool isUpper(char c) noexcept;

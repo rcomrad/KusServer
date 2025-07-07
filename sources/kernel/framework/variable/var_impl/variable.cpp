@@ -1,10 +1,11 @@
 #include "variable.hpp"
 
-#include "framework/core/kernel.hpp"
+#include "kernel/framework/core/kernel.hpp"
 
 //--------------------------------------------------------------------------------
 
-core::Variable::get()
+int
+core::Variable::get() const
 {
-    KERNEL.getVariable(m_id);
+    return KERNEL.getVariable(m_id);
 }

@@ -12,7 +12,7 @@ void
 core::VariableStorage::setVariableTamplate(int a_number, T a_value)
 {
     varIdCheck(a_number);
-    m_variables[a_number].setValue(a_value)
+    m_variables[a_number].obj.setValue(a_value);
 }
 
 template <typename... Args>
@@ -83,13 +83,7 @@ core::VariableStorage::setVariable(int a_number, int a_value)
 }
 
 void
-core::VariableStorage::setVariable(int a_number, const char* a_value)
-{
-    setVariableTamplate(a_number, std::string(a_value));
-}
-
-void
-core::VariableStorage::setVariable(int a_number, const std::string& a_value)
+core::VariableStorage::setVariable(int a_number, std::string_view a_value)
 {
     setVariableTamplate(a_number, a_value);
 }
@@ -154,20 +148,10 @@ core::VariableStorage::setCommandHandler(core::Command& a_command)
             // TODO: multiple output
             int num   = it->second;
             auto& var = m_variables[num].obj;
-            auto res  = var.setValue(i.second);
+            var.setValue(i.second);
 
-            if (res)
-            {
-                LOG_CMD(
-                    "Successfully assigned value '%s' (%d) to variable '%s'",
+            LOG_CMD("Successfully assigned value '%s' (%d) to variable '%s'",
                     it->second, var.getValue(), it->first);
-            }
-            else
-            {
-                LOG_ERROR("Unable to set value for '%s' variable: "
-                          "corrupted variable value '%s'",
-                          it->first, it->second);
-            }
         }
     }
 }

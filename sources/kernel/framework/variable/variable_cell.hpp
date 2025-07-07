@@ -8,8 +8,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include "var_type.hpp"
-
 //--------------------------------------------------------------------------------
 
 namespace core
@@ -28,8 +26,8 @@ public:
     VariableCell(const VariableCell& other);
 
     void setValue(bool a_new_value) noexcept;
-    void setValue(int a_new_value) noexcept;
-    void setValue(const std::string& a_new_value);
+    void setValue(int a_new_value);
+    void setValue(std::string_view a_new_value);
     int getValue() const noexcept;
 
     const std::string& getName() const noexcept;
@@ -46,10 +44,10 @@ private:
         BOOL
     };
 
-    void setWordValue(const std::string& a_new_value);
-    void setWordBool(const std::string& a_new_value);
+    void setWordValue(std::string_view a_new_value);
+    void setWordBool(std::string_view a_new_value);
 
-    VarType m_type;
+    Type m_type;
     std::string m_name;
     int m_min_value;
     int m_max_value;

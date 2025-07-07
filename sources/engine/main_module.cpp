@@ -1,8 +1,11 @@
 #include "main_module.hpp"
 
-// #include <vulkan/vulkan.h>
+#include <vulkan/vulkan.hpp>
+#define GLFW_INCLUDE_VULKAN
 
-#include "framework/include_me.hpp"
+#include <GLFW/glfw3.h>
+
+#include "kernel/framework/include_me.hpp"
 
 auto module_name = "";
 
@@ -52,7 +55,7 @@ engine::MainModule::threadInitialize()
 bool
 engine::MainModule::threadLoopBody()
 {
-    return false;
+    return true;
 }
 
 void

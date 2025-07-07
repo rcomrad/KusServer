@@ -1,13 +1,12 @@
 #include "bool_var.hpp"
 
-#include "framework/core/kernel.hpp"
+#include "kernel/framework/core/kernel.hpp"
 
 //--------------------------------------------------------------------------------
 
-core::BoolVar::BoolVar(const std::string& a_var_name,
-                       const std::vector<std::string>& a_values)
+core::BoolVar::BoolVar(const std::string& a_var_name)
 {
-    m_id = KERNEL.addVariableInfo(a_var_name, a_values);
+    m_id = KERNEL.addBoolVariable(a_var_name);
 }
 
 void
