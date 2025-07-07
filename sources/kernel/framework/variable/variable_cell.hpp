@@ -8,24 +8,28 @@
 #include <unordered_map>
 #include <vector>
 
+#include "var_type.hpp"
+
 //--------------------------------------------------------------------------------
 
 namespace core
 {
 
-struct Variable
+struct VariableCell
 {
 public:
-    Variable(const std::string& a_var_name);
-    Variable(const std::string& a_var_name, bool dummy);
-    Variable(const std::string& a_var_name, int a_min_value, int a_max_value);
-    Variable(const std::string& a_var_name,
-             const std::vector<std::string>& a_values);
-    Variable(const Variable& other);
+    VariableCell(const std::string& a_var_name);
+    VariableCell(const std::string& a_var_name, bool dummy);
+    VariableCell(const std::string& a_var_name,
+                 int a_min_value,
+                 int a_max_value);
+    VariableCell(const std::string& a_var_name,
+                 const std::vector<std::string>& a_values);
+    VariableCell(const VariableCell& other);
 
-    bool setValue(bool a_new_value) noexcept;
-    bool setValue(int a_new_value) noexcept;
-    bool setValue(const std::string& a_new_value);
+    void setValue(bool a_new_value) noexcept;
+    void setValue(int a_new_value) noexcept;
+    void setValue(const std::string& a_new_value);
     int getValue() const noexcept;
 
     const std::string& getName() const noexcept;
@@ -42,10 +46,10 @@ private:
         BOOL
     };
 
-    bool setWordValue(const std::string& a_new_value);
-    bool setWordBool(const std::string& a_new_value);
+    void setWordValue(const std::string& a_new_value);
+    void setWordBool(const std::string& a_new_value);
 
-    Type m_type;
+    VarType m_type;
     std::string m_name;
     int m_min_value;
     int m_max_value;

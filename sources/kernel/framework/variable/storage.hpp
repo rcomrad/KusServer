@@ -2,12 +2,14 @@
 
 //--------------------------------------------------------------------------------
 
+#include <atomic>
 #include <string_view>
 #include <unordered_map>
 #include <vector>
 
 #include "kernel/framework/command/include_me.hpp"
 #include "kernel/utility/macroses/holy_trinity.hpp"
+#include "kernel/utility/type/declaration/lifecycle_manager.hpp"
 
 #include "variable.hpp"
 
@@ -42,14 +44,14 @@ public:
                         const std::vector<std::string>& a_values);
     int addBoolVariable(const std::string& a_var_name);
 
-    int getCurrentOffset() const noexcept;
+    // int getCurrentOffset() const noexcept;
 
 protected:
     void init();
 
 private:
-    // TODO: LifecycleManager?
-    std::vector<Variable> m_variables;
+    std::atomic<int> m_var_cnt;
+    std::vector<LifecycleManager<Variable>> m_variables;
     std::unordered_map<std::string, int> m_name_to_var_dict;
 
     void varIdCheck(int a_value_num) const;
