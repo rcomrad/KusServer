@@ -1,10 +1,9 @@
 #include "texture_manager.hpp"
 
-#include <nlohmann/json.hpp>
-
 #include <fstream>
 #include <iostream>
 
+#include "engine/json_parser/model_2d_parser.hpp"
 #include "utility/file_system/path_storage.hpp"
 
 using json = nlohmann::json;
@@ -13,12 +12,14 @@ namespace kusengine::render
 {
 
 void
-TextureManager::loadTextures(std::string filename,
-                             const DescriptorManager& desc_manager)
+TextureManager::loadTextures(const DescriptorManager& desc_manager)
 {
+
+    // Atlases
     auto res_path = util::PathStorage::getFolderPath("resource").value();
 
-    filename = res_path.data() + filename;
+    std::string filename = res_path.data();
+    filename += "engine_textures/texture_paths.json";
 
     std::ifstream file(filename);
     json data = json::parse(file);
@@ -30,6 +31,19 @@ TextureManager::loadTextures(std::string filename,
         addTexture(
             std::format("{}{}{}", res_path.data(), "engine_textures/", path),
             desc_manager);
+    }
+
+    // Zones
+
+    auto textures_data = json_parser::parseTextures();
+
+    for (auto& texture_data : textures_data)
+    {
+        m_texture_zone_storage[texture_data.name].m_texture =
+            &m_texture_storage[texture_data.filename];
+
+        m_texture_zone_storage[texture_data.name].uv_coords =
+            texture_data.uv_coords;
     }
 }
 
@@ -61,15 +75,15 @@ TextureManager::addTexture(const std::string& file_path,
     }
 }
 
-const Texture* const
-TextureManager::getTexture(const std::string& key) const
+const TextureZone* const
+TextureManager::getTexture(const std::string& name) const
 {
-    auto it = m_texture_storage.find(key);
-    if (it == m_texture_storage.end())
+    auto it = m_texture_zone_storage.find(name);
+    if (it == m_texture_zone_storage.end())
     {
-        std::cout << key << " cant find in texture storage\n";
+        std::cout << name << " cant find in texture_zone_storage\n";
 
-        return &(m_texture_storage.begin()->second);
+        return &(m_texture_zone_storage.begin()->second);
     }
 
     return &(it->second);

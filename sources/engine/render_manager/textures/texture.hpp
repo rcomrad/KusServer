@@ -28,6 +28,7 @@ public:
               const vk::PipelineLayout& pipelayout) const;
 
 private:
+
     int m_width;
     int m_height;
 

@@ -3,27 +3,35 @@
 #include <optional>
 #include <unordered_map>
 
+#include "glm/vec2.hpp"
+
 #include "texture.hpp"
 
 namespace kusengine::render
 {
 
+struct TextureZone
+{
+    std::vector<glm::vec2> uv_coords;
+
+    Texture* m_texture;
+};
+
 class TextureManager
 {
 public:
-    const Texture* const getTexture(
-        const std::string& key) const;
+    const TextureZone* const getTexture(const std::string& name) const;
 
-    void loadTextures(std::string filename,
-                      const DescriptorManager& desc_manager);
+    void loadTextures(const DescriptorManager& desc_manager);
 
 private:
     void addTexture(const std::string& file_path,
                     const DescriptorManager& desc_manager);
 
+    std::unordered_map<std::string, TextureZone> m_texture_zone_storage;
+
     std::unordered_map<std::string, Texture> m_texture_storage;
 };
-
 
 }; // namespace kusengine::render
 

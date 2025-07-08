@@ -22,7 +22,7 @@ RenderManager::getInstance()
 }
 // --- init / shutdown --- //
 void
-RenderManager::init(const kusengine::Window& window)
+RenderManager::setup(const kusengine::Window& window)
 {
     auto window_extent = window.getExtent();
 
@@ -50,10 +50,11 @@ RenderManager::init(const kusengine::Window& window)
 
     frame_number = 0;
 
-    m_texture_manager.loadTextures("engine_textures/texture_paths.json",
-                                   m_descriptor_manager);
+    m_model_manager.load(m_descriptor_manager);
+    // m_texture_manager.loadTextures("engine_textures/texture_paths.json",
+    //                                m_descriptor_manager);
 
-    m_mesh_manager.loadMeshes();
+    // m_mesh_manager.loadMeshes();
 
     // camera
     m_ubo.camera_matrix = {1.f};
@@ -130,26 +131,26 @@ RenderManager::draw(BasicScene* const basic_scene)
 // ----------------------- //
 //
 // ------ resources ------ //
-const Texture* const
-RenderManager::getResourceImpl(ChooseResType<Texture>&& rs,
-                               const std::string& key) const
-{
-    return m_texture_manager.getTexture(key);
-} // texture
+// const Texture* const
+// RenderManager::getResourceImpl(ChooseResType<Texture>&& rs,
+//                                const std::string& key) const
+// {
+//     return m_texture_manager.getTexture(key);
+// } // texture
 
-const Mesh<Vertex2DP1UV1>* const
-RenderManager::getResourceImpl(ChooseResType<Mesh<Vertex2DP1UV1>>&& rs,
-                               const std::string& key) const
-{
-    return m_mesh_manager.getMesh<Vertex2DP1UV1>(key);
-} // mesh<vertex 2d>
+// const Mesh<Vertex2DP1UV1>* const
+// RenderManager::getResourceImpl(ChooseResType<Mesh<Vertex2DP1UV1>>&& rs,
+//                                const std::string& key) const
+// {
+//     return m_mesh_manager.getMesh<Vertex2DP1UV1>(key);
+// } // mesh<vertex 2d>
 
-const Mesh<Vertex3DP1UV1>* const
-RenderManager::getResourceImpl(ChooseResType<Mesh<Vertex3DP1UV1>>&& rs,
-                               const std::string& key) const
-{
-    return m_mesh_manager.getMesh<Vertex3DP1UV1>(key);
-} // mesh<vertex 3d>
+// const Mesh<Vertex3DP1UV1>* const
+// RenderManager::getResourceImpl(ChooseResType<Mesh<Vertex3DP1UV1>>&& rs,
+//                                const std::string& key) const
+// {
+//     return m_mesh_manager.getMesh<Vertex3DP1UV1>(key);
+// } // mesh<vertex 3d>
 
 // ----------------------- //
 //

@@ -12,7 +12,7 @@ namespace kusengine::render
 struct Vertex2DAttributesP1UV1
 {
     glm::vec2 pos;
-    glm::vec2 text_pos;
+    glm::vec2 uv;
 };
 
 bool

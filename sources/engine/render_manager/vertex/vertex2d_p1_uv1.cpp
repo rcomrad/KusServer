@@ -3,7 +3,6 @@
 namespace kusengine::render
 {
 
-
 vk::VertexInputBindingDescription
 Vertex2DDescriptionP1UV1::getBindingDescription()
 {
@@ -29,8 +28,7 @@ Vertex2DDescriptionP1UV1::getAttributeDescriptions()
     attribute_description[1].binding  = 0;
     attribute_description[1].location = 1;
     attribute_description[1].format   = vk::Format::eR32G32Sfloat;
-    attribute_description[1].offset =
-        offsetof(Vertex2DAttributesP1UV1, text_pos);
+    attribute_description[1].offset   = offsetof(Vertex2DAttributesP1UV1, uv);
 
     return attribute_description;
 }
@@ -39,6 +37,6 @@ bool
 operator==(const Vertex2DAttributesP1UV1& left,
            const Vertex2DAttributesP1UV1& right)
 {
-    return left.pos == right.pos && left.text_pos == right.text_pos;
+    return left.pos == right.pos && left.uv == right.uv;
 }
-}; // namespace kusengine
+}; // namespace kusengine::render

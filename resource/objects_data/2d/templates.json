@@ -1,0 +1,33 @@
+{
+  "templates": {
+    "blocks": {
+      "stone":
+      {
+        "texture": "stone.png",
+        "max_hp": 100
+      },
+      "wood":
+      {
+        "texture": "wood.png",
+        "max_hp": 20
+      },
+      "water":
+      {
+        "texture": "water.png",
+        "max_hp": 40
+      }
+    },
+    "animals": {
+      "cat":
+      {
+        "texture": "cat.png",
+        "max_hp": 10,
+        "run_speed": 5,
+        "walk_speed": 3
+      }
+    },
+    "instruments":
+    {
+    }
+  }
+}

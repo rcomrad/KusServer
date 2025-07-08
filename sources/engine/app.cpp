@@ -17,11 +17,10 @@ namespace kusengine
 bool
 App::initApp()
 {
-
     try
     {
         m_window.initWindow(WIDTH, HEIGHT, "MyWindow");
-        render::RenderManager::getInstance().init(m_window);
+        render::RenderManager::getInstance().setup(m_window);
         render::RenderManager::getInstance().camera().switchTo("camera_3d");
 
         m_mouse.init(m_window.get());

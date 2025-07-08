@@ -20,11 +20,11 @@ public:
 
     uint32_t pushModel(ModelStorage<VertexType>& ms);
 
+protected:
     void setMesh(const Mesh<VertexType>* const mesh_ptr);
 
     void setTexture(const Texture* const texture_ptr);
 
-protected:
     Model<VertexType> m_model;
 };
 

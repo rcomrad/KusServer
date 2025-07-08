@@ -1,0 +1,31 @@
+{
+    "textures": [
+        {
+            "name": "stone",
+            "file_name": "materials.png",
+            "scale": 1,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "water",
+            "file_name": "materials.png",
+            "scale": 1,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "wood",
+            "file_name": "materials.png",
+            "scale": 1,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        }
+    ]
+}

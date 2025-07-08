@@ -9,13 +9,11 @@
 #include "camera/camera_manager.hpp"
 #include "commands/command_buffer.hpp"
 #include "drawable/drawable_system_storage.hpp"
-#include "drawable/drawable_usings.hpp"
 #include "dynamics_data/uniform_buffer_object.hpp"
-#include "mesh/mesh_manager.hpp"
+#include "model/model_manager.hpp"
 #include "renderer/render_system.hpp"
 #include "scene/basic_scene.hpp"
 #include "shaders/shader_manager.hpp"
-#include "textures/texture_manager.hpp"
 
 namespace kusengine
 {
@@ -32,7 +30,7 @@ public:
 
 public:
     // --- init / shutdown --- //
-    void init(const kusengine::Window& window);
+    void setup(const kusengine::Window& window);
 
     void shutdown();
 
@@ -79,38 +77,40 @@ private:
     UBO m_ubo;
     // ----------------------- //
     //
-    // ------ resources ------ //
+    // ------ models ------ //
 public:
-    template <typename ResT>
-    struct ChooseResType
-    {
-    };
+    // template <typename ResT>
+    // struct ChooseResType
+    // {
+    // };
 
-    template <typename ResT>
-    const ResT* const getResource(ChooseResType<ResT>&& res_type,
-                                  const std::string& key) const
-    {
-        return getResourceImpl(std::move(res_type), key);
-    }
+    // template <typename ResT>
+    // const ResT* const getResource(ChooseResType<ResT>&& res_type,
+    //                               const std::string& key) const
+    // {
+    //     return getResourceImpl(std::move(res_type), key);
+    // }
 
     // const Mesh* getMesh() const;
 
 private:
-    TextureManager m_texture_manager;
-    MeshManager m_mesh_manager;
+    ModelManager m_model_manager;
 
-    const Texture* const getResourceImpl(
-        ChooseResType<Texture>&& rs,
-        const std::string& key) const; // texture
+    // TextureManager m_texture_manager;
+    // MeshManager m_mesh_manager;
 
-    // Meshes
-    const Mesh<Vertex2DP1UV1>* const getResourceImpl(
-        ChooseResType<Mesh<Vertex2DP1UV1>>&& rs,
-        const std::string& key) const; // mesh<vertex 2d>
+    // const Texture* const getResourceImpl(
+    //     ChooseResType<Texture>&& rs,
+    //     const std::string& key) const; // texture
 
-    const Mesh<Vertex3DP1UV1>* const getResourceImpl(
-        ChooseResType<Mesh<Vertex3DP1UV1>>&& rs,
-        const std::string& key) const; // mesh<vertex 3d>
+    // // Meshes
+    // const Mesh<Vertex2DP1UV1>* const getResourceImpl(
+    //     ChooseResType<Mesh<Vertex2DP1UV1>>&& rs,
+    //     const std::string& key) const; // mesh<vertex 2d>
+
+    // const Mesh<Vertex3DP1UV1>* const getResourceImpl(
+    //     ChooseResType<Mesh<Vertex3DP1UV1>>&& rs,
+    //     const std::string& key) const; // mesh<vertex 3d>
 
     // ----------------------- //
 private:
