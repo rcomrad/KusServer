@@ -16,6 +16,11 @@ macro(vulkan_lib)
     target_link_libraries(${TARGET} PRIVATE Vulkan::Vulkan)
 endmacro()
 
+macro(glfw_lib)
+    find_package(glfw3 CONFIG REQUIRED)
+    target_link_libraries(${TARGET} PRIVATE glfw)
+endmacro()
+
 # PRODUSES:
 #   LIBRARY_NAME
 #   TARGET
@@ -33,6 +38,8 @@ macro(lib_router)
         # Not implemented
     elseif(${LIBRARY_NAME} STREQUAL vulkan)
         vulkan_lib()
+    elseif(${LIBRARY_NAME} STREQUAL glfw)
+        glfw_lib()
     else()
         message(FATAL_ERROR "Unsupported library name '${LIBRARY_NAME}'!")
     endif()
