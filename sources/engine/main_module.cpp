@@ -7,7 +7,7 @@
 
 #include "kernel/framework/include_me.hpp"
 
-auto module_name = "";
+auto module_name = "engine";
 
 REG_MODULE(module_name, engine::MainModule);
 
@@ -26,6 +26,8 @@ engine::MainModule::threadInitialize()
     {
         LOG_INFO("GLFW initialized");
     }
+
+    m_window.create();
 
     // std::cout << "inside" << std::endl;
 
@@ -61,6 +63,7 @@ engine::MainModule::threadLoopBody()
 void
 engine::MainModule::threadTerminate()
 {
+    m_window.destroy();
     glfwTerminate();
     LOG_INFO("GLFW terminated");
 }

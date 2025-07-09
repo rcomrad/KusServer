@@ -18,7 +18,6 @@ constexpr const char* STATE_FILE_NAME = "program_state.txt";
 core::StateStorage::StateStorage()
 {
     KERNEL.addFile(util::DATA_FOLDER_NAME, STATE_FILE_NAME);
-    dumpState();
 }
 
 void
