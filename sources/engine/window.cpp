@@ -11,7 +11,8 @@ engine::Window::Window()
       m_last_time(glfwGetTime())
 {
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+    // glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
     // TODO: var str name
     m_window = glfwCreateWindow(m_width.get(), m_height.get(),
