@@ -20,6 +20,9 @@ class Texture
 public:
     // const void* const data();
 
+    int getWidth() const noexcept;
+    int getHeight() const noexcept;
+
     void loadTexture(std::string_view file_path);
 
     void allocDescriptorSet(const DescriptorManager& desc_manager);
@@ -28,7 +31,6 @@ public:
               const vk::PipelineLayout& pipelayout) const;
 
 private:
-
     int m_width;
     int m_height;
 

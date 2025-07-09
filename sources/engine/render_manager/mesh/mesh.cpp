@@ -1,8 +1,17 @@
 #include "mesh.hpp"
 
-namespace kusengine
+#include <exception>
+namespace kusengine::render
 {
-namespace render
+
+void
+Mesh::setInds(const std::vector<float>& inds)
 {
-}; // namespace render
-}; // namespace kusengine
+    if (std::max(inds.begin(), inds.end()) >= m_vertices.size())
+    {
+        throw std::exception{"max index in inds for mesh is >= verts size"};
+    }
+    m_indices = inds;
+}
+
+}; // namespace kusengine::render

@@ -5,10 +5,33 @@
 
 #include "utility/file_system/path_storage.hpp"
 
-using json = nlohmann::json;
-
 namespace kusengine
 {
+
+void
+json_parser::parseString(std::string& to, const std::string& from, json& j)
+{
+    if (j.contains(from) && j[from].is_string())
+    {
+        to = j[from];
+    }
+}
+
+void
+json_parser::parseInt(int& to, const std::string& from, json& j)
+{
+    if (j.contains(from) && j[from].is_number_integer())
+    {
+        to = j[from];
+    }
+}
+
+void
+json_parser::parseVec2(glm::vec2& vec2, const std::string& from, json& j)
+{
+    vec2.x = vertJson[from]["x"].get<float>();
+    vec2.y = vertJson[from]["y"].get<float>();
+}
 
 std::vector<json_parser::ModelData>
 json_parser::parseModels2D()
@@ -30,25 +53,13 @@ json_parser::parseModels2D()
         {
             for (const auto& model_json : j_file["models"])
             {
-                if (model_json.contains("name") &&
-                    model_json["name"].is_string())
-                {
+                ModelData model_data;
 
-                    json_parser::ModelData model_data;
-                    if (model_json.contains("mesh") &&
-                        model_json["mesh"].is_string())
-                    {
-                        model_data.mesh = model_json["mesh"];
-                    }
+                parseString(model_data.name, "name", model_json);
+                parseString(model_data.mesh, "mesh", model_json);
+                parseString(model_data.texture, "texture", model_json);
 
-                    if (model_json.contains("texture") &&
-                        model_json["texture"].is_string())
-                    {
-                        model_data.texture = model_json["texture"];
-                    }
-
-                    res.emplace_back(model_data);
-                }
+                res.emplace_back(model_data);
             }
         }
     }
@@ -89,27 +100,23 @@ json_parser::parseMeshes2D()
             for (const auto& meshJson : j["meshes"])
             {
                 MeshData mesh_data;
-                mesh_data.name = meshJson["name"].get<std::string>();
+                parseString(mesh_data.name, "name", meshJson);
 
-                // Парсим вершины
                 for (const auto& vertJson : meshJson["verts"])
                 {
                     render::Vertex2DP1UV1 vertex;
-                    vertex.m_attributes.pos.x =
-                        vertJson["position"]["x"].get<float>();
-                    vertex.m_attributes.pos.y =
-                        vertJson["position"]["y"].get<float>();
-                    vertex.m_attributes.uv.x =
-                        vertJson["uv_coords"]["x"].get<float>();
-                    vertex.m_attributes.uv.y =
-                        vertJson["uv_coords"]["y"].get<float>();
+
+                    parseVec2(vertex.m_attributes.pos, "position", vertJson);
+                    parseVec2(vertex.m_attributes.uv, "uv", vertJson);
 
                     mesh_data.verts.emplace_back(vertex);
                 }
 
-                for (const auto& index : meshJson["inds"])
+                for (const auto& index_j : meshJson["inds"])
                 {
-                    mesh_data.inds.emplace_back(index.get<uint32_t>());
+                    int index;
+                    parseInt(index, "inds", index_j);
+                    mesh_data.inds.emplace_back(index);
                 }
 
                 res.emplace_back(mesh_data);
@@ -144,46 +151,15 @@ json_parser::parseTextures()
         {
             for (const auto& tex_json : j_file["textures"])
             {
-                if (tex_json.contains("name") && tex_json["name"].is_string())
-                {
 
-                    TextureData texture_data;
+                TextureData texture_data;
 
-                    if (tex_json.contains("filename") &&
-                        tex_json["filename"].is_string())
-                    {
-                        texture_data.filename = tex_json["filename"];
-                    }
+                parseString(texture_data.name, "name", tex_json);
+                parseString(texture_data.filename, "filename", tex_json);
+                parseVec2(texture_data.offset, "offset", tex_json);
+                parseVec2(texture_data.scale, "scale", tex_json);
 
-                    if (tex_json.contains("name") &&
-                        tex_json["name"].is_string())
-                    {
-                        texture_data.name = tex_json["name"];
-                    }
-
-                    if (tex_json.contains("uv_coords") &&
-                        tex_json["uv_coords"].is_array())
-                    {
-                        glm::vec2 coords;
-                        for (const auto& uv_json : tex_json["uv_coords"])
-                        {
-                            if (uv_json.contains("x") &&
-                                uv_json["x"].is_number())
-                            {
-                                coords.x = uv_json["x"];
-                            }
-
-                            if (uv_json.contains("y") &&
-                                uv_json["y"].is_number())
-                            {
-                                coords.y = uv_json["y"];
-                            }
-
-                            texture_data.uv_coords.push_back(coords);
-                        }
-                    }
-                    res.emplace_back(texture_data);
-                }
+                res.emplace_back(texture_data);
             }
         }
     }

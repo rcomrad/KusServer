@@ -42,8 +42,10 @@ TextureManager::loadTextures(const DescriptorManager& desc_manager)
         m_texture_zone_storage[texture_data.name].m_texture =
             &m_texture_storage[texture_data.filename];
 
-        m_texture_zone_storage[texture_data.name].uv_coords =
-            texture_data.uv_coords;
+        m_texture_zone_storage[texture_data.name].m_scale =
+            texture_data.scale;
+
+        m_texture_zone_storage[texture_data.name].m_size = texture_data.size;
     }
 }
 
@@ -76,7 +78,7 @@ TextureManager::addTexture(const std::string& file_path,
 }
 
 const TextureZone* const
-TextureManager::getTexture(const std::string& name) const
+TextureManager::getTextureZone(const std::string& name) const
 {
     auto it = m_texture_zone_storage.find(name);
     if (it == m_texture_zone_storage.end())

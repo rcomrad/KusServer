@@ -3,10 +3,9 @@
 #include <memory>
 #include <vector>
 
-namespace kusengine
+namespace kusengine::render
 {
-namespace render
+Model::Model(Type t) : m_type(t)
 {
-
-}; // namespace render
-}; // namespace kusengine
+}
+}; // namespace kusengine::render

@@ -10,6 +10,22 @@
 namespace kusengine::json_parser
 {
 
+using json = nlohmann::json;
+
+// help functions
+
+void
+parseString(std::string& to, const std::string& from, json& j);
+
+void
+parseInt(int& to, const std::string& from, json& j);
+
+// void
+// parseFloat(float& to, const std::string& from);
+
+void
+parseVec2(glm::vec2& vec2, const std::string& from, json& j);
+
 // models //
 
 struct ModelData
@@ -42,7 +58,8 @@ struct TextureData
 {
     std::string name;
     std::string filename;
-    std::vector<glm::vec2> uv_coords;
+    glm::vec2 scale;
+    glm::vec2 offset;
 };
 
 std::vector<TextureData>

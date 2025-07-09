@@ -8,6 +8,19 @@ namespace kusengine
 {
 namespace render
 {
+
+int
+Texture::getWidth() const noexcept
+{
+    return m_width;
+}
+
+int
+Texture::getHeight() const noexcept
+{
+    return m_heigth;
+}
+
 void
 Texture::loadTexture(std::string_view file_path)
 {

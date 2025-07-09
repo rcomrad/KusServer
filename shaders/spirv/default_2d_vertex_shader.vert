@@ -6,7 +6,8 @@ layout(set = 0, binding = 0) uniform UBO {
 
 struct InstanceData
 {
-    vec4 color;
+    vec2 texture_scale;
+    vec2 texture_offset;
     mat4 model;
 };
 
@@ -28,7 +29,10 @@ void main()
 
     gl_Position = ubo.projection * model * vec4(vertexPosition, 0.0, 1.0);
 
-    fragColor = dynamic_model_data.instance_data_array[gl_InstanceIndex].color;
+    fragColor = vec4(1.0, 1.0, 1.0, 1.0);
 
-    fragTextCoord = vertexTextCoord;    
+    scale = dynamic_model_data.instance_data_array[gl_InstanceIndex].texture_scale;
+    offset = dynamic_model_data.instance_data_array[gl_InstanceIndex].texture_offset;
+
+    fragTextCoord = offset + vec2(vertexTextCoord.x * scale.x, vertexTextCoord.y * scale.y);    
 }

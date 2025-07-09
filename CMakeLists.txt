@@ -5,7 +5,7 @@
 
 cmake_minimum_required(VERSION 3.22.0)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/vcpkg_path.cmake)
+# include(${CMAKE_CURRENT_SOURCE_DIR}/vcpkg_path.cmake)
 set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake")
 include("C:/vcpkg/scripts/buildsystems/vcpkg.cmake")
 

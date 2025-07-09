@@ -5,22 +5,15 @@
 
 #include "glm/vec2.hpp"
 
-#include "texture.hpp"
+#include "texture_zone.hpp"
 
 namespace kusengine::render
 {
 
-struct TextureZone
-{
-    std::vector<glm::vec2> uv_coords;
-
-    Texture* m_texture;
-};
-
 class TextureManager
 {
 public:
-    const TextureZone* const getTexture(const std::string& name) const;
+    const TextureZone* const getTextureZone(const std::string& name) const;
 
     void loadTextures(const DescriptorManager& desc_manager);
 

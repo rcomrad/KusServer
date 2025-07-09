@@ -1,42 +1,56 @@
-#include "vertex3d_p1_uv1.hpp"
+#include "vertex_p2d_uv.hpp"
 
 namespace kusengine::render
 {
 
+VertexP2DUV::VertexP2DUV() : Vertex(Type::VERTEX_P2D_UV, 4)
+{
+}
+
 vk::VertexInputBindingDescription
-Vertex3DDescriptionP1UV1::getBindingDescription()
+VertexP2DUV::getBindingDescription()
 {
     vk::VertexInputBindingDescription description;
     description.binding   = 0;
-    description.stride    = sizeof(Vertex3DAttributesP1UV1);
+    description.stride    = 32;
     description.inputRate = vk::VertexInputRate::eVertex;
     return description;
 }
 
 std::vector<vk::VertexInputAttributeDescription>
-Vertex3DDescriptionP1UV1::getAttributeDescriptions()
+VertexP2DUV::getAttributeDescriptions()
 {
     std::vector<vk::VertexInputAttributeDescription> attribute_description(2);
 
     // Pos
     attribute_description[0].binding  = 0;
     attribute_description[0].location = 0;
-    attribute_description[0].format   = vk::Format::eR32G32B32Sfloat;
-    attribute_description[0].offset   = offsetof(Vertex3DAttributesP1UV1, pos);
+    attribute_description[0].format   = vk::Format::eR32G32Sfloat;
+    attribute_description[0].offset   = 0;
+    // offsetof(Vertex2DAttributesP1UV1, pos);
 
-    // TextPos
+    // UV
     attribute_description[1].binding  = 0;
     attribute_description[1].location = 1;
     attribute_description[1].format   = vk::Format::eR32G32Sfloat;
-    attribute_description[1].offset   = offsetof(Vertex3DAttributesP1UV1, uv);
+    attribute_description[1].offset   = 8;
+    // offsetof(Vertex2DAttributesP1UV1, uv);
 
     return attribute_description;
 }
 
-bool
-operator==(const Vertex3DAttributesP1UV1& left,
-           const Vertex3DAttributesP1UV1& right)
+void
+VertexP2DUV::setPosition(const glm::vec2& pos) noexcept
 {
-    return left.pos == right.pos && left.uv == right.uv;
+    setValue(pos.x, 0);
+    setValue(pos.y, 1);
 }
+
+void
+VertexP2DUV::setUV(const glm::vec2& uv) noexcept
+{
+    setValue(uv.x, 2);
+    setValue(uv.y, 3);
+}
+
 }; // namespace kusengine::render

@@ -1,37 +1,43 @@
 #ifndef VERTEX_HPP
 #define VERTEX_HPP
 
-namespace kusengine
+#include <vulkan/vulkan.hpp>
+
+#include <vector>
+
+namespace kusengine::render
 {
-namespace render
-{
-template <typename VertexAttributesT, typename VertexDescriptionT>
 struct Vertex
 {
 public:
-    using Description = VertexDescriptionT;
-    using Attributes  = VertexAttributesT;
-
-    Vertex() = default;
-
-    Vertex(const Attributes& attributes) : m_attributes(attributes)
+    enum class Type
     {
-    }
-
-    const Attributes* const data() const
-    {
-        return &m_attributes;
-    }
-
-    static constexpr inline int countFloats()
-    {
-        return sizeof(Attributes) / sizeof(float);
+        VERTEX_P2D_UV,
+        VERTEX_P3D_UV
     };
 
-    Attributes m_attributes;
+    virtual ~Vertex();
+
+    Vertex(Type vt, int count);
+
+    int floatCount() const noexcept;
+
+    void pushTo(std::vector<float>& arr);
+
+    virtual vk::VertexInputBindingDescription getBindingDescription() const = 0;
+
+    virtual std::vector<vk::VertexInputAttributeDescription>
+    getAttributeDescriptions() const = 0;
+
+protected:
+    void setValue(float value, int index) noexcept;
+
+private:
+    std::vector<float> m_data;
+
+    Type m_type;
 };
 
-}; // namespace render
-}; // namespace kusengine
+}; // namespace kusengine::render
 
 #endif // VERTEX_HPP

@@ -4,10 +4,6 @@
 
 #include "engine/render_manager/model/model.hpp"
 
-namespace kusengine
+namespace kusengine::render
 {
-namespace render
-{
-
-}; // namespace render
 }; // namespace kusengine

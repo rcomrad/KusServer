@@ -4,9 +4,7 @@
 #include "engine/render_manager/buffers/gpu_buffer.hpp"
 #include "engine/render_manager/buffers/index_buffer.hpp"
 
-namespace kusengine
-{
-namespace render
+namespace kusengine::render
 {
 
 struct RangeInfo
@@ -19,16 +17,12 @@ struct RangeInfo
 };
 
 template <typename VertexT>
-class Model;
-
-template <typename VertexT>
 class MeshCombiner
 {
 public:
     MeshCombiner() = default;
 
-    void combine(
-        const std::vector<std::pair<Model<VertexT>, uint32_t>>& models);
+    void combine(const std::vector<std::pair<Model, uint32_t>>& models);
 
     void bindBuffers(const vk::CommandBuffer& command_buffer) const;
 
@@ -45,7 +39,7 @@ private:
 template <typename VertexT>
 void
 MeshCombiner<VertexT>::combine(
-    const std::vector<std::pair<Model<VertexT>, uint32_t>>& models)
+    const std::vector<std::pair<Model, uint32_t>>& models)
 {
     std::vector<typename VertexT::Attributes> all_vertices;
     std::vector<uint32_t> all_indices;
@@ -98,7 +92,6 @@ MeshCombiner<VertexT>::draw(const vk::CommandBuffer& command_buffer,
                         m_ranges_info[index].first_instance);
 }
 
-}; // namespace render
-}; // namespace kusengine
+}; // namespace kusengine::render
 
 #endif // MESH_COMBINER_HPP
