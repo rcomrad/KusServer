@@ -8,12 +8,13 @@ namespace kusengine::render
 class Material
 {
 public:
-    Material(Type t);
-
     enum class Type
     {
-        DEFAULT
+        TEXTURE
     };
+    Material(Type t);
+
+    Type getType() const noexcept;
 
 private:
     Type m_type;

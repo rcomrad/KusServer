@@ -11,8 +11,10 @@
 #include "engine/render_manager/shaders/shader_manager.hpp"
 #include "engine/render_manager/swap_chain/swap_chain_frame.hpp"
 
+#include "pipeline_key.hpp"
 namespace kusengine::render
 {
+
 class RenderSystem
 {
 public:
@@ -21,7 +23,7 @@ public:
                const vk::Extent2D& extent,
                const vk::Format& format);
 
-    void registerPipeline(std::string_view key,
+    void registerPipeline(PipelineKey pkey,
                           std::string_view render_pass,
                           PipelineConfigInfo&& pipeline_info,
                           const ShaderManager& shader_manager);
@@ -29,16 +31,16 @@ public:
     void registerRenderPass(std::string_view key,
                             const RenderPassConfigInfo& render_pass_info);
 
-    void execute(const SwapChainFrame& swap_chain,
-                 const std::string& pass_name,
-                 const vk::CommandBuffer& cmd,
-                 const std::function<void()>& bd_lambda);
+    // void execute(const SwapChainFrame& swap_chain,
+    //              const std::string& pass_name,
+    //              const vk::CommandBuffer& cmd,
+    //              const std::function<void()>& bd_lambda);
 
     void setExtent(const vk::Extent2D& extent);
 
-    void translateRenderPassesToFrame(SwapChainFrame& frame) const;
+    // void translateRenderPassesToFrame(SwapChainFrame& frame) const;
 
-    const vk::PipelineLayout& bindPipeline(const std::string& key,
+    const vk::PipelineLayout& bindPipeline(const PipelineKey& pkey,
                                            const vk::CommandBuffer& cmd) const&;
 
 private:
@@ -49,7 +51,7 @@ private:
                                const ShaderManager& shader_manager);
     void setupDefaultRenderPass();
 
-    std::unordered_map<std::string, std::unique_ptr<Pipeline>> m_pipelines;
+    std::unordered_map<PipelineKey, std::unique_ptr<Pipeline>> m_pipelines;
 
     std::unordered_map<std::string, std::unique_ptr<RenderPass>>
         m_render_passes;

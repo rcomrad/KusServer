@@ -13,6 +13,8 @@ class VertexP2DUV final : public Vertex
 public:
     VertexP2DUV();
 
+    VertexP2DUV(const glm::vec2 pos, const glm::vec2 uv);
+
     vk::VertexInputBindingDescription getBindingDescription() const override;
 
     std::vector<vk::VertexInputAttributeDescription> getAttributeDescriptions()

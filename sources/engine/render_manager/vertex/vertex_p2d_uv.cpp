@@ -7,8 +7,15 @@ VertexP2DUV::VertexP2DUV() : Vertex(Type::VERTEX_P2D_UV, 4)
 {
 }
 
+VertexP2DUV::VertexP2DUV(const glm::vec2 pos, const glm::vec2 uv)
+    : VertexP2DUV()
+{
+    setPosition(pos);
+    setUV(uv);
+}
+
 vk::VertexInputBindingDescription
-VertexP2DUV::getBindingDescription()
+VertexP2DUV::getBindingDescription() const
 {
     vk::VertexInputBindingDescription description;
     description.binding   = 0;
@@ -18,7 +25,7 @@ VertexP2DUV::getBindingDescription()
 }
 
 std::vector<vk::VertexInputAttributeDescription>
-VertexP2DUV::getAttributeDescriptions()
+VertexP2DUV::getAttributeDescriptions() const
 {
     std::vector<vk::VertexInputAttributeDescription> attribute_description(2);
 

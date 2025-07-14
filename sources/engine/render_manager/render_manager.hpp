@@ -8,11 +8,11 @@
 //
 #include "camera/camera_manager.hpp"
 #include "commands/command_buffer.hpp"
-#include "drawable/drawable_system_storage.hpp"
+// #include "drawable/drawable_system_storage.hpp"
 #include "dynamics_data/uniform_buffer_object.hpp"
-#include "model/model_manager.hpp"
+// #include "model/model_manager.hpp"
 #include "renderer/render_system.hpp"
-#include "scene/basic_scene.hpp"
+// #include "scene/basic_scene.hpp"
 #include "shaders/shader_manager.hpp"
 
 namespace kusengine
@@ -41,7 +41,7 @@ private:
 public:
     // void registerScene(BasicScene* const basic_scene);
 
-    void draw(BasicScene* const basic_scene);
+    // void draw(BasicScene* const basic_scene);
 
 private:
     int max_frames_in_flight;
@@ -94,7 +94,7 @@ public:
     // const Mesh* getMesh() const;
 
 private:
-    ModelManager m_model_manager;
+    // ModelManager m_model_manager;
 
     // TextureManager m_texture_manager;
     // MeshManager m_mesh_manager;

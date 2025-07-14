@@ -114,7 +114,8 @@
         "complex": "cpp",
         "coroutine": "cpp",
         "stack": "cpp",
-        "csetjmp": "cpp"
+        "csetjmp": "cpp",
+        "hash_map": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

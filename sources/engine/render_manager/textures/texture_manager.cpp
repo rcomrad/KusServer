@@ -35,18 +35,18 @@ TextureManager::loadTextures(const DescriptorManager& desc_manager)
 
     // Zones
 
-    auto textures_data = json_parser::parseTextures();
+    // auto textures_data = json_parser::parseTextures();
 
-    for (auto& texture_data : textures_data)
-    {
-        m_texture_zone_storage[texture_data.name].m_texture =
-            &m_texture_storage[texture_data.filename];
+    // for (auto& texture_data : textures_data)
+    // {
+    //     m_texture_zone_storage[texture_data.name].m_texture =
+    //         &m_texture_storage[texture_data.filename];
 
-        m_texture_zone_storage[texture_data.name].m_scale =
-            texture_data.scale;
+    //     m_texture_zone_storage[texture_data.name].m_scale =
+    //         texture_data.scale;
 
-        m_texture_zone_storage[texture_data.name].m_size = texture_data.size;
-    }
+    //     m_texture_zone_storage[texture_data.name].m_size = texture_data.size;
+    // }
 }
 
 void

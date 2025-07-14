@@ -16,13 +16,15 @@ public:
         VERTEX_P3D_UV
     };
 
-    virtual ~Vertex();
+    Type getType() const noexcept;
+
+    virtual ~Vertex() = default;
 
     Vertex(Type vt, int count);
 
     int floatCount() const noexcept;
 
-    void pushTo(std::vector<float>& arr);
+    void pushTo(std::vector<float>& arr) const;
 
     virtual vk::VertexInputBindingDescription getBindingDescription() const = 0;
 

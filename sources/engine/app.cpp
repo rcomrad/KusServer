@@ -6,6 +6,8 @@
 #include <iostream>
 #include <utility>
 
+#include "render_manager/model/model_system.hpp"
+#include "render_manager/model/simple_model.hpp"
 #include "render_manager/render_manager.hpp"
 #include "utility/file_system/path_storage.hpp"
 
@@ -32,7 +34,22 @@ App::initApp()
         return false;
     }
 
-    m_scene.create();
+    m_models.resize(3);
+
+    for (int i = 0; i < m_models.size(); ++i)
+    {
+        m_models[i] =
+            std::make_unique<render::SimpleModel<render::VertexP2DUV,
+                                                 render::InstanceDataMatrix>>();
+    }
+
+    // m_models.emplace_back("rectangle_texture");
+
+    // m_model_system.combine(m_models);
+
+    // m_scene.create();
+
+    // m_models.emplace_back()
 
     return true;
 };
@@ -142,7 +159,7 @@ App::loopBody()
 
     handleEvents(el_time);
 
-    render::RenderManager::getInstance().draw(&m_scene);
+    // render::RenderManager::getInstance().draw(&m_scene);
 
     return true;
 }

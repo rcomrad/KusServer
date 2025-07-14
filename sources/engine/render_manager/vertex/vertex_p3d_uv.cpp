@@ -8,7 +8,7 @@ VertexP3DUV::VertexP3DUV() : Vertex(Type::VERTEX_P3D_UV, 5)
 }
 
 vk::VertexInputBindingDescription
-VertexP3DUV::getBindingDescription()
+VertexP3DUV::getBindingDescription() const
 {
     vk::VertexInputBindingDescription description;
     description.binding   = 0;
@@ -18,7 +18,7 @@ VertexP3DUV::getBindingDescription()
 }
 
 std::vector<vk::VertexInputAttributeDescription>
-VertexP3DUV::getAttributeDescriptions()
+VertexP3DUV::getAttributeDescriptions() const
 {
     std::vector<vk::VertexInputAttributeDescription> attribute_description(2);
 

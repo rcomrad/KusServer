@@ -3,10 +3,13 @@
 
 #include "engine/render_manager/mesh/mesh.hpp"
 
+#include "bind_info.hpp"
+
 namespace kusengine::render
 {
 
-class Model
+template <typename Vertex_t_, typename InstanceData_t_>
+class Model // Composite class
 {
 public:
     enum class Type
@@ -15,25 +18,28 @@ public:
         SIMPLE  = 1
     };
 
+    using Vertex_t       = Vertex_t_;
+    using InstanceData_t = InstanceData_t_;
+
     Model(Type t);
+
+    Model() = default;
 
     virtual ~Model() = default;
 
-    void pushTo(std::vector<const Mesh*>& meshes);
-
-    virtual std::pair<const Mesh* const, int> takeMeshes() const = 0;
-
-    // virtual void bind(const vk::CommandBuffer& command_buffer,
-    //                   const vk::PipelineLayout& pipelayout) const = 0;
-
-    // virtual void draw(const vk::CommandBuffer& command_buffer,
-    //                   const vk::PipelineLayout& pipelayout) const = 0;
+    virtual void pushTo(
+        std::vector<std::pair<const Mesh<Vertex_t>*, int>>& meshes) const = 0;
 
 private:
     Type m_type;
 
-    int index_of_instance_data_vector = -1;
+    InstanceData_t* link_to_inst_data = nullptr;
 };
+
+template <typename Vertex_t, typename InstanceData_t>
+Model<Vertex_t, InstanceData_t>::Model(Type t) : m_type(t)
+{
+}
 
 }; // namespace kusengine::render
 #endif // MODEL_HPP

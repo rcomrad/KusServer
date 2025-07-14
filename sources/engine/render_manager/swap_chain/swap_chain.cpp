@@ -195,7 +195,7 @@ SwapChain::createSwapChainFrames(const RenderSystem& render_system,
     {
         m_frames[i].setupImages(images[i], m_format, m_extent);
 
-        render_system.translateRenderPassesToFrame(m_frames[i]);
+        // render_system.translateRenderPassesToFrame(m_frames[i]);
 
         m_frames[i].setupCommandBuffer();
         m_frames[i].setupSynchronization();

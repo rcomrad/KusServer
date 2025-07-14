@@ -18,7 +18,7 @@ Texture::getWidth() const noexcept
 int
 Texture::getHeight() const noexcept
 {
-    return m_heigth;
+    return m_height;
 }
 
 void

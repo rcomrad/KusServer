@@ -1,70 +1,61 @@
 #include "mesh_manager.hpp"
 
-#include <exception>
-#include <iostream>
-
-#include "engine/json_parser/model_2d_parser.hpp"
-
 namespace kusengine::render
 {
 
+// TODO: builder
 void
-MeshManager::loadMeshes()
+MeshManager::setup(const MaterialManager& material_manager)
 {
-    // 2d
+    std::vector<VertexP2DUV> verts = {
+        {{0.f, 0.f}, {0.f, 0.f}},
+        {{1.f, 0.f}, {1.f, 0.f}},
+        {{1.f, 1.f}, {1.f, 1.f}},
+        {{0.f, 1.f}, {0.f, 1.f}}
+    };
 
-    auto meshes_data = json_parser::parseMeshes2D();
+    std::vector<uint32_t> inds = {0, 1, 2, 2, 3, 0};
 
-    for (auto& md : meshes_data)
     {
-        addMesh<Vertex2DP1UV1>(md.inds, md.verts, md.name);
+        Mesh<VertexP2DUV> rect_mesh;
+        rect_mesh.setVerts(verts);
+        rect_mesh.setInds(inds);
+
+        auto water =
+            material_manager.getMaterial(Material::Type::TEXTURE, "water");
+        rect_mesh.setMaterial(water);
+
+        meshes_2d.emplace(
+            std::make_pair(std::string("water_rectangle"), rect_mesh));
+
+        //
+        auto stone =
+            material_manager.getMaterial(Material::Type::TEXTURE, "stone");
+        rect_mesh.setMaterial(stone);
+
+        meshes_2d.emplace(
+            std::make_pair(std::string("stone_rectangle"), rect_mesh));
+        //
+        auto wood =
+            material_manager.getMaterial(Material::Type::TEXTURE, "wood");
+        rect_mesh.setMaterial(wood);
+
+        meshes_2d.emplace(
+            std::make_pair(std::string("wood_rectangle"), rect_mesh));
     }
 }
 
-const Mesh<Vertex2DP1UV1>* const
-MeshManager::getMeshImpl(std::string_view key,
-                         ChooseVertexType<Vertex2DP1UV1>) const
+template <>
+const Mesh<VertexP2DUV>* const
+MeshManager::getMesh<VertexP2DUV>(const std::string& mesh_name) const
 {
-    auto it = m_2d_p1_uv1_mesh_storage.find(key.data());
-
-    if (it == m_2d_p1_uv1_mesh_storage.end())
-    {
-        throw std::exception(
-            (std::string(key.data()) + " does not exist in mesh manager\n")
-                .data());
-    }
-    return &((*it).second);
+    return &(meshes_2d.find(mesh_name)->second);
 }
 
-void
-MeshManager::addMeshImpl(const std::vector<uint32_t>& indices,
-                         const std::vector<Vertex2DP1UV1>& vertices,
-                         const std::string& key)
+template <>
+const Mesh<VertexP3DUV>* const
+MeshManager::getMesh<VertexP3DUV>(const std::string& mesh_name) const
 {
-    m_2d_p1_uv1_mesh_storage[key] = Mesh<Vertex2DP1UV1>(indices, vertices);
+    return &(meshes_3d.find(mesh_name)->second);
 }
-
-// ----------- 3d Vertex Mesh ----------- //
-void
-MeshManager::addMeshImpl(const std::vector<uint32_t>& indices,
-                         const std::vector<Vertex3DP1UV1>& vertices,
-                         const std::string& key)
-{
-    m_3d_p1_uv1_mesh_storage[key] = Mesh<Vertex3DP1UV1>(indices, vertices);
-}
-
-const Mesh<Vertex3DP1UV1>* const
-MeshManager::getMeshImpl(std::string_view key,
-                         ChooseVertexType<Vertex3DP1UV1>) const
-{
-    auto it = m_3d_p1_uv1_mesh_storage.find(key.data());
-
-    if (it == m_3d_p1_uv1_mesh_storage.end())
-    {
-        throw std::exception(
-            (std::string(key.data()) + " does not exist in mesh manager\n")
-                .data());
-    }
-    return &((*it).second);
-}
-}; // namespace kusengine::render
+} // namespace kusengine::render

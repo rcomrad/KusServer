@@ -42,15 +42,15 @@ RenderManager::setup(const kusengine::Window& window)
 
     m_descriptor_manager.setup();
 
-    m_render_system.setup(m_descriptor_manager, m_shader_manager,
-                          m_swap_chain.extent(), m_swap_chain.format());
+    // m_render_system.setup(m_descriptor_manager, m_shader_manager,
+    //                       m_swap_chain.extent(), m_swap_chain.format());
 
     max_frames_in_flight = m_swap_chain.createSwapChainFrames(
         m_render_system, m_descriptor_manager);
 
     frame_number = 0;
 
-    m_model_manager.load(m_descriptor_manager);
+    // m_model_manager.load(m_descriptor_manager);
     // m_texture_manager.loadTextures("engine_textures/texture_paths.json",
     //                                m_descriptor_manager);
 
@@ -68,65 +68,68 @@ RenderManager::shutdown()
 //
 // --------- draw -------- //
 
-void
-RenderManager::draw(BasicScene* const basic_scene)
-{
+// void
+// RenderManager::draw(BasicScene* const basic_scene)
+// {
 
-    auto& upd_frame = m_swap_chain.getFrame(frame_number);
+//     auto& upd_frame = m_swap_chain.getFrame(frame_number);
 
-    upd_frame.waitForFence();
+//     upd_frame.waitForFence();
 
-    // upd data
-    m_ubo.camera_matrix =
-        m_camera_manager.getCurrentCamera().get()->recalculate();
+//     // upd data
+//     m_ubo.camera_matrix =
+//         m_camera_manager.getCurrentCamera().get()->recalculate();
 
-    upd_frame.updateUBO(m_ubo);
-    basic_scene->updMbddFrame(upd_frame);
+//     upd_frame.updateUBO(m_ubo);
+//     basic_scene->updMbddFrame(upd_frame);
 
-    auto acquire_res = LOGICAL_DEVICE_INSTANCE.acquireNextImageKHR(
-        m_swap_chain.swapchain(), UINT64_MAX,
-        upd_frame.synControl().imageAvailable(), nullptr);
+//     auto acquire_res = LOGICAL_DEVICE_INSTANCE.acquireNextImageKHR(
+//         m_swap_chain.swapchain(), UINT64_MAX,
+//         upd_frame.synControl().imageAvailable(), nullptr);
 
-    uint32_t image_index = acquire_res.value;
+//     uint32_t image_index = acquire_res.value;
 
-    // record part
-    auto& upd_cmd = upd_frame.commandBuffer();
+//     // record part
+//     auto& upd_cmd = upd_frame.commandBuffer();
 
-    auto binding_draw_lambda = [&scene    = basic_scene,
-                                &rend_sys = m_render_system, &frame = upd_frame,
-                                &cmd = upd_cmd]()
-    {
-        auto& layout = rend_sys.bindPipeline("default_3d", cmd);
-        scene->bind(cmd);
-        frame.bind(cmd, layout);
-        scene->draw(cmd, layout);
-    };
+//     auto binding_draw_lambda = [&scene    = basic_scene,
+//                                 &rend_sys = m_render_system, &frame =
+//                                 upd_frame, &cmd = upd_cmd]()
+//     {
+//         auto& layout = rend_sys.bindPipeline("default_3d", cmd);
+//         scene->bind(cmd);
+//         frame.bind(cmd, layout);
+//         scene->draw(cmd, layout);
+//     };
 
-    m_render_system.execute(upd_frame, "default", upd_cmd, binding_draw_lambda);
+//     m_render_system.execute(upd_frame, "default", upd_cmd,
+//     binding_draw_lambda);
 
-    // submit part
+//     // submit part
 
-    upd_frame.submitCommandBuffer();
+//     upd_frame.submitCommandBuffer();
 
-    // record part
+//     // record part
 
-    vk::PresentInfoKHR presentInfo = {};
-    presentInfo.waitSemaphoreCount = 1;
-    presentInfo.pWaitSemaphores    = upd_frame.synControl().signalSemaphores();
+//     vk::PresentInfoKHR presentInfo = {};
+//     presentInfo.waitSemaphoreCount = 1;
+//     presentInfo.pWaitSemaphores    =
+//     upd_frame.synControl().signalSemaphores();
 
-    presentInfo.swapchainCount = 1;
-    presentInfo.pSwapchains    = &m_swap_chain.swapchain();
-    presentInfo.pImageIndices  = &image_index;
+//     presentInfo.swapchainCount = 1;
+//     presentInfo.pSwapchains    = &m_swap_chain.swapchain();
+//     presentInfo.pImageIndices  = &image_index;
 
-    auto result = DEVICE_INSTANCE.getQueue("present").presentKHR(presentInfo);
+//     auto result =
+//     DEVICE_INSTANCE.getQueue("present").presentKHR(presentInfo);
 
-    if (result != vk::Result::eSuccess)
-    {
-        std::cout << "not success present\n";
-    }
+//     if (result != vk::Result::eSuccess)
+//     {
+//         std::cout << "not success present\n";
+//     }
 
-    frame_number = (frame_number + 1) % max_frames_in_flight;
-}
+//     frame_number = (frame_number + 1) % max_frames_in_flight;
+// }
 
 // ----------------------- //
 //
