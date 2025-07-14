@@ -15,6 +15,11 @@ ShaderManager::setup(bool need_compile)
 {
     auto shaders_folder_path = util::PathStorage::getFolderPath("shaders");
 
+    if (shaders_folder_path.has_value() == false)
+    {
+        throw std::exception("no shaders folder");
+    }
+
     if (need_compile)
     {
         std::unordered_map<ShaderType, std::string> shader_paths = {
