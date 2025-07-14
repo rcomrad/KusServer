@@ -1,6 +1,7 @@
 #pragma once
 
-#include "utility/common/holy_trinity.hpp"
+#include "kernel/utility/macroses/holy_trinity.hpp"
+
 #include "internal_connection.hpp"
 
 namespace data

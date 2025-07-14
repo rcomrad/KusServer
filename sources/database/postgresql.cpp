@@ -2,10 +2,8 @@
 
 #include <cstring>
 
-#include "core/logging/logging.hpp"
-
-#include "string/string_malloc.hpp"
-
+#include "kernel/framework/logger/include_me.hpp"
+#include "kernel/string/string_malloc.hpp"
 #include "pqxx/nontransaction"
 
 #define LOG_POSTGRES_QUERIES 1

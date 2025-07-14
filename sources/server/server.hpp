@@ -2,10 +2,9 @@
 
 //--------------------------------------------------------------------------------
 
-#include "core/module/module.hpp"
-
-#include "utility/common/holy_trinity.hpp"
-#include "utility/string/slicer.hpp"
+#include "kernel/framework/module/module.hpp"
+#include "kernel/utility/kernel/string/slicer.hpp"
+#include "kernel/utility/macroses/holy_trinity.hpp"
 
 #include "token.hpp"
 

@@ -3,9 +3,9 @@
 #include <regex>
 #include <vector>
 
+#include "kernel/utility/datastructs/num_prefix_tree.hpp"
+#include "kernel/utility/macroses/holy_trinity.hpp"
 #include "nodes/node.hpp"
-#include "utility/common/holy_trinity.hpp"
-#include "utility/datastructs/num_prefix_tree.hpp"
 
 #include "context.hpp"
 #include "web.hpp"

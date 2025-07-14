@@ -2,9 +2,9 @@
 
 //--------------------------------------------------------------------------------
 
+#include "kernel/utility/macroses/holy_trinity.hpp"
+#include "kernel/utility/type/type_id.hpp"
 #include "pqxx/pqxx"
-#include "utility/common/holy_trinity.hpp"
-#include "utility/type/base.hpp"
 
 #include "credentials.hpp"
 

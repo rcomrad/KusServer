@@ -3,7 +3,7 @@
 #include <cstring>
 #include <string>
 
-#include "utility/string/slicer.hpp"
+#include "kernel/utility/kernel/string/slicer.hpp"
 
 data::StructStorage&
 data::StructStorage::getInstance() noexcept

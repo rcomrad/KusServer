@@ -19,9 +19,6 @@
           - wget
           - openssh-server
           - libssl-dev
-          - build-essential
-          - dkms 
-          # sudo apt install build-essential dkms linux-headers-$(uname -r)
         state: present
 
     - name: No vim for git branch
@@ -59,12 +56,6 @@
           - libxcb1-dev
           - libx11-dev
           - libxrandr-dev
-          - libglfw3-dev
-          - libglm-dev
-          - libxinerama-dev
-          - libxcursor-dev
-          - libxi-dev 
-
           # - xorg-dev
           # build-essential libvulkan-dev libx11-dev libxrandr-dev libxcb1-dev libwayland-dev
 
@@ -153,10 +144,6 @@
         mode: '0644'
       loop: "{{ user_list.stdout_lines }}"
 
-
-# sudo mount /dev/cdrom /mnt
-# cd /mnt
-# sudo ./VBoxLinuxAdditions.run
 - name: Setup VBoxClient clipboard
   hosts: localhost
   gather_facts: false
@@ -202,7 +189,6 @@
       - libpqxx:x64-linux
       - mailio:x64-linux
       - gtest:x64-linux
-      - glfw3
       - vulkan-sdk-components:x64-linux
 
   tasks:
@@ -353,7 +339,7 @@
       copy:
         dest: "{{ project_dir }}/vcpkg.cmake"
         content: |
-          "set(VCPKG_ROOT ""/home/{{ username }}/vcpkg")"
+          set(VCPKG_ROOT /home/{{ username }}/vcpkg)
 
 - name: Clear root directory
   hosts: localhost

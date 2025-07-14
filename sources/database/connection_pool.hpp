@@ -8,11 +8,10 @@
 #include <unordered_set>
 #include <vector>
 
-#include "core/logging/table_storage.hpp"
-
 #include "database_connection.hpp"
 
-#include "utility/type/lifecycle_manager.hpp"
+#include "kernel/framework/logging/table_storage.hpp"
+#include "kernel/utility/type/declaration/lifecycle_manager.hpp"
 
 #include "credentials.hpp"
 #include "internal_connection.hpp"

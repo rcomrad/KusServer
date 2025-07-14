@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-#include "utility/type/base.hpp"
+#include "kernel/utility/type/type_id.hpp"
 
 #include "credentials.hpp"
 #include "postgresql.hpp"

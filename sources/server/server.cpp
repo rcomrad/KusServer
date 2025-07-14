@@ -1,6 +1,6 @@
 #include "server.hpp"
 
-#include "utility/common/yield.hpp"
+#include "kernel/utility/common/yield.hpp"
 
 #include "token.hpp"
 

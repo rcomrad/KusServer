@@ -2,7 +2,7 @@
 
 //--------------------------------------------------------------------------------
 
-#include "core/command/command_extend.hpp"
+#include "kernel/framework/command/command_extend.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -16,7 +16,7 @@ public:
 
 #define ENUM_NAME Status
 #define VAR_FILE  "server/token_var.inc"
-#include "core/variable/var_unpack.inc"
+#include "kernel/framework/variable/var_unpack.inc"
 };
 
 } // namespace serv

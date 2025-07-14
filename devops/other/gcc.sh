@@ -6,6 +6,7 @@ version="${1:?}"
 this_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd)"
 
 sudo apt install gcc
+apt-get install libmpc-dev 
 
 # https://ftp.gnu.org/gnu/gcc/gcc-14.1.0/gcc-14.1.0.tar.gz
 # wget "https://ftp.gnu.org/gnu/gcc/gcc-$version/gcc-$version.tar.gz"

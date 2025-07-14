@@ -3,9 +3,8 @@
 #include <mutex>
 #include <unordered_set>
 
-#include "core/logging/logging.hpp"
-
-#include "utility/common/holy_trinity.hpp"
+#include "kernel/framework/logger/include_me.hpp"
+#include "kernel/utility/macroses/holy_trinity.hpp"
 
 //-----------------------------------------------------------------------------
 // Connection pool creation

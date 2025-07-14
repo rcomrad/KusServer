@@ -17,9 +17,15 @@
 **/path.conf
 **.dmprar
 **.out
-vcpkg_path.cmake
+cmake_config.cmake
+cmake_target_switch.cmake
 
 id_rsa
 id_rsa.pub
 
 git update-index --assume-unchanged ./.vscode/*
+cmake_install.cmake
+CMakeCache.txt
+Makefile
+CMakeFiles
+.cache

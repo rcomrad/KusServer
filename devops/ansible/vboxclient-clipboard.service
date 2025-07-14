@@ -1,11 +1,10 @@
 [Unit]
 Description=VBoxClient clipboard service
-After=network.target
+After=display-manager.service
 
 [Service]
-Type=simple
 ExecStart=/usr/bin/VBoxClient --clipboard
-Restart=on-failure
+Restart=always
 
 [Install]
 WantedBy=default.target
