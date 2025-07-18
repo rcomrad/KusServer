@@ -12,11 +12,7 @@ void
 core::VariableStorage::setVariableTamplate(int a_number, T a_value)
 {
     varIdCheck(a_number);
-    if (!m_variables[a_number].setValue(a_value))
-    {
-        THROW("Failed to set value '{}' for '{}' variable.", a_value,
-              m_variables[a_number].getName());
-    }
+    m_variables[a_number].obj.setValue(a_value);
 }
 
 template <typename... Args>
@@ -24,15 +20,21 @@ int
 core::VariableStorage::addVariableInfoTamplate(const std::string& a_var_name,
                                                Args... args)
 {
-    int retult = m_variables.size();
-    m_variables.emplace_back(a_var_name, args...);
-    m_name_to_var_dict[a_var_name] = retult;
-    return retult;
+    int result = m_var_cnt++;
+    if (result >= m_variables.size())
+    {
+        THROW("The maximum number of preallocated variables has been exceeded");
+    }
+
+    m_variables[result].create(a_var_name, args...);
+    m_name_to_var_dict[a_var_name] = result;
+    return result;
 }
 
 //--------------------------------------------------------------------------------
 
-core::VariableStorage::VariableStorage()
+// TODO: m_variables allocation settings
+core::VariableStorage::VariableStorage() : m_var_cnt(0), m_variables(100)
 {
 }
 
@@ -61,10 +63,10 @@ core::VariableStorage::init()
 void
 core::VariableStorage::varIdCheck(int a_value_num) const
 {
-    if (a_value_num >= m_variables.size())
+    if (a_value_num >= m_var_cnt)
     {
         THROW("No variable with id {} - id too large, max id is {}",
-              a_value_num, m_variables.size() - 1);
+              a_value_num, m_var_cnt - 1);
     }
 }
 
@@ -81,13 +83,7 @@ core::VariableStorage::setVariable(int a_number, int a_value)
 }
 
 void
-core::VariableStorage::setVariable(int a_number, const char* a_value)
-{
-    setVariableTamplate(a_number, std::string(a_value));
-}
-
-void
-core::VariableStorage::setVariable(int a_number, const std::string& a_value)
+core::VariableStorage::setVariable(int a_number, std::string_view a_value)
 {
     setVariableTamplate(a_number, a_value);
 }
@@ -96,7 +92,7 @@ int
 core::VariableStorage::getVariable(int a_number) const
 {
     varIdCheck(a_number);
-    int result = m_variables[a_number].getValue();
+    int result = m_variables[a_number].obj.getValue();
     return result;
 }
 
@@ -131,14 +127,6 @@ core::VariableStorage::addBoolVariable(const std::string& a_var_name)
 
 //--------------------------------------------------------------------------------
 
-int
-core::VariableStorage::getCurrentOffset() const noexcept
-{
-    return m_variables.size();
-}
-
-//--------------------------------------------------------------------------------
-
 void
 core::VariableStorage::setCommandHandler(core::Command& a_command)
 {
@@ -151,21 +139,11 @@ core::VariableStorage::setCommandHandler(core::Command& a_command)
         {
             // TODO: multiple output
             int num   = it->second;
-            auto& var = m_variables[num];
-            auto res  = var.setValue(i.second);
+            auto& var = m_variables[num].obj;
+            var.setValue(i.second);
 
-            if (res)
-            {
-                LOG_CMD(
-                    "Successfully assigned value '%s' (%d) to variable '%s'",
+            LOG_CMD("Successfully assigned value '%s' (%d) to variable '%s'",
                     it->second, var.getValue(), it->first);
-            }
-            else
-            {
-                LOG_ERROR("Unable to set value for '%s' variable: "
-                          "corrupted variable value '%s'",
-                          it->first, it->second);
-            }
         }
     }
 }
@@ -185,7 +163,7 @@ core::VariableStorage::showVarCommandHandler(core::Command& a_command)
             LOG_ERROR("There is no variable named '%s'.", i);
             return;
         }
-        m_variables[it->second].addValueInfo(result);
+        m_variables[it->second].obj.addValueInfo(result);
     }
 
     // TODO: remove first \n
@@ -207,7 +185,7 @@ core::VariableStorage::varHelpCommandHandler(core::Command& a_command)
             LOG_ERROR("There is no variable named '%s'.", i);
             return;
         }
-        m_variables[it->second].addValueMap(result);
+        m_variables[it->second].obj.addValueMap(result);
     }
 
     // TODO: remove first \n
