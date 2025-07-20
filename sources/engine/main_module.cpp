@@ -1,9 +1,5 @@
 #include "main_module.hpp"
 
-#include <vulkan/vulkan.hpp>
-#define GLFW_INCLUDE_VULKAN
-
-#include <GLFW/glfw3.h>
 
 #include "kernel/framework/include_me.hpp"
 
@@ -18,16 +14,7 @@ engine::MainModule::MainModule() : core::ThreadModule(module_name)
 void
 engine::MainModule::threadInitialize()
 {
-    if (glfwInit() == GLFW_FALSE)
-    {
-        THROW("Failed to init GLFW");
-    }
-    else
-    {
-        LOG_INFO("GLFW initialized");
-    }
-
-    // m_window.create();
+    m_graphics.create();
 
     // std::cout << "inside" << std::endl;
 
@@ -63,7 +50,5 @@ engine::MainModule::threadLoopBody()
 void
 engine::MainModule::threadTerminate()
 {
-    m_window.destroy();
-    glfwTerminate();
-    LOG_INFO("GLFW terminated");
+    m_graphics.destroy();
 }

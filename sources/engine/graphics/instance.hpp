@@ -9,13 +9,13 @@ namespace engine
 
 class Instance
 {
-public:
+protected:
     Instance();
     ~Instance();
 
-    std::vector<vk::PhysicalDevice> getAvailablePhysicalDevices() const;
+    // std::vector<vk::PhysicalDevice> getAvailablePhysicalDevices() const;
 
-    const vk::Instance& get() const;
+    const vk::Instance& getInstance() const;
 
 private:
     vk::UniqueInstance m_instance;

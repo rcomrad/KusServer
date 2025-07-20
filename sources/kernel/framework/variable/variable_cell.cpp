@@ -114,6 +114,12 @@ core::VariableCell::setValue(std::string_view a_new_value)
 }
 
 void
+core::VariableCell::setValue(const VariableCell& a_new_value)
+{
+    setValue(a_new_value.getValue());
+}
+
+void
 core::VariableCell::setWordValue(std::string_view a_new_value)
 {
     auto norm_val =

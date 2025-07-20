@@ -26,6 +26,8 @@ struct CommandData
     CommandData(std::string&& a_comm_str) noexcept;
     std::string toString() const noexcept;
 
+    bool hasArg(std::string_view a_str);
+
 private:
     // TODO: remove?
     std::string m_data; // real (unparsed) command string

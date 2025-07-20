@@ -20,15 +20,34 @@ int
 core::VariableStorage::addVariableInfoTamplate(const std::string& a_var_name,
                                                Args... args)
 {
-    int result = m_var_cnt++;
-    if (result >= m_variables.size())
+    const std::lock_guard lock(m_var_info_mutex);
+
+    // TODO: make it pretty
+    auto it = m_name_to_var_dict.find(a_var_name);
+    if (it == m_name_to_var_dict.end())
     {
-        THROW("The maximum number of preallocated variables has been exceeded");
+        int id = m_var_cnt++;
+        if (id >= m_variables.size())
+        {
+            THROW("The maximum number of preallocated variables has been "
+                  "exceeded");
+        }
+
+        it = m_name_to_var_dict.emplace(a_var_name, id).first;
+        m_variables[id].create(a_var_name, args...);
+    }
+    else
+    {
+        LOG_INFO("Use already existing %s variable", a_var_name);
+
+        int id = it->second;
+        VariableCell old(m_variables[id].obj);
+        m_variables[id].destroy();
+        m_variables[id].create(a_var_name, args...);
+        m_variables[id].obj.setValue(old);
     }
 
-    m_variables[result].create(a_var_name, args...);
-    m_name_to_var_dict[a_var_name] = result;
-    return result;
+    return it->second;
 }
 
 //--------------------------------------------------------------------------------
@@ -41,6 +60,7 @@ core::VariableStorage::VariableStorage() : m_var_cnt(0), m_variables(100)
 void
 core::VariableStorage::init()
 {
+    // TODO: -f
     registrateBaseCommand("var_set",
                           "Assign a value to the specified variable.",
                           "variable_name=variable_value...");
@@ -55,7 +75,8 @@ core::VariableStorage::init()
                           "print all the variable and their possible values.",
                           "[variable_name]...");
 
-    KERNEL.listenCommand("var_set", StateStorage::StateType::MERGE_VARS);
+    KERNEL.listenCommand("var_set", StateStorage::StateType::MERGE_VARS |
+                                        StateStorage::StateType::MERGE_ARGS);
 }
 
 //--------------------------------------------------------------------------------
@@ -92,8 +113,7 @@ int
 core::VariableStorage::getVariable(int a_number) const
 {
     varIdCheck(a_number);
-    int result = m_variables[a_number].obj.getValue();
-    return result;
+    return m_variables[a_number].obj.getValue();
 }
 
 //--------------------------------------------------------------------------------
@@ -130,22 +150,34 @@ core::VariableStorage::addBoolVariable(const std::string& a_var_name)
 void
 core::VariableStorage::setCommandHandler(core::Command& a_command)
 {
-    a_command.hasVars().noArgs();
+    a_command.hasVars().argCount({0, 1});
+
+    bool force = a_command.hasArg("-f");
 
     for (const auto& i : a_command.variables)
     {
         auto it = m_name_to_var_dict.find(i.first);
-        if (it != m_name_to_var_dict.end())
+        if (it == m_name_to_var_dict.end())
         {
-            // TODO: multiple output
-            int num   = it->second;
-            auto& var = m_variables[num].obj;
-            var.setValue(i.second);
+            if (!force)
+            {
+                continue;
+            }
 
-            LOG_CMD("Successfully assigned value '%s' (%d) to variable '%s'",
-                    it->second, var.getValue(), it->first);
+            addVariableInfo(i.first);
+            it = m_name_to_var_dict.find(i.first);
         }
+
+        int num   = it->second;
+        auto& var = m_variables[num].obj;
+        var.setValue(i.second);
+
+        // TODO: multiple output
+        // LOG_CMD("Successfully assigned value '%s' (%d) to variable '%s'",
+        //         it->second, var.getValue(), it->first);
     }
+
+    LOG_CMD("Successfully assigned variable values");
 }
 
 void
@@ -153,6 +185,8 @@ core::VariableStorage::showVarCommandHandler(core::Command& a_command)
 {
     a_command.noVars();
     loadVars(a_command);
+
+    const std::lock_guard lock(m_var_info_mutex);
 
     std::string result;
     for (const auto& i : a_command.arguments)
@@ -176,6 +210,8 @@ core::VariableStorage::varHelpCommandHandler(core::Command& a_command)
     a_command.noVars();
     loadVars(a_command);
 
+    const std::lock_guard lock(m_var_info_mutex);
+
     std::string result;
     for (const auto& i : a_command.arguments)
     {
@@ -197,6 +233,8 @@ core::VariableStorage::loadVars(core::Command& a_command) const
 {
     if (a_command.arguments.empty())
     {
+        const std::lock_guard lock(m_var_info_mutex);
+
         for (auto& i : m_name_to_var_dict)
         {
             a_command.arguments.push_back(i.first);

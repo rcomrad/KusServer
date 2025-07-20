@@ -1,15 +1,12 @@
 #include "window.hpp"
 
-#include "kernel/framework/include_me.hpp"
-
-engine::Window::Window(const vk::UniqueInstance& m_instance)
-    : m_width("win_width", 10, 1920),
-      m_height("win_height", 10, 1200)
-    //   ,
-    //   m_frame_cnt(0),
-    //   m_frame_rate(0),
-    //   m_current_time(glfwGetTime()),
-    //   m_last_time(glfwGetTime())
+engine::Window::Window()
+    : m_width("win_width", 10, 1920), m_height("win_height", 10, 1200)
+//   ,
+//   m_frame_cnt(0),
+//   m_frame_rate(0),
+//   m_current_time(glfwGetTime()),
+//   m_last_time(glfwGetTime())
 {
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     // glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
@@ -31,13 +28,20 @@ engine::Window::Window(const vk::UniqueInstance& m_instance)
     //     static_cast<vk::SurfaceKHR>(surfaceRaw),
     //     vk::ObjectDestroy<vk::Instance, vk::DispatchLoaderDynamic>(instance);
 
-    //     return glfwCreateWindowSurface(instance, m_window, nullptr, &surface) ==
+    //     return glfwCreateWindowSurface(instance, m_window, nullptr, &surface)
+    //     ==
     //            VK_SUCCESS;);
 }
 
 engine::Window::~Window()
 {
     glfwDestroyWindow(m_window);
+}
+
+GLFWwindow*
+engine::Window::getWindow() const
+{
+    return m_window;
 }
 
 // void

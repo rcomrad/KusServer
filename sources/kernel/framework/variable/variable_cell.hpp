@@ -16,7 +16,7 @@ namespace core
 struct VariableCell
 {
 public:
-    VariableCell(const std::string& a_var_name);
+    explicit VariableCell(const std::string& a_var_name);
     VariableCell(const std::string& a_var_name, bool dummy);
     VariableCell(const std::string& a_var_name,
                  int a_min_value,
@@ -28,6 +28,7 @@ public:
     void setValue(bool a_new_value) noexcept;
     void setValue(int a_new_value);
     void setValue(std::string_view a_new_value);
+    void setValue(const VariableCell& a_new_value);
     int getValue() const noexcept;
 
     const std::string& getName() const noexcept;
