@@ -1,5 +1,7 @@
 #include "command_data.hpp"
 
+#include <algorithm>
+
 #include "kernel/utility/string/slicer.hpp"
 #include "kernel/utility/unique.hpp"
 
@@ -75,4 +77,11 @@ void
 core::CommandData::resetVars(const CommandData& a_other)
 {
     variables = a_other.variables;
+}
+
+bool
+core::CommandData::hasArg(std::string_view a_str)
+{
+    return std::find(arguments.begin(), arguments.end(), a_str) !=
+           arguments.end();
 }

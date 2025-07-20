@@ -14,11 +14,11 @@ engine::Instance::Instance()
     auto extensions = getExtensions();
     auto layer      = getLayers();
 
-    // vk::InstanceCreateInfo instance_create_info = vk::InstanceCreateInfo(
-    //     vk::InstanceCreateFlags(), &app_info, layer.count(), layer.data(),
-    //     static_cast<uint32_t>(extensions.size()), extensions.data());
+    vk::InstanceCreateInfo create_info = vk::InstanceCreateInfo(
+        vk::InstanceCreateFlags(), &app_info, layer.size(), layer.data(),
+        extensions.size(), extensions.data());
 
-    // m_instance = vk::createInstanceUnique(instance_create_info);
+    m_instance = vk::createInstanceUnique(create_info);
 }
 
 engine::Instance::~Instance()
@@ -26,16 +26,16 @@ engine::Instance::~Instance()
 }
 
 const vk::Instance&
-engine::Instance::get() const
+engine::Instance::getInstance() const
 {
     return m_instance.get();
 }
 
-std::vector<vk::PhysicalDevice>
-engine::Instance::getAvailablePhysicalDevices() const
-{
-    return m_instance.get().enumeratePhysicalDevices();
-}
+// std::vector<vk::PhysicalDevice>
+// engine::Instance::getAvailablePhysicalDevices() const
+// {
+//     return m_instance.get().enumeratePhysicalDevices();
+// }
 
 std::vector<const char*>
 engine::Instance::getExtensions() const
@@ -53,5 +53,10 @@ engine::Instance::getExtensions() const
 std::vector<const char*>
 engine::Instance::getLayers() const
 {
+#ifndef DEBUG
+    // return {"VK_LAYER_KHRONOS_validation"};
     return {};
+#else
+    return {};
+#endif
 }

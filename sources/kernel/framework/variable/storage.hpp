@@ -3,6 +3,7 @@
 //--------------------------------------------------------------------------------
 
 #include <atomic>
+#include <mutex>
 #include <string_view>
 #include <unordered_map>
 #include <vector>
@@ -47,6 +48,7 @@ protected:
     void init();
 
 private:
+    mutable std::mutex m_var_info_mutex;
     std::atomic<int> m_var_cnt;
     std::vector<util::LifecycleManager<VariableCell>> m_variables;
     std::unordered_map<std::string, int> m_name_to_var_dict;

@@ -25,12 +25,13 @@ namespace engine
 
 class Window
 {
-public:
-    Window(const vk::UniqueInstance& m_instance);
+protected:
+    Window();
     ~Window();
 
-    int calculateFrameRate();
+    // int calculateFrameRate();
 
+    GLFWwindow* getWindow() const;
     // bool createWindowSurface(const vk::Instance& instance,
     //                          VkSurfaceKHR& surface) const;
 private:

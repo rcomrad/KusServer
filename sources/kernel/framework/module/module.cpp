@@ -20,20 +20,17 @@ core::Module::Module(const std::string& a_name)
 void
 core::Module::initialize()
 {
-    LOG_INFO("Dummy '%s' Module initialization.", m_name);
 }
 
 bool
 core::Module::loopBody()
 {
-    LOG_INFO("Dummy '%s' Module loop body.", m_name);
     return false;
 }
 
 void
 core::Module::terminate()
 {
-    LOG_INFO("Dummy '%s' Module termination.", m_name);
 }
 
 //------------------------------------------------------------------------------
