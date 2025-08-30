@@ -14,7 +14,7 @@ main(int argc, char** argv)
         ::testing::InitGoogleTest(&argc, argv);
         ::testing::InitGoogleMock(&argc, argv);
 
-        // ::testing::GTEST_FLAG(filter) = "UTablePrinter.*";
+        // ::testing::GTEST_FLAG(filter) = "DatabaseFixture.*";
     }
     catch (const std::runtime_error& err)
     {

@@ -1,92 +1,47 @@
 #include "connection_pool.hpp"
 
-#include <mutex>
-#include <unordered_set>
-
-#include "kernel/framework/logger/include_me.hpp"
-#include "kernel/utility/macroses/holy_trinity.hpp"
+namespace database
+{
 
 //-----------------------------------------------------------------------------
 // Connection pool creation
 //-----------------------------------------------------------------------------
 
-std::unordered_set<std::string> data::ConnectionPool::m_all_cred_combined;
-
-data::ConnectionPool::ConnectionPool(
-    const std::vector<std::string_view>& a_credentials_array) noexcept
-    : m_credentials(a_credentials_array),
-      m_cur_conn_count(0),
-      m_max_conn_count(0)
+ConnectionPool::ConnectionPool(const Credentials& a_credentials,
+                                     size_t a_count)
+    : m_credentials(a_credentials),
+      m_total_count(a_count),
+      m_avaliable_count(a_count)
 {
-    // m_available_conn.reserve(MAX_CONNECTIONS_COUNT);
-}
-
-bool
-data::ConnectionPool::create(
-    util::LifecycleManager<ConnectionPool>& a_poll_addr,
-    const std::vector<std::string_view>& a_credentials_array) noexcept
-{
-    bool result = false;
-    a_poll_addr.create(a_credentials_array);
-    auto combined = a_poll_addr.obj.m_credentials.getCombined();
-    if (!m_all_cred_combined.count(combined))
+    m_avaluable.reserve(m_total_count);
+    for (int i = 0; i < m_total_count; ++i)
     {
-        a_poll_addr.obj.setConnectionCount(1);
-        m_all_cred_combined.insert(combined);
-        result = true;
+        auto temp   = std::make_unique<SQLConnection>(m_credentials);
+        auto raw_ptr = temp.get();
+
+        m_storage.emplace(raw_ptr, std::move(temp));
+        m_avaluable.emplace_back(raw_ptr);
     }
-    return result;
 }
 
 //-----------------------------------------------------------------------------
 // Database obtaining
 //-----------------------------------------------------------------------------
 
-data::InternalConnection&
-data::ConnectionPool::get() noexcept
+SQLConnection&
+ConnectionPool::get() 
 {
-    std::shared_lock lock(m_resize_mutex);
-    m_available_semaphore.obj.acquire();
-    auto& result = m_available_conn.back();
-    m_available_conn.pop_back();
-    return result;
+    m_avaliable_count.acquire();
+    auto result = m_avaluable.back();
+    m_avaluable.pop_back();
+    return *result;
 }
 
 void
-data::ConnectionPool::put(InternalConnection& a_sql_conn) noexcept
+ConnectionPool::put(SQLConnection& a_sql_conn) 
 {
-    std::shared_lock lock(m_resize_mutex);
-    m_available_conn.emplace_back(a_sql_conn);
-    m_available_semaphore.obj.release();
+    m_avaluable.emplace_back(&a_sql_conn);
+    m_avaliable_count.release();
 }
 
-//-----------------------------------------------------------------------------
-// Connection resizers
-//-----------------------------------------------------------------------------
-
-void
-data::ConnectionPool::setConnectionCount(size_t a_count) noexcept
-{
-    std::unique_lock lock(m_resize_mutex);
-
-    for (int i = 0; i < m_cur_conn_count; ++i)
-    {
-        m_available_semaphore.obj.acquire();
-    }
-    m_available_semaphore.destroy();
-
-    m_cur_conn_count = a_count;
-    m_connections.resize(m_cur_conn_count, m_credentials);
-
-    m_available_conn.clear();
-    for (auto& i : m_connections)
-    {
-        m_available_conn.emplace_back(i);
-    }
-
-    m_available_semaphore.create(m_cur_conn_count);
-    for (int i = 0; i < m_cur_conn_count; ++i)
-    {
-        m_available_semaphore.obj.release();
-    }
 }

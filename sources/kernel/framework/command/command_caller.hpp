@@ -41,18 +41,18 @@ private:
 
 // TODO: check to validity? a_command.str == command_name
 
-#define COMMAND_HANDLER(command_name, num)                 \
-    void command_name(Command& a_command);                 \
-    inline void commandCall##num(Command& a_command) final \
-    {                                                      \
-        command_name(a_command);                           \
+#define COMMAND_HANDLER(command_name, num)                       \
+    void command_name(core::Command& a_command);                 \
+    inline void commandCall##num(core::Command& a_command) final \
+    {                                                            \
+        command_name(a_command);                                 \
     }
 
-#define COMMAND_HANDLER_CONST(command_name, num)           \
-    void command_name(Command& a_command) const;           \
-    inline void commandCall##num(Command& a_command) final \
-    {                                                      \
-        command_name(a_command);                           \
+#define COMMAND_HANDLER_CONST(command_name, num)                 \
+    void command_name(core::Command& a_command) const;           \
+    inline void commandCall##num(core::Command& a_command) final \
+    {                                                            \
+        command_name(a_command);                                 \
     }
 
 //------------------------------------------------------------------------------

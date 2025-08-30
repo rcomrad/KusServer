@@ -1,21 +1,26 @@
 #include "postgresql.hpp"
 
-#include <format>
+#include <cstring>
 
 #include "kernel/framework/logger/include_me.hpp"
+#include "kernel/string/string_malloc.hpp"
 #include "pqxx/nontransaction"
 
 #define LOG_POSTGRES_QUERIES 1
 
-namespace database
+data::PostgreSQL::PostgreSQL(const Credentials& a_cred)
 {
+    MALLOC_STR(statement, 200);
+    auto cur_char_ptr = statement;
 
-PostgreSQL::PostgreSQL(const Credentials& a_cred)
-{
+    SPRINTF(cur_char_ptr,
+            // "dbname = %s user = %s password = %s hpsaddr = %s port = %s",
+            // cred.name, cred.user, cred.password, cred.hostaddr, cred.port);
+            "user = %s password = %s host = %s port = %s dbname = %s ",
+            a_cred.user, a_cred.password, a_cred.hostaddr, a_cred.port,
+            a_cred.name);
 
-    auto statement = std::format(
-        "user = {} password = {} host = {} port = {} dbname = {}", a_cred.user,
-        a_cred.password, a_cred.hostaddr, a_cred.port, a_cred.db_name);
+    //--------------------------------------------------------------------------------
 
     LOG_INFO("Creating PostgreSQL connection with stament '%s'", statement);
     try
@@ -42,25 +47,25 @@ PostgreSQL::PostgreSQL(const Credentials& a_cred)
 //--------------------------------------------------------------------------------
 
 int
-PostgreSQL::getInt(int a_colum_number) 
+data::PostgreSQL::getInt(int a_colum_number) noexcept
 {
     return m_pqxx_result_it[a_colum_number].as<int>();
 }
 
 float
-PostgreSQL::getFloat(int a_colum_number) 
+data::PostgreSQL::getFloat(int a_colum_number) noexcept
 {
     return m_pqxx_result_it[a_colum_number].as<float>();
 }
 
 bool
-PostgreSQL::getBool(int a_colum_number) 
+data::PostgreSQL::getBool(int a_colum_number) noexcept
 {
     return m_pqxx_result_it[a_colum_number].as<bool>();
 }
 
 const char*
-PostgreSQL::getChars(int a_colum_number) 
+data::PostgreSQL::getChars(int a_colum_number) noexcept
 {
     return m_pqxx_result_it[a_colum_number].as<const char*>();
 }
@@ -68,13 +73,13 @@ PostgreSQL::getChars(int a_colum_number)
 //--------------------------------------------------------------------------------
 
 void
-PostgreSQL::step() 
+data::PostgreSQL::step() noexcept
 {
     m_pqxx_result_it++;
 }
 
 void
-PostgreSQL::exec(const char* a_statment) 
+data::PostgreSQL::exec(const char* a_statment) noexcept
 {
 #if LOG_POSTGRES_QUERIES
     LOG_INFO("%s", a_statment);
@@ -98,7 +103,7 @@ PostgreSQL::exec(const char* a_statment)
 }
 
 void
-PostgreSQL::closeStatement() 
+data::PostgreSQL::closeStatement() noexcept
 {
     if (m_pqxx_statement_ptr != nullptr)
     {
@@ -108,7 +113,7 @@ PostgreSQL::closeStatement()
 }
 
 void
-PostgreSQL::nontransaction(const char* a_statment) 
+data::PostgreSQL::nontransaction(const char* a_statment) noexcept
 {
 #if LOG_POSTGRES_QUERIES
     LOG_INFO("%s", a_statment);
@@ -130,18 +135,16 @@ PostgreSQL::nontransaction(const char* a_statment)
 
 //--------------------------------------------------------------------------------
 
-int
-PostgreSQL::hasData(int num) const 
+word_t
+data::PostgreSQL::hasData(int num) const noexcept
 {
     return !m_pqxx_result_it[num].is_null();
 }
 
-int
-PostgreSQL::getResultSize() const 
+word_t
+data::PostgreSQL::getResultSize() const noexcept
 {
     return m_pqxx_result.end() - m_pqxx_result.begin();
 }
 
 //--------------------------------------------------------------------------------
-
-}

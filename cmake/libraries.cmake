@@ -11,6 +11,16 @@ macro(gtest_lib)
     )
 endmacro()
 
+macro(postgresql_lib)
+    find_package(libpqxx CONFIG REQUIRED)
+    target_link_libraries(${TARGET} PRIVATE libpqxx::pqxx)
+endmacro()
+
+macro(crow_lib)
+    find_package(Crow CONFIG REQUIRED)
+    target_link_libraries(${TARGET} PRIVATE Crow::Crow asio::asio)
+endmacro()
+
 macro(vulkan_lib)
     find_package(Vulkan REQUIRED)
     target_link_libraries(${TARGET} PRIVATE Vulkan::Vulkan)
@@ -29,9 +39,9 @@ macro(lib_router)
     if(${LIBRARY_NAME} STREQUAL gtest)
         gtest_lib()
     elseif(${LIBRARY_NAME} STREQUAL postgresql)
-        # Not implemented
+        postgresql_lib()
     elseif(${LIBRARY_NAME} STREQUAL crow)
-        # Not implemented
+        crow_lib()
     elseif(${LIBRARY_NAME} STREQUAL mailio)
         # Not implemented
     elseif(${LIBRARY_NAME} STREQUAL boost)

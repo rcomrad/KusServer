@@ -4,40 +4,20 @@
 #include <string_view>
 #include <vector>
 
-#include "kernel/framework/logging/table_storage.hpp"
-
-namespace data
+namespace database
 {
 
 struct Credentials
 {
-    char name[10];
-    char user[10];
-    char password[15];
-    char hostaddr[10];
-    char port[8];
-    char shame[10];
+    static const size_t COUNT = 5;
 
-    Credentials(const char* a_name,
-                const char* a_user,
-                const char* a_password,
-                const char* a_hostaddr,
-                const char* a_port,
-                const char* a_shame) noexcept;
+    std::string user;
+    std::string password;
+    std::string hostaddr;
+    std::string port;
+    std::string db_name;
 
-    Credentials(
-        const std::vector<std::string_view>& a_credentials_array) noexcept;
-
-    std::string getCombined() noexcept;
-
-private:
-    TABLE_REGISTER_HPP(Credentials,
-                       .addCol(obj.name,
-                               obj.user,
-                               obj.password,
-                               obj.hostaddr,
-                               obj.port,
-                               obj.shame));
+    Credentials(const std::vector<std::string>& arguments);
 };
 
-} // namespace data
+} // namespace database

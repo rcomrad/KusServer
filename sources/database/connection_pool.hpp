@@ -1,64 +1,36 @@
 #pragma once
 
-#include <mutex>
-#include <optional>
+#include <memory>
 #include <semaphore>
-#include <shared_mutex>
-#include <string>
-#include <unordered_set>
+#include <unordered_map>
 #include <vector>
 
-#include "database_connection.hpp"
-
-#include "kernel/framework/logging/table_storage.hpp"
-#include "kernel/utility/type/declaration/lifecycle_manager.hpp"
-
 #include "credentials.hpp"
-#include "internal_connection.hpp"
+#include "sql_connection.hpp"
 
-enum
-{
-    MAX_CONNECTIONS_COUNT = 5
-};
-
-using PoolSemaphore = std::counting_semaphore<MAX_CONNECTIONS_COUNT>;
-
-namespace data
+namespace database
 {
 
 class ConnectionPool
 {
 public:
-    HOLY_TRINITY_NOCOPY(ConnectionPool);
+    ConnectionPool(const Credentials& a_credentials,
+                   size_t a_count = 1) ;
 
-    static bool create(
-        util::LifecycleManager<ConnectionPool>& a_poll_addr,
-        const std::vector<std::string_view>& a_credentials_array) noexcept;
+    SQLConnection& get();
+    void put(SQLConnection& a_sql_conn);
 
-    InternalConnection& get() noexcept;
-    void put(InternalConnection& a_sql_conn) noexcept;
-
-    void setConnectionCount(size_t a_count) noexcept;
+    // void setConnectionCount(size_t a_count) ;
 
 private:
-    int m_cur_conn_count;
-    int m_max_conn_count;
-    Credentials m_credentials;
-    // TODO: table print vector size
-    std::vector<InternalConnection> m_connections;
+    const Credentials m_credentials; // All connections save copy of user name
 
-    std::shared_mutex m_resize_mutex;
-    std::vector<InternalConnection&> m_available_conn;
-    util::LifecycleManager<PoolSemaphore> m_available_semaphore;
+    int m_total_count;
+    std::counting_semaphore<5> m_avaliable_count;
+    std::vector<SQLConnection*> m_avaluable;
 
-    static std::unordered_set<std::string> m_all_cred_combined;
-
-    TABLE_REGISTER_HPP(ConnectionPool,
-                       .addCol(obj.m_cur_conn_count, obj.m_max_conn_count)
-                           .addRow(obj.m_credentials));
-
-    ConnectionPool(
-        const std::vector<std::string_view>& a_credentials_array) noexcept;
+    std::unordered_map<SQLConnection*, std::unique_ptr<SQLConnection>>
+        m_storage;
 };
 
 } // namespace data
