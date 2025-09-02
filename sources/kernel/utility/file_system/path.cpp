@@ -74,3 +74,25 @@ util::Path::getRelativeToApp(std::string_view a_path, bool is_folder) noexcept
     result         = combine(is_folder, app_path, a_path);
     return result;
 }
+
+std::string
+util::Path::normalizeSeparators(std::string_view a_path) noexcept
+{
+    std::string result;
+    auto size = a_path.size();
+
+    result.reserve(size);
+
+    for (int i = 0; i < size; ++i)
+    {
+        if (a_path[i] == '\\')
+        {
+            result.push_back('/');
+        }
+        else
+        {
+            result.push_back(a_path[i]);
+        }
+    }
+    return result;
+}

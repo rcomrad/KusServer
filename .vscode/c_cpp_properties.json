@@ -1,15 +1,19 @@
 {
     "configurations": [
         {
-            "name": "MEGA",
+            "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/sources/**",
-                "/home/rcomrad/projects/vcpkg/packages/**"
+                "${workspaceFolder}/**",
+                "C:/vcpkg/installed/x64-windows/include"
             ],
-            "intelliSenseMode": "linux-gcc-x64",
-            "compilerPath": "/usr/bin/gcc",
-            "cStandard": "c17",
-            "cppStandard": "gnu++17"
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "windowsSdkVersion": "10.0.26100.0",
+            "compilerPath": "cl.exe",
+            "intelliSenseMode": "windows-msvc-x64"
         }
     ],
     "version": 4

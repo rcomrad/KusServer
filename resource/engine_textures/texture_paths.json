@@ -1,0 +1,8 @@
+{
+	"texture_paths": [
+		"empty.png",
+		"material/materials.png",
+		"material/cube.png",
+		"animals/cat.png"
+	]
+}

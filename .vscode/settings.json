@@ -7,6 +7,7 @@
     // "C_Cpp.intelliSenseCacheSize": 0,
     "C_Cpp.default.cStandard": "c23",
     "files.associations": {
+        "*.txt": "cmake",
         "any": "cpp",
         "array": "cpp",
         "atomic": "cpp",
