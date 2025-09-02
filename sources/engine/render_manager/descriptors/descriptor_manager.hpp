@@ -23,14 +23,13 @@ enum class DescriptorSetLayoutType
 class DescriptorManager
 {
 public:
+    void setup();
+
     void addAllocator(DescriptorSetLayoutType sh_type,
                       const std::vector<DescriptorBindingData>& binding_data);
 
-    const DescriptorAllocator& getAllocator(DescriptorSetLayoutType sh_type) const& noexcept;
-
-    void setup();
-
-    void translateDescriptorDataToFrame(SwapChainFrame& frame) const;
+    const DescriptorAllocator& getAllocator(
+        DescriptorSetLayoutType sh_type) const& noexcept;
 
 private:
     void setupDefaultBindingsData();

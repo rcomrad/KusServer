@@ -5,7 +5,9 @@
 #include <iostream>
 
 #include "engine/render_manager/device/device.hpp"
-#include "utility/file_system/path_storage.hpp"
+#include "kernel/framework/include_me.hpp"
+
+#include "kernel/utility/file_system/path.hpp"
 
 namespace kusengine::render
 {
@@ -13,41 +15,29 @@ namespace kusengine::render
 void
 ShaderManager::setup(bool need_compile)
 {
-    auto shaders_folder_path = util::PathStorage::getFolderPath("shaders");
-
-    if (shaders_folder_path.has_value() == false)
-    {
-        throw std::exception("no shaders folder");
-    }
+    auto shaders_folder_path = KERNEL.getFolderPath("shaders");
 
     if (need_compile)
     {
         std::unordered_map<ShaderType, std::string> shader_paths = {
             {ShaderType::DEFAULT_2D_VERTEX,
-             std::format("{}{}", shaders_folder_path.value().data(),
-             "spirv/default_2d_vertex_shader.vert")},
+             shaders_folder_path + "spirv/default_2d_vertex_shader.vert"},
             {ShaderType::DEFAULT_FRAGMENT,
-             std::format("{}{}", shaders_folder_path.value().data(),
-             "spirv/default_fragment_shader.frag") },
+             shaders_folder_path + "spirv/default_fragment_shader.frag" },
             {ShaderType::DEFAULT_3D_VERTEX,
-             std::format("{}{}", shaders_folder_path.value().data(),
-             "spirv/default_3d_vertex_shader.vert")}
+             shaders_folder_path + "spirv/default_3d_vertex_shader.vert"}
         };
 
-        auto dst_folder =
-            std::format("{}{}", shaders_folder_path.value(), "compiled/");
+        auto dst_folder = shaders_folder_path + "compiled/";
         compile(dst_folder, shader_paths);
     }
     m_shader_compiled_paths = {
         {ShaderType::DEFAULT_2D_VERTEX,
-         std::format("{}{}", shaders_folder_path.value().data(),
-         "compiled/default_2d_vertex_shader.vert.spv")},
+         shaders_folder_path + "compiled/default_2d_vertex_shader.vert.spv"},
         {ShaderType::DEFAULT_FRAGMENT,
-         std::format("{}{}", shaders_folder_path.value().data(),
-         "compiled/default_fragment_shader.frag.spv") },
+         shaders_folder_path + "compiled/default_fragment_shader.frag.spv" },
         {ShaderType::DEFAULT_3D_VERTEX,
-         std::format("{}{}", shaders_folder_path.value().data(),
-         "compiled/default_3d_vertex_shader.vert.spv")}
+         shaders_folder_path + "compiled/default_3d_vertex_shader.vert.spv"}
     };
 }
 
@@ -77,15 +67,12 @@ bool
 ShaderManager::compile(std::string_view file_path,
                        const std::string& ds_folder_path)
 {
-    DECLARE_LOCAL_CONTEXT;
-
     std::string command;
 
-    std::string compile_program_name =
-        util::PathStorage::getFolderPath("shaders").value().data();
+    std::string compile_program_name = KERNEL.getFolderPath("shaders");
 
     compile_program_name += "spirv/glslc.exe";
-    std::string file_name = util::Path::getName(file_path, LOCAL_CONTEXT);
+    std::string file_name = util::Path::getName(file_path);
 
 #ifdef _WIN32
     command = std::format("{} {} -o {}{}.spv", compile_program_name, file_path,

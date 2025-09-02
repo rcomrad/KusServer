@@ -65,10 +65,10 @@ RenderPass::create(const RenderPassConfigInfo& render_pass_info)
 
     vk::RenderPassCreateInfo renderpass_info{};
     renderpass_info.flags           = vk::RenderPassCreateFlags();
-    renderpass_info.attachmentCount = 2;
+    renderpass_info.attachmentCount = 2; // 2
 
     vk::AttachmentDescription attachments[] = {color_attachment,
-                                               depth_attachment};
+                                               depth_attachment}; // depth att
 
     renderpass_info.pAttachments = attachments;
     renderpass_info.subpassCount = 1;
@@ -99,7 +99,7 @@ RenderPass::begin(const vk::CommandBuffer& cmd,
 
     std::array<vk::ClearValue, 2> clear_values{};
 
-    clear_values[0].color        = vk::ClearColorValue{0.4f, 0.3f, 0.2f, 1.0f};
+    clear_values[0].color        = vk::ClearColorValue{0.4f, 0.3f, 0.5f, 1.0f};
     clear_values[1].depthStencil = vk::ClearDepthStencilValue{1.0f, 0};
 
     renderPassInfo.clearValueCount = clear_values.size();

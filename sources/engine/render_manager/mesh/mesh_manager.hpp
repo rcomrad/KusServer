@@ -17,20 +17,11 @@ class MeshManager
 public:
     void setup(const MaterialManager& material_manager);
 
-    template <typename Vertex_t>
-    const Mesh<Vertex_t>* const getMesh(const std::string& form_name) const;
+    const IMesh* const getMesh(const std::string& name) const;
 
 private:
-    std::unordered_map<std::string, Mesh<VertexP2DUV>> meshes_2d;
-
-    std::unordered_map<std::string, Mesh<VertexP3DUV>> meshes_3d;
+    std::unordered_map<std::string, std::unique_ptr<IMesh>> m_meshes;
 };
-
-extern template const Mesh<VertexP2DUV>* const
-MeshManager::getMesh<VertexP2DUV>(const std::string& mesh_name) const;
-
-extern template const Mesh<VertexP3DUV>* const
-MeshManager::getMesh<VertexP3DUV>(const std::string& mesh_name) const;
 
 } // namespace kusengine::render
 

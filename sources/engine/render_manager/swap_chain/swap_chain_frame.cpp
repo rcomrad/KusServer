@@ -9,22 +9,6 @@
 namespace kusengine::render
 {
 
-// void
-// SwapChainFrame::fillDescriptorSets(std::vector<vk::DescriptorSet>& d_sets)
-// const
-// {
-//     for (int i = 0; i < m_descriptor_sets.size(); ++i)
-//     {
-//         d_sets.emplace_back(m_descriptor_sets[i].get());
-//     }
-// }
-
-const std::vector<vk::DescriptorSet>&
-SwapChainFrame::descriptorSets() const& noexcept
-{
-    return m_descriptor_sets;
-}
-
 const SynchronizationControl&
 SwapChainFrame::synControl() const& noexcept
 {
@@ -40,14 +24,13 @@ SwapChainFrame::commandBuffer() const& noexcept
 const vk::Framebuffer&
 SwapChainFrame::getBuffer(const std::string& key) const&
 {
-    return m_framebuffers.at(key).get();
+    auto it = m_framebuffers.find(key);
+    if (it == m_framebuffers.end())
+    {
+        throw std::exception("cant find frame buffer");
+    }
+    return it->second.get();
 }
-
-// const vk::Framebuffer&
-// SwapChainFrame::framebuffer() const noexcept
-// {
-//     return m_framebuffer.get();
-// }
 
 void
 SwapChainFrame::setupDepth(const vk::Extent2D& extent)
@@ -118,54 +101,6 @@ SwapChainFrame::addFrameBuffer(std::string_view key,
 }
 
 void
-SwapChainFrame::writeDescriptorSetUBO()
-{
-    vk::DescriptorBufferInfo ubo_buffer_info{};
-    ubo_buffer_info.buffer = m_uniform_buffer.buffer();
-    ubo_buffer_info.offset = 0;
-    ubo_buffer_info.range  = m_uniform_buffer.byteSize();
-
-    vk::WriteDescriptorSet descriptor_write;
-    descriptor_write.dstSet          = m_descriptor_sets[0];
-    descriptor_write.dstBinding      = 0;
-    descriptor_write.dstArrayElement = 0;
-    descriptor_write.descriptorType  = vk::DescriptorType::eUniformBuffer;
-    descriptor_write.descriptorCount = 1;
-    descriptor_write.pBufferInfo     = &ubo_buffer_info;
-
-    LOGICAL_DEVICE_INSTANCE.updateDescriptorSets(1, &descriptor_write, 0,
-                                                 nullptr);
-}
-
-void
-SwapChainFrame::writeDescriptorSetMBDD()
-{
-    vk::DescriptorBufferInfo dob_buffer_info{};
-    dob_buffer_info.buffer = m_storage_buffer.buffer();
-    dob_buffer_info.offset = 0;
-    dob_buffer_info.range  = m_storage_buffer.byteSize();
-
-    vk::WriteDescriptorSet descriptor_write;
-    descriptor_write.dstSet          = m_descriptor_sets[0];
-    descriptor_write.dstBinding      = 1;
-    descriptor_write.dstArrayElement = 0;
-    descriptor_write.descriptorType  = vk::DescriptorType::eStorageBuffer;
-    descriptor_write.descriptorCount = 1;
-    descriptor_write.pBufferInfo     = &dob_buffer_info;
-
-    LOGICAL_DEVICE_INSTANCE.updateDescriptorSets(1, &descriptor_write, 0,
-                                                 nullptr);
-}
-
-void
-SwapChainFrame::setupDescriptorSet(
-    const DescriptorAllocator& default_desc_alloc)
-{
-    m_descriptor_sets.resize(1);
-    default_desc_alloc.allocate(m_descriptor_sets[0]);
-}
-
-void
 SwapChainFrame::setupCommandBuffer()
 {
     m_command_buffer.create();
@@ -206,15 +141,6 @@ SwapChainFrame::submitCommandBuffer()
 
     DEVICE_INSTANCE.getQueue("graphics")
         .submit(submitInfo, m_sync_control.inFlightFence());
-}
-
-void
-SwapChainFrame::bind(const vk::CommandBuffer& cmd,
-                     const vk::PipelineLayout& layout) const
-{
-    cmd.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, layout, 0u,
-                           m_descriptor_sets.size(), m_descriptor_sets.data(),
-                           0, nullptr);
 }
 
 }; // namespace kusengine::render

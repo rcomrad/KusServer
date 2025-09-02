@@ -3,7 +3,7 @@
 namespace kusengine::render
 {
 
-VertexP2DUV::VertexP2DUV() : Vertex(Type::VERTEX_P2D_UV, 4)
+VertexP2DUV::VertexP2DUV() : Vertex(VertexType::VERTEX_P2D_UV)
 {
 }
 
@@ -19,7 +19,7 @@ VertexP2DUV::getBindingDescription() const
 {
     vk::VertexInputBindingDescription description;
     description.binding   = 0;
-    description.stride    = 32;
+    description.stride    = byteSize();
     description.inputRate = vk::VertexInputRate::eVertex;
     return description;
 }
@@ -33,15 +33,13 @@ VertexP2DUV::getAttributeDescriptions() const
     attribute_description[0].binding  = 0;
     attribute_description[0].location = 0;
     attribute_description[0].format   = vk::Format::eR32G32Sfloat;
-    attribute_description[0].offset   = 0;
-    // offsetof(Vertex2DAttributesP1UV1, pos);
+    attribute_description[0].offset   = offsetof(P2DUV, pos);
 
     // UV
     attribute_description[1].binding  = 0;
     attribute_description[1].location = 1;
     attribute_description[1].format   = vk::Format::eR32G32Sfloat;
-    attribute_description[1].offset   = 8;
-    // offsetof(Vertex2DAttributesP1UV1, uv);
+    attribute_description[1].offset   = offsetof(P2DUV, uv);
 
     return attribute_description;
 }
@@ -49,15 +47,19 @@ VertexP2DUV::getAttributeDescriptions() const
 void
 VertexP2DUV::setPosition(const glm::vec2& pos) noexcept
 {
-    setValue(pos.x, 0);
-    setValue(pos.y, 1);
+    m_attributes.pos = pos;
 }
 
 void
 VertexP2DUV::setUV(const glm::vec2& uv) noexcept
 {
-    setValue(uv.x, 2);
-    setValue(uv.y, 3);
+    m_attributes.uv = uv;
+}
+
+const glm::vec2&
+VertexP2DUV::getUV() const& noexcept
+{
+    return m_attributes.uv;
 }
 
 }; // namespace kusengine::render

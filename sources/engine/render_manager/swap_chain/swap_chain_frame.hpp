@@ -24,8 +24,6 @@ public:
 
     const SynchronizationControl& synControl() const& noexcept;
 
-    const std::vector<vk::DescriptorSet>& descriptorSets() const& noexcept;
-
     void addFrameBuffer(std::string_view key,
                         const vk::RenderPass& render_pass,
                         const vk::Extent2D& extent);
@@ -40,32 +38,12 @@ public:
 
     void setupCommandBuffer();
 
-    void setupDescriptorSet(const DescriptorAllocator& desc_alloc);
     // Resourcers
-
-    template <typename UBOType>
-    void updateUBO(const UBOType& ubo)
-    {
-        m_uniform_buffer.setData(&ubo, sizeof(UBOType));
-        writeDescriptorSetUBO();
-    }
-    template <typename MBDDType>
-    void updateMBDD(const std::vector<MBDDType>& data)
-    {
-        m_storage_buffer.setData(data.data(), data.size() * sizeof(MBDDType));
-        writeDescriptorSetMBDD();
-    }
-
-    void writeDescriptorSetUBO();
-    void writeDescriptorSetMBDD();
 
     //
     void waitForFence();
 
     void submitCommandBuffer();
-
-    void bind(const vk::CommandBuffer& cmd,
-              const vk::PipelineLayout& layout) const;
 
 private:
     void setupDepth(const vk::Extent2D& extent);
@@ -80,13 +58,6 @@ private:
 
     // depth
     Image m_depth_image;
-
-    // Resources
-
-    UniformBuffer m_uniform_buffer;
-
-    StorageBuffer m_storage_buffer;
-    std::vector<vk::DescriptorSet> m_descriptor_sets;
 };
 
 }; // namespace kusengine::render

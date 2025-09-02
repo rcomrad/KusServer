@@ -5,90 +5,115 @@
 #include <vector>
 
 #include "engine/render_manager/material/material.hpp"
-#include "engine/render_manager/model/bind_info.hpp"
+#include "engine/render_manager/vertex/vertex.hpp"
 
 namespace kusengine::render
 {
+struct IMesh
+{
+    virtual ~IMesh() = default;
+
+    IMesh(VertexType vt, int vert_byte_size);
+
+    void setInds(const std::vector<uint32_t>& inds);
+
+    const Material* getMaterial() const noexcept;
+
+    virtual void setVertices(const std::vector<char>& verts_char) = 0;
+
+    virtual void setMaterial(const Material* const material) = 0;
+
+    virtual std::pair<size_t, size_t> pushDataTo(
+        std::vector<char>& verts,
+        std::vector<uint32_t>& inds) const = 0;
+
+    virtual VertexType getVertType() const noexcept = 0;
+
+protected:
+    VertexType m_vertex_type;
+
+    int m_vertex_byte_size;
+
+    std::vector<uint32_t> m_indices;
+
+    const Material* m_material;
+};
+
 template <typename Vertex_t>
-class Mesh
+class Mesh final : public IMesh
 {
 public:
     virtual ~Mesh() = default;
 
-    void setVerts(const std::vector<Vertex_t>& verts);
+    Mesh();
 
-    void setInds(const std::vector<uint32_t>& inds);
+    void setVertices(const std::vector<char>& verts_char) override;
 
-    void setMaterial(const Material* const material);
+    void setMaterial(const Material* const material) override;
 
-    void pushDataTo(std::vector<float>& verts,
-                    std::vector<uint32_t>& inds,
-                    DrawInfo& draw_info,
-                    BindPipelineInfo& bind_info) const;
+    std::pair<size_t, size_t> pushDataTo(
+        std::vector<char>& verts,
+        std::vector<uint32_t>& inds) const override;
+
+    VertexType getVertType() const noexcept override;
 
 private:
-    const Material* m_material;
-
-    std::vector<float> m_vertices;
-
-    std::vector<uint32_t> m_indices;
+    std::vector<Vertex_t> m_vertices;
 };
 
 template <typename Vertex_t>
-void
-Mesh<Vertex_t>::setVerts(const std::vector<Vertex_t>& verts)
+Mesh<Vertex_t>::Mesh() : IMesh(Vertex_t{}.getType(), Vertex_t{}.byteSize())
 {
-    m_vertices.reserve(Vertex_t{}.floatCount() * verts.size());
-
-    for (int i = 0; i < verts.size(); ++i)
-    {
-        verts[i].pushTo(m_vertices);
-    }
 }
 
 template <typename Vertex_t>
 void
-Mesh<Vertex_t>::setInds(const std::vector<uint32_t>& inds)
+Mesh<Vertex_t>::setVertices(const std::vector<char>& verts_char)
 {
-    if (*(std::max_element(inds.begin(), inds.end())) >= m_vertices.size())
+    if (verts_char.size() % m_vertex_byte_size != 0)
     {
-        throw std::exception{"max index in inds for mesh is >= verts size"};
+        throw std::exception("error in set verts error in mesh");
     }
-    m_indices = inds;
-}
-
-template <typename Vertex_t>
-void
-Mesh<Vertex_t>::pushDataTo(std::vector<float>& verts,
-                           std::vector<uint32_t>& inds,
-                           DrawInfo& draw_info,
-                           BindPipelineInfo& bind_info) const
-{
-    verts.reserve(verts.size() + m_vertices.size());
-    inds.reserve(inds.size() + m_indices.size());
-
-    bind_info.pipeline_key.material_type = m_material->getType();
-    bind_info.pipeline_key.vertex_type   = Vertex_t{}.getType();
-
-    draw_info.first_index   = inds.size();
-    draw_info.vertex_offset = verts.size();
-    draw_info.index_count   = m_indices.size();
+    m_vertices.resize(verts_char.size() / m_vertex_byte_size);
 
     for (int i = 0; i < m_vertices.size(); ++i)
     {
-        verts.emplace_back(m_vertices[i]);
+        m_vertices[i].getDataFrom(verts_char, i * m_vertex_byte_size);
+    }
+}
+
+template <typename Vertex_t>
+std::pair<size_t, size_t>
+Mesh<Vertex_t>::pushDataTo(std::vector<char>& verts,
+                           std::vector<uint32_t>& inds) const
+{
+    verts.reserve(verts.size() + m_vertices.size() * m_vertex_byte_size);
+    inds.reserve(inds.size() + m_indices.size());
+
+    for (int i = 0; i < m_vertices.size(); ++i)
+    {
+        m_vertices[i].pushTo(verts);
     }
     for (int i = 0; i < m_indices.size(); ++i)
     {
         inds.emplace_back(m_indices[i]);
     }
+    return {m_vertices.size(), m_indices.size()};
 }
-
 template <typename Vertex_t>
 void
 Mesh<Vertex_t>::setMaterial(const Material* const material)
 {
+    material->upgradeVerts(m_vertices);
+
     m_material = material;
+}
+
+template <typename Vertex_t>
+VertexType
+Mesh<Vertex_t>::getVertType() const noexcept
+{
+    return m_vertex_type;
 }
 
 } // namespace kusengine::render

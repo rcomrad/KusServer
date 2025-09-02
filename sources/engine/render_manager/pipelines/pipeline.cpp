@@ -15,17 +15,11 @@ Pipeline::bind(const vk::CommandBuffer& cmd) const
     cmd.bindPipeline(vk::PipelineBindPoint::eGraphics, m_pipeline.get());
 }
 
-Pipeline::Pipeline(PipelineConfigInfo&& pipeline_config_info,
+Pipeline::Pipeline(const PipelineConfigInfo& pipeline_config_info,
                    const vk::RenderPass& render_pass,
                    const ShaderManager& shader_manager)
 {
-    create(std::move(pipeline_config_info), render_pass, shader_manager);
-}
-
-const vk::PipelineLayout&
-Pipeline::layout() const noexcept
-{
-    return m_layout.get();
+    create(pipeline_config_info, render_pass, shader_manager);
 }
 
 // void
@@ -154,12 +148,11 @@ Pipeline::vertexShaderinfo(vk::ShaderStageFlagBits flag,
 }
 
 void
-Pipeline::create(PipelineConfigInfo&& pipeline_config_info,
+Pipeline::create(const PipelineConfigInfo& pipeline_config_info,
                  const vk::RenderPass& render_pass,
                  const ShaderManager& shader_manager)
 {
-    ////////////////////
-    m_layout = std::move(pipeline_config_info.pipeline_layout);
+    m_pipeline_layout_type = pipeline_config_info.pipeline_layout_type;
 
     vk::GraphicsPipelineCreateInfo create_pipeline_info{};
     create_pipeline_info.flags = vk::PipelineCreateFlags();
@@ -245,7 +238,7 @@ Pipeline::create(PipelineConfigInfo&& pipeline_config_info,
     create_pipeline_info.pDepthStencilState = &depth_stencil_info;
 
     //  Make the Pipeline
-    create_pipeline_info.layout = m_layout.get();
+    create_pipeline_info.layout = pipeline_config_info.pipeline_layout;
 
     m_pipeline =
         LOGICAL_DEVICE_INSTANCE
@@ -275,6 +268,12 @@ Pipeline::vertexInputState(
         vertex_attribute_description.data();
 
     return vertex_input_info;
+}
+
+PipelineLayoutType
+Pipeline::getPipeLayoutType() const noexcept
+{
+    return m_pipeline_layout_type;
 }
 
 }; // namespace render

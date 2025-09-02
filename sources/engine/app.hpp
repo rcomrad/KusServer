@@ -6,8 +6,8 @@
 
 // #include "engine/render_manager/scene/basic_scene_2d.hpp"
 // #include "engine/render_manager/scene/basic_scene_3d.hpp"
-#include "render_manager/model/model_system.hpp"
 #include "render_manager/vertex/vertex_p2d_uv.hpp"
+#include "scene/scene.hpp"
 #include "window/window.hpp"
 
 namespace kusengine
@@ -32,7 +32,7 @@ private:
 
     Window m_window;
 
-    // render::BasicScene3D m_scene;
+    Scene m_scene;
 
     void compileShaders();
 
@@ -51,15 +51,15 @@ private:
 
     gui::Mouse m_mouse;
 
-    // Model
+    // Scene
 
-    std::vector<std::unique_ptr<
-        render::Model<render::VertexP2DUV, render::InstanceDataMatrix>>>
-        m_models;
+    // std::vector<std::unique_ptr<
+    //     render::Model<render::VertexP2DUV, render::InstanceDataMatrix>>>
+    //     m_models;
 
-    render::ModelSystem<
-        render::Model<render::VertexP2DUV, render::InstanceDataMatrix>>
-        m_model_system;
+    // render::ModelSystem<
+    //     render::Model<render::VertexP2DUV, render::InstanceDataMatrix>>
+    //     m_model_system;
 };
 }; // namespace kusengine
 

@@ -36,12 +36,11 @@ public:
 
     void checkBufferSize(const vk::DeviceSize& required_size);
 
-    template <typename T>
-    void setData(T data, const vk::DeviceSize& byte_size);
+    virtual void setData(void* data, const vk::DeviceSize& byte_size);
 
-    const vk::Buffer& buffer() const;
+    const vk::Buffer& buffer() const noexcept;
 
-    vk::DeviceSize byteSize() const;
+    vk::DeviceSize byteSize() const noexcept;
 
 private:
     void allocateBufferMemory();
@@ -56,19 +55,6 @@ private:
     vk::UniqueDeviceMemory m_memory;
 };
 
-template <typename T>
-void
-Buffer::setData(T data, const vk::DeviceSize& byte_size)
-{
-    checkBufferSize(byte_size);
-
-    void* memory_location =
-        LOGICAL_DEVICE_INSTANCE.mapMemory(m_memory.get(), 0, m_byte_size);
-
-    memcpy(memory_location, data, m_byte_size);
-
-    LOGICAL_DEVICE_INSTANCE.unmapMemory(m_memory.get());
-}
 }; // namespace render
 }; // namespace kusengine
 

@@ -4,16 +4,16 @@
 
 #include <unordered_map>
 
-#include "engine/render_manager/dynamics_data/instancing_data/instance_data.hpp"
 #include "engine/render_manager/material/material.hpp"
+#include "engine/render_manager/model/model_data/model_upd_data.hpp"
 #include "engine/render_manager/vertex/vertex.hpp"
 
 namespace kusengine::render
 {
 struct PipelineKey
 {
-    InstanceDataType inst_data_type;
-    Vertex::Type vertex_type;
+    VertexType vertex_type;
+    ModelUpdData::Type model_upd_data_type;
     Material::Type material_type;
 };
 

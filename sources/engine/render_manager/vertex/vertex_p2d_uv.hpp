@@ -8,7 +8,13 @@
 namespace kusengine::render
 {
 
-class VertexP2DUV final : public Vertex
+struct P2DUV
+{
+    glm::vec2 pos;
+    glm::vec2 uv;
+};
+
+class VertexP2DUV final : public Vertex<P2DUV>
 {
 public:
     VertexP2DUV();
@@ -23,6 +29,8 @@ public:
     void setPosition(const glm::vec2& pos) noexcept;
 
     void setUV(const glm::vec2& uv) noexcept;
+
+    const glm::vec2& getUV() const& noexcept;
 };
 
 }; // namespace kusengine::render

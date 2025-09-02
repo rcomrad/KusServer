@@ -1,26 +1,17 @@
 #ifndef MATERIAL_HPP
 #define MATERIAL_HPP
 
-#include <string>
+#include "material_not_full.hpp"
+#include "texture_zone_material.hpp"
 
 namespace kusengine::render
 {
-class Material
+template <typename Vertex_t, typename Material_t>
+void
+Material::upgradeVerts_(std::vector<Vertex_t>& verts) const
 {
-public:
-    enum class Type
-    {
-        TEXTURE
-    };
-    Material(Type t);
-
-    Type getType() const noexcept;
-
-private:
-    Type m_type;
-
-    std::string pipeline_name;
-};
-} // namespace kusengine::render
+    static_cast<const Material_t*>(this)->upgradeVertsConcreateImpl(verts);
+}
+}; // namespace kusengine::render
 
 #endif // MATERIAL_HPP

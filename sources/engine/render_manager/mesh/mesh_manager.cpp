@@ -3,6 +3,21 @@
 namespace kusengine::render
 {
 
+template <typename Vert_t>
+std::vector<char>
+translateToCharVector(const std::vector<Vert_t>& verts)
+{
+    std::vector<char> res;
+    res.reserve(verts.size() * Vert_t{}.byteSize());
+
+    for (int i = 0; i < verts.size(); ++i)
+    {
+        verts[i].pushTo(res);
+    }
+
+    return res;
+}
+
 // TODO: builder
 void
 MeshManager::setup(const MaterialManager& material_manager)
@@ -17,45 +32,57 @@ MeshManager::setup(const MaterialManager& material_manager)
     std::vector<uint32_t> inds = {0, 1, 2, 2, 3, 0};
 
     {
+        // mesh rect
         Mesh<VertexP2DUV> rect_mesh;
-        rect_mesh.setVerts(verts);
+
+        rect_mesh.setVertices(translateToCharVector(verts));
         rect_mesh.setInds(inds);
 
-        auto water =
-            material_manager.getMaterial(Material::Type::TEXTURE, "water");
-        rect_mesh.setMaterial(water);
+        ////////////
 
-        meshes_2d.emplace(
-            std::make_pair(std::string("water_rectangle"), rect_mesh));
+        {
+            auto mesh = rect_mesh;
+
+            auto water = material_manager.getMaterial(
+                Material::Type::TEXTURE_ZONE, "stat_water");
+            mesh.setMaterial(water);
+
+            m_meshes.emplace(
+                std::make_pair(std::string("water_rectangle"),
+                               std::make_unique<Mesh<VertexP2DUV>>(mesh)));
+        }
 
         //
-        auto stone =
-            material_manager.getMaterial(Material::Type::TEXTURE, "stone");
-        rect_mesh.setMaterial(stone);
+        {
+            auto mesh = rect_mesh;
 
-        meshes_2d.emplace(
-            std::make_pair(std::string("stone_rectangle"), rect_mesh));
+            auto stone = material_manager.getMaterial(
+                Material::Type::TEXTURE_ZONE, "stat_stone");
+            mesh.setMaterial(stone);
+
+            m_meshes.emplace(
+                std::make_pair(std::string("stone_rectangle"),
+                               std::make_unique<Mesh<VertexP2DUV>>(mesh)));
+        }
         //
-        auto wood =
-            material_manager.getMaterial(Material::Type::TEXTURE, "wood");
-        rect_mesh.setMaterial(wood);
+        {
+            auto mesh = rect_mesh;
 
-        meshes_2d.emplace(
-            std::make_pair(std::string("wood_rectangle"), rect_mesh));
+            auto wood = material_manager.getMaterial(
+                Material::Type::TEXTURE_ZONE, "stat_wood");
+            mesh.setMaterial(wood);
+
+            m_meshes.emplace(
+                std::make_pair(std::string("wood_rectangle"),
+                               std::make_unique<Mesh<VertexP2DUV>>(mesh)));
+        }
     }
 }
 
-template <>
-const Mesh<VertexP2DUV>* const
-MeshManager::getMesh<VertexP2DUV>(const std::string& mesh_name) const
+const IMesh* const
+MeshManager::getMesh(const std::string& name) const
 {
-    return &(meshes_2d.find(mesh_name)->second);
+    return m_meshes.find(name)->second.get();
 }
 
-template <>
-const Mesh<VertexP3DUV>* const
-MeshManager::getMesh<VertexP3DUV>(const std::string& mesh_name) const
-{
-    return &(meshes_3d.find(mesh_name)->second);
-}
 } // namespace kusengine::render

@@ -5,7 +5,6 @@
 #include "engine/render_manager/device/device.hpp"
 #include "engine/render_manager/vertex/vertex_p2d_uv.hpp"
 #include "engine/render_manager/vertex/vertex_p3d_uv.hpp"
-#include "utility/file_system/path_storage.hpp"
 
 namespace kusengine::render
 {
@@ -16,11 +15,17 @@ RenderSystem::setup(const DescriptorManager& desc_manager,
                     const vk::Extent2D& extent,
                     const vk::Format& format)
 {
-    m_extent = extent;
+    setExtent(extent);
     m_format = format;
 
     setupDefaultRenderPass();
     setupDefaultPipelines(desc_manager, shader_manager);
+}
+
+const vk::PipelineLayout&
+RenderSystem::getLayout(PipelineLayoutType type) const&
+{
+    return m_layout_storage.at(type).get();
 }
 
 vk::UniquePipelineLayout
@@ -38,26 +43,36 @@ void
 RenderSystem::setupDefaultPipelines(const DescriptorManager& desc_manager,
                                     const ShaderManager& shader_manager)
 {
-    std::string shader_folder =
-        util::PathStorage::getFolderPath("shaders").value().data();
 
     // TODO: Builder
+
+    // layout
+
+    std::array<vk::DescriptorSetLayout, 2> layouts = {
+        desc_manager.getAllocator(DescriptorSetLayoutType::UBO_x_STORAGE)
+            .layout(),
+        desc_manager
+            .getAllocator(DescriptorSetLayoutType::COMBINED_IMAGE_SAMPLER)
+            .layout()};
+
+    m_layout_storage
+        [PipelineLayoutType::v_UBO_x_STORAGE__f_COMBINED_IMAGE_SAMPLER] =
+            makePipelineLayout(layouts.size(), layouts.data());
+
     // for default 2D
     {
         PipelineConfigInfo info;
+
+        info.pipeline_layout_type =
+            PipelineLayoutType::v_UBO_x_STORAGE__f_COMBINED_IMAGE_SAMPLER;
+
         info.extent = m_extent;
 
         info.depth_test_enable = vk::False;
 
-        std::array<vk::DescriptorSetLayout, 2> layouts = {
-            desc_manager.getAllocator(DescriptorSetLayoutType::UBO_x_STORAGE)
-                .layout(),
-            desc_manager
-                .getAllocator(DescriptorSetLayoutType::COMBINED_IMAGE_SAMPLER)
-                .layout()};
-
         info.pipeline_layout =
-            makePipelineLayout(layouts.size(), layouts.data());
+            m_layout_storage[info.pipeline_layout_type].get();
+
         info.vertex_shader_type   = ShaderType::DEFAULT_2D_VERTEX;
         info.fragment_shader_type = ShaderType::DEFAULT_FRAGMENT;
 
@@ -65,15 +80,18 @@ RenderSystem::setupDefaultPipelines(const DescriptorManager& desc_manager,
         info.vertex_attribute_descriptions =
             VertexP2DUV{}.getAttributeDescriptions();
 
-        registerPipeline(
-            {.inst_data_type = getInstanceDataType<InstanceDataMatrix>(),
-             .vertex_type    = Vertex::Type::VERTEX_P2D_UV,
-             .material_type  = Material::Type::TEXTURE},
-            "default", std::move(info), shader_manager);
+        registerPipeline(VertexType::VERTEX_P2D_UV,
+                         ModelUpdData::Type::MATRIX4x4,
+                         Material::Type::TEXTURE_ZONE, "default",
+                         std::move(info), shader_manager);
     }
     // for default 3D
     {
         PipelineConfigInfo info;
+
+        info.pipeline_layout_type =
+            PipelineLayoutType::v_UBO_x_STORAGE__f_COMBINED_IMAGE_SAMPLER;
+
         info.extent = m_extent;
 
         info.depth_test_enable = vk::True;
@@ -86,7 +104,10 @@ RenderSystem::setupDefaultPipelines(const DescriptorManager& desc_manager,
                 .layout()};
 
         info.pipeline_layout =
-            makePipelineLayout(layouts.size(), layouts.data());
+            m_layout_storage
+                [PipelineLayoutType::v_UBO_x_STORAGE__f_COMBINED_IMAGE_SAMPLER]
+                    .get();
+
         info.vertex_shader_type   = ShaderType::DEFAULT_3D_VERTEX;
         info.fragment_shader_type = ShaderType::DEFAULT_FRAGMENT;
 
@@ -94,11 +115,10 @@ RenderSystem::setupDefaultPipelines(const DescriptorManager& desc_manager,
         info.vertex_attribute_descriptions =
             VertexP3DUV{}.getAttributeDescriptions();
 
-        registerPipeline(
-            {.inst_data_type = getInstanceDataType<InstanceDataMatrix>(),
-             .vertex_type    = Vertex::Type::VERTEX_P3D_UV,
-             .material_type  = Material::Type::TEXTURE},
-            "default", std::move(info), shader_manager);
+        registerPipeline(VertexType::VERTEX_P3D_UV,
+                         ModelUpdData::Type::MATRIX4x4,
+                         Material::Type::TEXTURE_ZONE, "default",
+                         std::move(info), shader_manager);
     }
 }
 
@@ -112,21 +132,25 @@ RenderSystem::setupDefaultRenderPass()
 }
 
 void
-RenderSystem::registerPipeline(PipelineKey pkey,
+RenderSystem::registerPipeline(VertexType vertex_type,
+                               ModelUpdData::Type model_upd_data_type,
+                               Material::Type material_type,
                                std::string_view render_pass,
                                PipelineConfigInfo&& pipeline_info,
                                const ShaderManager& shader_manager)
 {
     if (m_render_passes.find(render_pass.data()) == m_render_passes.end())
     {
-        std::cout << render_pass.data() << "does not exist\n";
+        std::cout << render_pass.data() << "render pass does not exist\n";
     }
-    else if (m_pipelines.find(pkey) == m_pipelines.end())
+    else if (m_pipelines.find({vertex_type, model_upd_data_type,
+                               material_type}) == m_pipelines.end())
     {
-        m_pipelines[pkey] = std::make_unique<Pipeline>(
-            std::move(pipeline_info),
-            m_render_passes[render_pass.data()].get()->renderPass(),
-            shader_manager);
+        m_pipelines[{vertex_type, model_upd_data_type, material_type}] =
+            std::make_unique<Pipeline>(
+                std::move(pipeline_info),
+                m_render_passes[render_pass.data()].get()->renderPass(),
+                shader_manager);
     }
     else
     {
@@ -155,41 +179,47 @@ RenderSystem::setExtent(const vk::Extent2D& extent)
     m_extent = extent;
 }
 
-// void
-// RenderSystem::translateRenderPassesToFrame(SwapChainFrame& frame) const
-// {
-//     for (auto& pass : m_render_passes)
-//     {
-//         frame.addFrameBuffer(pass.first, pass.second.get()->renderPass(),
-//                              m_extent);
-//     }
-// }
-
-// void
-// RenderSystem::execute(const SwapChainFrame& frame,
-//                       const std::string& pass_name,
-//                       const vk::CommandBuffer& cmd,
-//                       const std::function<void()>& bd_lambda)
-// {
-//     auto& pass = m_render_passes.at(pass_name);
-
-//     pass->begin(cmd, frame.getBuffer(pass_name), m_extent);
-
-//     bd_lambda();
-
-//     pass->end(cmd);
-// }
+void
+RenderSystem::translateRenderPassesToFrame(SwapChainFrame& frame) const
+{
+    for (auto& pass : m_render_passes)
+    {
+        frame.addFrameBuffer(pass.first, pass.second.get()->renderPass(),
+                             m_extent);
+    }
+}
 
 const vk::PipelineLayout&
-RenderSystem::bindPipeline(const PipelineKey& pkey,
+RenderSystem::bindPipeline(VertexType vertex_type,
+                           ModelUpdData::Type model_upd_data_type,
+                           Material::Type material_type,
                            const vk::CommandBuffer& cmd) const&
 {
-    if (m_pipelines.find(pkey) == m_pipelines.end())
+    PipelineKey pkey;
+    if (m_pipelines.find(pkey = {vertex_type, model_upd_data_type,
+                                 material_type}) != m_pipelines.end())
     {
-        throw std::exception("pipeline does not exist\n");
+        auto& p = m_pipelines.at(pkey);
+        p->bind(cmd);
+        return m_layout_storage.at(p->getPipeLayoutType()).get();
     }
-    m_pipelines.at(pkey)->bind(cmd);
-    return m_pipelines.at(pkey)->layout();
+
+    throw std::exception("pipeline does not exist\n");
+}
+
+void
+RenderSystem::execute(const std::string& render_pass_name,
+                      std::function<void()> binding,
+                      const vk::CommandBuffer& cmd,
+                      const vk::Framebuffer& frame_buffer) const
+{
+    auto& render_pass = m_render_passes.at(render_pass_name);
+
+    render_pass.get()->begin(cmd, frame_buffer, m_extent);
+
+    binding();
+
+    render_pass.get()->end(cmd);
 }
 
 } // namespace kusengine::render

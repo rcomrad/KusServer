@@ -4,14 +4,14 @@ layout(set = 0, binding = 0) uniform UBO {
 	mat4 projection;
 } ubo;
 
-struct InstanceData
+struct ModelDataMatrix
 {
     mat4 model;
 };
 
 
 layout(set = 0, binding = 1) readonly buffer InstanceDataBuffer {
-	InstanceData instance_data_array[];
+	ModelDataMatrix instance_data_array[];
 } dynamic_model_data;
 
 
@@ -30,4 +30,6 @@ void main()
     fragColor = vec4(1.0, 1.0, 1.0, 1.0);
 
     fragTextCoord = vertexTextCoord;
+
+    gl_Position = vec4(vertexPosition, 0.0, 1.0);
 }

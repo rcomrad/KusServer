@@ -5,6 +5,7 @@
 
 #include "buffer.hpp"
 #include "staging_buffer.hpp"
+#include "storage_buffer.hpp"
 
 namespace kusengine
 {
@@ -19,30 +20,11 @@ public:
 
     void bind(const vk::CommandBuffer& command_buffer) const;
 
-    template <typename T>
-    void setDataTrowStagingBuffer(T data, const vk::DeviceSize& byte_size);
-
-    template <typename T>
-    void setData(T data, const vk::DeviceSize& byte_size) = delete;
+    void setData(void* data, const vk::DeviceSize& byte_size);
 
 private:
 };
 
-template <typename T>
-void
-GpuVertexBuffer::setDataTrowStagingBuffer(T data,
-                                          const vk::DeviceSize& byte_size)
-{
-    CommandBuffer command_buffer;
-    command_buffer.create();
-
-    StagingBuffer staging_buffer;
-    staging_buffer.setData(data, byte_size);
-
-    Buffer::copyBuffer(&staging_buffer, this,
-                       DEVICE_INSTANCE.getQueue("graphics"),
-                       command_buffer.commandBuffer());
-}
 }; // namespace render
 }; // namespace kusengine
 

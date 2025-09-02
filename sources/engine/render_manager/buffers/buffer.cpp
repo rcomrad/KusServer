@@ -1,11 +1,9 @@
 #include "buffer.hpp"
 
 #include "engine/render_manager/textures/image.hpp"
+namespace kusengine::render
+{
 
-namespace kusengine
-{
-namespace render
-{
 Buffer::Buffer(vk::BufferUsageFlags buffer_usage_flags,
                vk::MemoryPropertyFlags requested_properties)
     : m_byte_size(0),
@@ -15,7 +13,7 @@ Buffer::Buffer(vk::BufferUsageFlags buffer_usage_flags,
 }
 
 const vk::Buffer&
-Buffer::buffer() const
+Buffer::buffer() const noexcept
 {
     return m_buffer.get();
 }
@@ -62,7 +60,7 @@ Buffer::recreate(const vk::DeviceSize& size)
 }
 
 vk::DeviceSize
-Buffer::byteSize() const
+Buffer::byteSize() const noexcept
 {
     return m_byte_size;
 }
@@ -134,6 +132,17 @@ Buffer::copyBufferToImage(const Buffer* const src_buffer,
 
     command_buffer.end();
 }
-}; // namespace render
 
-}; // namespace kusengine
+void
+Buffer::setData(void* data, const vk::DeviceSize& byte_size)
+{
+    checkBufferSize(byte_size);
+
+    void* memory_location =
+        LOGICAL_DEVICE_INSTANCE.mapMemory(m_memory.get(), 0, m_byte_size);
+
+    memcpy(memory_location, data, m_byte_size);
+
+    LOGICAL_DEVICE_INSTANCE.unmapMemory(m_memory.get());
+}
+}; // namespace kusengine::render

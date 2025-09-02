@@ -3,7 +3,7 @@
 namespace kusengine::render
 {
 
-VertexP3DUV::VertexP3DUV() : Vertex(Type::VERTEX_P3D_UV, 5)
+VertexP3DUV::VertexP3DUV() : Vertex(VertexType::VERTEX_P3D_UV)
 {
 }
 
@@ -12,7 +12,7 @@ VertexP3DUV::getBindingDescription() const
 {
     vk::VertexInputBindingDescription description;
     description.binding   = 0;
-    description.stride    = 32;
+    description.stride    = byteSize();
     description.inputRate = vk::VertexInputRate::eVertex;
     return description;
 }
@@ -26,15 +26,13 @@ VertexP3DUV::getAttributeDescriptions() const
     attribute_description[0].binding  = 0;
     attribute_description[0].location = 0;
     attribute_description[0].format   = vk::Format::eR32G32B32Sfloat;
-    attribute_description[0].offset   = 0;
-    // offsetof(Vertex2DAttributesP1UV1, pos);
+    attribute_description[0].offset   = offsetof(P3DUV, pos);
 
     // UV
     attribute_description[1].binding  = 0;
     attribute_description[1].location = 1;
     attribute_description[1].format   = vk::Format::eR32G32Sfloat;
-    attribute_description[1].offset   = 12;
-    // offsetof(Vertex2DAttributesP1UV1, uv);
+    attribute_description[1].offset   = offsetof(P3DUV, uv);
 
     return attribute_description;
 }
@@ -42,16 +40,19 @@ VertexP3DUV::getAttributeDescriptions() const
 void
 VertexP3DUV::setPosition(const glm::vec3& pos) noexcept
 {
-    setValue(pos.x, 0);
-    setValue(pos.y, 1);
-    setValue(pos.z, 2);
+    m_attributes.pos = pos;
 }
 
 void
 VertexP3DUV::setUV(const glm::vec2& uv) noexcept
 {
-    setValue(uv.x, 3);
-    setValue(uv.y, 4);
+    m_attributes.uv = uv;
+}
+
+const glm::vec2&
+VertexP3DUV::getUV() const& noexcept
+{
+    return m_attributes.uv;
 }
 
 }; // namespace kusengine::render

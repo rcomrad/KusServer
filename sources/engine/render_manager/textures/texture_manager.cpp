@@ -3,8 +3,8 @@
 #include <fstream>
 #include <iostream>
 
-#include "engine/json_parser/model_2d_parser.hpp"
-#include "utility/file_system/path_storage.hpp"
+#include "kernel/framework/include_me.hpp"
+#include "kernel/utility/file_system/path.hpp"
 
 using json = nlohmann::json;
 
@@ -16,9 +16,9 @@ TextureManager::loadTextures(const DescriptorManager& desc_manager)
 {
 
     // Atlases
-    auto res_path = util::PathStorage::getFolderPath("resource").value();
+    auto res_path = KERNEL.getFolderPath("resource");
 
-    std::string filename = res_path.data();
+    std::string filename = res_path;
     filename += "engine_textures/texture_paths.json";
 
     std::ifstream file(filename);
@@ -32,29 +32,13 @@ TextureManager::loadTextures(const DescriptorManager& desc_manager)
             std::format("{}{}{}", res_path.data(), "engine_textures/", path),
             desc_manager);
     }
-
-    // Zones
-
-    // auto textures_data = json_parser::parseTextures();
-
-    // for (auto& texture_data : textures_data)
-    // {
-    //     m_texture_zone_storage[texture_data.name].m_texture =
-    //         &m_texture_storage[texture_data.filename];
-
-    //     m_texture_zone_storage[texture_data.name].m_scale =
-    //         texture_data.scale;
-
-    //     m_texture_zone_storage[texture_data.name].m_size = texture_data.size;
-    // }
 }
 
 void
 TextureManager::addTexture(const std::string& file_path,
                            const DescriptorManager& descriptor_manager)
 {
-
-    std::string texture_name = util::Path::getName(file_path, LOCAL_CONTEXT);
+    auto texture_name = util::Path::getName(file_path);
 
     if (m_texture_storage.contains(texture_name))
     {
@@ -77,15 +61,13 @@ TextureManager::addTexture(const std::string& file_path,
     }
 }
 
-const TextureZone* const
-TextureManager::getTextureZone(const std::string& name) const
+const Texture* const
+TextureManager::getTexture(const std::string& name) const
 {
-    auto it = m_texture_zone_storage.find(name);
-    if (it == m_texture_zone_storage.end())
+    auto it = m_texture_storage.find(name);
+    if (it == m_texture_storage.end())
     {
-        std::cout << name << " cant find in texture_zone_storage\n";
-
-        return &(m_texture_zone_storage.begin()->second);
+        throw "cant find in texture_zone_storage\n";
     }
 
     return &(it->second);

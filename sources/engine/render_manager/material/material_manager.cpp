@@ -1,8 +1,11 @@
 #include "material_manager.hpp"
 
+#include "engine/parsers/material_parser.hpp"
 #include "engine/render_manager/textures/texture_manager.hpp"
+#include "kernel/framework/include_me.hpp"
 
-#include "texture_material.hpp"
+#include "texture_zone_material.hpp"
+
 namespace kusengine::render
 {
 
@@ -30,18 +33,18 @@ MaterialManager::getMaterial(Material::Type mtype,
 void
 MaterialManager::setup(const TextureManager& texture_manager)
 {
-    std::unordered_map<std::string, std::unique_ptr<Material>>
-        texture_materials;
+    parser::MaterialParser parser;
 
-    texture_materials["water"] = std::make_unique<TextureMaterial>(
-        texture_manager.getTextureZone("water"));
+    auto&& path = KERNEL.getFolderPath("resource") + "material.json";
 
-    texture_materials["stone"] = std::make_unique<TextureMaterial>(
-        texture_manager.getTextureZone("stone"));
-
-    texture_materials["wood"] = std::make_unique<TextureMaterial>(
-        texture_manager.getTextureZone("wood"));
-
-    m_materials[Material::Type::TEXTURE] = std::move(texture_materials);
+    parser.parse(path, *this, texture_manager);
 }
+
+void
+MaterialManager::setTextureZones(
+    std::unordered_map<std::string, std::unique_ptr<Material>>&& texture_zones)
+{
+    m_materials[Material::Type::TEXTURE_ZONE] = std::move(texture_zones);
+}
+
 } // namespace kusengine::render

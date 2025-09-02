@@ -1,0 +1,32 @@
+{
+    "simple_models": [
+        {
+            "name": "stone_rectangle_matrix",
+            "model_upd_data_type": "matrix",
+            "mesh": "stone_rectangle"
+        },
+        {
+            "name": "wood_rectangle_matrix",
+            "model_upd_data_type": "matrix",
+            "mesh": "wood_rectangle"
+        },
+        {
+            "name": "water_rectangle",
+            "model_upd_data_type": "matrix",
+            "mesh": "water_rectangle"
+        }
+    ],
+    "complex_models": [
+        {
+            "name": "",
+            "simple_models": [
+                "",
+                ""
+            ],
+            "complex_models": [
+                "",
+                ""
+            ]
+        }
+    ]
+}

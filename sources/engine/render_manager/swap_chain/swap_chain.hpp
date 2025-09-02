@@ -6,7 +6,6 @@
 #include <vector>
 
 #include "engine/render_manager/commands/command_pool.hpp"
-#include "engine/render_manager/descriptors/descriptor_manager.hpp"
 #include "engine/render_manager/renderer/render_system.hpp"
 
 #include "swap_chain_frame.hpp"
@@ -32,16 +31,11 @@ public:
 
     // bool recreate(const Window& window, const Instance& instance);
 
-    size_t createSwapChainFrames(const RenderSystem& render_system,
-                                 const DescriptorManager& desc_manager);
+    size_t createSwapChainFrames(const RenderSystem& render_system);
 
     void createSurface(const kusengine::Window& window,
                        const Instance& instance) noexcept(false);
 
-    template <typename MBDDType, typename UBOType>
-    void updateFrame(int index,
-                     const std::vector<MBDDType>& mbdd_vector,
-                     const UBOType& ubo);
     // get
 
     SwapChainFrame& getFrame(int index) & noexcept;
@@ -86,17 +80,6 @@ private:
     vk::Format m_format;
     vk::Extent2D m_extent;
 };
-
-template <typename MBDDType, typename UBOType>
-void
-SwapChain::updateFrame(int index,
-                       const std::vector<MBDDType>& mbdd_vector,
-                       const UBOType& ubo)
-{
-    m_frames[index].updateMBDD(mbdd_vector);
-    m_frames[index].updateUBO(ubo);
-}
-
 }; // namespace render
 }; // namespace kusengine
 

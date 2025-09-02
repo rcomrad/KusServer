@@ -13,14 +13,21 @@ namespace kusengine
 namespace render
 {
 
+enum class PipelineLayoutType
+{
+    v_UBO_x_STORAGE__f_COMBINED_IMAGE_SAMPLER
+};
+
 class DescriptorManager;
 
 struct PipelineConfigInfo
 {
-    vk::UniquePipelineLayout pipeline_layout;
+    vk::PipelineLayout pipeline_layout;
     vk::Extent2D extent;
     ShaderType vertex_shader_type;
     ShaderType fragment_shader_type;
+
+    PipelineLayoutType pipeline_layout_type;
 
     vk::Bool32 depth_test_enable = vk::False;
 
@@ -32,18 +39,18 @@ struct PipelineConfigInfo
 class Pipeline
 {
 public:
-    Pipeline(PipelineConfigInfo&& pipeline_config_info,
+    Pipeline(const PipelineConfigInfo& pipeline_config_info,
              const vk::RenderPass& render_pass,
              const ShaderManager& shader_manager);
 
-    void create(PipelineConfigInfo&& pipeline_config_info,
+    void create(const PipelineConfigInfo& pipeline_config_info,
                 const vk::RenderPass& render_pass,
                 const ShaderManager&
                     shader_manager); // rvalue because uniq pipeline layout
 
     void bind(const vk::CommandBuffer& cmd) const;
 
-    const vk::PipelineLayout& layout() const noexcept;
+    PipelineLayoutType getPipeLayoutType() const noexcept;
 
 private:
     vk::PipelineVertexInputStateCreateInfo vertexInputState(
@@ -68,8 +75,7 @@ private:
 
     vk::UniquePipeline m_pipeline;
 
-    // Pipeline Layout
-    vk::UniquePipelineLayout m_layout;
+    PipelineLayoutType m_pipeline_layout_type;
 };
 
 }; // namespace render

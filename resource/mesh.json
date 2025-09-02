@@ -2,9 +2,11 @@
     "meshes": [
         {
             "name": "rectangle",
-            "verts": [
+            "vertex_type": "P2DUV",
+            "material": "stat_water",
+            "vertices": [
                 {
-                    "position": {
+                    "pos": {
                         "x": 0,
                         "y": 0
                     },
@@ -14,7 +16,7 @@
                     }
                 },
                 {
-                    "position": {
+                    "pos": {
                         "x": 1,
                         "y": 0
                     },
@@ -24,7 +26,7 @@
                     }
                 },
                 {
-                    "position": {
+                    "pos": {
                         "x": 1,
                         "y": 1
                     },
@@ -34,7 +36,7 @@
                     }
                 },
                 {
-                    "position": {
+                    "pos": {
                         "x": 0,
                         "y": 1
                     },
@@ -44,7 +46,7 @@
                     }
                 }
             ],
-            "inds": [
+            "indices": [
                 0,
                 1,
                 2,

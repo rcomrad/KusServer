@@ -13,7 +13,7 @@ struct TextureZone
     glm::vec2 m_offset;
     glm::vec2 m_scale;
 
-    Texture* m_texture;
+    const Texture* m_texture;
 };
 
 } // namespace kusengine::render

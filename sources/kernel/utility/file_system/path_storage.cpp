@@ -15,10 +15,17 @@ util::PathStorage::PathStorage()
     auto cur_path_val = std::filesystem::current_path();
     auto bin_path     = cur_path_val.string();
     auto app_path     = cur_path_val.parent_path().string();
+    auto shaders_path =
+        cur_path_val.parent_path().string() + "\\" + SHADERS_FOLDER_NAME + "\\";
+
+    auto resource_path = cur_path_val.parent_path().string() + "\\" +
+                         RESOURCE_FOLDER_NAME + "\\";
 
     m_folder_paths.emplace(BIN_PATH_NAME, bin_path);
     m_folder_paths.emplace(APP_PATH_NAME, app_path);
     m_folder_paths.emplace(DATA_FOLDER_NAME, app_path);
+    m_folder_paths.emplace(SHADERS_FOLDER_NAME, shaders_path);
+    m_folder_paths.emplace(RESOURCE_FOLDER_NAME, resource_path);
     addFolder(APP_PATH_NAME, DATA_FOLDER_NAME);
 
     // addContentToPathsNonstatic(app_folder_path_str, ObjectType::FOLDER,

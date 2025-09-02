@@ -1,80 +1,38 @@
 #ifndef SIMPLE_MODEL_HPP
 #define SIMPLE_MODEL_HPP
 
-#include <vulkan/vulkan.hpp>
-
 #include "engine/render_manager/mesh/mesh.hpp"
+#include "model_data/model_upd_matrix.hpp"
 
-#include "bind_info.hpp"
 #include "model.hpp"
 
 namespace kusengine::render
 {
-
-template <typename Vertex_t, typename InstanceData_t>
-class SimpleModel final : public Model<Vertex_t, InstanceData_t>
+class SimpleModel : public Model
 {
 public:
-    SimpleModel();
+    SimpleModel(const std::unique_ptr<ModelUpdData>& model_upd_data =
+                    std::make_unique<ModelMatrix>(),
+                const IMesh* const mesh = nullptr);
 
-    void setMesh(const Mesh<Vertex_t>* const mesh);
+    void setMesh(const IMesh* const mesh) noexcept;
 
-    void pushTo(std::vector<std::pair<const Mesh<Vertex_t>*, int>>& meshes)
-        const override;
+    void setModelUpdData(const std::unique_ptr<ModelUpdData>& model_upd_data);
+
+    std::unique_ptr<Model> clone() const override;
+
+    void combine(MeshCombiner& mesh_combiner) override;
+
+    void linkUpdData(const std::vector<size_t>& inds,
+                     size_t cur_i,
+                     std::vector<char>& link_data,
+                     int data_size_byte) override;
 
 private:
-    const Mesh<Vertex_t>* m_mesh;
+    std::unique_ptr<ModelUpdData> m_model_upd_data;
+
+    const IMesh* m_mesh;
 };
-
-template <typename Vertex_t, typename InstanceData_t>
-SimpleModel<Vertex_t, InstanceData_t>::SimpleModel()
-    : Model<Vertex_t, InstanceData_t>(
-          Model<Vertex_t, InstanceData_t>::Type::SIMPLE)
-{
-}
-
-template <typename Vertex_t, typename InstanceData_t>
-void
-SimpleModel<Vertex_t, InstanceData_t>::setMesh(const Mesh<Vertex_t>* const mesh)
-{
-    m_mesh = mesh;
-}
-
-template <typename Vertex_t, typename InstanceData_t>
-void
-SimpleModel<Vertex_t, InstanceData_t>::pushTo(
-    std::vector<std::pair<const Mesh<Vertex_t>*, int>>& meshes) const
-{
-    auto it = std::find_if(
-        meshes.begin(), meshes.end(),
-        [&mesh = m_mesh](const std::pair<const Mesh<Vertex_t>*, int>& other)
-        { return mesh == other.first; });
-
-    if (it != meshes.end())
-    {
-        it->second++;
-    }
-    else
-    {
-        meshes.emplace_back(std::make_pair(m_mesh, 1));
-    }
-}
-
-// template <typename Vertex_t, typename InstanceData_t>
-// void
-// SimpleModel<Vertex_t, InstanceData_t>::pushTo(
-//     std::vector<std::pair<const Mesh<Vertex_t>*, int>>& meshes) const
-// {
-//
-// }
-
-// template <typename Vertex_t, typename InstanceData_t>
-// std::pair<const Mesh* const, int>
-// SimpleModel::takeMeshes() const
-// {
-//     return std::make_pair<const Mesh* const, int>(m_mesh, 1);
-// }
-
 } // namespace kusengine::render
 
 #endif // SIMPLE_MODEL_HPP

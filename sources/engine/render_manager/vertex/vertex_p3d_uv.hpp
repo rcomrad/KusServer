@@ -9,7 +9,13 @@
 namespace kusengine::render
 {
 
-class VertexP3DUV final : public Vertex
+struct P3DUV
+{
+    glm::vec3 pos;
+    glm::vec2 uv;
+};
+
+class VertexP3DUV final : public Vertex<P3DUV>
 {
 public:
     VertexP3DUV();
@@ -22,6 +28,10 @@ public:
     void setPosition(const glm::vec3& pos) noexcept;
 
     void setUV(const glm::vec2& uv) noexcept;
+
+    const glm::vec2& getUV() const& noexcept;
+
+private:
 };
 
 }; // namespace kusengine::render

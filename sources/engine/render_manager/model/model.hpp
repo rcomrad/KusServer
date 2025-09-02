@@ -1,45 +1,43 @@
 #ifndef MODEL_HPP
 #define MODEL_HPP
 
-#include "engine/render_manager/mesh/mesh.hpp"
-
-#include "bind_info.hpp"
+#include "engine/render_manager/mesh/mesh_combiner.hpp"
+#include "model_data/model_upd_data.hpp"
 
 namespace kusengine::render
 {
-
-template <typename Vertex_t_, typename InstanceData_t_>
-class Model // Composite class
+class Model
 {
 public:
+    virtual ~Model() = default;
     enum class Type
     {
-        COMPLEX = 0,
-        SIMPLE  = 1
+        COMPLEX,
+        SIMPLE
     };
 
-    using Vertex_t       = Vertex_t_;
-    using InstanceData_t = InstanceData_t_;
+    Model(ModelUpdData::Type mud, Type t);
 
-    Model(Type t);
+    Type getType() const noexcept;
 
-    Model() = default;
+    ModelUpdData::Type getModelUpdDataType() const noexcept;
 
-    virtual ~Model() = default;
+    virtual std::unique_ptr<Model> clone() const = 0;
 
-    virtual void pushTo(
-        std::vector<std::pair<const Mesh<Vertex_t>*, int>>& meshes) const = 0;
+    virtual void combine(MeshCombiner& mesh_combiner) = 0;
+
+    virtual void linkUpdData(const std::vector<size_t>& inds,
+                             size_t cur_i,
+                             std::vector<char>& link_data,
+                             int data_size_byte) = 0;
+
+    virtual size_t getCount() const noexcept;
 
 private:
     Type m_type;
 
-    InstanceData_t* link_to_inst_data = nullptr;
+    ModelUpdData::Type m_model_upd_data_type;
 };
+} // namespace kusengine::render
 
-template <typename Vertex_t, typename InstanceData_t>
-Model<Vertex_t, InstanceData_t>::Model(Type t) : m_type(t)
-{
-}
-
-}; // namespace kusengine::render
 #endif // MODEL_HPP

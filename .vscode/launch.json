@@ -5,7 +5,7 @@
             "type": "cmake",
             "request": "launch",
             "name": "CMake script debugging",
-            "cmakeDebugType": "configure",
+            "cmakeDebugType": "configure"
         }
     ]
 }

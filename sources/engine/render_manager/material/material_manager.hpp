@@ -20,6 +20,10 @@ public:
     const Material* const getMaterial(Material::Type mtype,
                                       const std::string& name) const;
 
+    void setTextureZones(
+        std::unordered_map<std::string, std::unique_ptr<Material>>&&
+            texture_zones);
+
 private:
     std::unordered_map<
         Material::Type,
