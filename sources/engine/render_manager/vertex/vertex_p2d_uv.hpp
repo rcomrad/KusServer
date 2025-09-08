@@ -31,6 +31,7 @@ public:
     void setUV(const glm::vec2& uv) noexcept;
 
     const glm::vec2& getUV() const& noexcept;
+    const glm::vec2& getPos() const& noexcept;
 };
 
 }; // namespace kusengine::render

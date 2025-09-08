@@ -17,18 +17,14 @@ class MaterialManager
 public:
     void setup(const TextureManager& texture_manager);
 
-    const Material* const getMaterial(Material::Type mtype,
-                                      const std::string& name) const;
+    const Material* const getMaterial(const std::string& name) const;
 
     void setTextureZones(
         std::unordered_map<std::string, std::unique_ptr<Material>>&&
             texture_zones);
 
 private:
-    std::unordered_map<
-        Material::Type,
-        std::unordered_map<std::string, std::unique_ptr<Material>>>
-        m_materials;
+    std::unordered_map<std::string, std::unique_ptr<Material>> m_materials;
 };
 } // namespace kusengine::render
 

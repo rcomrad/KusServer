@@ -1,8 +1,7 @@
 {
-    "meshes": [
+    "P2DUV": [
         {
             "name": "rectangle",
-            "vertex_type": "P2DUV",
             "material": "stat_water",
             "vertices": [
                 {

@@ -4,16 +4,32 @@
 
 #include <fstream>
 
-#include "parser_basic_functions.hpp"
+#include "verts_attributes_parsers_funcs.hpp"
 namespace kusengine::parser
 {
 
+template <typename Vert_t>
+std::vector<char>
+translateToCharVector(const std::vector<Vert_t>& verts)
+{
+    std::vector<char> res;
+    res.reserve(verts.size() * Vert_t{}.byteSize());
+
+    for (int i = 0; i < verts.size(); ++i)
+    {
+        verts[i].pushTo(res);
+    }
+
+    return res;
+}
+
+template <typename Vert_t>
 struct MeshParseData
 {
     std::string name;
-    std::string vertex_type;
     std::string material;
     std::vector<uint32_t> indices;
+    std::vector<Vert_t> vertices;
 };
 
 void
@@ -39,35 +55,32 @@ from_json(const nlohmann::json& j, std::vector<uint32_t>& indices)
     }
 }
 
+template <typename Vert_t>
 void
-to_json(nlohmann::json& j, const MeshParseData& mesh)
+to_json(nlohmann::json& j, const MeshParseData<Vert_t>& mesh)
 {
     j = nlohmann::json{
-        {"name",        mesh.name       },
-        {"material",    mesh.material   },
-        {"vertex_type", mesh.vertex_type},
-        {"indices",     mesh.indices    }
+        {"name",     mesh.name    },
+        {"material", mesh.material},
+        {"indices",  mesh.indices },
+        {"vertices", mesh.vertices}
     };
 }
 
+template <typename Vert_t>
 void
-from_json(const nlohmann::json& j, MeshParseData& mesh)
+from_json(const nlohmann::json& j, MeshParseData<Vert_t>& mesh)
 {
     j.at("name").get_to(mesh.name);
     j.at("material").get_to(mesh.material);
-    j.at("vertex_type").get_to(mesh.vertex_type);
     j.at("indices").get_to(mesh.indices);
+    j.at("vertices").get_to(mesh.vertices);
 }
 
-template <>
 void
-MeshParser::parseVerts<"P2DUV">()
-{
-}
-
-std::unordered_map<std::string, std::unique_ptr<render::IMesh>>
 MeshParser::parse(const std::string& filename,
-                  render::MeshManager& mesh_manager)
+                  render::MeshManager& mesh_manager,
+                  const render::MaterialManager& material_manager)
 {
     std::ifstream file(filename);
     if (!file.is_open())
@@ -78,11 +91,20 @@ MeshParser::parse(const std::string& filename,
     nlohmann::json j;
     file >> j;
 
-    std::vector<MeshParseData> meshes_data =
-        j["meshes"].get<std::vector<MeshParseData>>();
+    std::vector<MeshParseData<render::VertexP2DUV>> meshes_data =
+        j["P2DUV"].get<std::vector<MeshParseData<render::VertexP2DUV>>>();
+
+    std::unordered_map<std::string, std::unique_ptr<render::IMesh>> meshes;
 
     for (auto&& mesh_data : meshes_data)
     {
+        meshes[mesh_data.name]->setInds(std::move(mesh_data.indices));
+        meshes[mesh_data.name]->setVertices(
+            translateToCharVector(mesh_data.vertices));
+        meshes[mesh_data.material]->setMaterial(
+            material_manager.getMaterial(mesh_data.material));
     }
+
+    mesh_manager.setMeshes(std::move(meshes));
 }
 } // namespace kusengine::parser

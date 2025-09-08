@@ -4,7 +4,7 @@
 #include <string_view>
 #include <vector>
 
-#include "kernel/framework/logging/table_storage.hpp"
+#include "kernel/framework/logger/table/include_me.hpp"
 
 namespace data
 {

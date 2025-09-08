@@ -17,6 +17,9 @@ class MeshManager
 public:
     void setup(const MaterialManager& material_manager);
 
+    void setMeshes(
+        std::unordered_map<std::string, std::unique_ptr<IMesh>>&& meshes);
+
     const IMesh* const getMesh(const std::string& name) const;
 
 private:

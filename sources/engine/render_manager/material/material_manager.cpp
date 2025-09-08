@@ -10,23 +10,9 @@ namespace kusengine::render
 {
 
 const Material* const
-MaterialManager::getMaterial(Material::Type mtype,
-                             const std::string& name) const
+MaterialManager::getMaterial(const std::string& name) const
 {
-    auto it = m_materials.find(mtype);
-
-    if (it == m_materials.end())
-    {
-        throw std::exception("dind not find material type");
-    }
-    auto it_m = it->second.find(name);
-
-    if (it_m == it->second.end())
-    {
-        throw std::exception("dind not find material");
-    }
-
-    return it_m->second.get();
+    return m_materials.at(name).get();
 }
 
 // TODO: Builder pattern
@@ -44,7 +30,14 @@ void
 MaterialManager::setTextureZones(
     std::unordered_map<std::string, std::unique_ptr<Material>>&& texture_zones)
 {
-    m_materials[Material::Type::TEXTURE_ZONE] = std::move(texture_zones);
+    for (auto&& tz : texture_zones)
+    {
+        if (m_materials.find(tz.first) != m_materials.end())
+        {
+            throw std::exception("naming differnet material by one name");
+        }
+        m_materials.emplace(std::move(tz));
+    }
 }
 
 } // namespace kusengine::render

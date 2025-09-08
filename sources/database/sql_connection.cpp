@@ -2,8 +2,6 @@
 
 #include <cstring>
 
-#include "kernel/string/string_malloc.hpp"
-
 #include "struct_storage.hpp"
 
 data::SQLConnection::SQLConnection(const Credentials& a_credentials) noexcept

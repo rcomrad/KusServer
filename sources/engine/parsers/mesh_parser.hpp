@@ -8,17 +8,12 @@ namespace kusengine::parser
 class MeshParser
 {
 public:
-    std::unordered_map<std::string, std::unique_ptr<render::IMesh>> parse(
-        const std::string& filename,
-        render::MeshManager& mesh_manager);
+    void parse(const std::string& filename,
+               render::MeshManager& mesh_manager,
+               const render::MaterialManager& material_manager);
 
 private:
-    template <const char* vertex_type>
-    void parseVerts();
 };
-
-extern template void
-MeshParser::parseVerts<"P2DUV">();
 
 } // namespace kusengine::parser
 

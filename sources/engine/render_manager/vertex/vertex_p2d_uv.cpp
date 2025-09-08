@@ -62,4 +62,10 @@ VertexP2DUV::getUV() const& noexcept
     return m_attributes.uv;
 }
 
+const glm::vec2&
+VertexP2DUV::getPos() const& noexcept
+{
+    return m_attributes.pos;
+}
+
 }; // namespace kusengine::render
