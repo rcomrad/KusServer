@@ -98,10 +98,13 @@ MeshParser::parse(const std::string& filename,
 
     for (auto&& mesh_data : meshes_data)
     {
+        meshes[mesh_data.name] =
+            std::make_unique<render::Mesh<render::VertexP2DUV>>();
+
         meshes[mesh_data.name]->setInds(std::move(mesh_data.indices));
         meshes[mesh_data.name]->setVertices(
             translateToCharVector(mesh_data.vertices));
-        meshes[mesh_data.material]->setMaterial(
+        meshes[mesh_data.name]->setMaterial(
             material_manager.getMaterial(mesh_data.material));
     }
 

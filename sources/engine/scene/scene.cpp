@@ -33,7 +33,7 @@ Scene::create()
 
     std::unique_ptr<render::Model> model1 =
         std::make_unique<render::SimpleModel>(
-            mud, mesh_manager.getMesh("stone_rectangle"));
+            mud, mesh_manager.getMesh("wood_rectangle"));
 
     // // create Drawable
 

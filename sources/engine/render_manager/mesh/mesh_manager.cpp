@@ -1,6 +1,8 @@
 #include "mesh_manager.hpp"
 
 #include "engine/parsers/mesh_parser.hpp"
+#include "kernel/framework/include_me.hpp"
+
 namespace kusengine::render
 {
 
@@ -9,7 +11,9 @@ MeshManager::setup(const MaterialManager& material_manager)
 {
     parser::MeshParser mesh_parser;
 
-    mesh_parser.parse("", *this, material_manager);
+    auto&& path = KERNEL.getFolderPath("resource") + "mesh.json";
+
+    mesh_parser.parse(path, *this, material_manager);
 }
 
 void
