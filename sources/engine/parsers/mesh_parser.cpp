@@ -96,18 +96,33 @@ MeshParser::parse(const std::string& filename,
 
     std::unordered_map<std::string, std::unique_ptr<render::IMesh>> meshes;
 
+    // mesh rect
+    std::vector<render::VertexP2DUV> verts = {
+        {{0.f, 0.f}, {0.f, 0.f}},
+        {{1.f, 0.f}, {1.f, 0.f}},
+        {{1.f, 1.f}, {1.f, 1.f}},
+        {{0.f, 1.f}, {0.f, 1.f}}
+    };
+    std::vector<uint32_t> inds = {0, 1, 2, 2, 3, 0};
+
+    render::Mesh<render::VertexP2DUV> rect_mesh;
+    rect_mesh.setVertices(translateToCharVector(verts));
+    rect_mesh.setInds(inds);
+
+    auto water = material_manager.getMaterial("stat_water");
+    rect_mesh.setMaterial(water);
+    ////////////
+
     for (auto&& mesh_data : meshes_data)
     {
-        meshes[mesh_data.name] =
-            std::make_unique<render::Mesh<render::VertexP2DUV>>();
+        render::Mesh<render::VertexP2DUV> mesh;
+        mesh.setInds(mesh_data.indices);
+        mesh.setVertices(translateToCharVector(mesh_data.vertices));
+        mesh.setMaterial(material_manager.getMaterial(mesh_data.material));
 
-        meshes[mesh_data.name]->setInds(std::move(mesh_data.indices));
-        meshes[mesh_data.name]->setVertices(
-            translateToCharVector(mesh_data.vertices));
-        meshes[mesh_data.name]->setMaterial(
-            material_manager.getMaterial(mesh_data.material));
+        mesh_manager.pushMesh(mesh_data.name, mesh);
     }
 
-    mesh_manager.setMeshes(std::move(meshes));
+    // mesh_manager.setMeshes(std::move(meshes));
 }
 } // namespace kusengine::parser

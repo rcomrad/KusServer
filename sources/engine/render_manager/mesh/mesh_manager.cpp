@@ -6,6 +6,21 @@
 namespace kusengine::render
 {
 
+template <typename Vert_t>
+std::vector<char>
+translateToCharVector(const std::vector<Vert_t>& verts)
+{
+    std::vector<char> res;
+    res.reserve(verts.size() * Vert_t{}.byteSize());
+
+    for (int i = 0; i < verts.size(); ++i)
+    {
+        verts[i].pushTo(res);
+    }
+
+    return res;
+}
+
 void
 MeshManager::setup(const MaterialManager& material_manager)
 {
@@ -16,12 +31,12 @@ MeshManager::setup(const MaterialManager& material_manager)
     mesh_parser.parse(path, *this, material_manager);
 }
 
-void
-MeshManager::setMeshes(
-    std::unordered_map<std::string, std::unique_ptr<IMesh>>&& meshes)
-{
-    m_meshes = std::move(meshes);
-}
+// void
+// MeshManager::setMeshes(
+//     std::unordered_map<std::string, std::unique_ptr<IMesh>>&& meshes)
+// {
+//     m_meshes = std::move(meshes);
+// }
 
 const IMesh* const
 MeshManager::getMesh(const std::string& name) const

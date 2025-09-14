@@ -17,8 +17,14 @@ class MeshManager
 public:
     void setup(const MaterialManager& material_manager);
 
-    void setMeshes(
-        std::unordered_map<std::string, std::unique_ptr<IMesh>>&& meshes);
+    // void setMeshes(
+    // std::unordered_map<std::string, std::unique_ptr<IMesh>>&& meshes);
+
+    template <typename Mesh_t>
+    void pushMesh(const std::string& name, const Mesh_t& mesh)
+    {
+        m_meshes.emplace(name, std::make_unique<Mesh_t>(mesh));
+    };
 
     const IMesh* const getMesh(const std::string& name) const;
 

@@ -26,7 +26,7 @@ struct adl_serializer<kusengine::render::VertexP2DUV>
         j.at("uv").get_to(uv);
 
         vertex.setPosition(pos);
-        vertex.setPosition(uv);
+        vertex.setUV(uv);
     }
 };
 
