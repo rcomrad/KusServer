@@ -15,6 +15,10 @@ macro(vulkan_lib)
     find_package(Vulkan REQUIRED)
     target_link_libraries(${TARGET} PRIVATE Vulkan::Vulkan)
 endmacro()
+macro(crow_lib TARGET)
+    find_package(Crow CONFIG REQUIRED)         
+    target_link_libraries(${TARGET} PRIVATE Crow::Crow) 
+endmacro()
 
 macro(glfw_lib)
     find_package(glfw3 CONFIG REQUIRED)
@@ -31,7 +35,7 @@ macro(lib_router)
     elseif(${LIBRARY_NAME} STREQUAL postgresql)
         # Not implemented
     elseif(${LIBRARY_NAME} STREQUAL crow)
-        # Not implemented
+        crow_lib()
     elseif(${LIBRARY_NAME} STREQUAL mailio)
         # Not implemented
     elseif(${LIBRARY_NAME} STREQUAL boost)
