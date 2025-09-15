@@ -118,6 +118,7 @@
         "slist": "cpp",
         "expected": "cpp",
         "xmemory": "cpp",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "xiosbase": "cpp"
     }
 }
