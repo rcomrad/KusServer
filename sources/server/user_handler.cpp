@@ -28,26 +28,26 @@ UserHandler::autorisation(const crow::request& aReq) noexcept
                                        std::string(x["login"].s()),
                                        std::string(x["password"].s()));
         auto connection = adm_pool.get();
-        auto user_opt    = connection.select<Person>(cond);
+        // auto user_opt    = connection.select<Person>(cond);
 
-        if (user_opt.has_value())
-        {
-            auto& user = user_opt.value();
+        // if (user_opt.has_value())
+        // {
+        //     auto& user = user_opt.value();
 
-            crow::json::wvalue uJson;
-            uJson["user"]["id"]    = user.id;
-            uJson["user"]["login"] = user.login;
-            crow::json::wvalue::list roleList;
-            roleList.emplace_back("add_plan");
-            uJson["user"]["role"] = std::move(roleList);
+        //     crow::json::wvalue uJson;
+        //     uJson["user"]["id"]    = user.id;
+        //     uJson["user"]["login"] = user.login;
+        //     crow::json::wvalue::list roleList;
+        //     roleList.emplace_back("add_plan");
+        //     uJson["user"]["role"] = std::move(roleList);
 
-            resp = std::move(uJson);
-        }
-        else
-        {
-            resp      = {"Wrong username or password!"};
-            resp.code = 403;
-        }
+        //     resp = std::move(uJson);
+        // }
+        // else
+        // {
+        //     resp      = {"Wrong username or password!"};
+        //     resp.code = 403;
+        // }
     }
     // resp = crow::response(401);
     return resp;

@@ -17,7 +17,7 @@ main(int argc, char** argv)
         ::testing::InitGoogleTest(&argc, argv);
         ::testing::InitGoogleMock(&argc, argv);
 
-        // ::testing::GTEST_FLAG(filter) = "DatabaseFixture.*";
+        //::testing::GTEST_FLAG(filter) = "SimpleDBTests.MassActions";
     }
     catch (const std::runtime_error& err)
     {
