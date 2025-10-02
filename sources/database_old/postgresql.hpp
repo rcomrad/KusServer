@@ -3,38 +3,38 @@
 //--------------------------------------------------------------------------------
 
 #include "kernel/utility/macroses/holy_trinity.hpp"
+#include "kernel/utility/type/type_id.hpp"
 #include "pqxx/pqxx"
 
 #include "credentials.hpp"
 
 //--------------------------------------------------------------------------------
 
-namespace database
+namespace data
 {
 
 class PostgreSQL
 {
 public:
     HOLY_TRINITY_NOCOPY(PostgreSQL);
-
     PostgreSQL(const Credentials& a_cred);
 
     //----------------------------------------------------------------------------
 
-    int getInt(int a_colum_number) ;
-    float getFloat(int a_colum_number) ;
-    bool getBool(int a_colum_number) ;
-    const char* getChars(int a_colum_number) ;
+    int getInt(int a_colum_number) noexcept;
+    float getFloat(int a_colum_number) noexcept;
+    bool getBool(int a_colum_number) noexcept;
+    const char* getChars(int a_colum_number) noexcept;
 
     //----------------------------------------------------------------------------
 
-    void step() ;
-    void closeStatement() ;
-    void exec(const char* a_statment) ;
-    void nontransaction(const char* a_statment) ;
+    void step() noexcept;
+    void closeStatement() noexcept;
+    void exec(const char* a_statment) noexcept;
+    void nontransaction(const char* a_statment) noexcept;
 
-    int hasData(int num = 0) const ;
-    int getResultSize() const ;
+    word_t hasData(int num = 0) const noexcept;
+    word_t getResultSize() const noexcept;
 
 private:
     std::unique_ptr<pqxx::connection> m_pqxx_connection_ptr;
