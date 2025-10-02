@@ -28,7 +28,11 @@ public:
     void storeCommand(const CommandData& a_command);
     void applyCommands();
 
+    static void turnOffStateRestore();
+
 private:
+    static bool m_state_restore_flag;
+
     struct CommandDataExt : public CommandData
     {
         CommandDataExt(const std::string& a_comm_str, int a_type)

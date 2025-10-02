@@ -1,6 +1,6 @@
 #include "sql_connection.hpp"
 
-#include <format>
+#include "mass_executor.hpp"
 
 namespace database
 {
@@ -30,26 +30,6 @@ SQLConnection::createEnvironment(const Credentials& a_cred)
 }
 
 void
-SQLConnection::createTable(std::string_view a_table_name,
-                           std::string_view a_table_body)
-{
-    execAndClose(std::format(
-        "CREATE TABLE IF NOT EXISTS {} (id integer GENERATED ALWAYS AS "
-        "IDENTITY PRIMARY KEY, {});",
-        a_table_name, a_table_body));
-
-    execAndClose(
-        std::format("ALTER TABLE {} OWNER TO {};", a_table_name, m_user_name));
-}
-
-void
-SQLConnection::deleteTable(std::string_view a_table_name)
-{
-    auto statement = std::format("DROP TABLE IF EXISTS {};", a_table_name);
-    execAndClose(statement);
-}
-
-void
 SQLConnection::execAndClose(std::string_view a_str)
 {
     m_db_conn.exec(a_str.data());
@@ -60,6 +40,12 @@ void
 SQLConnection::execAndClose(util::StringBuilder& a_sb)
 {
     execAndClose(a_sb.collapse().get());
+}
+
+std::string
+SQLConnection::dumpAll()
+{
+    return MassExecutor::getInstance().dumpAll(*this);
 }
 
 } // namespace database

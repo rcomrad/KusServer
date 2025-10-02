@@ -1,5 +1,7 @@
 #include "string_builder.hpp"
 
+#include "kernel/framework/logger/include_me.hpp"
+
 util::StringBuilder::StringBuilder()
     : m_size(0), m_sep_start(0), m_sep_ptr(nullptr)
 {
@@ -50,6 +52,9 @@ util::StringBuilder::collapse()
             case Type::SEPARATOR:
                 sep = i.data.char_val;
                 break;
+            case Type::POP_BACK:
+                --ptr;
+                break;
             default:
                 // error
                 break;
@@ -57,7 +62,8 @@ util::StringBuilder::collapse()
         gg += ptr - old;
     }
     *ptr = 0;
-    if (gg >= m_size + 1) std::terminate();
+
+    if (gg >= m_size + 1) THROW("Statement size exceeded memory buffer");
 
     m_data_array.clear();
     if (m_sep_ptr)
@@ -98,12 +104,18 @@ util::StringBuilder::add(std::string_view a_data)
 }
 
 void
-util::StringBuilder::addQuotated(std::string_view a_data)
+util::StringBuilder::addDBData(int a_data)
+{
+    add(a_data);
+}
+
+void
+util::StringBuilder::addDBData(std::string_view a_data)
 {
     add('\'');
     m_data_array.emplace_back(Type::STRING_VIEW).data.str = a_data;
     add('\'');
-    m_size += a_data.size();
+    m_size += a_data.size() + 2;
 }
 
 util::StringBuilder::ScopedSeparator
@@ -112,6 +124,12 @@ util::StringBuilder::addSeparator(char a_sep)
     ScopedSeparator result(*this, a_sep);
     result.subscribe();
     return result;
+}
+
+void
+util::StringBuilder::pop_back()
+{
+    m_data_array.emplace_back(Type::POP_BACK);
 }
 
 util::StringBuilder::ScopedSeparator::ScopedSeparator(StringBuilder& a_sb_ref,
