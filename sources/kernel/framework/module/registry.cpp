@@ -75,18 +75,39 @@ core::ModuleRegistry::modAdd(core::Command& a_command)
 {
     a_command.noVars();
 
+    std::string suc_mosules;
+
     // TODO: empty?
+    bool many = false;
     for (const auto& name : a_command.arguments)
     {
         auto module_ptr = ModuleConstructor::getInstance().construct(name);
         if (module_ptr == nullptr)
         {
-            return;
+            LOG_ERROR("Unable to construct \'%s\' module", name);
         }
-        m_modules.emplace_back(std::move(module_ptr));
+        else
+        {
+            m_modules.emplace_back(std::move(module_ptr));
+            if (!suc_mosules.empty())
+            {
+                suc_mosules += ", ";
+                many = true;
+            }
+            suc_mosules.push_back('\'');
+            suc_mosules += name;
+            suc_mosules.push_back('\'');
+        }
     }
-
-    LOG_CMD("Modules created successfully.");
+    if (suc_mosules.empty())
+    {
+        LOG_CMD("No modules were created!");
+    }
+    else
+    {
+        LOG_CMD("Module%s %s created successfully.", many ? "s" : "",
+                suc_mosules);
+    }
 }
 
 void

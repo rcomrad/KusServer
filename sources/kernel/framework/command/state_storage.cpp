@@ -8,20 +8,19 @@
 #include "kernel/utility/file_system/path_values.hpp"
 #include "kernel/utility/string/parser.hpp"
 
-namespace
+namespace core
 {
 
-constexpr const char* STATE_FILE_NAME = "program_state.txt";
+bool StateStorage::m_state_restore_flag = true;
+constexpr const char* STATE_FILE_NAME   = "program_state.txt";
 
-}
-
-core::StateStorage::StateStorage()
+StateStorage::StateStorage()
 {
     KERNEL.addFile(util::DATA_FOLDER_NAME, STATE_FILE_NAME);
 }
 
 void
-core::StateStorage::listenCommand(const std::string& a_comm, int a_type)
+StateStorage::listenCommand(const std::string& a_comm, int a_type)
 {
     if (m_storage.count(a_comm))
     {
@@ -30,7 +29,7 @@ core::StateStorage::listenCommand(const std::string& a_comm, int a_type)
     m_storage.emplace(a_comm, CommandDataExt(a_comm, a_type));
 }
 void
-core::StateStorage::storeCommand(const CommandData& a_command)
+StateStorage::storeCommand(const CommandData& a_command)
 {
     auto it = m_storage.find(a_command.value);
     if (it == m_storage.end())
@@ -62,8 +61,10 @@ core::StateStorage::storeCommand(const CommandData& a_command)
 }
 
 void
-core::StateStorage::applyCommands()
+StateStorage::applyCommands()
 {
+    if (!m_state_restore_flag) return;
+
     auto data     = util::FileRead::read(STATE_FILE_NAME);
     auto commands = util::Parser::getLinesRef(data);
 
@@ -76,8 +77,16 @@ core::StateStorage::applyCommands()
 }
 
 void
-core::StateStorage::dumpState()
+StateStorage::turnOffStateRestore()
+{
+    m_state_restore_flag = false;
+}
+
+void
+StateStorage::dumpState()
 {
     util::FileWrite state_file(STATE_FILE_NAME);
     state_file.write(m_storage);
 }
+
+} // namespace core

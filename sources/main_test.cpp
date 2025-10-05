@@ -4,11 +4,14 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "kernel/framework/command/state_storage.hpp"
 #include "kernel/framework/logger/include_me.hpp"
 
 int
 main(int argc, char** argv)
 {
+    core::StateStorage::turnOffStateRestore();
+
     try
     {
         ::testing::InitGoogleTest(&argc, argv);

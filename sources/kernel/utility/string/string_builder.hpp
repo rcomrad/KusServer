@@ -38,9 +38,13 @@ public:
     void add(int a_data);
     void add(char a_data);
     void add(std::string_view a_data);
-    void addQuotated(std::string_view a_data);
+
+    void addDBData(int a_data);
+    void addDBData(std::string_view a_data);
 
     ScopedSeparator addSeparator(char a_sep);
+
+    void pop_back();
 
 private:
     size_t m_size;
@@ -59,7 +63,8 @@ private:
         CHAR,
         NUM_S32,
         STRING_VIEW,
-        SEPARATOR
+        SEPARATOR,
+        POP_BACK
     };
     struct Entry
     {

@@ -15,6 +15,9 @@ DBModule::DBModule() : core::Module(module_name)
     registrateBaseCommand("db_add_cred",
                           "Creates a module with the specified name.",
                           "[module_name]...");
+    KERNEL.listenCommand("db_add_cred",
+                         core::StateStorage::StateType::RESET_ARGS |
+                             core::StateStorage::StateType::RESET_VARS);
 }
 
 void
@@ -36,6 +39,7 @@ DBModule::getConnectionPool(const std::string& a_name)
 void
 DBModule::dbAddCred(core::Command& a_command)
 {
+    // TODO: THROW/ASSERT
     a_command.noVars().argCount(Credentials::COUNT);
 
     Credentials cred(a_command.arguments);

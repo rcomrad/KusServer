@@ -21,6 +21,11 @@ macro(crow_lib)
     target_link_libraries(${TARGET} PRIVATE Crow::Crow asio::asio)
 endmacro()
 
+macro(boost_lib)
+    find_package(Boost REQUIRED COMPONENTS preprocessor)
+    target_link_libraries(${TARGET} PRIVATE Boost::preprocessor)
+endmacro()
+
 macro(vulkan_lib)
     find_package(Vulkan REQUIRED)
     target_link_libraries(${TARGET} PRIVATE Vulkan::Vulkan)
@@ -45,7 +50,7 @@ macro(lib_router)
     elseif(${LIBRARY_NAME} STREQUAL mailio)
         # Not implemented
     elseif(${LIBRARY_NAME} STREQUAL boost)
-        # Not implemented
+        boost_lib()
     elseif(${LIBRARY_NAME} STREQUAL vulkan)
         vulkan_lib()
     elseif(${LIBRARY_NAME} STREQUAL glfw)

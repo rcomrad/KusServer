@@ -24,7 +24,7 @@ core::Base::Base()
         {
             while (flag)
             {
-                doWork();
+                execIfAvailable();
                 util::Sleep::yield();
             }
         });

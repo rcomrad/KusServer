@@ -4,7 +4,7 @@
 
 #include "server_module.hpp"
 
-#include "database/db_module.hpp"
+#include "database/include_me.hpp"
 
 namespace server
 {
@@ -36,6 +36,12 @@ ServerModule::initialize()
     auto& database = KERNEL.getModuleRef<database::DBModule>("database");
     auto& adm_pool = database.getConnectionPool("postgres");
     auto& adm_conn = adm_pool.get();
+
+    CROW_ROUTE(mApp, "/api/login")
+        .methods("POST"_method)([&](const crow::request& req)
+                                { return "yahoo"; });
+
+    mApp.port(18080).multithreaded().run();
 }
 
 } // namespace server
