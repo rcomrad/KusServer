@@ -19,7 +19,8 @@ class MassExecutor
         NUN,
         CREATE,
         DELETE,
-        DUMP
+        DUMP,
+        LOAD
     };
 
     using FuncType =
@@ -44,7 +45,8 @@ public:
         auto lambda =
             [](CallType a_type, SQLConnection& a_conn, std::any& a_data)
         {
-            std::string* str_ptr = nullptr;
+            std::string* str_ptr                     = nullptr;
+            std::vector<std::string_view>* dump_data = nullptr;
             switch (a_type)
             {
                 case CallType::CREATE:
@@ -56,6 +58,13 @@ public:
                 case CallType::DUMP:
                     str_ptr = std::any_cast<std::string*>(a_data);
                     *str_ptr += a_conn.dump<TableType>();
+                    str_ptr = nullptr;
+                    break;
+                case CallType::LOAD:
+                    dump_data =
+                        std::any_cast<std::vector<std::string_view>*>(a_data);
+                    a_conn.loadTable<TableType>(*dump_data);
+                    dump_data = nullptr;
                     break;
             }
         };
@@ -67,6 +76,7 @@ public:
     void createAll(SQLConnection& a_conn);
     void deleteAll(SQLConnection& a_conn);
     std::string dumpAll(SQLConnection& a_conn);
+    void load(SQLConnection& a_conn, const std::vector<std::string>& a_data);
 
 private:
     std::unordered_map<std::string, FuncType> m_exsiting_types;

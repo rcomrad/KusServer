@@ -42,10 +42,16 @@ SQLConnection::execAndClose(util::StringBuilder& a_sb)
     execAndClose(a_sb.collapse().get());
 }
 
-std::string
-SQLConnection::dumpAll()
-{
-    return MassExecutor::getInstance().dumpAll(*this);
-}
+// std::string
+// SQLConnection::dumpAll()
+// {
+//     return MassExecutor::getInstance().dumpAll(*this);
+// }
+
+// void
+// SQLConnection::load(std::string& a_data)
+// {
+//     return MassExecutor::getInstance().load(*this, a_data);
+// }
 
 } // namespace database

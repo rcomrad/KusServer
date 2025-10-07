@@ -92,6 +92,7 @@ TEST_F(DatabaseFixture, MassActions)
 
     ///
 
+    exec.deleteAll(adm_conn);
     exec.createAll(adm_conn);
 
     populateTT(adm_conn);
@@ -125,6 +126,7 @@ TEST_F(DatabaseFixture, Dump)
 
     ///
 
+    exec.deleteAll(adm_conn);
     exec.createAll(adm_conn);
 
     populateTT(adm_conn);
@@ -132,17 +134,65 @@ TEST_F(DatabaseFixture, Dump)
     checkTT(adm_conn);
     checkST(adm_conn);
 
-    std::string tt_data = "TABLE TestTable\n"
-                          "\t1;10;aba;\n"
-                          "\t2;17;vbb;\n"
-                          "END\n";
-    std::string ts_data = "TABLE SecondTable\n"
-                          "\t1;str1;-5;0;\n"
-                          "\t2;str1;0;0;\n"
-                          "END\n";
+    std::string tt_data = "TestTable@\n"
+                          "1;10;aba;\n"
+                          "2;17;vbb;\n"
+                          "~\n";
+    std::string ts_data = "SecondTable@\n"
+                          "1;str1;-5;0;\n"
+                          "2;str1;0;0;\n"
+                          "~\n";
     EXPECT_EQ(adm_conn.dump<TestTable>(), tt_data);
     EXPECT_EQ(adm_conn.dump<SecondTable>(), ts_data);
-    EXPECT_EQ(adm_conn.dumpAll(), ts_data + tt_data);
+    EXPECT_EQ(exec.dumpAll(adm_conn), ts_data + tt_data);
+
+    exec.deleteAll(adm_conn);
+}
+
+TEST_F(DatabaseFixture, Load)
+{
+    execCommand("db_add_cred postgres admin 127.0.0.1 5437 postgres");
+    auto& adm_pool = m_database.getConnectionPool("postgres");
+    auto& adm_conn = adm_pool.get();
+
+    auto& exec = database::MassExecutor::getInstance();
+
+    ///
+
+    exec.deleteAll(adm_conn);
+    exec.createAll(adm_conn);
+
+    std::vector<std::string> data = {
+        "TestTable@",   "1;10;aba;",    "2;17;vbb;",   "~",
+        "SecondTable@", "#1;isa;0;7;","1;str1;-5;0;", "2;str1;0;0;", "~"};
+    exec.load(adm_conn, data);
+
+    checkTT(adm_conn);
+    checkST(adm_conn);
+
+    exec.deleteAll(adm_conn);
+}
+
+TEST_F(DatabaseFixture, up)
+{
+    execCommand("db_add_cred postgres admin 127.0.0.1 5437 postgres");
+    auto& adm_pool = m_database.getConnectionPool("postgres");
+    auto& adm_conn = adm_pool.get();
+
+    auto& exec = database::MassExecutor::getInstance();
+
+    ///
+
+    exec.deleteAll(adm_conn);
+    exec.createAll(adm_conn);
+
+    std::vector<std::string> data = {
+        "TestTable@",   "1;10;aba;",    "2;17;vbb;",   "~",
+        "SecondTable@", "#1;isa;0;7;","1;str1;-5;0;", "2;str1;0;0;", "~"};
+    exec.load(adm_conn, data);
+
+    checkTT(adm_conn);
+    checkST(adm_conn);
 
     exec.deleteAll(adm_conn);
 }

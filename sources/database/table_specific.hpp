@@ -4,6 +4,8 @@
 
 #include <string>
 
+#include "kernel/utility/string/slicer.hpp"
+
 #include "mass_executor.hpp"
 #include "table_base.hpp"
 
@@ -33,8 +35,16 @@
 
 #define FIELD_DUMP(r, data, elem) result += dumpType(GET_NAME(elem));
 
+#define FIELD_UPDATE(r, data, elem)               \
+    result.push_back(',');                        \
+    result += BOOST_PP_STRINGIZE(GET_NAME(elem)); \
+    result.push_back('=');                        \
+    result += dumpType(GET_NAME(elem));
+
 #define FIELD_INFO(r, data, elem) \
     addInfo(result, BOOST_PP_STRINGIZE(GET_NAME(elem)), GET_TYPE(elem){});
+
+#define FIELD_LOAD(r, data, i, elem) loadType(parts[i + 1], GET_NAME(elem));
 
 #define FIELD_EQ(r, data, elem) \
     result &= GET_NAME(elem) == a_other.GET_NAME(elem);
@@ -53,6 +63,12 @@
             : BOOST_PP_SEQ_FOR_EACH(FIELD_CONSTR_INIT, _, fields_seq) \
                   TableBase(a_id)                                     \
         {                                                             \
+        }                                                             \
+                                                                      \
+        name(std::string_view a_data)                                 \
+        {                                                             \
+            auto parts = util::Slicer::copy(a_data, ";");             \
+            BOOST_PP_SEQ_FOR_EACH_I(FIELD_LOAD, _, fields_seq)        \
         }                                                             \
                                                                       \
         bool operator==(const name& a_other) const                    \
@@ -77,9 +93,17 @@
                                                                       \
         std::string dump() const                                      \
         {                                                             \
-            std::string result = "\t";                                \
+            std::string result;                                       \
             result += dumpType(id);                                   \
             BOOST_PP_SEQ_FOR_EACH(FIELD_DUMP, _, fields_seq)          \
+            return result;                                            \
+        }                                                             \
+                                                                      \
+        std::string update() const                                    \
+        {                                                             \
+            std::string result = "id=";                               \
+            result += dumpType(id);                                   \
+            BOOST_PP_SEQ_FOR_EACH(FIELD_UPDATE, _, fields_seq)        \
             return result;                                            \
         }                                                             \
                                                                       \

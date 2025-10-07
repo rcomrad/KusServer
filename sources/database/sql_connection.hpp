@@ -20,10 +20,12 @@ public:
     template <typename TableType>
     int insert(const TableType& a_data);
     template <typename TableType>
+    void insertArray(const std::vector<TableType>& a_data);
+
+    template <typename TableType>
     std::optional<TableType> select(std::string_view a_condition = "");
     template <typename TableType>
     TableType selectUnsafe(std::string_view a_condition = "");
-
     template <typename TableType>
     std::vector<TableType> selectArray(std::string_view a_condition = "");
 
@@ -32,10 +34,21 @@ public:
     template <typename TableType>
     void deleteTable();
 
-    void clear();
     template <typename TableType>
     std::string dump();
-    std::string dumpAll();
+    // std::string dumpAll();
+
+    // void load(std::string& a_data);
+    template <typename TableType>
+    void loadTable(const std::vector<std::string_view>& a_data);
+
+    template <typename TableType>
+    void update(TableType& a_data);
+
+    template <typename TableType>
+    void drop(TableType& a_cond);
+    template <typename TableType>
+    void drop(std::string_view a_cond);
 
 private:
     PostgreSQL m_db_conn;
@@ -65,6 +78,17 @@ SQLConnection::insert(const TableType& a_data)
     m_db_conn.closeStatement();
 
     return result;
+}
+
+template <typename TableType>
+void
+SQLConnection::insertArray(const std::vector<TableType>& a_data)
+{
+    // TODO: beter
+    for (auto& i : a_data)
+    {
+        insert(i);
+    }
 }
 
 template <typename TableType>
@@ -161,15 +185,73 @@ template <typename TableType>
 std::string
 SQLConnection::dump()
 {
-    std::string result = std::format("TABLE {}\n", TableType::getTableName());
+    std::string result = std::format("{}@\n", TableType::getTableName());
     auto arr           = selectArray<TableType>();
     for (auto& i : arr)
     {
         result += i.dump();
         result.push_back('\n');
     }
-    result += "END\n";
+    result += "~\n";
     return result;
+}
+
+template <typename TableType>
+void
+SQLConnection::loadTable(const std::vector<std::string_view>& a_data)
+{
+    std::vector<TableType> data;
+    for (auto& i : a_data)
+    {
+        data.emplace_back(i);
+    }
+    insertArray(data);
+}
+
+template <typename TableType>
+void
+SQLConnection::update(TableType& a_data)
+{
+    if (!a_cond.id)
+    {
+        THROW("No id value");
+    }
+
+    util::StringBuilder sb;
+
+    sb.add("UPDATE ");
+    sb.add(a_data.getTableName());
+    sb.add(" SET ");
+    sb.add(a_data.update());
+    sb.add(" WHERE id=");
+    sb.add(a_cond.id);
+    sb.add(";");
+
+    auto statement_ptr = sb.collapse();
+    auto raw_statement = statement_ptr.get();
+    m_db_conn.exec(raw_statement);
+    m_db_conn.closeStatement();
+
+    return result;
+}
+
+template <typename TableType>
+void
+SQLConnection::drop(TableType& a_cond)
+{
+    if (!a_cond.id)
+    {
+        THROW("No id value");
+    }
+    drop("id=" + std::to_string(a_cond.id));
+}
+
+template <typename TableType>
+void
+SQLConnection::drop(std::string_view a_cond)
+{
+    std::statement =
+        std::format("DELETE FROM {} WHERE {};", a_data.getTableName(), a_cond);
 }
 
 } // namespace database
