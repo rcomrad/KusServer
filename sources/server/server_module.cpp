@@ -1,10 +1,11 @@
+// #include "database/include_me.hpp"
+
 #include "kernel/framework/include_me.hpp"
 
 //-----------
 
 #include "server_module.hpp"
-
-#include "database/include_me.hpp"
+#include "user_handler.hpp"
 
 namespace server
 {
@@ -33,13 +34,17 @@ ServerModule::initialize()
         .ignore();
     // clang-format on
 
-    auto& database = KERNEL.getModuleRef<database::DBModule>("database");
-    auto& adm_pool = database.getConnectionPool("postgres");
-    auto& adm_conn = adm_pool.get();
+    // auto& database = KERNEL.getModuleRef<database::DBModule>("database");
+    // auto& adm_pool = database.getConnectionPool("postgres");
+    // auto& adm_conn = adm_pool.get();
+
+    CROW_ROUTE(mApp, "/api/yahoo")
+        .methods("POST"_method)([&](const crow::request& req)
+                                { return "yahoo"; });
 
     CROW_ROUTE(mApp, "/api/login")
         .methods("POST"_method)([&](const crow::request& req)
-                                { return "yahoo"; });
+                                { return UserHandler::autorisation(req); });
 
     mApp.port(18080).multithreaded().run();
 }

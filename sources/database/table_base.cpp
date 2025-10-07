@@ -49,6 +49,18 @@ TableBase::dumpType(std::string a_data)
     return addSeparator(std::string(a_data));
 }
 
+void
+TableBase::loadType(std::string_view a_data, int& a_res)
+{
+    a_res = std::stoi(std::string(a_data));
+}
+
+void
+TableBase::loadType(std::string_view a_data, std::string& a_res)
+{
+    a_res = a_data;
+}
+
 std::string
 TableBase::addSeparator(std::string&& a_data)
 {

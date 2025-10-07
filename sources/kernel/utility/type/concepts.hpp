@@ -18,4 +18,10 @@ concept MapedContainer = requires(T t) {
     { t.begin()->second };
 };
 
+template <typename T>
+concept IsStdString = std::same_as<T, std::string>;
+
+template <typename T>
+concept IsNotStdString = !std::same_as<T, std::string>; 
+
 } // namespace util

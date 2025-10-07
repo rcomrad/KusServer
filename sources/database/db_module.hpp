@@ -1,3 +1,5 @@
+#pragma once
+
 #include <unordered_map>
 
 #include "kernel/framework/module/include_me.hpp"

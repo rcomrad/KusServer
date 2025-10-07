@@ -1,3 +1,5 @@
+#pragma once
+
 #include "kernel/framework/module/include_me.hpp"
 
 //-----------

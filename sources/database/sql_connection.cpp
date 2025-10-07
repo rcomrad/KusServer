@@ -1,13 +1,21 @@
 #include "sql_connection.hpp"
 
+#include "connection_pool.hpp"
 #include "mass_executor.hpp"
 
 namespace database
 {
 
-SQLConnection::SQLConnection(const Credentials& a_cred)
-    : m_db_conn(a_cred), m_user_name(a_cred.user)
+SQLConnection::SQLConnection(PostgreSQL& a_psql,
+                             const std::string& a_user_name,
+                             ConnectionPool* a_parent)
+    : m_db_conn(a_psql), m_user_name(a_user_name), m_parent(a_parent)
 {
+}
+
+SQLConnection::~SQLConnection()
+{
+    m_parent->put(m_db_conn);
 }
 
 void
@@ -42,10 +50,16 @@ SQLConnection::execAndClose(util::StringBuilder& a_sb)
     execAndClose(a_sb.collapse().get());
 }
 
-std::string
-SQLConnection::dumpAll()
-{
-    return MassExecutor::getInstance().dumpAll(*this);
-}
+// std::string
+// SQLConnection::dumpAll()
+// {
+//     return MassExecutor::getInstance().dumpAll(*this);
+// }
+
+// void
+// SQLConnection::load(std::string& a_data)
+// {
+//     return MassExecutor::getInstance().load(*this, a_data);
+// }
 
 } // namespace database
