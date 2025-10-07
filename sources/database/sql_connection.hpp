@@ -3,6 +3,7 @@
 #include <format>
 #include <optional>
 
+#include "kernel/framework/logger/include_me.hpp"
 #include "kernel/utility/string/string_builder.hpp"
 
 #include "postgresql.hpp"
@@ -212,7 +213,7 @@ template <typename TableType>
 void
 SQLConnection::update(TableType& a_data)
 {
-    if (!a_cond.id)
+    if (!a_data.id)
     {
         THROW("No id value");
     }
@@ -222,17 +223,15 @@ SQLConnection::update(TableType& a_data)
     sb.add("UPDATE ");
     sb.add(a_data.getTableName());
     sb.add(" SET ");
-    sb.add(a_data.update());
+    a_data.update(sb);
     sb.add(" WHERE id=");
-    sb.add(a_cond.id);
+    sb.add(a_data.id);
     sb.add(";");
 
     auto statement_ptr = sb.collapse();
     auto raw_statement = statement_ptr.get();
     m_db_conn.exec(raw_statement);
     m_db_conn.closeStatement();
-
-    return result;
 }
 
 template <typename TableType>
@@ -243,15 +242,17 @@ SQLConnection::drop(TableType& a_cond)
     {
         THROW("No id value");
     }
-    drop("id=" + std::to_string(a_cond.id));
+    drop<TableType>("id=" + std::to_string(a_cond.id));
 }
 
 template <typename TableType>
 void
 SQLConnection::drop(std::string_view a_cond)
 {
-    std::statement =
-        std::format("DELETE FROM {} WHERE {};", a_data.getTableName(), a_cond);
+    std::string statement = std::format("DELETE FROM {} WHERE {};",
+                                        TableType::getTableName(), a_cond);
+    m_db_conn.exec(statement.data());
+    m_db_conn.closeStatement();
 }
 
 } // namespace database

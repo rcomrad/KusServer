@@ -36,10 +36,10 @@
 #define FIELD_DUMP(r, data, elem) result += dumpType(GET_NAME(elem));
 
 #define FIELD_UPDATE(r, data, elem)               \
-    result.push_back(',');                        \
-    result += BOOST_PP_STRINGIZE(GET_NAME(elem)); \
-    result.push_back('=');                        \
-    result += dumpType(GET_NAME(elem));
+    a_sb.add(BOOST_PP_STRINGIZE(GET_NAME(elem))); \
+    a_sb.add('=');                                \
+    a_sb.addDBData(GET_NAME(elem));               \
+    a_sb.add(',');
 
 #define FIELD_INFO(r, data, elem) \
     addInfo(result, BOOST_PP_STRINGIZE(GET_NAME(elem)), GET_TYPE(elem){});
@@ -99,12 +99,10 @@
             return result;                                            \
         }                                                             \
                                                                       \
-        std::string update() const                                    \
+        void update(util::StringBuilder& a_sb) const                  \
         {                                                             \
-            std::string result = "id=";                               \
-            result += dumpType(id);                                   \
-            BOOST_PP_SEQ_FOR_EACH(FIELD_UPDATE, _, fields_seq)        \
-            return result;                                            \
+            BOOST_PP_SEQ_FOR_EACH(FIELD_UPDATE, _, fields_seq);       \
+            a_sb.pop_back();                                          \
         }                                                             \
                                                                       \
         static std::string_view getTableName()                        \
