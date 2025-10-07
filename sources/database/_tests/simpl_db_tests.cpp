@@ -173,7 +173,7 @@ TEST_F(DatabaseFixture, Load)
     exec.deleteAll(adm_conn);
 }
 
-TEST_F(DatabaseFixture, up)
+TEST_F(DatabaseFixture, Update)
 {
     execCommand("db_add_cred postgres admin 127.0.0.1 5437 postgres");
     auto& adm_pool = m_database.getConnectionPool("postgres");
@@ -186,11 +186,56 @@ TEST_F(DatabaseFixture, up)
     exec.deleteAll(adm_conn);
     exec.createAll(adm_conn);
 
-    std::vector<std::string> data = {
-        "TestTable@",   "1;10;aba;",    "2;17;vbb;",   "~",
-        "SecondTable@", "#1;isa;0;7;","1;str1;-5;0;", "2;str1;0;0;", "~"};
-    exec.load(adm_conn, data);
 
+    populateTT(adm_conn);
+    populateST(adm_conn);
+    checkTT(adm_conn);
+    checkST(adm_conn);
+
+    auto temp = adm_conn.select<TestTable>("id = 1").value();
+    auto old_str = temp.str_1;
+    temp.str_1 = "updated_str";
+    adm_conn.update(temp);
+
+    auto arr = std::vector<TestTable>{TestTable("id=1;str_1='updated_str';"), getSecondTT()};
+    EXPECT_EQ(a_conn.selectArray<TestTable>(), arr);
+    checkST(adm_conn);
+
+    temp.str_1 = old_str;
+    adm_conn.update(temp);
+    checkTT(adm_conn);
+    checkST(adm_conn);
+
+    exec.deleteAll(adm_conn);
+}
+
+TEST_F(DatabaseFixture, Drop)
+{
+    execCommand("db_add_cred postgres admin 127.0.0.1 5437 postgres");
+    auto& adm_pool = m_database.getConnectionPool("postgres");
+    auto& adm_conn = adm_pool.get();
+
+    auto& exec = database::MassExecutor::getInstance();
+
+    ///
+
+    exec.deleteAll(adm_conn);
+    exec.createAll(adm_conn);
+
+
+    populateTT(adm_conn);
+    populateST(adm_conn);
+    checkTT(adm_conn);
+    checkST(adm_conn);
+
+    auto temp = adm_conn.select<TestTable>("id = 1").value();
+    adm_conn.drop(temp);
+
+    auto arr = std::vector<TestTable>{getSecondTT()};
+    EXPECT_EQ(a_conn.selectArray<TestTable>(), arr);
+    checkST(adm_conn);
+
+    adm_conn.insert(temp);
     checkTT(adm_conn);
     checkST(adm_conn);
 
