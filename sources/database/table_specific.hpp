@@ -10,7 +10,7 @@
 #include "table_base.hpp"
 
 // Определяем поля как последовательность
-// CREATE_STRUCT(User, ((int, id))((std::string, login))((std::string,
+// CREATE_STRUCT(Person, ((int, id))((std::string, login))((std::string,
 // password))((std::string, last_login)))
 
 #define GET_TYPE(elem) BOOST_PP_TUPLE_ELEM(2, 0, elem)
@@ -50,76 +50,76 @@
     result &= GET_NAME(elem) == a_other.GET_NAME(elem);
 
 // Макрос для генерации структуры целиком
-#define CREATE_STRUCT(name, fields_seq)                               \
-    struct name : public database::TableBase                          \
-    {                                                                 \
-        BOOST_PP_SEQ_FOR_EACH(FIELD_DECL, _, fields_seq)              \
-                                                                      \
-        name() = default;                                             \
-        name(int a_id,                                                \
-             BOOST_PP_SEQ_FOR_EACH(FIELD_CONSTR_ARGS,                 \
-                                   _,                                 \
-                                   fields_seq) int dummy = 0)         \
-            : BOOST_PP_SEQ_FOR_EACH(FIELD_CONSTR_INIT, _, fields_seq) \
-                  TableBase(a_id)                                     \
-        {                                                             \
-        }                                                             \
-                                                                      \
-        name(std::string_view a_data)                                 \
-        {                                                             \
-            auto parts = util::Slicer::copy(a_data, ";");             \
-            BOOST_PP_SEQ_FOR_EACH_I(FIELD_LOAD, _, fields_seq)        \
-        }                                                             \
-                                                                      \
-        bool operator==(const name& a_other) const                    \
-        {                                                             \
-            bool result = id == a_other.id;                           \
-            BOOST_PP_SEQ_FOR_EACH(FIELD_EQ, _, fields_seq)            \
-            return result;                                            \
-        }                                                             \
-                                                                      \
-        void select(database::PostgreSQL& a_psql)                     \
-        {                                                             \
-            selectBase(a_psql);                                       \
-            BOOST_PP_SEQ_FOR_EACH_I(FIELD_SELECT, a_psql, fields_seq) \
-        }                                                             \
-                                                                      \
-        void insert(util::StringBuilder& a_sb) const                  \
-        {                                                             \
-            insertBase(a_sb);                                         \
-            BOOST_PP_SEQ_FOR_EACH(FIELD_INSERT, _, fields_seq)        \
-            a_sb.pop_back();                                          \
-        }                                                             \
-                                                                      \
-        std::string dump() const                                      \
-        {                                                             \
-            std::string result;                                       \
-            result += dumpType(id);                                   \
-            BOOST_PP_SEQ_FOR_EACH(FIELD_DUMP, _, fields_seq)          \
-            return result;                                            \
-        }                                                             \
-                                                                      \
-        void update(util::StringBuilder& a_sb) const                  \
-        {                                                             \
-            BOOST_PP_SEQ_FOR_EACH(FIELD_UPDATE, _, fields_seq);       \
-            a_sb.pop_back();                                          \
-        }                                                             \
-                                                                      \
-        static std::string_view getTableName()                        \
-        {                                                             \
-            return #name;                                             \
-        }                                                             \
-                                                                      \
-        static std::string getTableInfo()                             \
-        {                                                             \
-            std::string result;                                       \
-            BOOST_PP_SEQ_FOR_EACH(FIELD_INFO, _, fields_seq)          \
-            result.pop_back();                                        \
-            return result;                                            \
-        }                                                             \
-                                                                      \
-    private:                                                          \
-        static inline MassExecutor::Registrator<name> g_dummy;        \
+#define CREATE_STRUCT(name, fields_seq)                                  \
+    struct name : public database::TableBase                             \
+    {                                                                    \
+        BOOST_PP_SEQ_FOR_EACH(FIELD_DECL, _, fields_seq)                 \
+                                                                         \
+        name() = default;                                                \
+        name(int a_id,                                                   \
+             BOOST_PP_SEQ_FOR_EACH(FIELD_CONSTR_ARGS,                    \
+                                   _,                                    \
+                                   fields_seq) int dummy = 0)            \
+            : BOOST_PP_SEQ_FOR_EACH(FIELD_CONSTR_INIT, _, fields_seq)    \
+                  TableBase(a_id)                                        \
+        {                                                                \
+        }                                                                \
+                                                                         \
+        name(std::string_view a_data)                                    \
+        {                                                                \
+            auto parts = util::Slicer::copy(a_data, ";");                \
+            BOOST_PP_SEQ_FOR_EACH_I(FIELD_LOAD, _, fields_seq)           \
+        }                                                                \
+                                                                         \
+        bool operator==(const name& a_other) const                       \
+        {                                                                \
+            bool result = id == a_other.id;                              \
+            BOOST_PP_SEQ_FOR_EACH(FIELD_EQ, _, fields_seq)               \
+            return result;                                               \
+        }                                                                \
+                                                                         \
+        void select(database::PostgreSQL& a_psql)                        \
+        {                                                                \
+            selectBase(a_psql);                                          \
+            BOOST_PP_SEQ_FOR_EACH_I(FIELD_SELECT, a_psql, fields_seq)    \
+        }                                                                \
+                                                                         \
+        void insert(util::StringBuilder& a_sb) const                     \
+        {                                                                \
+            insertBase(a_sb);                                            \
+            BOOST_PP_SEQ_FOR_EACH(FIELD_INSERT, _, fields_seq)           \
+            a_sb.pop_back();                                             \
+        }                                                                \
+                                                                         \
+        std::string dump() const                                         \
+        {                                                                \
+            std::string result;                                          \
+            result += dumpType(id);                                      \
+            BOOST_PP_SEQ_FOR_EACH(FIELD_DUMP, _, fields_seq)             \
+            return result;                                               \
+        }                                                                \
+                                                                         \
+        void update(util::StringBuilder& a_sb) const                     \
+        {                                                                \
+            BOOST_PP_SEQ_FOR_EACH(FIELD_UPDATE, _, fields_seq);          \
+            a_sb.pop_back();                                             \
+        }                                                                \
+                                                                         \
+        static std::string_view getTableName()                           \
+        {                                                                \
+            return #name;                                                \
+        }                                                                \
+                                                                         \
+        static std::string getTableInfo()                                \
+        {                                                                \
+            std::string result;                                          \
+            BOOST_PP_SEQ_FOR_EACH(FIELD_INFO, _, fields_seq)             \
+            result.pop_back();                                           \
+            return result;                                               \
+        }                                                                \
+                                                                         \
+    private:                                                             \
+        static inline database::MassExecutor::Registrator<name> g_dummy; \
     };
 
 // #define CREATE_STRUCT(name, fields_seq)                               \
@@ -139,7 +139,7 @@
 #include <string>
 
 // Определяем поля как последовательность
-// CREATE_STRUCT(User, ((int, id))((std::string, login))((std::string,
+// CREATE_STRUCT(Person, ((int, id))((std::string, login))((std::string,
 password))((std::string, last_login)))
 
 #define GET_TYPE(elem) BOOST_PP_TUPLE_ELEM(2, 0, elem)
@@ -211,7 +211,7 @@ struct name \
 
 
 // Определяем структуру
-CREATE_STRUCT(User,
+CREATE_STRUCT(Person,
     ((int, id))
     ((std::string, login))
     ((std::string, password))
@@ -220,7 +220,7 @@ CREATE_STRUCT(User,
 
 // Пример вызова
 req r;
-User u;
+Person u;
 u.select(r);
 std::string s;
 u.insert(s);

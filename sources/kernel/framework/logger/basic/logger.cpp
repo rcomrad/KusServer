@@ -17,7 +17,7 @@ constexpr const char* LOGS_FILE_EXTENSION = "log";
 
 } // namespace
 
-FILE* core::Logger::default_stream = std::fopen("pre_init_log.log", "a");
+FILE* core::Logger::default_stream = stdout;
 std::mutex core::Logger::default_mutex;
 
 //------------------------------------------------------------------------------
@@ -54,7 +54,6 @@ core::Logger::redirectDefault(const std::string& a_name) noexcept
     static bool flag = false;
     if (!flag)
     {
-        std::fclose(default_stream);
         redirectImpl(a_name, &default_stream);
         flag = true;
     }

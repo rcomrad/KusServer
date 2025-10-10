@@ -3,7 +3,7 @@
 
 macro(gtest_lib)
     find_package(GTest CONFIG REQUIRED)
-    target_link_libraries(${TARGET} PRIVATE
+    target_link_libraries(${TARGET} PUBLIC
         GTest::gtest
         GTest::gtest_main
         GTest::gmock
@@ -13,27 +13,27 @@ endmacro()
 
 macro(postgresql_lib)
     find_package(libpqxx CONFIG REQUIRED)
-    target_link_libraries(${TARGET} PRIVATE libpqxx::pqxx)
+    target_link_libraries(${TARGET} PUBLIC libpqxx::pqxx -Bdynamic)
 endmacro()
 
 macro(crow_lib)
     find_package(Crow CONFIG REQUIRED)
-    target_link_libraries(${TARGET} PRIVATE Crow::Crow asio::asio)
+    target_link_libraries(${TARGET} PUBLIC Crow::Crow asio::asio)
 endmacro()
 
 macro(boost_lib)
     find_package(Boost REQUIRED COMPONENTS preprocessor)
-    target_link_libraries(${TARGET} PRIVATE Boost::preprocessor)
+    target_link_libraries(${TARGET} PUBLIC Boost::preprocessor)
 endmacro()
 
 macro(vulkan_lib)
     find_package(Vulkan REQUIRED)
-    target_link_libraries(${TARGET} PRIVATE Vulkan::Vulkan)
+    target_link_libraries(${TARGET} PUBLIC Vulkan::Vulkan)
 endmacro()
 
 macro(glfw_lib)
     find_package(glfw3 CONFIG REQUIRED)
-    target_link_libraries(${TARGET} PRIVATE glfw)
+    target_link_libraries(${TARGET} PUBLIC glfw)
 endmacro()
 
 # PRODUSES:
