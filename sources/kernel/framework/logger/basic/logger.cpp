@@ -54,6 +54,7 @@ core::Logger::redirectDefault(const std::string& a_name) noexcept
     static bool flag = false;
     if (!flag)
     {
+        // std::fclose(default_stream);
         redirectImpl(a_name, &default_stream);
         flag = true;
     }

@@ -13,7 +13,7 @@ endmacro()
 
 macro(postgresql_lib)
     find_package(libpqxx CONFIG REQUIRED)
-    target_link_libraries(${TARGET} PUBLIC libpqxx::pqxx -Bdynamic)
+    target_link_libraries(${TARGET} PUBLIC libpqxx::pqxx)
 endmacro()
 
 macro(crow_lib)
