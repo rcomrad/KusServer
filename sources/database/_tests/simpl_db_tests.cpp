@@ -228,7 +228,7 @@ TEST_F(SimpleDBTests, MultipleAcsess)
     for (int i = 0; i < 5; ++i)
     {
         threads.emplace_back(lumbda);
-    } //(thread_count, std::thread(lumbda));
+    }
 
     for (auto& i : threads) i.join();
 
