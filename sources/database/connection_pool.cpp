@@ -32,6 +32,7 @@ SQLConnection&
 ConnectionPool::get() 
 {
     m_avaliable_count.acquire();
+    const std::lock_guard lock(m_avaluable_mutex);
     auto result = m_avaluable.back();
     m_avaluable.pop_back();
     return *result;
@@ -40,6 +41,7 @@ ConnectionPool::get()
 void
 ConnectionPool::put(SQLConnection& a_sql_conn) 
 {
+    const std::lock_guard lock(m_avaluable_mutex);
     m_avaluable.emplace_back(&a_sql_conn);
     m_avaliable_count.release();
 }

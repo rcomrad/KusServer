@@ -4,6 +4,7 @@
 #include <semaphore>
 #include <unordered_map>
 #include <vector>
+#include <mutex>
 
 #include "credentials.hpp"
 #include "sql_connection.hpp"
@@ -27,6 +28,7 @@ private:
 
     int m_total_count;
     std::counting_semaphore<5> m_avaliable_count;
+    std::mutex m_avaluable_mutex;
     std::vector<SQLConnection*> m_avaluable;
 
     std::unordered_map<SQLConnection*, std::unique_ptr<SQLConnection>>
