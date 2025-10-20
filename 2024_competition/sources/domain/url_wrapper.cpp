@@ -35,14 +35,15 @@ dom::UrlWrapper::toHTMLHref(const std::string& aData,
 std::string
 dom::UrlWrapper::toHTMLSrc(const std::string& aStr) noexcept
 {
-    return " <img src=\"" + getInstance().mUrl + aStr + "\"/><br>";
+    return " <img src=\"https://куссистем.рф/" + getInstance().mUrl + aStr +
+           "\"/><br>";
 }
 
 std::string
 dom::UrlWrapper::toHTMLAudio(const std::string& aStr) noexcept
 {
-    return " <audio controls> <source src=\"" + getInstance().mUrl + aStr +
-           "\"  type=\"audio/mp3\"/> </audio> <br>";
+    return " <audio controls> <source src=\"https://куссистем.рф/" +
+           getInstance().mUrl + aStr + "\"  type=\"audio/mp3\"/> </audio> <br>";
 }
 
 std::string

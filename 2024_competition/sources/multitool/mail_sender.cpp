@@ -162,68 +162,68 @@ mult::MailSender::threadSender(Letter aLetter,
     }
 
     dom::writeInfo("Start sending");
-    dom::Mail mail(aLetter.login, aLetter.password);
-    for (auto& row : table)
-    {
-        auto temp = row.find("$mail$");
-        if (temp == row.end())
-        {
-            out << "--> отсутствует адрес электронной почты!\n";
-            continue;
-        }
-        auto addr = temp->second;
+    // dom::Mail mail(aLetter.login, aLetter.password);
+    // for (auto& row : table)
+    // {
+    //     auto temp = row.find("$mail$");
+    //     if (temp == row.end())
+    //     {
+    //         out << "--> отсутствует адрес электронной почты!\n";
+    //         continue;
+    //     }
+    //     auto addr = temp->second;
 
-        // dom::writeInfo("Sending to:", row["$mail$"]);
-        std::string copy;
-        for (auto& l : letter)
-        {
-            copy += l.second + row[l.first];
-        }
+    //     // dom::writeInfo("Sending to:", row["$mail$"]);
+    //     std::string copy;
+    //     for (auto& l : letter)
+    //     {
+    //         copy += l.second + row[l.first];
+    //     }
 
-        // dom::writeInfo("Theme is:", aLetter.theme);
-        // dom::writeInfo("Text is:", copy);
-        if (aRealSend)
-        {
-            bool success = false;
-            for (int i = 0; i < 2; ++i)
-            {
-                success = mail.send(addr, aLetter.theme, copy);
-                if (success || i == 1) break;
+    //     // dom::writeInfo("Theme is:", aLetter.theme);
+    //     // dom::writeInfo("Text is:", copy);
+    //     if (aRealSend)
+    //     {
+    //         bool success = false;
+    //         for (int i = 0; i < 2; ++i)
+    //         {
+    //             success = mail.send(addr, aLetter.theme, copy);
+    //             if (success || i == 1) break;
 
-                out << "Однаминутный перерыв на чай начался в " +
-                           dom::DateAndTime::getCurentTime() + "."
-                    << std::endl;
-                std::this_thread::sleep_for(60000ms);
-                out << "Однаминутный перерыв на чай завершился в " +
-                           dom::DateAndTime::getCurentTime() + "."
-                    << std::endl;
-            }
-            if (success)
-            {
-                out << "Отправка по адресу " + addr + " прошла успешно.";
-            }
-            else
-            {
-                out << "-->ERROR: Ошибка отправки  по адресу " + addr + "!";
-            }
-        }
-        else
-        {
-            out << "Адрес: " + addr + "\n";
-            out << "Тема: " + aLetter.theme + "\n\n";
-            out << "Текст письма:\n " + copy + "\n";
-            out << "\n-------------------------------------------------\n\n";
-        }
-        out << std::endl;
-    }
-    dom::writeInfo("Finish sending");
+    //             out << "Однаминутный перерыв на чай начался в " +
+    //                        dom::DateAndTime::getCurentTime() + "."
+    //                 << std::endl;
+    //             std::this_thread::sleep_for(60000ms);
+    //             out << "Однаминутный перерыв на чай завершился в " +
+    //                        dom::DateAndTime::getCurentTime() + "."
+    //                 << std::endl;
+    //         }
+    //         if (success)
+    //         {
+    //             out << "Отправка по адресу " + addr + " прошла успешно.";
+    //         }
+    //         else
+    //         {
+    //             out << "-->ERROR: Ошибка отправки  по адресу " + addr + "!";
+    //         }
+    //     }
+    //     else
+    //     {
+    //         out << "Адрес: " + addr + "\n";
+    //         out << "Тема: " + aLetter.theme + "\n\n";
+    //         out << "Текст письма:\n " + copy + "\n";
+    //         out << "\n-------------------------------------------------\n\n";
+    //     }
+    //     out << std::endl;
+    // }
+    // dom::writeInfo("Finish sending");
 
-    if (aRealSend)
-    {
-        out << "Рассылка писем завершена в " +
-                   dom::DateAndTime::getCurentTime() + "."
-            << std::endl;
-    }
+    // if (aRealSend)
+    // {
+    //     out << "Рассылка писем завершена в " +
+    //                dom::DateAndTime::getCurentTime() + "."
+    //         << std::endl;
+    // }
 }
 
 std::vector<std::pair<std::string, std::string>>

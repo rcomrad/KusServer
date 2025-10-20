@@ -76,7 +76,9 @@ core::Server::Server()
 
     CROW_ROUTE(app, "/api/get_results/<int>")
     ([](int aCompetitionID)
-     { return core::ResultGenerator::generate(aCompetitionID); });
+     {
+         return core::ResultGenerator::generate(aCompetitionID); 
+         });
 
     CROW_ROUTE(app, "/api/command/<string>/<string>")
     ([](const std::string& aType, const std::string& aValue)

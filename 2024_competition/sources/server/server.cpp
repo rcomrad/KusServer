@@ -31,6 +31,8 @@ crow::App<crow::CORSHandler, serv::Middleware> serv::Server::mApp;
 #include "file_data/file.hpp"
 #include "file_data/parser.hpp"
 
+#include "core/result_generator.hpp"
+
 int
 getTime(std::string aTimeStr)
 {
@@ -325,13 +327,12 @@ serv::Server::Server() noexcept
             return "Exfinished";
         });
 
-    // CROW_ROUTE(mApp, "/api/get_results/<int>")
-    // (
-    //     [&mApp](int aCompetitionID)
-    //     {
-    //         core::ResultGenerator::generate(aCompetitionID);
-    //         return "4";
-    //     });
+    CROW_ROUTE(mApp, "/api/get_results/<int>")
+    (
+        [&mApp](int aCompetitionID)
+        {
+            return core::ResultGenerator::generate(aCompetitionID);
+        });
 
     CROW_ROUTE(mApp, "/api/command/<string>/<string>")
     ([](const std::string& aType, const std::string& aValue)

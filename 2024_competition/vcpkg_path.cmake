@@ -1,0 +1,1 @@
+set(VCPKG_ROOT "/home/kusadmin/vcpkg/")

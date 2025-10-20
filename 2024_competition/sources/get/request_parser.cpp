@@ -28,7 +28,7 @@ get::RequestParser::DataRequest::getFullStatement(
     return rowStatement +
            (aCondition.empty()
                 ? ""
-                : " WHERE journal." + tables[0].name + "." + aCondition);
+                : " WHERE olymp1_shema." + tables[0].name + "." + aCondition);
 }
 
 get::RequestParser::DataRequest
@@ -62,12 +62,12 @@ get::RequestParser::process(const std::string& aRequest) noexcept
 std::string
 get::RequestParser::getTables() const noexcept
 {
-    std::string result = "journal." + mTables[0] + " ";
+    std::string result = "olymp1_shema." + mTables[0] + " ";
     for (size_t i = 1; i < mTables.size(); ++i)
     {
-        result += "inner join journal." + mTables[i] + " on journal." +
+        result += "inner join olymp1_shema." + mTables[i] + " on olymp1_shema." +
                   mTables[mPrev[i]] + "." + mNicknames[i] + "_id" +
-                  " = journal." + mTables[i] + ".id ";
+                  " = olymp1_shema." + mTables[i] + ".id ";
     }
     return result;
 }
@@ -81,7 +81,7 @@ get::RequestParser::getColumns() const noexcept
     {
         for (auto& j : mColumnNames[i])
         {
-            result += "journal." + mTables[i] + "." + j + ", ";
+            result += "olymp1_shema." + mTables[i] + "." + j + ", ";
         }
     }
 

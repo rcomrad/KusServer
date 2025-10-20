@@ -1,42 +1,42 @@
-#ifndef MAIL_HPP
-#define MAIL_HPP
+// #ifndef MAIL_HPP
+// #define MAIL_HPP
 
-//--------------------------------------------------------------------------------
+// //--------------------------------------------------------------------------------
 
-#include <mailio/smtp.hpp>
+// #include <mailio/smtp.hpp>
 
-#include <string>
+// #include <string>
 
-//--------------------------------------------------------------------------------
+// //--------------------------------------------------------------------------------
 
-namespace dom
-{
+// namespace dom
+// {
 
-class Mail
-{
-public:
-    Mail(const std::string& aLogin    = "",
-         const std::string& aPassword = "") noexcept;
+// class Mail
+// {
+// public:
+//     Mail(const std::string& aLogin    = "",
+//          const std::string& aPassword = "") noexcept;
 
-    void useDefaultMail() noexcept;
+//     void useDefaultMail() noexcept;
 
-    bool send(const std::string& aEmailName,
-              const std::string& aTheme,
-              const std::string& aText) const noexcept;
+//     bool send(const std::string& aEmailName,
+//               const std::string& aTheme,
+//               const std::string& aText) const noexcept;
 
-private:
-    std::string mLogin;
-    std::string mPassword;
-    std::string mSmtp;
-    int mPort;
-    mailio::smtps::auth_method_t mMetchod;
+// private:
+//     std::string mLogin;
+//     std::string mPassword;
+//     std::string mSmtp;
+//     int mPort;
+//     mailio::smtps::auth_method_t mMetchod;
 
-    void adtSmtp() noexcept;
-    void academtalantTls() noexcept;
-};
+//     void adtSmtp() noexcept;
+//     void academtalantTls() noexcept;
+// };
 
-} // namespace dom
+// } // namespace dom
 
-//--------------------------------------------------------------------------------
+// //--------------------------------------------------------------------------------
 
-#endif // !MAIL_HPP
+// #endif // !MAIL_HPP

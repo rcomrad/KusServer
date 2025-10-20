@@ -27,7 +27,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(libpqxx CONFIG REQUIRED)
 find_package(Crow CONFIG REQUIRED)
 find_package(Boost 1.64.0 REQUIRED system filesystem date_time)
-find_package(mailio CONFIG REQUIRED)
+# find_package(mailio CONFIG REQUIRED)
 
 # Sources include
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake_scripts/cmake_scripts.cmake)
@@ -47,7 +47,7 @@ endif()
 target_link_libraries(${PROJECT_NAME} PRIVATE libpqxx::pqxx)
 target_link_libraries(${PROJECT_NAME} PRIVATE Crow::Crow)
 target_link_libraries (${PROJECT_NAME} PRIVATE ${Boost_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} PRIVATE mailio)
+# target_link_libraries(${PROJECT_NAME} PRIVATE mailio)
 
 # Output file name settings
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)

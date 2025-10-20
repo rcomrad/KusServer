@@ -88,7 +88,10 @@ post::PostHandler::uploadFromFile(
     {
         for (auto& i : data)
         {
-            PostRouter::rawDataRouter(i.first, i.second);
+            if (i.second.value.size())
+            {
+                PostRouter::rawDataRouter(i.first, i.second);
+            }
         }
     }
     else

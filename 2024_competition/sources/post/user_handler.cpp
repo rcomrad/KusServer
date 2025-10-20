@@ -448,23 +448,23 @@ post::UserHandler::applyKey(data::User& aUser) noexcept
 std::optional<std::string>
 post::UserHandler::sendComfLink(const data::User& aUser) noexcept
 {
-    static dom::Mail mail;
-    mail.useDefaultMail();
+    // static dom::Mail mail;
+    // mail.useDefaultMail();
 
-    // to erase whitespaces
-    static auto curSiteUrl = file::File::getWords("config", "url.pass")[0][0];
+    // // to erase whitespaces
+    // static auto curSiteUrl = file::File::getWords("config", "url.pass")[0][0];
 
-    std::string link = dom::toString(aUser.id) + "=" +
-                       dom::DateAndTime::getCurentTimeSafe() + "=";
-    for (int i = 0; i < 10; ++i) link += 'a' + rand() % 26;
+    // std::string link = dom::toString(aUser.id) + "=" +
+    //                    dom::DateAndTime::getCurentTimeSafe() + "=";
+    // for (int i = 0; i < 10; ++i) link += 'a' + rand() % 26;
 
     std::optional<std::string> result;
-    if (mail.send(aUser.email,
-                  "Ссылка подтверждения для акаунта на сайте kussystem",
-                  dom::UrlWrapper::toSite("api/confirm/" + link)))
-    {
-        result = link;
-    }
+    // if (mail.send(aUser.email,
+    //               "Ссылка подтверждения для акаунта на сайте kussystem",
+    //               dom::UrlWrapper::toSite("api/confirm/" + link)))
+    // {
+    //     result = link;
+    // }
 
     return result;
 }

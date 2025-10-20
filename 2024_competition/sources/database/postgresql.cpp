@@ -109,7 +109,7 @@ data::Postgresql::insert(const std::string& aTableName,
                          const std::string& aData) noexcept
 {
     std::string statement =
-        "INSERT INTO " + aTableName + " VALUES " + aData + " RETURNING id;";
+        "INSERT INTO " + aTableName + " VALUES " + aData + ";";
 
     prepare(statement);
 
@@ -117,7 +117,7 @@ data::Postgresql::insert(const std::string& aTableName,
     step();
     while (hasData(0))
     {
-        res.emplace_back(getColumnIntUnsafe(0));
+        res.emplace_back(0);
         step();
     }
     closeStatment();
@@ -365,6 +365,8 @@ data::Postgresql::createSequence(const std::string& aTableName,
     exec("ALTER TABLE ONLY " + aTableName +
          " ALTER COLUMN id SET DEFAULT nextval(\' " + sequenceName +
          "\'::regclass)");
+
+    exec("ALTER SEQUENCE olymp1_shema.user_id_seq RESTART WITH 21001;");
 }
 
 //--------------------------------------------------------------------------------
