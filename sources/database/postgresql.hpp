@@ -7,6 +7,8 @@
 
 #include "credentials.hpp"
 
+#include "kernel/utility/type/concepts.hpp"
+
 //--------------------------------------------------------------------------------
 
 namespace database
@@ -26,19 +28,26 @@ public:
     bool getBool(int a_colum_number);
     const char* getChars(int a_colum_number);
 
-    template <typename T>
+    template <util::IsNotStdString T>
     T get(int a_colum_number)
-        requires !std::same_as<T, std::string>
     {
         return m_pqxx_result_it[a_colum_number].as<T>();
     }
 
-    template <typename T>
+    template <util::IsStdString T>
     T get(int a_colum_number)
-        requires std::same_as<T, std::string>
     {
-        return std::string(m_pqxx_result_it[a_colum_number].as<const char*>());
+        // TODO: free?
+        const char* res = m_pqxx_result_it[a_colum_number].as<const char*>();
+        return std::string(res);
     }
+
+    // template <typename T>
+    // T get(int a_colum_number)
+    // {
+    //     T t;
+    //     return t;
+    // }
 
     //----------------------------------------------------------------------------
 

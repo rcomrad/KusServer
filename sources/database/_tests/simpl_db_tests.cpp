@@ -1,9 +1,15 @@
-#include "database_fixture.hpp"
+#include <barrier>
 
 #include "kernel/framework/core/kernel.hpp"
 
+#include "admin_user_fixture.hpp"
+
 namespace database
 {
+
+class SimpleDBTests : public AdminUserFixture
+{
+};
 
 //--------------------------------------------------------------------------------
 
@@ -38,20 +44,16 @@ checkTT(SQLConnection& a_conn)
     EXPECT_EQ(a_conn.selectArray<TestTable>(), arr);
 }
 
-TEST_F(DatabaseFixture, Smoke)
+TEST_F(SimpleDBTests, Smoke)
 {
-    execCommand("db_add_cred postgres admin 127.0.0.1 5437 postgres");
-    auto& adm_pool = m_database.getConnectionPool("postgres");
-    auto& adm_conn = adm_pool.get();
+    auto conn = m_pool->get();
 
-    ///
+    conn.createTable<TestTable>();
 
-    adm_conn.createTable<TestTable>();
+    populateTT(conn);
+    checkTT(conn);
 
-    populateTT(adm_conn);
-    checkTT(adm_conn);
-
-    adm_conn.deleteTable<TestTable>();
+    conn.deleteTable<TestTable>();
 }
 
 CREATE_STRUCT(SecondTable, ((std::string, wuf))((int, a))((int, b)))
@@ -82,69 +84,161 @@ checkST(SQLConnection& a_conn)
     EXPECT_EQ(a_conn.selectUnsafe<SecondTable>("id = 2"), getSecondST());
 }
 
-TEST_F(DatabaseFixture, MassActions)
+TEST_F(SimpleDBTests, MassActions)
 {
-    execCommand("db_add_cred postgres admin 127.0.0.1 5437 postgres");
-    auto& adm_pool = m_database.getConnectionPool("postgres");
-    auto& adm_conn = adm_pool.get();
+    auto conn = m_pool->get();
+    m_exec->createAll(conn);
 
-    auto& exec = database::MassExecutor::getInstance();
+    populateTT(conn);
+    populateST(conn);
+    checkTT(conn);
+    checkST(conn);
 
-    ///
+    m_exec->deleteAll(conn);
+    EXPECT_FALSE(conn.select<TestTable>("id = 1").has_value());
+    EXPECT_FALSE(conn.select<SecondTable>("id = 1").has_value());
 
-    exec.createAll(adm_conn);
+    m_exec->createAll(conn);
+    EXPECT_FALSE(conn.select<TestTable>("id = 1").has_value());
+    EXPECT_FALSE(conn.select<SecondTable>("id = 1").has_value());
 
-    populateTT(adm_conn);
-    populateST(adm_conn);
-    checkTT(adm_conn);
-    checkST(adm_conn);
-
-    exec.deleteAll(adm_conn);
-    EXPECT_FALSE(adm_conn.select<TestTable>("id = 1").has_value());
-    EXPECT_FALSE(adm_conn.select<SecondTable>("id = 1").has_value());
-
-    exec.createAll(adm_conn);
-    EXPECT_FALSE(adm_conn.select<TestTable>("id = 1").has_value());
-    EXPECT_FALSE(adm_conn.select<SecondTable>("id = 1").has_value());
-
-    populateTT(adm_conn);
-    populateST(adm_conn);
-    checkTT(adm_conn);
-    checkST(adm_conn);
-
-    exec.deleteAll(adm_conn);
+    populateTT(conn);
+    populateST(conn);
+    checkTT(conn);
+    checkST(conn);
 }
 
-TEST_F(DatabaseFixture, Dump)
+TEST_F(SimpleDBTests, Dump)
 {
-    execCommand("db_add_cred postgres admin 127.0.0.1 5437 postgres");
-    auto& adm_pool = m_database.getConnectionPool("postgres");
-    auto& adm_conn = adm_pool.get();
+    auto conn = m_pool->get();
+    m_exec->createAll(conn);
 
-    auto& exec = database::MassExecutor::getInstance();
+    populateTT(conn);
+    populateST(conn);
+    checkTT(conn);
+    checkST(conn);
 
-    ///
+    std::string tt_data = "TestTable@\n"
+                          "1;10;aba;\n"
+                          "2;17;vbb;\n"
+                          "~\n";
+    std::string ts_data = "SecondTable@\n"
+                          "1;str1;-5;0;\n"
+                          "2;str1;0;0;\n"
+                          "~\n";
+    EXPECT_EQ(conn.dump<TestTable>(), tt_data);
+    EXPECT_EQ(conn.dump<SecondTable>(), ts_data);
+    EXPECT_EQ(m_exec->dumpAll(conn), ts_data + tt_data + "TestCounter@\n~\n");
+}
 
-    exec.createAll(adm_conn);
+TEST_F(SimpleDBTests, Load)
+{
+    auto conn = m_pool->get();
+    m_exec->createAll(conn);
 
-    populateTT(adm_conn);
-    populateST(adm_conn);
-    checkTT(adm_conn);
-    checkST(adm_conn);
+    std::vector<std::string> data = {
+        "TestTable@",  "1;10;aba;",    "2;17;vbb;",   "~", "SecondTable@",
+        "#1;isa;0;7;", "1;str1;-5;0;", "2;str1;0;0;", "~"};
+    m_exec->load(conn, data);
 
-    std::string tt_data = "TABLE TestTable\n"
-                          "\t1;10;aba;\n"
-                          "\t2;17;vbb;\n"
-                          "END\n";
-    std::string ts_data = "TABLE SecondTable\n"
-                          "\t1;str1;-5;0;\n"
-                          "\t2;str1;0;0;\n"
-                          "END\n";
-    EXPECT_EQ(adm_conn.dump<TestTable>(), tt_data);
-    EXPECT_EQ(adm_conn.dump<SecondTable>(), ts_data);
-    EXPECT_EQ(adm_conn.dumpAll(), ts_data + tt_data);
+    checkTT(conn);
+    checkST(conn);
+}
 
-    exec.deleteAll(adm_conn);
+TEST_F(SimpleDBTests, Update)
+{
+    auto conn = m_pool->get();
+    m_exec->createAll(conn);
+
+    populateTT(conn);
+    populateST(conn);
+    checkTT(conn);
+    checkST(conn);
+
+    auto temp    = conn.select<TestTable>("id = 1").value();
+    auto old_str = temp.str_1;
+    temp.str_1   = "updated_str";
+    conn.update(temp);
+
+    auto arr = std::vector<TestTable>{getSecondTT(), temp};
+    EXPECT_EQ(conn.selectArray<TestTable>(), arr);
+    checkST(conn);
+
+    temp.str_1 = old_str;
+    conn.update(temp);
+    arr = std::vector<TestTable>{getSecondTT(), temp};
+    EXPECT_EQ(conn.selectArray<TestTable>(), arr);
+    checkST(conn);
+}
+
+TEST_F(SimpleDBTests, Drop)
+{
+    auto conn = m_pool->get();
+    m_exec->createAll(conn);
+
+    populateTT(conn);
+    populateST(conn);
+    checkTT(conn);
+    checkST(conn);
+
+    auto temp = conn.select<TestTable>("id = 1").value();
+    conn.drop(temp);
+
+    auto arr = std::vector<TestTable>{getSecondTT()};
+    EXPECT_EQ(conn.selectArray<TestTable>(), arr);
+    checkST(conn);
+
+    temp.id = 0;
+    conn.insert(temp);
+    temp.id = 3;
+    arr     = std::vector<TestTable>{getSecondTT(), temp};
+    EXPECT_EQ(conn.selectArray<TestTable>(), arr);
+    checkST(conn);
+}
+
+CREATE_STRUCT(TestCounter, ((int, num)));
+TEST_F(SimpleDBTests, MultipleAcsess)
+{
+    {
+        auto conn = m_pool->get();
+        m_exec->createAll(conn);
+
+        TestCounter init_data;
+        init_data.num = 0;
+        conn.insert(init_data);
+    }
+
+    const int thread_count    = 15;
+    const int increment_count = 100;
+    std::mutex inc_mutex;
+
+    std::barrier bar(thread_count);
+    auto lumbda = [&]()
+    {
+        bar.arrive_and_wait();
+        for (int i = 0; i < increment_count; ++i)
+        {
+            auto conn = m_pool->get();
+            const std::lock_guard lock(inc_mutex);
+            auto data  = conn.select<TestCounter>("id = 1").value();
+            data.num++;
+            conn.update(data);
+        }
+    };
+
+    std::vector<std::thread> threads;
+    for (int i = 0; i < thread_count; ++i)
+    {
+        threads.emplace_back(lumbda);
+    }
+
+    for (auto& i : threads) i.join();
+
+    {
+        auto conn = m_pool->get();
+        auto data  = conn.select<TestCounter>("id = 1").value();
+        EXPECT_EQ(data.num, thread_count * increment_count);
+    }
 }
 
 //--------------------------------------------------------------------------------

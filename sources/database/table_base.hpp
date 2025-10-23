@@ -30,6 +30,9 @@ protected:
     static std::string dumpType(int a_data);
     static std::string dumpType(std::string a_data);
 
+    static void loadType(std::string_view a_data, int& a_res);
+    static void loadType(std::string_view a_data, std::string& a_res);
+
 private:
     static std::string addSeparator(std::string&& a_data);
 };

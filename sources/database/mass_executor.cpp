@@ -1,5 +1,7 @@
 #include "mass_executor.hpp"
 
+#include "kernel/framework/logger/include_me.hpp"
+
 namespace database
 {
 
@@ -22,6 +24,43 @@ MassExecutor::dumpAll(SQLConnection& a_conn)
     std::any bus = &result;
     call(CallType::DUMP, a_conn, bus);
     return result;
+}
+
+void
+MassExecutor::load(SQLConnection& a_conn,
+                   const std::vector<std::string>& a_data)
+{
+    std::string cur_name;
+    std::vector<std::string_view> temp;
+    for (auto& i : a_data)
+    {
+        if (i.empty()) continue;
+        if (i.at(0) == '#') continue;
+
+        if (i.back() == '@')
+        {
+            cur_name = i;
+            cur_name.pop_back();
+            temp.clear();
+            continue;
+        }
+
+        if (i.back() == '~')
+        {
+            auto it = m_exsiting_types.find(cur_name);
+            if (it == m_exsiting_types.end())
+            {
+                LOG_ERROR("No table with name '%s'", cur_name);
+                continue;
+            }
+
+            std::any bus = &temp;
+            it->second(CallType::LOAD, a_conn, bus);
+            continue;
+        }
+
+        temp.emplace_back(i);
+    }
 }
 
 void
