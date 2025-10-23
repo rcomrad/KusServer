@@ -1,8 +1,5 @@
 #pragma once
 
-CREATE_STRUCT(Person, 
-    ((std::string, login))
-    ((std::string, password))
-)
+CREATE_STRUCT(TestTable, ((int, num))((std::string, str_1)))
 
 //--------------------------------------------------------------------------------

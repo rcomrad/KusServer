@@ -3,10 +3,7 @@
 //--------------------------------------------------------------------------------
 
 #include "kernel/framework/module/module.hpp"
-#include "kernel/utility/kernel/string/slicer.hpp"
-#include "kernel/utility/macroses/holy_trinity.hpp"
-
-#include "token.hpp"
+#include "crow.h"
 
 //--------------------------------------------------------------------------------
 
@@ -15,15 +12,16 @@ namespace serv
 class Server : public core::Module
 {
 public:
-    HOLY_TRINITY_SINGLETON(Server);
-    ~Server() override = default;
-
+    static Server& getInstance();
+    
     bool loopBody() noexcept override;
+
     void commandSetup() const noexcept override;
     void variableSetup() const noexcept override;
 
 private:
-    Server() noexcept;
+    crow::SimpleApp app; 
+    bool running = false;
 };
 
 } // namespace serv

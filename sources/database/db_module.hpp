@@ -23,6 +23,7 @@ private:
     std::unordered_map<std::string, ConnectionPool> m_con_pools;
 
     COMMAND_HANDLER(dbAddCred, 0);
+    COMMAND_HANDLER(dbDump, 1);
 };
 
 } // namespace database

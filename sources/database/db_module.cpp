@@ -3,6 +3,7 @@
 #include "kernel/framework/include_me.hpp"
 
 #include "credentials.hpp"
+#include "mass_executor.hpp"
 
 namespace database
 {
@@ -18,6 +19,8 @@ DBModule::DBModule() : core::Module(module_name)
     KERNEL.listenCommand("db_add_cred",
                          core::StateStorage::StateType::RESET_ARGS |
                              core::StateStorage::StateType::RESET_VARS);
+    registrateBaseCommand("db_dump", "Dump database content",
+                          "[tablename], ...");
 }
 
 void
@@ -46,6 +49,32 @@ DBModule::dbAddCred(core::Command& a_command)
     m_con_pools.emplace(cred.user, cred);
 
     LOG_CMD("Modules created successfully.");
+}
+
+void
+DBModule::dbDump(core::Command& a_command)
+{
+    // TODO: THROW/ASSERT
+    a_command.noVars();
+    auto& pool = getConnectionPool("postgres");
+    auto conn  = pool.get();
+    auto& exec = MassExecutor::getInstance();
+
+    std::string result;
+    if (a_command.arguments.empty())
+    {
+        result = exec.dumpAll(conn);
+        if (result.empty())
+        {
+            result = "DB is empty";
+        }
+    }
+    else
+    {
+        result = "Sorry, we haven't done this function";
+    }
+
+    LOG_CMD("%s", result);
 }
 
 } // namespace database

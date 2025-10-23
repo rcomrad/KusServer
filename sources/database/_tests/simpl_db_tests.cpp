@@ -130,6 +130,25 @@ TEST_F(SimpleDBTests, Dump)
     EXPECT_EQ(conn.dump<SecondTable>(), ts_data);
     EXPECT_EQ(m_exec->dumpAll(conn), ts_data + tt_data + "TestCounter@\n~\n");
 }
+TEST_F(SimpleDBTests, DumpCommand)
+{
+    auto conn = m_pool->get();
+    m_exec->createAll(conn);
+
+    populateTT(conn);
+    populateST(conn);
+    checkTT(conn);
+    checkST(conn);
+     std::string tt_data = "TestTable@\n"
+                          "1;10;aba;\n"
+                          "2;17;vbb;\n"
+                          "~\n";
+    std::string ts_data = "SecondTable@\n"
+                          "1;str1;-5;0;\n"
+                          "2;str1;0;0;\n"
+                          "~\n";
+    EXPECT_EQ(execCommand("db_dump"), ts_data + tt_data + "TestCounter@\n~");
+}
 
 TEST_F(SimpleDBTests, Load)
 {
