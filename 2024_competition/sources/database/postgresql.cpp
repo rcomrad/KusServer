@@ -366,7 +366,7 @@ data::Postgresql::createSequence(const std::string& aTableName,
          " ALTER COLUMN id SET DEFAULT nextval(\' " + sequenceName +
          "\'::regclass)");
 
-    exec("ALTER SEQUENCE olymp1_shema.user_id_seq RESTART WITH 21001;");
+    exec("ALTER SEQUENCE olymp1_shema.user_id_seq RESTART WITH 29001;");
 }
 
 //--------------------------------------------------------------------------------

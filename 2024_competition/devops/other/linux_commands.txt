@@ -23,7 +23,7 @@ sudo -u postgres psql -c "CREATE USER journal_user;"
 sudo -u postgres psql -c "ALTER USER journal_user password '$1';"
 SHOW search_path;
 SET search_path TO myschema;
-SET search_path TO myschema, public;
+SET search_path TO olymp1_shema, public;
 
  
 # service

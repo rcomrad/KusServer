@@ -138,7 +138,9 @@ core::ResultGenerator::generate(int aCompetitionID) noexcept
         auto user =
             connection.val.getData<data::User>("id=" + data::wrap(u.userID));
 
-        resultTable[user.login].resize(questions.size());
+        // auto name = user.login;
+        auto name = user.password;
+        resultTable[name].resize(questions.size());
         for (int i = 0; i < questions.size(); ++i)
         {
             auto& q = questions[i];
@@ -153,27 +155,27 @@ core::ResultGenerator::generate(int aCompetitionID) noexcept
             {
                 // if (qr.count(questions[i].id))
                 // {
-                //     resultTable[user.login][i] = partly(answer.value,
+                //     resultTable[name][i] = partly(answer.value,
                 //     questions[i].juryAnswer);
                 // }
                 if (q.type == "singl")
                 {
-                    resultTable[user.login][i] =
+                    resultTable[name][i] =
                         equal(answer.value, questions[i].juryAnswer, wrong[i]);
                 }
                 else if (q.type == "sootv")
                 {
-                    resultTable[user.login][i] =
+                    resultTable[name][i] =
                         partly(answer.value, questions[i].juryAnswer, wrong[i]);
                 }
                 else if (q.type == "predl")
                 {
-                    resultTable[user.login][i] =
+                    resultTable[name][i] =
                         equal(answer.value, questions[i].juryAnswer, wrong[i]);
                 }
                 else if (q.type == "slova")
                 {
-                    resultTable[user.login][i] =
+                    resultTable[name][i] =
                         slova(answer.value, questions[i].juryAnswer, wrong[i]);
                 }
             }
