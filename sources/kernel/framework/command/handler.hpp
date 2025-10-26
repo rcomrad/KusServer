@@ -27,6 +27,8 @@ public:
     std::mutex& listenCommandBuffer(InputBuffer* a_buffer);
     void unlistenCommandBuffer(InputBuffer* a_buffer);
 
+    CommandCaller** getCallerPtrRef(const std::string& a_command);
+
     void registrateCommand(int a_caller_num,
                            const char* a_name,
                            CommandCaller* a_obj,

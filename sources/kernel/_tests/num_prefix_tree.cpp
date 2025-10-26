@@ -24,7 +24,7 @@
 //                                      "ac",   "aba",          "abb", "baa",
 //                                      "z",    "fdsdfsdfsgers"};
 
-//     util::NumPrefixTree<std::string, 'a', 'z'> tree;
+//     utils::NumPrefixTree<std::string, 'a', 'z'> tree;
 //     for (int i = 0; i < correst.size(); ++i)
 //     {
 //         tree.set(correst[i], correst[i]);

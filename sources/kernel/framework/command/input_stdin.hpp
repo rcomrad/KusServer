@@ -24,7 +24,7 @@ private:
 
     InputBuffer m_buffer;
     std::thread m_read_thread;
-    util::Condvar m_thread_finished;
+    utils::Condvar m_thread_finished;
 
     void readLoop();
 };

@@ -38,7 +38,7 @@ core::VariableCell::VariableCell(const std::string& a_var_name,
     for (int i = 0; i < a_values.size(); ++i)
     {
         std::string key = a_values[i];
-        util::Normalize::change(key, util::Normalize::Type::LOWER);
+        utils::Normalize::change(key, utils::Normalize::Type::LOWER);
         m_value_map.emplace(std::move(key), i);
     }
 }
@@ -96,11 +96,11 @@ core::VariableCell::setValue(std::string_view a_new_value)
     switch (m_type)
     {
         case Type::ANY:
-            setValue(util::Conversion::stoi(a_new_value));
+            setValue(utils::Conversion::stoi(a_new_value));
             break;
 
         case Type::RANGE:
-            setValue(util::Conversion::stoi(a_new_value));
+            setValue(utils::Conversion::stoi(a_new_value));
             break;
 
         case Type::WORD:
@@ -123,7 +123,7 @@ void
 core::VariableCell::setWordValue(std::string_view a_new_value)
 {
     auto norm_val =
-        util::Normalize::copy(a_new_value, util::Normalize::Type::LOWER);
+        utils::Normalize::copy(a_new_value, utils::Normalize::Type::LOWER);
     auto val_it = m_value_map.find(norm_val);
     if (val_it != m_value_map.end())
     {
@@ -137,7 +137,7 @@ void
 core::VariableCell::setWordBool(std::string_view a_new_value)
 {
     auto norm_val =
-        util::Normalize::copy(a_new_value, util::Normalize::Type::LOWER);
+        utils::Normalize::copy(a_new_value, utils::Normalize::Type::LOWER);
     if (norm_val == "true")
     {
         m_value = 1;

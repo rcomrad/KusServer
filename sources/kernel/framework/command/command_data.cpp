@@ -8,7 +8,7 @@
 core::CommandData::CommandData(std::string&& a_comm_str) noexcept
 {
     m_data    = std::move(a_comm_str);
-    auto args = util::Slicer::copy(m_data, "; \n\t");
+    auto args = utils::Slicer::copy(m_data, "; \n\t");
     if (args.empty()) return;
 
     // first word is a command and processed separately
@@ -16,7 +16,7 @@ core::CommandData::CommandData(std::string&& a_comm_str) noexcept
 
     for (int i = 1; i < args.size(); ++i)
     {
-        auto temp = util::Slicer::copy(args[i], "=");
+        auto temp = utils::Slicer::copy(args[i], "=");
         if (temp.size() == 1)
         {
             // TODO: set?
@@ -54,7 +54,7 @@ core::CommandData::toString() const noexcept
 void
 core::CommandData::addArgs(const CommandData& a_other)
 {
-    arguments = util::Unique::combine(arguments, a_other.arguments);
+    arguments = utils::Unique::combine(arguments, a_other.arguments);
 }
 
 void
@@ -66,7 +66,7 @@ core::CommandData::resetArgs(const CommandData& a_other)
 void
 core::CommandData::addVars(const CommandData& a_other)
 {
-    // TODO: util::Unique::combine
+    // TODO: utils::Unique::combine
     for (auto& [i, j] : a_other.variables)
     {
         variables[i] = j;

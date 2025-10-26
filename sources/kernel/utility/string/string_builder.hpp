@@ -9,7 +9,7 @@
 
 //--------------------------------------------------------------------------------
 
-namespace util
+namespace utils
 {
 
 class StringBuilder
@@ -79,6 +79,6 @@ private:
     std::vector<Entry> m_data_array;
 };
 
-} // namespace util
+} // namespace utils
 
 //--------------------------------------------------------------------------------

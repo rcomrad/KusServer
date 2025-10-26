@@ -77,7 +77,7 @@ void
 PostgreSQL::exec(const char* a_statment) 
 {
 #if LOG_POSTGRES_QUERIES
-    LOG_INFO("%s", a_statment);
+    LOG_INFO("Exec statement: %s", a_statment);
 #endif
 
     closeStatement();
@@ -95,6 +95,7 @@ PostgreSQL::exec(const char* a_statment)
         LOG_ERROR("Exception in pqxxlib: '%s'. Request: '%s'.", e.what(),
                   a_statment);
     }
+    LOG_TRACE("Exec statement finished");
 }
 
 void
@@ -111,7 +112,7 @@ void
 PostgreSQL::nontransaction(const char* a_statment) 
 {
 #if LOG_POSTGRES_QUERIES
-    LOG_INFO("%s", a_statment);
+    LOG_INFO("Nontransaction: %s", a_statment);
 #endif
 
     try
@@ -126,6 +127,7 @@ PostgreSQL::nontransaction(const char* a_statment)
         LOG_ERROR("Exception in pqxxlib: '%s'. Request: '%s'.", e.what(),
                   a_statment);
     }
+    LOG_TRACE("Nontransaction finished");
 }
 
 //--------------------------------------------------------------------------------

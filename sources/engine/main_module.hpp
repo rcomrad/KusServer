@@ -1,6 +1,7 @@
-#include "graphics/heart.hpp"
 #include "kernel/framework/module/include_me.hpp"
 #include "kernel/utility/type/declaration/lifecycle_manager.hpp"
+
+#include "heart.hpp"
 
 namespace engine
 {
@@ -16,7 +17,7 @@ protected:
     void threadTerminate() override;
 
 private:
-    util::LifecycleManager<Heart> m_graphics;
+    utils::LifecycleManager<Heart> m_heart;
 };
 
 } // namespace engine

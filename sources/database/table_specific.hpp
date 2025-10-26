@@ -67,7 +67,7 @@
                                                                          \
         name(std::string_view a_data)                                    \
         {                                                                \
-            auto parts = util::Slicer::copy(a_data, ";");                \
+            auto parts = utils::Slicer::copy(a_data, ";");               \
             BOOST_PP_SEQ_FOR_EACH_I(FIELD_LOAD, _, fields_seq)           \
         }                                                                \
                                                                          \
@@ -84,7 +84,7 @@
             BOOST_PP_SEQ_FOR_EACH_I(FIELD_SELECT, a_psql, fields_seq)    \
         }                                                                \
                                                                          \
-        void insert(util::StringBuilder& a_sb) const                     \
+        void insert(utils::StringBuilder& a_sb) const                    \
         {                                                                \
             insertBase(a_sb);                                            \
             BOOST_PP_SEQ_FOR_EACH(FIELD_INSERT, _, fields_seq)           \
@@ -99,7 +99,7 @@
             return result;                                               \
         }                                                                \
                                                                          \
-        void update(util::StringBuilder& a_sb) const                     \
+        void update(utils::StringBuilder& a_sb) const                    \
         {                                                                \
             BOOST_PP_SEQ_FOR_EACH(FIELD_UPDATE, _, fields_seq);          \
             a_sb.pop_back();                                             \
@@ -108,6 +108,10 @@
         static std::string_view getTableName()                           \
         {                                                                \
             return #name;                                                \
+        }                                                                \
+        static std::string_view getQuotedTableName()                     \
+        {                                                                \
+            return "\"" #name "\"";                                      \
         }                                                                \
                                                                          \
         static std::string getTableInfo()                                \

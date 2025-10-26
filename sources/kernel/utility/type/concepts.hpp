@@ -1,6 +1,9 @@
-#include <concepts>
+#pragma once
 
-namespace util
+#include <concepts>
+#include <string>
+
+namespace utils
 {
 
 template <typename T>
@@ -22,6 +25,6 @@ template <typename T>
 concept IsStdString = std::same_as<T, std::string>;
 
 template <typename T>
-concept IsNotStdString = !std::same_as<T, std::string>; 
+concept IsNotStdString = !std::same_as<T, std::string>;
 
-} // namespace util
+} // namespace utils

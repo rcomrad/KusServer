@@ -62,17 +62,17 @@ private:
     ConnectionPool* m_parent;
 
     void execAndClose(std::string_view a_str);
-    void execAndClose(util::StringBuilder& a_sb);
+    void execAndClose(utils::StringBuilder& a_sb);
 };
 
 template <typename TableType>
 int
 SQLConnection::insert(const TableType& a_data)
 {
-    util::StringBuilder sb;
+    utils::StringBuilder sb;
 
     sb.add("INSERT INTO ");
-    sb.add(a_data.getTableName());
+    sb.add(a_data.getQuotedTableName());
     sb.add(" VALUES(");
     a_data.insert(sb);
     sb.add(")RETURNING id;");
@@ -102,10 +102,10 @@ template <typename TableType>
 std::optional<TableType>
 SQLConnection::select(std::string_view a_condition)
 {
-    util::StringBuilder sb;
+    utils::StringBuilder sb;
 
     sb.add("SELECT * FROM ");
-    sb.add(TableType::getTableName());
+    sb.add(TableType::getQuotedTableName());
     if (!a_condition.empty())
     {
         sb.add(" WHERE ");
@@ -140,10 +140,10 @@ template <typename TableType>
 std::vector<TableType>
 SQLConnection::selectArray(std::string_view a_condition)
 {
-    util::StringBuilder sb;
+    utils::StringBuilder sb;
 
     sb.add("SELECT * FROM ");
-    sb.add(TableType::getTableName());
+    sb.add(TableType::getQuotedTableName());
     if (!a_condition.empty())
     {
         sb.add(" WHERE ");
@@ -173,18 +173,18 @@ SQLConnection::createTable()
     execAndClose(std::format(
         "CREATE TABLE IF NOT EXISTS {} (id integer GENERATED ALWAYS AS "
         "IDENTITY PRIMARY KEY, {});",
-        TableType::getTableName(), TableType::getTableInfo()));
+        TableType::getQuotedTableName(), TableType::getTableInfo()));
 
     execAndClose(std::format("ALTER TABLE {} OWNER TO {};",
-                             TableType::getTableName(), m_user_name));
+                             TableType::getQuotedTableName(), m_user_name));
 }
 
 template <typename TableType>
 void
 SQLConnection::deleteTable()
 {
-    execAndClose(
-        std::format("DROP TABLE IF EXISTS {};", TableType::getTableName()));
+    execAndClose(std::format("DROP TABLE IF EXISTS {};",
+                             TableType::getQuotedTableName()));
 }
 
 // TODO: string builder
@@ -224,10 +224,10 @@ SQLConnection::update(TableType& a_data)
         THROW("No id value");
     }
 
-    util::StringBuilder sb;
+    utils::StringBuilder sb;
 
     sb.add("UPDATE ");
-    sb.add(a_data.getTableName());
+    sb.add(a_data.getQuotedTableName());
     sb.add(" SET ");
     a_data.update(sb);
     sb.add(" WHERE id=");
@@ -255,8 +255,8 @@ template <typename TableType>
 void
 SQLConnection::drop(std::string_view a_cond)
 {
-    std::string statement = std::format("DELETE FROM {} WHERE {};",
-                                        TableType::getTableName(), a_cond);
+    std::string statement = std::format(
+        "DELETE FROM {} WHERE {};", TableType::getQuotedTableName(), a_cond);
     m_db_conn.exec(statement.data());
     m_db_conn.closeStatement();
 }

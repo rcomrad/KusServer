@@ -36,6 +36,7 @@ ConnectionPool::get()
 {
     m_avaliable_count.acquire();
     const std::lock_guard lock(m_avaluable_mutex);
+    LOG_TRACE("Get connection");
     auto psql = m_avaluable.back();
     m_avaluable.pop_back();
     return SQLConnection(*psql, m_credentials.user, this);
@@ -44,6 +45,7 @@ ConnectionPool::get()
 void
 ConnectionPool::put(PostgreSQL& a_psql)
 {
+    LOG_TRACE("Put connection");
     const std::lock_guard lock(m_avaluable_mutex);
     m_avaluable.emplace_back(&a_psql);
     m_avaliable_count.release();

@@ -5,7 +5,7 @@
 #include <string>
 #include <string_view>
 
-namespace util
+namespace utils
 {
 
 // TODO: static operator() - only in C++23
@@ -62,4 +62,4 @@ private:
     }
 };
 
-} // namespace util
+} // namespace utils

@@ -190,6 +190,8 @@
       - mailio:x64-linux
       - gtest:x64-linux
       - vulkan-sdk-components:x64-linux
+      - lunarg-vulkantools:x64-linux
+# https://vulkan.lunarg.com/sdk/home#windows
 
   tasks:
     - name: Clone repository

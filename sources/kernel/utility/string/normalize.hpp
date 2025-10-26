@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-namespace util
+namespace utils
 {
 
 class Normalize
@@ -33,6 +33,6 @@ public:
     static char toLower(char c) noexcept;
 };
 
-} // namespace util
+} // namespace utils
 
 //------------------------------------------------------------------------------

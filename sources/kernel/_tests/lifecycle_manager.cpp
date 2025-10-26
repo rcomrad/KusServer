@@ -59,7 +59,7 @@ int EncapsulatedClass::g_constructor_counter = 0;
 int EncapsulatedClass::g_destructor_counter  = 0;
 
 void
-create_and_check(util::LifecycleManager<EncapsulatedClass>& a_manager,
+create_and_check(utils::LifecycleManager<EncapsulatedClass>& a_manager,
                  const char* a_name,
                  bool a_flag,
                  int a_num,
@@ -76,7 +76,7 @@ TEST_F(LifecycleManagerTest, basic)
 {
     // TODO: referance test
     {
-        util::LifecycleManager<EncapsulatedClass> object;
+        utils::LifecycleManager<EncapsulatedClass> object;
 
         EXPECT_EQ(EncapsulatedClass::g_constructor_counter, 0);
         EXPECT_EQ(EncapsulatedClass::g_destructor_counter, 0);

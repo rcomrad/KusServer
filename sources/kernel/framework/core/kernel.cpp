@@ -2,7 +2,7 @@
 
 //--------------------------------------------------------------------------------
 
-util::LifecycleManager<core::Kernel> core::Kernel::m_self_ptr;
+utils::LifecycleManager<core::Kernel> core::Kernel::m_self_ptr;
 
 void
 core::Kernel::create()

@@ -79,7 +79,7 @@ to_str(const T& vec)
 //--------------------------------------------------------------------------------
 // Complex concept
 
-template <util::Container2D T>
+template <utils::Container2D T>
 std::string
 to_str(const T& vec)
 {

@@ -45,7 +45,7 @@ SQLConnection::execAndClose(std::string_view a_str)
 }
 
 void
-SQLConnection::execAndClose(util::StringBuilder& a_sb)
+SQLConnection::execAndClose(utils::StringBuilder& a_sb)
 {
     execAndClose(a_sb.collapse().get());
 }

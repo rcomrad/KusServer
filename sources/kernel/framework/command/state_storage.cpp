@@ -3,20 +3,18 @@
 #include "kernel/framework/command/input_buffer.hpp"
 #include "kernel/framework/core/kernel.hpp"
 #include "kernel/framework/logger/basic/include_me.hpp"
-#include "kernel/utility/file_system/file_read.hpp"
-#include "kernel/utility/file_system/file_write.hpp"
-#include "kernel/utility/file_system/path_values.hpp"
 #include "kernel/utility/string/parser.hpp"
 
 namespace core
 {
 
 bool StateStorage::m_state_restore_flag = true;
+constexpr const char* STATE_PATH        = "state";
 constexpr const char* STATE_FILE_NAME   = "program_state.txt";
 
 StateStorage::StateStorage()
 {
-    KERNEL.addFile(util::DATA_FOLDER_NAME, STATE_FILE_NAME);
+    KERNEL.addDataShortcut(STATE_PATH, std::filesystem::path(STATE_FILE_NAME));
 }
 
 void
@@ -65,14 +63,17 @@ StateStorage::applyCommands()
 {
     if (!m_state_restore_flag) return;
 
-    auto data     = util::FileRead::read(STATE_FILE_NAME);
-    auto commands = util::Parser::getLinesRef(data);
+    auto data     = KERNEL.readFile(STATE_PATH);
+    auto commands = utils::Parser::getLinesRef(data);
 
     for (auto& i : commands)
     {
         InputBuffer buffer;
         auto cmd_out = buffer.execCommand(std::string(i));
-        printf("%s", cmd_out.get());
+
+        std::string temp(cmd_out.get());
+        temp.pop_back(); // remove \n
+        LOG_INFO("Command result: %s", temp);
     }
 }
 
@@ -85,8 +86,7 @@ StateStorage::turnOffStateRestore()
 void
 StateStorage::dumpState()
 {
-    util::FileWrite state_file(STATE_FILE_NAME);
-    state_file.write(m_storage);
+    KERNEL.writeFile(m_storage, STATE_PATH);
 }
 
 } // namespace core

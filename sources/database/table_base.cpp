@@ -14,7 +14,7 @@ TableBase::selectBase(database::PostgreSQL& a_psql)
 }
 
 void
-TableBase::insertBase(util::StringBuilder& a_sb) const
+TableBase::insertBase(utils::StringBuilder& a_sb) const
 {
     if (id == 0) a_sb.add("default");
     else a_sb.add(id);

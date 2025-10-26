@@ -2,7 +2,7 @@
 
 #include <utility>
 
-namespace util
+namespace utils
 {
 
 // TODO: inline?
@@ -19,11 +19,11 @@ public:
         data.is_freed = true;
     }
 
-    template <typename... Args>
-    LifecycleManager(Args&&... args) noexcept
-    {
-        create(args...);
-    }
+    // template <typename... Args>
+    // LifecycleManager(Args&&... args) noexcept
+    // {
+    //     create(args...);
+    // }
 
     ~LifecycleManager()
     {
@@ -31,11 +31,12 @@ public:
     }
 
     template <typename... Args>
-    void create(Args&&... args)
+    LifecycleManager<T>& create(Args&&... args)
     {
         destroy();
         new (&data.object) T(std::forward<Args>(args)...);
         data.is_freed = false;
+        return *this;
     }
 
     void destroy() noexcept
@@ -63,6 +64,11 @@ public:
         return !data.is_freed;
     }
 
+    T* operator->() noexcept
+    {
+        return &obj;
+    }
+
     T obj;
 
 private:
@@ -73,4 +79,4 @@ private:
     } data;
 };
 
-} // namespace util
+} // namespace utils

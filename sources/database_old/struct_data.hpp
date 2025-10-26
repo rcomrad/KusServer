@@ -20,7 +20,7 @@ struct StructData
 private:
     struct TypeData
     {
-        util::TypeID type;
+        utils::TypeID type;
         size_t size;
         char name[DatabaseColumnNameMaxSize];
     };

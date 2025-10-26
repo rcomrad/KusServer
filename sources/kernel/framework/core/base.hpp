@@ -5,6 +5,7 @@
 #include "kernel/framework/command/handler.hpp"
 #include "kernel/framework/command/input_stdin.hpp"
 #include "kernel/framework/command/state_storage.hpp"
+#include "kernel/framework/file_system/include_me.hpp"
 #include "kernel/framework/module/registry.hpp"
 #include "kernel/framework/variable/storage.hpp"
 #include "kernel/utility/file_system/path_storage.hpp"
@@ -17,7 +18,7 @@ namespace core
 
 class Base : public VariableStorage,
              public CommandHandler,
-             public util::PathStorage,
+             public FileSystem,
              public StateStorage,
              public ModuleRegistry
 {
@@ -34,7 +35,7 @@ public:
 
 private:
     int m_is_running_var_num;
-    util::LifecycleManager<InputSTDIN> m_stdin;
+    utils::LifecycleManager<InputSTDIN> m_stdin;
 };
 
 } // namespace core

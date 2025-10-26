@@ -25,8 +25,8 @@ protected:
     void commandSetup() const noexcept override;
 
 private:
-    std::vector<util::LifecycleManager<ConnectionPool>> m_conn_storage;
-    util::LifecycleManager<DatabaseConnection> m_obtained_connection;
+    std::vector<utils::LifecycleManager<ConnectionPool>> m_conn_storage;
+    utils::LifecycleManager<DatabaseConnection> m_obtained_connection;
     // DatabaseConnection* m_obtained_connection;
     // bool m_has_obtained_connection;
     // m_obtained_connection;

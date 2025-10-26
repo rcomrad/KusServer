@@ -20,7 +20,7 @@ concept NumericOrString = std::integral<T> || std::floating_point<T> ||
 
 template <typename Container>
 concept isTableContainer = requires(Container a_container) {
-    { util::ContainerValue::exec(a_container, a_container.cbegin()).print() };
+    { utils::ContainerValue::exec(a_container, a_container.cbegin()).print() };
 };
 
 class TablePrinter
@@ -36,7 +36,7 @@ public:
     template <typename Container>
     void addTableConrainer(const Container& a_container) const
     {
-        std::unordered_set<std::decay_t<decltype(util::ContainerKey::exec(
+        std::unordered_set<std::decay_t<decltype(utils::ContainerKey::exec(
             a_container, a_container.begin()))>>
             erased_keys;
         addTableConrainer(a_container, erased_keys);
@@ -46,8 +46,8 @@ public:
     void addTableConrainer(const Container& a_container,
                            const std::unordered_set<Key>& a_erased_keys) const
     {
-        using getKey   = util::ContainerKey;
-        using getValue = util::ContainerValue;
+        using getKey   = utils::ContainerKey;
+        using getValue = utils::ContainerValue;
 
         if (a_container.size() == 0) return;
 

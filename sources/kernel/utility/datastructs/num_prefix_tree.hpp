@@ -13,7 +13,7 @@
 
 // //------------------------------------------------------------------------------
 
-// namespace util
+// namespace utils
 // {
 
 // template <typename StoredType, int MinNum, int MaxNum>
@@ -36,8 +36,8 @@
 //     template <typename KeyContainer>
 //     StoredType& get(const KeyContainer& a_keys) noexcept
 //     {
-//         auto indx = m_key_structure.get(Transform::toNumVector(a_keys, MinNum));
-//         if (indx)
+//         auto indx = m_key_structure.get(Transform::toNumVector(a_keys,
+//         MinNum)); if (indx)
 //         {
 //             throw std::runtime_error("No such node");
 //         }
@@ -58,8 +58,10 @@
 //     }
 
 //     // TODO: make char arrays better?
-//     // the problem is calling the end function for the array of characters below
-//     // https://stackoverflow.com/questions/18732352/stdend-with-raw-arrays-of-char
+//     // the problem is calling the end function for the array of characters
+//     below
+//     //
+//     https://stackoverflow.com/questions/18732352/stdend-with-raw-arrays-of-char
 //     void set(const char* a_keys, const StoredType& a_value) noexcept
 //     {
 //         set(std::string_view(a_keys), a_value);
@@ -75,6 +77,6 @@
 //     std::vector<StoredType> m_data_storage;
 // };
 
-// } // namespace util
+// } // namespace utils
 
 // //------------------------------------------------------------------------------

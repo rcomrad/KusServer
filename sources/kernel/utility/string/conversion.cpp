@@ -3,11 +3,11 @@
 // #include "kernel/framework/logger/basic/include_me.hpp"
 
 int
-util::Conversion::stoi(std::string_view a_str)
+utils::Conversion::stoi(std::string_view a_str)
 {
     // if (a_str.empty())
     // {
-    //     THROW("Called util::stoi on empty string.")
+    //     THROW("Called utils::stoi on empty string.")
     // }
 
     bool minus = a_str.at(0) == '-';

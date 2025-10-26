@@ -16,7 +16,7 @@ template <typename ModuleType>
 class SinglUseModule : public ModuleType
 {
 public:
-    SinglUseModule(util::Condvar& a_has_started)
+    SinglUseModule(utils::Condvar& a_has_started)
         : ModuleType("test_module"), m_has_started(a_has_started)
     {
     }
@@ -34,7 +34,7 @@ protected:
 
 private:
     int m_loop_cnt = 0;
-    util::Condvar& m_has_started;
+    utils::Condvar& m_has_started;
 };
 
 template <typename ModuleType>

@@ -3,7 +3,7 @@
 //--------------------------------------------------------------------------------
 
 void
-util::DateTime::set(uint64_t aValue, DateTime::Period aType)
+utils::DateTime::set(uint64_t aValue, DateTime::Period aType)
 {
     const uint8_t typeVal = uint8_t(aType);
     value &= ~(255ULL >> typeVal << 8 | 255ULL << typeVal);
@@ -13,13 +13,13 @@ util::DateTime::set(uint64_t aValue, DateTime::Period aType)
 //--------------------------------------------------------------------------------
 
 bool
-util::DateTime::operator<(const DateTime& aOther) const noexcept
+utils::DateTime::operator<(const DateTime& aOther) const noexcept
 {
     return value < aOther.value;
 }
 
-util::DateTime
-util::DateTime::operator-(const DateTime& aOther) const noexcept
+utils::DateTime
+utils::DateTime::operator-(const DateTime& aOther) const noexcept
 {
     DateTime result;
     result.value = value - aOther.value;
@@ -29,7 +29,7 @@ util::DateTime::operator-(const DateTime& aOther) const noexcept
 //--------------------------------------------------------------------------------
 
 std::string
-util::DateTime::getTime() const noexcept
+utils::DateTime::getTime() const noexcept
 {
     std::string result(10, '\0');
     std::sprintf((char*)result.data(), "%02d:%02d:%02d", dateTime.time.hours,
@@ -38,7 +38,7 @@ util::DateTime::getTime() const noexcept
 }
 
 std::string
-util::DateTime::getDate() const noexcept
+utils::DateTime::getDate() const noexcept
 {
     std::string result(12, '\0');
     std::sprintf((char*)result.data(), "%04d-%02d-%02d", dateTime.date.year,
@@ -47,7 +47,7 @@ util::DateTime::getDate() const noexcept
 }
 
 std::string
-util::DateTime::getAll(char aDelimiter) const noexcept
+utils::DateTime::getAll(char aDelimiter) const noexcept
 {
     std::string result;
     result.reserve(22);

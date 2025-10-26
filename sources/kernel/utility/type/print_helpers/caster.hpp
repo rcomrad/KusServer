@@ -3,7 +3,7 @@
 #include <string>
 #include <string_view>
 
-namespace util
+namespace utils
 {
 
 // TODO: static operator() - only in C++23
@@ -11,6 +11,11 @@ class PrintCaster
 {
 public:
     static inline int exec(int a_data)
+    {
+        return a_data;
+    }
+
+    static inline const uint32_t exec(const uint32_t a_data)
     {
         return a_data;
     }
@@ -46,4 +51,4 @@ public:
     }
 };
 
-} // namespace util
+} // namespace utils

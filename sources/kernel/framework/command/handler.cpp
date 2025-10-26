@@ -65,6 +65,17 @@ core::CommandHandler::unlistenCommandBuffer(InputBuffer* a_buffer)
     m_inp_buffers.erase(a_buffer);
 }
 
+core::CommandCaller**
+core::CommandHandler::getCallerPtrRef(const std::string& a_command)
+{
+    auto it = m_command_info.find(a_command);
+    if (it == m_command_info.end())
+    {
+        THROW("No such command (%s)", a_command);
+    }
+    return &it->second.obj;
+}
+
 //--------------------------------------------------------------------------------
 
 void
@@ -118,30 +129,39 @@ core::CommandHandler::processCommand(Command& a_command) const
         LOG_INFO("Apply command '%s'", a_command.value);
 
         auto& com_info = it->second;
-        switch (com_info.caller_num)
+        if (com_info.obj == nullptr)
         {
-            CALL_CASE(0);
-            CALL_CASE(1);
-            CALL_CASE(2);
-            CALL_CASE(3);
-            CALL_CASE(4);
-
-            default:
-                THROW("There are no command executor with #{}.",
-                      com_info.caller_num);
-                break;
+            LOG_ERROR("Unable to apply command '%s': there is no object "
+                      "associated with the command",
+                      a_command.value);
         }
-
-        if (!a_command.execResultIsError())
+        else
         {
-            KERNEL.storeCommand(a_command);
-            LOG_INFO("      command '%s' applied successfully",
-                     a_command.value);
+            switch (com_info.caller_num)
+            {
+                CALL_CASE(0);
+                CALL_CASE(1);
+                CALL_CASE(2);
+                CALL_CASE(3);
+                CALL_CASE(4);
+
+                default:
+                    THROW("There are no command executor with #{}.",
+                          com_info.caller_num);
+                    break;
+            }
+
+            if (!a_command.execResultIsError())
+            {
+                KERNEL.storeCommand(a_command);
+                LOG_INFO("      command '%s' applied successfully",
+                         a_command.value);
+            }
         }
     }
     else
     {
-        LOG_ERROR("Unable to apply command '%s'. No suitable command handler",
+        LOG_ERROR("Unable to apply command '%s': no suitable command handler",
                   a_command.value);
     }
 

@@ -12,12 +12,11 @@
 namespace
 {
 
-constexpr const char* LOGS_FOLDER_NAME    = "logs";
 constexpr const char* LOGS_FILE_EXTENSION = "log";
 
 } // namespace
 
-FILE* core::Logger::default_stream = stdout;
+std::atomic<FILE*> core::Logger::default_stream = stdout;
 std::mutex core::Logger::default_mutex;
 
 //------------------------------------------------------------------------------
@@ -45,7 +44,7 @@ core::Logger::redirect(const std::string& a_name) noexcept
         std::fclose(m_stream);
     }
     m_is_shared = false;
-    redirectImpl(a_name, &m_stream);
+    m_stream    = getFile(a_name);
 }
 
 void
@@ -55,22 +54,23 @@ core::Logger::redirectDefault(const std::string& a_name) noexcept
     if (!flag)
     {
         // std::fclose(default_stream);
-        redirectImpl(a_name, &default_stream);
-        flag = true;
+        default_stream = getFile(a_name);
+        flag           = true;
     }
 }
 
-void
-core::Logger::redirectImpl(const std::string& a_name, FILE** s_stream) noexcept
+FILE*
+core::Logger::getFile(const std::string& a_name) noexcept
 {
-    KERNEL.addFolder(util::DATA_FOLDER_NAME, LOGS_FOLDER_NAME);
+    auto path = KERNEL.getShortcut(LOG_DIR);
 
     std::string log_file_name(a_name);
     log_file_name.push_back('.');
     log_file_name += LOGS_FILE_EXTENSION;
 
-    auto& path = KERNEL.addFile(LOGS_FOLDER_NAME, log_file_name);
-    *s_stream  = std::fopen(path.c_str(), "w");
+    path /= log_file_name;
+    auto str_name = path.string();
+    return std::fopen(str_name.c_str(), "w");
 }
 
 //------------------------------------------------------------------------------

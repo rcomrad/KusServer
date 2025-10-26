@@ -8,7 +8,7 @@ class ModuleConstructor
 {
 public:
     template <typename T>
-    static const core::Module* create(util::Condvar& a_has_started)
+    static const core::Module* create(utils::Condvar& a_has_started)
     {
         m_ptr = std::make_unique<T>(a_has_started);
         return m_ptr.get();

@@ -32,7 +32,7 @@ public:
     HOLY_TRINITY_NOCOPY(ConnectionPool);
 
     static bool create(
-        util::LifecycleManager<ConnectionPool>& a_poll_addr,
+        utils::LifecycleManager<ConnectionPool>& a_poll_addr,
         const std::vector<std::string_view>& a_credentials_array) noexcept;
 
     InternalConnection& get() noexcept;
@@ -49,7 +49,7 @@ private:
 
     std::shared_mutex m_resize_mutex;
     std::vector<InternalConnection&> m_available_conn;
-    util::LifecycleManager<PoolSemaphore> m_available_semaphore;
+    utils::LifecycleManager<PoolSemaphore> m_available_semaphore;
 
     static std::unordered_set<std::string> m_all_cred_combined;
 
