@@ -9,7 +9,8 @@ core::Base::Base()
 {
     VariableStorage::init();
     CommandHandler::init();
-    core::LocalLogger::getLogger().redirectDefault("main");
+
+    core::Logger::redirectDefault("main");
 
     m_is_running_var_num = addBoolVariable("is_running");
     setVariable(m_is_running_var_num, true);
@@ -25,7 +26,7 @@ core::Base::Base()
             while (flag)
             {
                 execIfAvailable();
-                util::Sleep::yield();
+                utils::Sleep::yield();
             }
         });
 
@@ -46,7 +47,7 @@ core::Base::run()
     while (isRunning())
     {
         doWork();
-        util::Sleep::yield();
+        utils::Sleep::yield();
     }
     terminateModules();
 }

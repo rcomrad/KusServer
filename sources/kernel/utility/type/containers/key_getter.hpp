@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace util
+namespace utils
 {
 
 // TODO: static operator() - only in C++23
@@ -35,4 +35,4 @@ public:
     }
 };
 
-} // namespace util
+} // namespace utils

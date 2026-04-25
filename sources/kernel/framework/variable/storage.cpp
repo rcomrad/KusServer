@@ -15,10 +15,12 @@ core::VariableStorage::setVariableTamplate(int a_number, T a_value)
     m_variables[a_number].obj.setValue(a_value);
 }
 
-template <typename... Args>
+template <typename TDefaultValue, typename... Args>
 int
-core::VariableStorage::addVariableInfoTamplate(const std::string& a_var_name,
-                                               Args... args)
+core::VariableStorage::addVariableInfoTamplate(
+    const std::string& a_var_name,
+    std::optional<TDefaultValue> a_default_value,
+    Args... args)
 {
     const std::lock_guard lock(m_var_info_mutex);
 
@@ -33,8 +35,18 @@ core::VariableStorage::addVariableInfoTamplate(const std::string& a_var_name,
                   "exceeded");
         }
 
-        it = m_name_to_var_dict.emplace(a_var_name, id).first;
-        m_variables[id].create(a_var_name, args...);
+        it        = m_name_to_var_dict.emplace(a_var_name, id).first;
+        auto& var = m_variables[id].create(a_var_name, args...).obj;
+
+        if (a_default_value.has_value())
+        {
+            var.setValue(a_default_value.value());
+            LOG_INFO("Created variable %s with default value");
+        }
+        else
+        {
+            LOG_INFO("Created zero'ved variable %s", a_var_name);
+        }
     }
     else
     {
@@ -121,7 +133,15 @@ core::VariableStorage::getVariable(int a_number) const
 int
 core::VariableStorage::addVariableInfo(const std::string& a_var_name)
 {
-    return addVariableInfoTamplate(a_var_name);
+    return addVariableInfoTamplate(a_var_name, std::optional<int>{});
+}
+
+int
+core::VariableStorage::addVariableInfo(const std::string& a_var_name,
+                                       int a_default_value)
+{
+    return addVariableInfoTamplate(a_var_name,
+                                   std::optional<int>{a_default_value});
 }
 
 int
@@ -129,20 +149,37 @@ core::VariableStorage::addVariableInfo(const std::string& a_var_name,
                                        int a_min_value,
                                        int a_max_value)
 {
-    return addVariableInfoTamplate(a_var_name, a_min_value, a_max_value);
+    return addVariableInfoTamplate(a_var_name, std::optional<int>{},
+                                   a_min_value, a_max_value);
 }
 
 int
 core::VariableStorage::addVariableInfo(const std::string& a_var_name,
+                                       int a_default_value,
+                                       int a_min_value,
+                                       int a_max_value)
+{
+    return addVariableInfoTamplate(a_var_name,
+                                   std::optional<int>{a_default_value},
+                                   a_min_value, a_max_value);
+}
+int
+core::VariableStorage::addVariableInfo(const std::string& a_var_name,
                                        const std::vector<std::string>& a_values)
 {
-    return addVariableInfoTamplate(a_var_name, a_values);
+    return addVariableInfoTamplate(a_var_name, std::optional<int>{}, a_values);
 }
 
 int
 core::VariableStorage::addBoolVariable(const std::string& a_var_name)
 {
-    return addVariableInfoTamplate(a_var_name, true);
+    return addVariableInfoTamplate(a_var_name, std::optional<int>{}, true);
+}
+
+int
+core::VariableStorage::addVariableInfo(bool, const std::string& a_var_name)
+{
+    return addBoolVariable(a_var_name);
 }
 
 //--------------------------------------------------------------------------------

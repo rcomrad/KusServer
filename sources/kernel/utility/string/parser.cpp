@@ -5,20 +5,20 @@
 //--------------------------------------------------------------------------------
 
 std::vector<std::string_view>
-util::Parser::getLinesRef(std::string_view a_str) noexcept
+utils::Parser::getLinesRef(std::string_view a_str) noexcept
 {
     return Slicer::change(a_str, "\n\r");
 }
 
 std::vector<std::string>
-util::Parser::getLinesCopy(std::string_view a_str) noexcept
+utils::Parser::getLinesCopy(std::string_view a_str) noexcept
 {
     return Slicer::copy(a_str, "\n\r");
 }
 
 std::vector<std::vector<std::string_view>>
-util::Parser::getWordsRef(std::string_view a_str,
-                          const char* a_separator) noexcept
+utils::Parser::getWordsRef(std::string_view a_str,
+                           const char* a_separator) noexcept
 {
     auto lines = getLinesRef(a_str);
     std::vector<std::vector<std::string_view>> result;
@@ -30,8 +30,8 @@ util::Parser::getWordsRef(std::string_view a_str,
 }
 
 std::vector<std::vector<std::string>>
-util::Parser::getWordsCopy(std::string_view a_str,
-                           const char* a_separator) noexcept
+utils::Parser::getWordsCopy(std::string_view a_str,
+                            const char* a_separator) noexcept
 {
     auto lines = getLinesCopy(a_str); // TODO: without copy
     std::vector<std::vector<std::string>> result;
@@ -43,7 +43,7 @@ util::Parser::getWordsCopy(std::string_view a_str,
 }
 
 // std::unordered_map<std::string_view, std::string_view>
-// util::Parser::getWordsMap(std::string_view  a_str,std::string_view
+// utils::Parser::getWordsMap(std::string_view  a_str,std::string_view
 // a_separator) noexcept
 // {
 //     auto words = getWords(a_str, a_separator);
@@ -67,7 +67,7 @@ util::Parser::getWordsCopy(std::string_view a_str,
 // }
 
 // std::unordered_map<std::string_view>
-// util::Parser::getWordsMap(std::string_view  a_str,std::string_view
+// utils::Parser::getWordsMap(std::string_view  a_str,std::string_view
 // a_separator) noexcept
 // {
 //     auto words = getWords(a_str, a_separator);

@@ -2,27 +2,27 @@
 
 #include "kernel/framework/logger/include_me.hpp"
 
-util::ASCIIBox::ASCIIBox()
+utils::ASCIIBox::ASCIIBox()
 {
     data[0] = data[1] = 0;
 }
 
-util::ASCIIBox::ASCIIBox(const char* str) : ASCIIBox()
+utils::ASCIIBox::ASCIIBox(const char* str) : ASCIIBox()
 {
     set(str);
 }
-util::ASCIIBox::ASCIIBox(std::string_view str) : ASCIIBox()
+utils::ASCIIBox::ASCIIBox(std::string_view str) : ASCIIBox()
 {
     set(str.data());
 }
 
-util::ASCIIBox::ASCIIBox(const std::string& str) : ASCIIBox()
+utils::ASCIIBox::ASCIIBox(const std::string& str) : ASCIIBox()
 {
     set(str.c_str());
 }
 
 void
-util::ASCIIBox::set(const char* str)
+utils::ASCIIBox::set(const char* str)
 {
     while (*str)
     {
@@ -32,7 +32,7 @@ util::ASCIIBox::set(const char* str)
 }
 
 void
-util::ASCIIBox::set(int8_t num)
+utils::ASCIIBox::set(int8_t num)
 {
     if (num >= 0 && num < 64)
     {
@@ -49,7 +49,7 @@ util::ASCIIBox::set(int8_t num)
 }
 
 bool
-util::ASCIIBox::get(int8_t num)
+utils::ASCIIBox::get(int8_t num)
 {
     if (num >= 0 && num < 64)
     {

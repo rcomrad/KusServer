@@ -3,11 +3,10 @@
 //--------------------------------------------------------------------------------
 
 #include "kernel/utility/macroses/holy_trinity.hpp"
+#include "kernel/utility/type/concepts.hpp"
 #include "pqxx/pqxx"
 
 #include "credentials.hpp"
-
-#include "kernel/utility/type/concepts.hpp"
 
 //--------------------------------------------------------------------------------
 
@@ -28,13 +27,13 @@ public:
     bool getBool(int a_colum_number);
     const char* getChars(int a_colum_number);
 
-    template <util::IsNotStdString T>
+    template <utils::IsNotStdString T>
     T get(int a_colum_number)
     {
         return m_pqxx_result_it[a_colum_number].as<T>();
     }
 
-    template <util::IsStdString T>
+    template <utils::IsStdString T>
     T get(int a_colum_number)
     {
         // TODO: free?

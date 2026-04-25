@@ -85,7 +85,7 @@ core::ThreadModule::threadLoop() noexcept
             m_thread_module.close();
         }
         flag = m_thread_module.execute();
-        util::Sleep::yield();
+        utils::Sleep::yield();
     }
     m_is_running = false;
 }

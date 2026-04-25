@@ -86,8 +86,8 @@ private:
     };
 
     Step m_step;
-    int m_column_indx;
-    int m_subline_indx;
+    size_t m_column_indx;
+    size_t m_subline_indx;
     int m_row_count;
     std::vector<ColumnInfo> m_columns;
     std::vector<ColumnInfo> m_sublines;

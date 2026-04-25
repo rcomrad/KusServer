@@ -1,18 +1,18 @@
 // #include "pt_key_storage.hpp"
 
-// util::PTKeyStorage::PTKeyStorage(size_t a_block_size) noexcept
+// utils::PTKeyStorage::PTKeyStorage(size_t a_block_size) noexcept
 //     : m_block_size(a_block_size + 2), m_key_structure(m_block_size)
 // {
 // }
 
 // void
-// util::PTKeyStorage::set(const std::vector<int>& a_keys, int val) noexcept
+// utils::PTKeyStorage::set(const std::vector<int>& a_keys, int val) noexcept
 // {
 //     search(a_keys, true) = val + 1;
 // }
 
 // std::optional<int>
-// util::PTKeyStorage::get(const std::vector<int>& a_keys) noexcept
+// utils::PTKeyStorage::get(const std::vector<int>& a_keys) noexcept
 // {
 //     int res_val = search(a_keys, false);
 //     std::optional<int> result;
@@ -21,7 +21,7 @@
 // }
 
 // int&
-// util::PTKeyStorage::search(const std::vector<int>& a_keys,
+// utils::PTKeyStorage::search(const std::vector<int>& a_keys,
 //                            bool a_is_builder) noexcept
 // {
 //     int indx = 0;
@@ -37,7 +37,8 @@
 //             if (a_is_builder)
 //             {
 //                 indx = m_key_structure[indx] = m_key_structure.size();
-//                 m_key_structure.resize(m_key_structure.size() + m_block_size);
+//                 m_key_structure.resize(m_key_structure.size() +
+//                 m_block_size);
 //             }
 //             else
 //             {

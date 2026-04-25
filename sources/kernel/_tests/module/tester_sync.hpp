@@ -35,7 +35,7 @@ public:
 
     virtual void exec()
     {
-        util::Condvar has_started;
+        utils::Condvar has_started;
         auto& module = *ModuleConstructor::create<TestType>(has_started);
         m_fixture.execCommand("mod_add test");
         has_started.wait();
@@ -69,10 +69,10 @@ protected:
 
     void wait(int a_count)
     {
-        util::Sleep::medium();
+        utils::Sleep::medium();
         while (std::stoi(m_fixture.execCommand("mod_active_count")) != a_count)
         {
-            util::Sleep::yield();
+            utils::Sleep::yield();
         }
     }
 

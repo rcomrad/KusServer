@@ -13,7 +13,7 @@ class Kernel : public Base
 {
     Kernel() = default;
 
-    friend union util::LifecycleManager<Kernel>;
+    friend union utils::LifecycleManager<Kernel>;
 
 public:
     Kernel(const Kernel&) noexcept             = delete;
@@ -27,7 +27,7 @@ public:
     static Kernel& getInstance() noexcept;
 
 private:
-    static util::LifecycleManager<Kernel> m_self_ptr;
+    static utils::LifecycleManager<Kernel> m_self_ptr;
 };
 
 } // namespace core

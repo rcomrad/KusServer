@@ -22,6 +22,10 @@ public:
                  int a_min_value,
                  int a_max_value);
     VariableCell(const std::string& a_var_name,
+                 int a_default_value,
+                 int a_min_value,
+                 int a_max_value);
+    VariableCell(const std::string& a_var_name,
                  const std::vector<std::string>& a_values);
     VariableCell(const VariableCell& other);
 

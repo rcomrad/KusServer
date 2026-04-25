@@ -6,7 +6,7 @@
 
 using namespace std::literals;
 
-namespace util
+namespace utils
 {
 
 enum class TypeID
@@ -29,4 +29,4 @@ enum class TypeID
     END
 };
 
-} // namespace util
+} // namespace utils

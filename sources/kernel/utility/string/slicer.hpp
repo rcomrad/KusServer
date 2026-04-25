@@ -8,7 +8,7 @@
 
 //------------------------------------------------------------------------------
 
-namespace util
+namespace utils
 {
 
 class Slicer
@@ -31,6 +31,6 @@ public:
                                                 std::string_view a_erase);
 };
 
-} // namespace util
+} // namespace utils
 
 //------------------------------------------------------------------------------

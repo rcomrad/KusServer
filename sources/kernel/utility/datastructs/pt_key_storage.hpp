@@ -7,7 +7,7 @@
 
 // //------------------------------------------------------------------------------
 
-// namespace util
+// namespace utils
 // {
 
 // class PTKeyStorage
@@ -24,6 +24,6 @@
 //     int& search(const std::vector<int>& a_keys, bool a_is_builder) noexcept;
 // };
 
-// } // namespace util
+// } // namespace utils
 
 // //------------------------------------------------------------------------------

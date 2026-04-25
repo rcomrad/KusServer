@@ -3,7 +3,7 @@
 #include "kernel/utility/datastructs/ascii_box.hpp"
 
 std::vector<std::string>
-util::Slicer::copy(std::string_view a_str, std::string_view a_delimiters)
+utils::Slicer::copy(std::string_view a_str, std::string_view a_delimiters)
 {
     // TODO: parametrize copy, not call with empty a_erase
     return copy(a_str, a_delimiters, "");
@@ -11,9 +11,9 @@ util::Slicer::copy(std::string_view a_str, std::string_view a_delimiters)
 
 // TODO: substr faster?
 std::vector<std::string>
-util::Slicer::copy(std::string_view a_str,
-                   std::string_view a_delimiters,
-                   std::string_view a_erase)
+utils::Slicer::copy(std::string_view a_str,
+                    std::string_view a_delimiters,
+                    std::string_view a_erase)
 {
     std::vector<std::string> result{""};
     ASCIIBox delimiters(a_delimiters);
@@ -47,16 +47,16 @@ util::Slicer::copy(std::string_view a_str,
 }
 
 std::vector<std::string_view>
-util::Slicer::change(std::string_view a_str, std::string_view a_delimiters)
+utils::Slicer::change(std::string_view a_str, std::string_view a_delimiters)
 {
     // TODO: parametrize change, not call with empty a_erase
     return change(a_str, a_delimiters, "");
 }
 
 std::vector<std::string_view>
-util::Slicer::change(std::string_view a_str,
-                     std::string_view a_delimiters,
-                     std::string_view a_erase)
+utils::Slicer::change(std::string_view a_str,
+                      std::string_view a_delimiters,
+                      std::string_view a_erase)
 {
     std::vector<std::string_view> result;
     ASCIIBox delimiters(a_delimiters);

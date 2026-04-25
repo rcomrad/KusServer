@@ -2,7 +2,7 @@
 
 //--------------------------------------------------------------------------------
 
-namespace util
+namespace utils
 {
 class Sleep
 {
@@ -13,6 +13,6 @@ public:
     static void yield() noexcept;
 };
 
-} // namespace core
+} // namespace utils
 
 //--------------------------------------------------------------------------------

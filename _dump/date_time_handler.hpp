@@ -4,7 +4,7 @@
 
 #include "date_time.hpp"
 
-namespace util
+namespace utils
 {
 class DateTimeHandler
 {
@@ -17,6 +17,6 @@ public:
     static bool durationHasPassed(const DateTime& aTimeFrom,
                                   const DateTime& aDuration) noexcept;
 };
-} // namespace util
+} // namespace utils
 
 //--------------------------------------------------------------------------------

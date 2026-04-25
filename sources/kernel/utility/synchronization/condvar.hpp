@@ -2,7 +2,7 @@
 
 #include <condition_variable>
 
-namespace util
+namespace utils
 {
 
 class Condvar
@@ -19,4 +19,4 @@ private:
     std::condition_variable m_condvar;
 };
 
-} // namespace util
+} // namespace utils

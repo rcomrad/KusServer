@@ -13,13 +13,13 @@ static auto
 readDefaultNodes() noexcept
 {
     auto path =
-        util::PathStorage::getFilePath("config", "ontology_base_nodes.txt");
+        utils::PathStorage::getFilePath("config", "ontology_base_nodes.txt");
 
     std::ifstream code_file(path.value());
     static std::string code; // TODO: this is shit!
     std::getline(code_file, code, '\0');
 
-    return util::Parser::getWords(code);
+    return utils::Parser::getWords(code);
 }
 
 #define NODE_MACROS(type_name, method, ...) \

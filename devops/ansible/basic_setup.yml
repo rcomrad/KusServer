@@ -1,0 +1,127 @@
+---
+- name: Setup basic environment
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Update and upgrade apt packages
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install common packages
+      ansible.builtin.apt:
+        name:
+          - git
+          - gitk
+          - nano
+          - tar
+          - wget
+          - openssh-server
+        state: present
+
+    - name: No vim for git branch
+      ansible.builtin.shell: git config --global pager.branch 'false'
+
+    - name: Set nano as default git redactor
+      ansible.builtin.shell: git config --global core.editor "nano"
+
+# https://medium.com/@haroldfinch01/ansible-create-a-user-with-sudo-privileges-82806cc6c633
+- name: Create Linux user with admin access
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    username: "user"
+    user_password: "111"
+
+  tasks:
+    - name: Create user
+      ansible.builtin.user:
+        name: "{{ username }}"
+        shell: /bin/bash
+        state: present
+        create_home: yes
+        password: "{{ user_password | password_hash('sha512') }}"
+
+    - name: Add user to sudo group
+      user:
+        name: "{{ username }}"
+        groups: sudo  # On Debian/Ubuntu; for CentOS/RHEL, use 'wheel'
+        append: yes
+
+    - name: Allow passwordless sudo for the user (Debian/Ubuntu)
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^{{ username }}'
+        line: '{{ username }} ALL=(ALL) NOPASSWD:ALL'
+        validate: '/usr/sbin/visudo -cf %s'
+
+    - name: Copy SSH key
+      copy:
+        src: /root/.ssh/
+        dest: /home/user/.ssh/
+        owner: "{{ username }}"
+        group: "{{ username }}"
+
+- name: Install zsh
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Install zsh package
+      ansible.builtin.apt:
+        name: zsh
+        state: present
+
+    - name: Get all users
+      # TODO: too many users, select only "real" one - done
+      # TODO: make it pretty 
+      ansible.builtin.shell: 'getent passwd | awk -F: ''($3 >= 1000 || $1 == "root") && $1 != "nobody" {print $1}'''
+      register: user_list
+
+    - name: Install Oh My Zsh
+      become: yes
+      become_user: "{{ item }}"
+      ansible.builtin.shell: |
+        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+      loop: "{{ user_list.stdout_lines }}"
+      ignore_errors: yes # TODO: Already present
+
+# https://serverfault.com/questions/1001235/how-can-change-shell-for-a-user-via-ansible ?
+    - name: Change default shell to zsh
+      ansible.builtin.user:
+        name: "{{ item }}"
+        shell: /bin/zsh
+      loop: "{{ user_list.stdout_lines }}"
+      ignore_errors: yes # TODO: Already done?
+
+    - name: Create default .zshrc file
+      copy:
+        src: .zshrc
+        dest: "{{ '/root/.zshrc' if item == 'root' else '/home/' + item + '/.zshrc' }}"
+        owner: "{{ item }}"
+        group: "{{ item }}"
+        mode: '0644'
+      loop: "{{ user_list.stdout_lines }}"
+
+- name: Setup connections
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Ensure root login by password is disabled
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin prohibit-password'
+        state: present
+        validate: 'sshd -t -f %s'
+      notify: restart sshd
+  
+  handlers:
+    - name: restart sshd
+      service:
+        name: sshd
+        state: restarted

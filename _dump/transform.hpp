@@ -8,7 +8,7 @@
 
 //--------------------------------------------------------------------------------
 
-namespace util
+namespace utils
 {
 
 #define INTERNAL_TYPE_DECLARING                                            \
@@ -49,6 +49,6 @@ public:
 
 #undef INTERNAL_TYPE_DECLARING
 
-} // namespace util
+} // namespace utils
 
 //--------------------------------------------------------------------------------

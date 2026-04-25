@@ -1,18 +1,18 @@
 #include "condvar.hpp"
 
-util::Condvar::Condvar() noexcept : m_notify_flag(false)
+utils::Condvar::Condvar() noexcept : m_notify_flag(false)
 {
 }
 
 void
-util::Condvar::wait() noexcept
+utils::Condvar::wait() noexcept
 {
     std::unique_lock<std::mutex> lock(m_condvar_mutex);
     m_condvar.wait(lock, [&] { return m_notify_flag; });
 }
 
 void
-util::Condvar::notify() noexcept
+utils::Condvar::notify() noexcept
 {
     std::unique_lock<std::mutex> lock(m_condvar_mutex);
     m_notify_flag = true;
@@ -21,7 +21,7 @@ util::Condvar::notify() noexcept
 
 // TODO: m_notify_flag is it works for notifyAll?
 void
-util::Condvar::notifyAll() noexcept
+utils::Condvar::notifyAll() noexcept
 {
     std::unique_lock<std::mutex> lock(m_condvar_mutex);
     m_notify_flag = true;

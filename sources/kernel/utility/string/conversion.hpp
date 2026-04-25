@@ -6,7 +6,7 @@
 
 //------------------------------------------------------------------------------
 
-namespace util
+namespace utils
 {
 
 class Conversion
@@ -17,6 +17,6 @@ public:
     static int stoi(std::string_view a_str);
 };
 
-} // namespace util
+} // namespace utils
 
 //------------------------------------------------------------------------------

@@ -36,10 +36,10 @@ data::StructStorage::registrateStructNonstatic(
     static_assert(sizeof(cnt) == sizeof(data.count));
 
     // TODO: remove if-else
-    // auto vars = util::Slicer::process(a_struct_vars, ";");
+    // auto vars = utils::Slicer::process(a_struct_vars, ";");
     // for (auto& i : vars)
     // {
-    //     auto parts    = util::Slicer::process(i, " \t\n[]");
+    //     auto parts    = utils::Slicer::process(i, " \t\n[]");
     //     auto& cur_var = data.vars[cnt];
     //     if (parts[0] == "int")
     //     {

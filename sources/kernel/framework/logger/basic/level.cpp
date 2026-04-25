@@ -1,3 +1,3 @@
 #include "level.hpp"
 
-core::LogLevel core::g_log_level = LogLevel::INFO;
+core::LogLevel core::g_log_level = LogLevel::TRACE;

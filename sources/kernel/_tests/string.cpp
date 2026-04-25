@@ -87,14 +87,14 @@ public:
         auto ans_1       = slice(data, a_sep);
         auto ans_2       = slice(erase(data, a_erase), a_sep);
 
-        EXPECT_EQ(util::Slicer::copy(data, a_sep), ans_1);
+        EXPECT_EQ(utils::Slicer::copy(data, a_sep), ans_1);
         EXPECT_EQ(data, a_data) << "without erase (1)";
-        EXPECT_EQ(util::Slicer::copy(data, a_sep, a_erase), ans_2);
+        EXPECT_EQ(utils::Slicer::copy(data, a_sep, a_erase), ans_2);
         EXPECT_EQ(data, a_data) << "with erase (2)";
 
-        EXPECT_EQ(util::Slicer::change(data, a_sep), view(ans_1));
+        EXPECT_EQ(utils::Slicer::change(data, a_sep), view(ans_1));
         data = a_data;
-        EXPECT_EQ(util::Slicer::change(data, a_sep, a_erase), view(ans_2));
+        EXPECT_EQ(utils::Slicer::change(data, a_sep, a_erase), view(ans_2));
     }
 
     void testLines(const std::string& a_data)
@@ -102,10 +102,10 @@ public:
         std::string data = a_data;
         auto ans         = slice(data, "\n");
 
-        EXPECT_EQ(util::Parser::getLinesCopy(data), ans);
+        EXPECT_EQ(utils::Parser::getLinesCopy(data), ans);
         EXPECT_EQ(data, a_data) << "lines";
 
-        EXPECT_EQ(util::Parser::getLinesRef(data), view(ans));
+        EXPECT_EQ(utils::Parser::getLinesRef(data), view(ans));
     }
 
     void testWords(const std::string& a_data)
@@ -119,10 +119,10 @@ public:
             ans[i] = slice(lines[i], "\t ");
         }
 
-        EXPECT_EQ(util::Parser::getWordsCopy(data), ans);
+        EXPECT_EQ(utils::Parser::getWordsCopy(data), ans);
         EXPECT_EQ(data, a_data) << "words";
 
-        EXPECT_EQ(util::Parser::getWordsRef(data), view(ans));
+        EXPECT_EQ(utils::Parser::getWordsRef(data), view(ans));
     }
 };
 
@@ -169,7 +169,7 @@ TEST_F(UTestString, get_words)
 // TEST_F(UTestString, get_words_map)
 // {
 //     std::string data = "key1 value1\nkey2 value2";
-//     auto wordsMap    = util::Parser::getWordsMap(data);
+//     auto wordsMap    = utils::Parser::getWordsMap(data);
 //     EXPECT_EQ(wordsMap.size(), 2);
 //     EXPECT_EQ(wordsMap["key1"], "value1");
 //     EXPECT_EQ(wordsMap["key2"], "value2");
@@ -178,7 +178,7 @@ TEST_F(UTestString, get_words)
 // TEST_F(UTestString, get_words_set)
 // {
 //     std::string data = "word1; word2 ;word3";
-//     auto wordsSet    = util::Parser::getWordsSet(data, ";");
+//     auto wordsSet    = utils::Parser::getWordsSet(data, ";");
 //     EXPECT_EQ(wordsSet.size(), 3);
 //     EXPECT_TRUE(wordsSet.find("word1") != wordsSet.end());
 //     EXPECT_TRUE(wordsSet.find(" word2 ") != wordsSet.end());

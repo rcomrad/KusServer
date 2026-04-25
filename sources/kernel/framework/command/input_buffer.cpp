@@ -17,7 +17,7 @@ std::unique_ptr<char[]>&&
 core::InputBuffer::execCommand(std::string&& a_command) noexcept
 {
     std::unique_lock lock(*m_data_mutex);
-    util::Condvar exec_synch;
+    utils::Condvar exec_synch;
     Context context{.buffer = this, .exec_synch = &exec_synch};
     Command command(std::move(a_command), bufferReturn, &context);
     m_command = &command;

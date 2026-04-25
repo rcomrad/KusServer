@@ -23,7 +23,7 @@ data::ConnectionPool::ConnectionPool(
 
 bool
 data::ConnectionPool::create(
-    util::LifecycleManager<ConnectionPool>& a_poll_addr,
+    utils::LifecycleManager<ConnectionPool>& a_poll_addr,
     const std::vector<std::string_view>& a_credentials_array) noexcept
 {
     bool result = false;

@@ -8,7 +8,7 @@
 
 //--------------------------------------------------------------------------------
 
-namespace util
+namespace utils
 {
 
 class Parser
@@ -40,6 +40,6 @@ public:
     //     const char* a_separator = NEW_WORD_SEPARATOR) noexcept;
 };
 
-} // namespace util
+} // namespace utils
 
 //--------------------------------------------------------------------------------

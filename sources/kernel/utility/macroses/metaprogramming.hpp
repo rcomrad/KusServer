@@ -9,7 +9,7 @@
 
 using namespace std::literals;
 
-namespace util
+namespace utils
 {
 
 template <typename T1, typename T2>
@@ -59,6 +59,6 @@ using enableIfSame = typename std::enable_if_t<isSameStrip<T1, T2>::value>;
 // template <class T>
 // using isNotString = isNotOneOf<T, std::string, char*, const char*>;
 
-} // namespace util
+} // namespace utils
 
 //-------------------------------------------------------------------------------

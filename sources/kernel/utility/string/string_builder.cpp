@@ -2,14 +2,14 @@
 
 #include "kernel/framework/logger/include_me.hpp"
 
-util::StringBuilder::StringBuilder()
+utils::StringBuilder::StringBuilder()
     : m_size(0), m_sep_start(0), m_sep_ptr(nullptr)
 {
     m_data_array.reserve(100);
 }
 
 std::unique_ptr<char[]>
-util::StringBuilder::collapse()
+utils::StringBuilder::collapse()
 {
     if (m_sep_ptr)
     {
@@ -74,43 +74,43 @@ util::StringBuilder::collapse()
     return result;
 }
 
-util::StringBuilder::Data::Data()
+utils::StringBuilder::Data::Data()
 {
 }
 
-util::StringBuilder::Entry::Entry(Type a_type) : type(a_type)
+utils::StringBuilder::Entry::Entry(Type a_type) : type(a_type)
 {
 }
 
 void
-util::StringBuilder::add(char a_data)
+utils::StringBuilder::add(char a_data)
 {
     m_data_array.emplace_back(Type::CHAR).data.char_val = a_data;
     m_size += 1;
 }
 
 void
-util::StringBuilder::add(int a_data)
+utils::StringBuilder::add(int a_data)
 {
     m_data_array.emplace_back(Type::NUM_S32).data.num_s32 = a_data;
     m_size += 10;
 }
 
 void
-util::StringBuilder::add(std::string_view a_data)
+utils::StringBuilder::add(std::string_view a_data)
 {
     m_data_array.emplace_back(Type::STRING_VIEW).data.str = a_data;
     m_size += a_data.size();
 }
 
 void
-util::StringBuilder::addDBData(int a_data)
+utils::StringBuilder::addDBData(int a_data)
 {
     add(a_data);
 }
 
 void
-util::StringBuilder::addDBData(std::string_view a_data)
+utils::StringBuilder::addDBData(std::string_view a_data)
 {
     add('\'');
     m_data_array.emplace_back(Type::STRING_VIEW).data.str = a_data;
@@ -118,8 +118,8 @@ util::StringBuilder::addDBData(std::string_view a_data)
     m_size += a_data.size() + 2;
 }
 
-util::StringBuilder::ScopedSeparator
-util::StringBuilder::addSeparator(char a_sep)
+utils::StringBuilder::ScopedSeparator
+utils::StringBuilder::addSeparator(char a_sep)
 {
     ScopedSeparator result(*this, a_sep);
     result.subscribe();
@@ -127,18 +127,18 @@ util::StringBuilder::addSeparator(char a_sep)
 }
 
 void
-util::StringBuilder::pop_back()
+utils::StringBuilder::pop_back()
 {
     m_data_array.emplace_back(Type::POP_BACK);
 }
 
-util::StringBuilder::ScopedSeparator::ScopedSeparator(StringBuilder& a_sb_ref,
-                                                      char a_sep)
+utils::StringBuilder::ScopedSeparator::ScopedSeparator(StringBuilder& a_sb_ref,
+                                                       char a_sep)
     : m_sb_ref(a_sb_ref), m_is_collapsed(false), m_sep(a_sep)
 {
 }
 
-util::StringBuilder::ScopedSeparator::~ScopedSeparator()
+utils::StringBuilder::ScopedSeparator::~ScopedSeparator()
 {
     if (!m_is_collapsed)
     {
@@ -147,7 +147,7 @@ util::StringBuilder::ScopedSeparator::~ScopedSeparator()
 }
 
 void
-util::StringBuilder::ScopedSeparator::subscribe()
+utils::StringBuilder::ScopedSeparator::subscribe()
 {
     m_sb_ref.m_sep_start = m_sb_ref.m_data_array.size();
     m_sb_ref.m_data_array.emplace_back(Type::SEPARATOR).data.char_val = m_sep;
@@ -156,7 +156,7 @@ util::StringBuilder::ScopedSeparator::subscribe()
 }
 
 void
-util::StringBuilder::ScopedSeparator::collapse()
+utils::StringBuilder::ScopedSeparator::collapse()
 {
     m_sb_ref.m_size += m_sb_ref.m_data_array.size() - m_sb_ref.m_sep_start;
     m_sb_ref.m_data_array.emplace_back(Type::SEPARATOR).data.char_val = 0;

@@ -9,7 +9,7 @@
 
 //------------------------------------------------------------------------------
 
-namespace util
+namespace utils
 {
 
 struct ASCIIBox
@@ -27,6 +27,6 @@ struct ASCIIBox
     bool get(int8_t num);
 };
 
-} // namespace util
+} // namespace utils
 
 //------------------------------------------------------------------------------

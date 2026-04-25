@@ -31,7 +31,7 @@ private:
     struct Context
     {
         InputBuffer* buffer;
-        util::Condvar* exec_synch;
+        utils::Condvar* exec_synch;
     };
 
     static void bufferReturn(std::unique_ptr<char[]>&& a_buffer,

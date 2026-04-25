@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------------
 
 std::string
-util::Normalize::copy(std::string_view a_str, Type a_type) noexcept
+utils::Normalize::copy(std::string_view a_str, Type a_type) noexcept
 {
     std::string result(a_str);
     change(result, a_type);
@@ -11,7 +11,7 @@ util::Normalize::copy(std::string_view a_str, Type a_type) noexcept
 }
 
 void
-util::Normalize::change(std::string& a_str, Type a_type) noexcept
+utils::Normalize::change(std::string& a_str, Type a_type) noexcept
 {
 
     bool (*check)(char c) = a_type == Type::UPPER ? isLower : isUpper;
@@ -29,25 +29,25 @@ util::Normalize::change(std::string& a_str, Type a_type) noexcept
 //------------------------------------------------------------------------------
 
 bool
-util::Normalize::isUpper(char c) noexcept
+utils::Normalize::isUpper(char c) noexcept
 {
     return std::isupper(c);
 }
 
 bool
-util::Normalize::isLower(char c) noexcept
+utils::Normalize::isLower(char c) noexcept
 {
     return std::islower(c);
 }
 
 char
-util::Normalize::toUpper(char c) noexcept
+utils::Normalize::toUpper(char c) noexcept
 {
     return std::toupper(c);
 }
 
 char
-util::Normalize::toLower(char c) noexcept
+utils::Normalize::toLower(char c) noexcept
 {
     return std::tolower(c);
 }

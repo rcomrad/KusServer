@@ -10,6 +10,7 @@
 int
 main(int argc, char** argv)
 {
+    core::g_log_level = core::LogLevel::TRACE;
     core::StateStorage::turnOffStateRestore();
 
     try
