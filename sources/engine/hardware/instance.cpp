@@ -5,7 +5,19 @@
 namespace engine::hard
 {
 
-Instance::Instance()
+Instance::Instance() : vk::Instance(create())
+{
+    m_debug_callback.subscribe(*this);
+}
+
+Instance::~Instance()
+{
+    // vk::destroyInstance(*static_cast<vk::Instance*>(this));
+    // vkDestroyInstance(*static_cast<vk::Instance*>(this));
+}
+
+vk::Instance
+Instance::create()
 {
     SCOPED_TRACE_INIT("vulkan instance");
 
@@ -23,14 +35,13 @@ Instance::Instance()
         .setPEnabledExtensionNames(extensions)
         .setPNext(&validation);
 
-    m_instance = vk::createInstanceUnique(info);
-    m_debug_callback.subscribe(*m_instance);
+    return vk::createInstance(info);
 }
 
 std::vector<vk::PhysicalDevice>
 Instance::getPhysicalDevices() const
 {
-    return m_instance->enumeratePhysicalDevices();
+    return this->enumeratePhysicalDevices();
 }
 
 vk::ApplicationInfo

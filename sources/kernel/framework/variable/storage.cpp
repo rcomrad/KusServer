@@ -52,11 +52,11 @@ core::VariableStorage::addVariableInfoTamplate(
     {
         LOG_INFO("Use already existing %s variable", a_var_name);
 
-        int id = it->second;
-        VariableCell old(m_variables[id].obj);
-        m_variables[id].destroy();
-        m_variables[id].create(a_var_name, args...);
-        m_variables[id].obj.setValue(old);
+        // int id = it->second;
+        // VariableCell old(m_variables[id].obj);
+        // m_variables[id].destroy();
+        // m_variables[id].create(a_var_name, args...);
+        // m_variables[id].obj.setValue(old);
     }
 
     return it->second;
@@ -121,6 +121,12 @@ core::VariableStorage::setVariable(int a_number, std::string_view a_value)
     setVariableTamplate(a_number, a_value);
 }
 
+void
+core::VariableStorage::setVariable(int a_number, const char* a_value)
+{
+    setVariable(a_number, std::string_view(a_value));
+}
+
 int
 core::VariableStorage::getVariable(int a_number) const
 {
@@ -171,15 +177,17 @@ core::VariableStorage::addVariableInfo(const std::string& a_var_name,
 }
 
 int
-core::VariableStorage::addBoolVariable(const std::string& a_var_name)
+core::VariableStorage::addBoolVariable(const std::string& a_var_name,
+                                       bool a_value)
 {
-    return addVariableInfoTamplate(a_var_name, std::optional<int>{}, true);
+    return addVariableInfoTamplate(a_var_name, std::optional<int>{}, a_value);
 }
 
 int
-core::VariableStorage::addVariableInfo(bool, const std::string& a_var_name)
+core::VariableStorage::addVariableInfo(bool a_value,
+                                       const std::string& a_var_name)
 {
-    return addBoolVariable(a_var_name);
+    return addBoolVariable(a_var_name, a_value);
 }
 
 //--------------------------------------------------------------------------------

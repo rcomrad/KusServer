@@ -1,30 +1,41 @@
 #include "graphic_pipeline.hpp"
 
+#include "engine/logic/vertix.hpp"
 #include "kernel/framework/logger/basic/include_me.hpp"
 #include "kernel/framework/variable/include_me.hpp"
 
 namespace engine::graphics
 {
 
-GraphicsPipeline::GraphicsPipeline(vk::Device a_logic_device,
+GraphicsPipeline::GraphicsPipeline(logic::Device a_logic_device,
                                    vk::RenderPass a_render_pass,
                                    vk::ShaderModule a_vert_smodule,
                                    vk::ShaderModule a_frag_smodule)
 {
     SCOPED_TRACE_INIT("graphics pipeline");
 
+    static std::vector<vk::PushConstantRange> push_const_range;
+    push_const_range.clear();
+    push_const_range.emplace_back()
+        .setStageFlags(vk::ShaderStageFlagBits::eVertex |
+                       vk::ShaderStageFlagBits::eFragment)
+        .setOffset(0)
+        .setSize(sizeof(SimplePushConstantData));
+
     vk::PipelineLayoutCreateInfo layout_info;
+    layout_info.setPushConstantRanges(push_const_range);
     m_pipeline_layout = a_logic_device.createPipelineLayoutUnique(layout_info);
 
-    static auto stages = createShaderStageInfo(a_vert_smodule, a_frag_smodule);
-    static auto vertex_input_state   = createVertexInputInfo();
-    static auto input_assembly_state = createAssemblyStateInfo();
-    static auto viewport_state       = createViewportStateInfo();
-    static auto rasterization_state  = createRasterizationStateInfo();
-    static auto multisample_state    = createMultisampleStateInfo();
-    static auto color_blend_state    = createColorBlendStateInfo();
+    auto stages = createShaderStageInfo(a_vert_smodule, a_frag_smodule);
+    auto vertex_input_state   = createVertexInputInfo();
+    auto input_assembly_state = createAssemblyStateInfo();
+    auto viewport_state       = createViewportStateInfo();
+    auto rasterization_state  = createRasterizationStateInfo();
+    auto multisample_state    = createMultisampleStateInfo();
+    auto color_blend_state    = createColorBlendStateInfo();
 
     static std::vector<vk::GraphicsPipelineCreateInfo> pipeline_info;
+    pipeline_info.clear();
     pipeline_info.emplace_back()
         .setStages(stages)
         .setPVertexInputState(&vertex_input_state)
@@ -71,7 +82,15 @@ GraphicsPipeline::createShaderStageInfo(vk::ShaderModule a_vert_smodule,
 vk::PipelineVertexInputStateCreateInfo
 GraphicsPipeline::createVertexInputInfo()
 {
-    return vk::PipelineVertexInputStateCreateInfo{};
+    vk::PipelineVertexInputStateCreateInfo result;
+
+    static auto binding_desc   = logic::Vertex::getBindingDescriptions();
+    static auto attribute_desc = logic::Vertex::getAttributeDescriptions();
+
+    result.setVertexBindingDescriptions(binding_desc)
+        .setVertexAttributeDescriptions(attribute_desc);
+
+    return result;
 }
 
 vk::PipelineInputAssemblyStateCreateInfo
@@ -90,6 +109,7 @@ GraphicsPipeline::createViewportStateInfo()
     core::IntVar height("win_height");
 
     static std::vector<vk::Viewport> viewports;
+    viewports.clear();
     viewports.emplace_back()
         .setX(0)
         .setY(0)
@@ -98,8 +118,10 @@ GraphicsPipeline::createViewportStateInfo()
         .setMinDepth(0)
         .setMaxDepth(1);
 
-    static std::vector<vk::Rect2D> scissors{vk::Rect2D(
-        vk::Offset2D(0, 0), vk::Extent2D(width.get(), height.get()))};
+    static std::vector<vk::Rect2D> scissors;
+    scissors.clear();
+    scissors = {vk::Rect2D(vk::Offset2D(0, 0),
+                           vk::Extent2D(width.get(), height.get()))};
 
     vk::PipelineViewportStateCreateInfo result;
     result.setViewports(viewports).setScissors(scissors);
@@ -131,6 +153,7 @@ vk::PipelineColorBlendStateCreateInfo
 GraphicsPipeline::createColorBlendStateInfo()
 {
     static std::vector<vk::PipelineColorBlendAttachmentState> blend_attachmens;
+    blend_attachmens.clear();
     blend_attachmens.emplace_back().setBlendEnable(vk::False).setColorWriteMask(
         vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG |
         vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA);

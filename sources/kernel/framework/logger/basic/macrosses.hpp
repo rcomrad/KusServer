@@ -11,11 +11,14 @@
 
 //------------------------------------------------------------------------------
 
-#define WRITE_LOG_MSG(type, format, ...)                                 \
+#define WRITE_LOG_MSG_BASE(type, func_name, line_num, format, ...)       \
     core::LocalLogger::getLogger().writeLog(                             \
         core::LogLevel::type, "[%-5s] %-30s| %-30s[%-4d]: " format "\n", \
-        #type, __FILENAME__, __func__, __LINE__,                         \
+        #type, __FILENAME__, func_name, line_num,                        \
         FOR_EACH(utils::PrintCaster::exec, __VA_ARGS__) "");
+
+#define WRITE_LOG_MSG(type, format, ...) \
+    WRITE_LOG_MSG_BASE(type, __func__, __LINE__, format, __VA_ARGS__)
 
 #define WRITE_TEE_MSG(type, format, ...)   \
     core::LocalLogger::getLogger().teeLog( \
@@ -37,21 +40,32 @@
 #define LOG_EXEPT(...)   WRITE_LOG(EXEPT, __VA_ARGS__)
 
 // TODO: ~this from C++23
-#define KUS_SCOPED_TRACE(...)                \
-    struct ScopedTraceLog                    \
-    {                                        \
-        ScopedTraceLog()                     \
-        {                                    \
-            LOG_DEBUG("Start " __VA_ARGS__); \
-        }                                    \
-        ~ScopedTraceLog()                    \
-        {                                    \
-            LOG_DEBUG("\tEnd " __VA_ARGS__); \
-        }                                    \
-    } ___scoped_trace_log
+#define KUS_SCOPED_TRACE(...)                                   \
+    struct ScopedTraceLog                                       \
+    {                                                           \
+        ScopedTraceLog(const char* a_func_name, int a_line_num) \
+            : func_name(a_func_name), line_num(a_line_num)      \
+        {                                                       \
+            WRITE_LOG_MSG_BASE(DEBUG, func_name, line_num,      \
+                               "Start " __VA_ARGS__);           \
+        }                                                       \
+        ~ScopedTraceLog()                                       \
+        {                                                       \
+            WRITE_LOG_MSG_BASE(DEBUG, func_name, line_num,      \
+                               "\tEnd " __VA_ARGS__);           \
+        }                                                       \
+        int line_num;                                           \
+        const char* func_name;                                  \
+    } ___scoped_trace_log(__func_name, __line_num);
 
-#define SCOPED_TRACE_INIT(name) KUS_SCOPED_TRACE(name " initialization")
-#define SCOPED_TRACE_TERM(name) KUS_SCOPED_TRACE(name " termination")
-#define SCOPED_TRACE_FUNC(name) KUS_SCOPED_TRACE(name " function")
+#define SCOPED_TRACE_BASIC(...)  \
+    auto __line_num  = __LINE__; \
+    auto __func_name = __func__; \
+    KUS_SCOPED_TRACE(__VA_ARGS__)
+
+#define SCOPED_TRACE_INIT(name)   SCOPED_TRACE_BASIC(name " initialization")
+#define SCOPED_TRACE_CREATE(name) SCOPED_TRACE_BASIC(name " creation")
+#define SCOPED_TRACE_TERM(name)   SCOPED_TRACE_BASIC(name " termination")
+#define SCOPED_TRACE_FUNC(name)   SCOPED_TRACE_BASIC(name " function")
 
 //------------------------------------------------------------------------------

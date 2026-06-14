@@ -6,10 +6,25 @@ namespace engine::window
 {
 
 Manager::Manager(std::shared_ptr<core::MultitypeStorage> a_obj_ref_storage)
-    : m_width("win_width", 800, 800, 1920),
-      m_height("win_height", 600, 600, 1200),
+    : m_width(VAR_NAME_WIDTH, 800, 10, 1920),
+      m_height(VAR_NAME_HEIGHT, 600, 10, 1200),
+      m_is_window_resized(VAR_NAME_IS_RESIZED, false),
       m_obj_ref_storage(a_obj_ref_storage)
 {
+}
+
+void
+Manager::recalculateCapabilities()
+{
+    auto& storage = *m_obj_ref_storage;
+    m_characteristics.create(storage.get<hard::Device>(), m_surface->get());
+
+    storage.reset(m_characteristics->family_index);
+    storage.reset(m_characteristics->format);
+    storage.reset(m_characteristics->color_space);
+    storage.reset(m_characteristics->present_mode);
+    storage.reset(m_characteristics->capability); // TODO: possably need to reset only this
+    storage.reset(m_characteristics->image_num);
 }
 
 void
@@ -20,20 +35,13 @@ Manager::initialize()
     auto& storage = *m_obj_ref_storage;
 
     m_window.create(m_width, m_height);
-    m_surface.create(storage.get<vk::Instance>(),
-                     storage.get<vk::PhysicalDevice>(), m_window->get());
-    m_characteristics.create(storage.get<vk::PhysicalDevice>(),
-                             m_surface->get());
+    m_surface.create(storage.get<hard::Instance>(), storage.get<hard::Device>(),
+                     m_window->get());
 
     storage.put(m_window->get());
     storage.put(m_surface->get());
 
-    storage.put(m_characteristics->family_index);
-    storage.put(m_characteristics->format);
-    storage.put(m_characteristics->color_space);
-    storage.put(m_characteristics->present_mode);
-    storage.put(m_characteristics->capability);
-    storage.put(m_characteristics->image_num);
+    recalculateCapabilities();
 }
 
 } // namespace engine::window

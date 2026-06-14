@@ -8,13 +8,11 @@ namespace engine::hard
 //------------------------------------------------------------------
 //                          Base
 
-Device::Device(vk::PhysicalDevice& a_myself)
+Device::Device(vk::PhysicalDevice& a_myself) : vk::PhysicalDevice(a_myself)
 {
 
-    registrateBaseCommand(CMD_DEV_PROPERTY_NAME,
-                          "Prints properties of selected graphics device.");
-
-    m_device = a_myself;
+    // registrateBaseCommand(CMD_DEV_PROPERTY_NAME,
+    //                       "Prints properties of selected graphics device.");
 }
 
 //------------------------------------------------------------------
@@ -23,13 +21,26 @@ Device::Device(vk::PhysicalDevice& a_myself)
 std::string
 Device::getName() const
 {
-    return m_device.getProperties().deviceName;
+    return getProperties().deviceName;
 }
 
-vk::PhysicalDevice&
-Device::get()
+type::MemoryTypeIndex
+Device::getMemoryTypeIndex(type::MemoryTypeBits a_type_filter,
+                           vk::MemoryPropertyFlags a_properties)
 {
-    return m_device;
+    auto mem_properties = getMemoryProperties();
+    for (type::MemoryTypeIndex i = 0; i.value < mem_properties.memoryTypeCount;
+         i++)
+    {
+        if (a_type_filter & 1 << i.value &&
+            mem_properties.memoryTypes[i.value].propertyFlags & a_properties)
+        {
+            return i;
+        }
+    }
+
+    THROW("Unable to find memory type");
+    return 0;
 }
 
 //------------------------------------------------------------------
@@ -43,7 +54,7 @@ Device::printFamilyProperty(core::Command& a_command)
     std::string result;
     // TODO: table
     int cnt = 1;
-    for (auto& queue : m_device.getQueueFamilyProperties())
+    for (auto& queue : getQueueFamilyProperties())
     {
         result += std::to_string(cnt++);
         result += ":\n";

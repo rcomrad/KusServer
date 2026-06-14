@@ -5,6 +5,7 @@
 #include "engine/graphics/manager.hpp"
 #include "engine/hardware/manager.hpp"
 #include "engine/logic/manager.hpp"
+#include "engine/logic/vertex_buffer.hpp"
 #include "engine/window/manager.hpp"
 #include "kernel/utility/type/declaration/multitype_storage.hpp"
 
@@ -27,6 +28,11 @@ private:
     window::Manager m_window_manager;
     logic::Manager m_logic_manager;
     graphics::Manager m_graphic_manager;
+
+    utils::LifecycleManager<logic::VertexBuffer> m_buffer;
+
+    void recordCommandBuffer(int a_image_num,
+                             vk::UniqueCommandBuffer& a_command_buff);
 };
 
 } // namespace engine

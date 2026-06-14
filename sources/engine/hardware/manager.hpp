@@ -18,6 +18,7 @@ public:
     Manager(std::shared_ptr<core::MultitypeStorage> a_obj_ref_storage);
 
     void initialize();
+    Device& getCurentDevice();
 
 private:
     core::CommandCaller** m_device_cmd_obj_ptr;

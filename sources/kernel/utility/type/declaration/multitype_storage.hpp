@@ -15,7 +15,7 @@ public:
     template <typename T>
     void put(T& a_ref)
     {
-        auto& tid  = typeid(T*);
+        auto& tid = typeid(T*);
         auto indx = std::type_index(tid);
         if (m_references.count(indx))
         {
@@ -25,9 +25,17 @@ public:
     }
 
     template <typename T>
+    void reset(T& a_ref)
+    {
+        auto& tid = typeid(T*);
+        auto indx = std::type_index(tid);
+        m_references.emplace(indx, reinterpret_cast<void*>(&a_ref));
+    }
+
+    template <typename T>
     T& get()
     {
-        auto& tid  = typeid(T*);
+        auto& tid = typeid(T*);
         auto indx = std::type_index(tid);
         auto it   = m_references.find(indx);
         if (it == m_references.end())

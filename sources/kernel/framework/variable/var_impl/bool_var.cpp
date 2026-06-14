@@ -4,7 +4,7 @@
 
 //--------------------------------------------------------------------------------
 
-core::BoolVar::BoolVar(const std::string& a_var_name)
-    : Variable(true, a_var_name)
+core::BoolVar::BoolVar(const std::string& a_var_name, bool a_value)
+    : Variable(a_value, a_var_name)
 {
 }

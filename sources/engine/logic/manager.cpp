@@ -16,9 +16,9 @@ Manager::initialize()
     SCOPED_TRACE_INIT("logic manager");
 
     auto& storage = *m_obj_ref_storage;
-    m_device.create(storage.get<vk::PhysicalDevice>(),
+    m_device.create(storage.get<hard::Device>(),
                     storage.get<type::FamilyIndex>());
-    storage.put(m_device->get());
+    storage.put(*m_device);
 }
 
 void
@@ -27,23 +27,25 @@ Manager::createCommandEnv()
     SCOPED_TRACE_INIT("command environment");
 
     auto& storage = *m_obj_ref_storage;
-    m_command_pool.create(storage.get<vk::Device>(),
+    m_command_pool.create(storage.get<logic::Device>(),
                           storage.get<type::FamilyIndex>());
-    m_queue.create(storage.get<vk::Device>(), storage.get<type::FamilyIndex>(),
-                   0);
-    m_command_buffers =
-        m_command_pool->alocateBuffers(storage.get<vk::Device>(), 3);
+    m_queue.create(storage.get<logic::Device>(),
+                   storage.get<type::FamilyIndex>(), 0);
+    m_command_buffers = m_command_pool->alocateBuffers(3);
 }
 
 void
-Manager::nextTick()
+Manager::nextTick(
+    std::function<void(int, vk::UniqueCommandBuffer&)> a_record_callback)
 {
     auto& swap_chain = m_obj_ref_storage->get<vk::SwapchainKHR>();
-    auto& device     = m_obj_ref_storage->get<vk::Device>();
+    auto& device     = m_obj_ref_storage->get<logic::Device>();
 
     auto index = m_queue->acquire_next_image(device, swap_chain);
     LOG_DEBUG("Next index is: %d", index);
-    m_queue->submit(*m_command_buffers.at(index));
+    auto& cmd = m_command_buffers.at(index);
+    a_record_callback(index, cmd);
+    m_queue->submit(*cmd);
     m_queue->present(index, swap_chain);
 }
 

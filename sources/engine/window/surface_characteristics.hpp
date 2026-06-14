@@ -6,6 +6,7 @@
 
 #include <GLFW/glfw3.h>
 
+#include "engine/hardware/device.hpp"
 #include "engine/typedef.hpp"
 #include "kernel/framework/variable/include_me.hpp"
 
@@ -15,8 +16,7 @@ namespace engine::window
 class SurfaceCharacteristics
 {
 public:
-    SurfaceCharacteristics(vk::PhysicalDevice& a_device,
-                           vk::SurfaceKHR a_serface);
+    SurfaceCharacteristics(hard::Device& a_device, vk::SurfaceKHR a_serface);
 
     type::FamilyIndex family_index;
     vk::Format format;
@@ -26,12 +26,11 @@ public:
     type::ImageNum image_num;
 
 private:
-    uint32_t findFamilyIndex(vk::PhysicalDevice& a_device,
-                             vk::SurfaceKHR a_serface);
+    uint32_t findFamilyIndex(hard::Device& a_device, vk::SurfaceKHR a_serface);
     std::pair<vk::Format, vk::ColorSpaceKHR> findFormat(
-        vk::PhysicalDevice& a_device,
+        hard::Device& a_device,
         vk::SurfaceKHR a_serface);
-    vk::PresentModeKHR findPresentMode(vk::PhysicalDevice& a_device,
+    vk::PresentModeKHR findPresentMode(hard::Device& a_device,
                                        vk::SurfaceKHR a_serface);
     uint32_t findCapabilityImageNum(
         const vk::SurfaceCapabilitiesKHR& a_capabilities);

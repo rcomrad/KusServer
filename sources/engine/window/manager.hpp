@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "engine/hardware/instance.hpp"
 #include "kernel/framework/variable/include_me.hpp"
 #include "kernel/utility/type/declaration/lifecycle_manager.hpp"
 #include "kernel/utility/type/declaration/multitype_storage.hpp"
@@ -19,6 +20,7 @@ public:
     Manager(std::shared_ptr<core::MultitypeStorage> a_obj_ref_storage);
 
     void initialize();
+    void recalculateCapabilities();
 
     inline bool isClosed()
     {
@@ -28,6 +30,7 @@ public:
 private:
     core::IntVar m_width;
     core::IntVar m_height;
+    core::BoolVar m_is_window_resized;
     std::shared_ptr<core::MultitypeStorage> m_obj_ref_storage;
 
     utils::LifecycleManager<Window> m_window;

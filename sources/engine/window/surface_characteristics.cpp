@@ -6,7 +6,7 @@
 namespace engine::window
 {
 
-SurfaceCharacteristics::SurfaceCharacteristics(vk::PhysicalDevice& a_device,
+SurfaceCharacteristics::SurfaceCharacteristics(hard::Device& a_device,
                                                vk::SurfaceKHR a_serface)
 {
     SCOPED_TRACE_INIT("characteristics");
@@ -23,7 +23,7 @@ SurfaceCharacteristics::SurfaceCharacteristics(vk::PhysicalDevice& a_device,
 }
 
 uint32_t
-SurfaceCharacteristics::findFamilyIndex(vk::PhysicalDevice& a_device,
+SurfaceCharacteristics::findFamilyIndex(hard::Device& a_device,
                                         vk::SurfaceKHR a_serface)
 {
     auto property = a_device.getQueueFamilyProperties();
@@ -43,7 +43,7 @@ SurfaceCharacteristics::findFamilyIndex(vk::PhysicalDevice& a_device,
 }
 
 std::pair<vk::Format, vk::ColorSpaceKHR>
-SurfaceCharacteristics::findFormat(vk::PhysicalDevice& a_device,
+SurfaceCharacteristics::findFormat(hard::Device& a_device,
                                    vk::SurfaceKHR a_serface)
 {
     auto format      = vk::Format(VK_FORMAT_B8G8R8A8_SRGB);
@@ -62,7 +62,7 @@ SurfaceCharacteristics::findFormat(vk::PhysicalDevice& a_device,
 }
 
 vk::PresentModeKHR
-SurfaceCharacteristics::findPresentMode(vk::PhysicalDevice& a_device,
+SurfaceCharacteristics::findPresentMode(hard::Device& a_device,
                                         vk::SurfaceKHR a_serface)
 {
     auto target_mode   = vk::PresentModeKHR::eMailbox;

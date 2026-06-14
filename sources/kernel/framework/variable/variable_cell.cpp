@@ -15,9 +15,10 @@ core::VariableCell::VariableCell(const std::string& a_var_name)
 {
 }
 
-core::VariableCell::VariableCell(const std::string& a_var_name, bool dummy)
+core::VariableCell::VariableCell(const std::string& a_var_name, bool a_value)
     : m_name(a_var_name), m_value(0), m_type(Type::BOOL)
 {
+    setValue(a_value);
 }
 
 core::VariableCell::VariableCell(const std::string& a_var_name,
@@ -125,7 +126,7 @@ core::VariableCell::setWordValue(std::string_view a_new_value)
     auto norm_val =
         utils::Normalize::copy(a_new_value, utils::Normalize::Type::LOWER);
     auto val_it = m_value_map.find(norm_val);
-    if (val_it != m_value_map.end())
+    if (val_it == m_value_map.end())
     {
         THROW("Failed to set value '%s' for '%s' variable: unknown value.",
               a_new_value, m_name, m_min_value);
