@@ -2,23 +2,27 @@
 
 #include <vulkan/vulkan.hpp>
 
+#include "engine/logic/device.hpp"
+#include "engine/vk_converter.hpp"
+
 namespace engine::graphics
 {
 
-class RenderPass
+class RenderPass : public vk::RenderPass
 {
 public:
-    RenderPass(vk::Device a_logic_device, vk::Format a_format);
+    RenderPass(logic::Device& a_device, vk::Format a_format);
+    ~RenderPass();
+
+    VK_CONVERTER(vk::RenderPass);
 
     vk::RenderPassBeginInfo getBeginInfo(vk::Framebuffer a_framebuffer);
 
-    inline auto& get()
-    {
-        return *m_render_pass;
-    }
-
 private:
-    vk::UniqueRenderPass m_render_pass;
+    // vk::UniqueRenderPass m_render_pass;
+    logic::Device& m_device;
+
+    vk::RenderPass create(logic::Device a_device, vk::Format a_format);
 
     std::vector<vk::AttachmentReference> createAttachmentReference() const;
 

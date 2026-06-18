@@ -7,11 +7,13 @@
 namespace engine::graphics
 {
 
-ImageCollection::ImageCollection(vk::Device& a_device,
+ImageCollection::ImageCollection(logic::Device& a_device,
                                  vk::SwapchainKHR& a_swapchain,
                                  vk::RenderPass& a_render_pass,
                                  vk::Format& a_format)
 {
+    SCOPED_TRACE_INIT("image collection");
+
     vk::ComponentMapping component(
         vk::ComponentSwizzle::eIdentity, vk::ComponentSwizzle::eIdentity,
         vk::ComponentSwizzle::eIdentity, vk::ComponentSwizzle::eIdentity);
@@ -25,9 +27,11 @@ ImageCollection::ImageCollection(vk::Device& a_device,
 
     core::IntVar width("win_width");
     core::IntVar height("win_height");
+    LOG_DEBUG("height %d, width %d", height.get(), width.get());
 
     m_images = a_device.getSwapchainImagesKHR(a_swapchain);
     static std::vector<std::vector<vk::ImageView>> attachment;
+    attachment.clear();
     for (auto& i : m_images)
     {
         vk::ImageViewCreateInfo view_info;

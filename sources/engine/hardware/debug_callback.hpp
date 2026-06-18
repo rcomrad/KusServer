@@ -12,7 +12,7 @@ class DebugCallback
 public:
     void subscribe(vk::Instance a_instance);
 
-    static const char* getMsgType(vk::DebugUtilsMessageTypeFlagBitsEXT a_type);
+    static std::string getMsgType(vk::DebugUtilsMessageTypeFlagBitsEXT a_type);
 
 private:
     using UniqueDebugUtilsMessengerExt =

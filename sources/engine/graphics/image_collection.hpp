@@ -2,6 +2,7 @@
 
 #include <vulkan/vulkan.hpp>
 
+#include "engine/logic/device.hpp"
 #include "kernel/framework/include_me.hpp"
 
 namespace engine::graphics
@@ -10,7 +11,7 @@ namespace engine::graphics
 class ImageCollection
 {
 public:
-    ImageCollection(vk::Device& a_device,
+    ImageCollection(logic::Device& a_device,
                     vk::SwapchainKHR& a_swapchain,
                     vk::RenderPass& a_render_pass,
                     vk::Format& a_format);
@@ -23,7 +24,8 @@ public:
 
     inline vk::Framebuffer getFrame(int num)
     {
-        SCOPED_TRACE_FUNC("getFrame");
+        LOG_DEBUG("getFrame %d from vector with size %d", num,
+                  m_frame_buffers.size());
         return *m_frame_buffers.at(num);
     }
 

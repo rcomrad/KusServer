@@ -12,8 +12,7 @@ core::Base::Base()
 
     core::Logger::redirectDefault("main");
 
-    m_is_running_var_num = addBoolVariable("is_running");
-    setVariable(m_is_running_var_num, true);
+    m_is_running_var_num = addBoolVariable("is_running", true);
 
     ModuleRegistry::init();
 

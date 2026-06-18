@@ -17,7 +17,7 @@ struct VariableCell
 {
 public:
     explicit VariableCell(const std::string& a_var_name);
-    VariableCell(const std::string& a_var_name, bool dummy);
+    VariableCell(const std::string& a_var_name, bool a_value);
     VariableCell(const std::string& a_var_name,
                  int a_min_value,
                  int a_max_value);

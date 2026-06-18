@@ -69,6 +69,11 @@ public:
         return &obj;
     }
 
+    T& operator*()
+    {
+        return obj;
+    }
+
     T obj;
 
 private:

@@ -5,8 +5,8 @@
 namespace engine::window
 {
 
-Surface::Surface(vk::Instance a_instance,
-                 vk::PhysicalDevice& a_device,
+Surface::Surface(hard::Instance& a_instance,
+                 hard::Device& a_device,
                  GLFWwindow& a_window_ptr)
 {
     SCOPED_TRACE_INIT("surface");

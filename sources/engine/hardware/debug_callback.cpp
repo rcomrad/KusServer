@@ -85,7 +85,7 @@ namespace engine::hard
 void
 DebugCallback::subscribe(vk::Instance a_instance)
 {
-    KUS_SCOPED_TRACE("Subscribe to debug message callback");
+    SCOPED_TRACE_FUNC("Subscribe to debug message callback");
 
     static vk::detail::DynamicLoader dl;
     auto vkGetInstanceProcAddr =
@@ -113,9 +113,10 @@ DebugCallback::generateCreateInfo() noexcept
     return info;
 }
 
-const char*
+std::string
 DebugCallback::getMsgType(vk::DebugUtilsMessageTypeFlagBitsEXT a_type)
 {
+    using std::string_literals::operator""s;
     switch (a_type)
     {
         case vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral:
@@ -127,7 +128,8 @@ DebugCallback::getMsgType(vk::DebugUtilsMessageTypeFlagBitsEXT a_type)
         case vk::DebugUtilsMessageTypeFlagBitsEXT::eDeviceAddressBinding:
             return "device address binding";
         default:
-            THROW("Invalid type code %d", static_cast<int>(a_type));
+            return "invalid ("s +
+                   vk::toHexString(static_cast<uint32_t>(a_type)) + ")"s;
     }
 }
 

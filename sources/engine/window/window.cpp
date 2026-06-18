@@ -16,7 +16,7 @@ Window::Window(const core::IntVar& a_width, const core::IntVar& a_heigh)
     }
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
     // TODO: var str name
     m_window = glfwCreateWindow(a_width.get(), a_heigh.get(),
@@ -26,6 +26,7 @@ Window::Window(const core::IntVar& a_width, const core::IntVar& a_heigh)
     {
         THROW("Failed to create GLFW window");
     }
+    glfwSetFramebufferSizeCallback(m_window, resizeCallback);
 }
 
 Window::~Window()
@@ -51,6 +52,14 @@ GLFWwindow&
 Window::get()
 {
     return *m_window;
+}
+
+void
+Window::resizeCallback(GLFWwindow*, int a_width, int a_height)
+{
+    KERNEL.setVariable(VAR_NAME_WIDTH, a_width);
+    KERNEL.setVariable(VAR_NAME_HEIGHT, a_height);
+    KERNEL.setVariable(VAR_NAME_IS_RESIZED, true);
 }
 
 } // namespace engine::window

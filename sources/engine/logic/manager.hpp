@@ -1,11 +1,14 @@
 #pragma once
 
+#include <functional>
 #include <memory>
 
 #include "kernel/utility/type/declaration/lifecycle_manager.hpp"
 #include "kernel/utility/type/declaration/multitype_storage.hpp"
 
+#include "command_pool.hpp"
 #include "device.hpp"
+#include "queue.hpp"
 
 namespace engine::logic
 {
@@ -18,8 +21,15 @@ public:
     void initialize();
     void createCommandEnv();
 
-    void nextTick();
+    void nextTick(
+
+        std::function<void(int, vk::UniqueCommandBuffer&)> a_record_callback);
     std::vector<vk::UniqueCommandBuffer>& getCommandBuffers();
+
+    Device& getCurentDevice()
+    {
+        return *m_device;
+    }
 
 private:
     std::shared_ptr<core::MultitypeStorage> m_obj_ref_storage;

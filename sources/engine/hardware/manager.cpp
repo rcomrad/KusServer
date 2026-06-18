@@ -36,8 +36,14 @@ Manager::initialize()
     }
 
     auto& storage = *m_obj_ref_storage;
-    storage.put(m_instance->get());
-    storage.put(m_devices[0].get());
+    storage.put(*m_instance);
+    storage.put(m_devices[0]);
+}
+
+Device&
+Manager::getCurentDevice()
+{
+    return m_devices.at(0);
 }
 
 void

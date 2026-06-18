@@ -15,7 +15,7 @@ Shader::init()
 }
 
 vk::UniqueShaderModule
-Shader::create(vk::Device a_logic_device, std::string_view a_name)
+Shader::create(logic::Device a_logic_device, std::string_view a_name)
 {
     LOG_TRACE("Creating shader module for %s file", a_name);
 

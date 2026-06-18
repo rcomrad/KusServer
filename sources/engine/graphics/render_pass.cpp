@@ -5,8 +5,16 @@
 namespace engine::graphics
 {
 
-RenderPass::RenderPass(vk::Device a_logic_device, vk::Format a_format)
+RenderPass::RenderPass(logic::Device& a_device, vk::Format a_format)
+    : vk::RenderPass(create(a_device, a_format)), m_device(a_device)
 {
+}
+
+vk::RenderPass
+RenderPass::create(logic::Device a_device, vk::Format a_format)
+{
+    SCOPED_TRACE_INIT("render pass");
+
     vk::RenderPassCreateInfo info;
 
     static auto attachment  = createAttachmentDescription(a_format);
@@ -17,7 +25,13 @@ RenderPass::RenderPass(vk::Device a_logic_device, vk::Format a_format)
         .setSubpasses(description)
         .setDependencies(dependency);
 
-    m_render_pass = a_logic_device.createRenderPassUnique(info);
+    return a_device.createRenderPass(info);
+}
+
+RenderPass::~RenderPass()
+{
+    SCOPED_TRACE_TERM("render pass");
+    m_device.destroyRenderPass(*static_cast<vk::RenderPass*>(this));
 }
 
 vk::RenderPassBeginInfo
@@ -32,7 +46,7 @@ RenderPass::getBeginInfo(vk::Framebuffer a_framebuffer)
     core::IntVar m_height("win_height");
 
     vk::RenderPassBeginInfo rp_begin_info;
-    rp_begin_info.setRenderPass(get())
+    rp_begin_info.setRenderPass(*this)
         .setRenderArea(vk::Rect2D(vk::Offset2D(0, 0),
                                   vk::Extent2D(m_width.get(), m_height.get())))
         .setClearValueCount(1)

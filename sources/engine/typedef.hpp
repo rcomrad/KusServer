@@ -25,10 +25,24 @@ struct SomeIndex
         value = a_value;
         return *this;
     }
+
+    SomeIndex& operator++()
+    {
+        value += 1;
+        return *this;
+    }
+
+    SomeIndex& operator++(int)
+    {
+        value += 1;
+        return *this;
+    }
 };
 
-using FamilyIndex = SomeIndex<uint32_t, void>;
-using ImageNum    = SomeIndex<uint32_t, void, void>;
-using QueueIndex  = SomeIndex<int, void, void, void>;
+using FamilyIndex     = SomeIndex<uint32_t, void>;
+using ImageNum        = SomeIndex<uint32_t, void, void>;
+using MemoryTypeIndex = SomeIndex<uint32_t, void, void, void, void>;
+using MemoryTypeBits  = SomeIndex<uint32_t, void, void, void, void, void>;
+using QueueIndex      = SomeIndex<int, void, void, void>;
 
 } // namespace engine::type

@@ -20,12 +20,15 @@ class Manager
 public:
     Manager(std::shared_ptr<core::MultitypeStorage> a_obj_ref_storage);
 
-    void initialize();
-    void bindToNextImage(vk::CommandBuffer a_cmd_buff);
+    void reset();
+    void bindToNextImage(int a_image_num, vk::CommandBuffer a_cmd_buff);
+
+    inline auto& getLayout()
+    {
+        return m_graphics_pipeline->getLayout();
+    }
 
 private:
-    int m_next_image;
-
     std::shared_ptr<core::MultitypeStorage> m_obj_ref_storage;
 
     utils::LifecycleManager<SwapChain> m_swap_chain;

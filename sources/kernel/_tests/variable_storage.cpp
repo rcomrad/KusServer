@@ -10,7 +10,7 @@ class UTVariableKERNEL : public KernelFixture
 
 TEST_F(UTVariableKERNEL, bool_var)
 {
-    auto var_num = KERNEL.addBoolVariable("var");
+    auto var_num = KERNEL.addBoolVariable("var", false);
     EXPECT_EQ(KERNEL.getVariable(var_num), 0);
     KERNEL.setVariable(var_num, true);
     EXPECT_EQ(KERNEL.getVariable(var_num), 1);

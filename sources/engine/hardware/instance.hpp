@@ -8,26 +8,28 @@
 
 #include <vector>
 
+#include "engine/vk_converter.hpp"
+
 #include "debug_callback.hpp"
 
 namespace engine::hard
 {
 
-class Instance
+class Instance : public vk::Instance
 {
 public:
     Instance();
+    ~Instance();
 
     std::vector<vk::PhysicalDevice> getPhysicalDevices() const;
 
-    inline vk::Instance& get()
-    {
-        return *m_instance;
-    }
+    VK_CONVERTER(vk::Instance);
 
 private:
-    vk::UniqueInstance m_instance;
     DebugCallback m_debug_callback;
+
+    // static vk::UniqueInstance create();
+    static vk::Instance create();
 
     static vk::ApplicationInfo getAppInfo();
     static std::vector<const char*> getLayers();

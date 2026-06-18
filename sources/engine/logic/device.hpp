@@ -2,25 +2,33 @@
 
 #include <vulkan/vulkan.hpp>
 
+#include "engine/hardware/device.hpp"
 #include "engine/typedef.hpp"
-
-#include "command_pool.hpp"
-#include "queue.hpp"
 
 namespace engine::logic
 {
 
-class Device
+class Device : public vk::Device
 {
 public:
-    Device(vk::PhysicalDevice& a_device, type::FamilyIndex a_family_index);
+    Device(hard::Device& a_device, type::FamilyIndex a_family_index);
+    ~Device();
 
-    vk::Device& get();
+    inline type::MemoryTypeIndex getMemoryTypeIndex(
+        type::MemoryTypeBits a_type_filter,
+        vk::MemoryPropertyFlags a_properties)
+    {
+        return m_physical_device.getMemoryTypeIndex(a_type_filter,
+                                                    a_properties);
+    }
 
 private:
-    float priority = 1.0;
-    vk::UniqueDevice m_device;
+    float priority;
+    hard::Device& m_physical_device;
 
+    static vk::Device create(hard::Device& a_device,
+                             type::FamilyIndex a_family_index,
+                             float& a_priority);
     vk::DeviceCreateInfo getDeviceInfo();
 };
 
