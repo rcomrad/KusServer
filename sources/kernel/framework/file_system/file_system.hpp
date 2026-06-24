@@ -34,6 +34,8 @@ public:
     std::string readBinaryFile(
         const std::string& a_name,
         const std::filesystem::path& a_path_postfix = {}) const;
+    std::string readFileFromDir(const std::string& a_name,
+                                const std::string& a_dir_name) const;
 
     template <utils::IsNotStdString T>
     void writeFile(const T a_data,

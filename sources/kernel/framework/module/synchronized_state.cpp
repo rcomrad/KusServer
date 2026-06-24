@@ -12,7 +12,7 @@ core::SynchronizedState::SynchronizedState()
 #include <iostream>
 
 bool
-core::SynchronizedState::baseTrySitchTo(State a_state) noexcept
+core::SynchronizedState::baseTrySwitchTo(State a_state) noexcept
 {
     bool result = true;
     if (a_state == State::CLOSING)
@@ -27,7 +27,7 @@ core::SynchronizedState::baseTrySitchTo(State a_state) noexcept
 }
 
 bool
-core::SynchronizedState::threadTrySitchTo(State a_state) noexcept
+core::SynchronizedState::threadTrySwitchTo(State a_state) noexcept
 {
     bool result = true;
     if (a_state == State::CREATED)

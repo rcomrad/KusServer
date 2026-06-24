@@ -44,9 +44,7 @@ SwapChain::create(logic::Device a_logic_device,
 {
     SCOPED_TRACE_INIT("swap chain");
 
-    static std::vector<uint32_t> m_family_indexes;
-    m_family_indexes.clear();
-    m_family_indexes.emplace_back(a_family_index);
+    std::vector<uint32_t> m_family_indexes{a_family_index};
 
     vk::SwapchainCreateInfoKHR info;
     info.setClipped(VK_TRUE)
@@ -63,7 +61,6 @@ SwapChain::create(logic::Device a_logic_device,
         .setPreTransform(a_capabilities.currentTransform)
         .setCompositeAlpha(vk::CompositeAlphaFlagBitsKHR::eOpaque)
         .setPresentMode(a_present_mode)
-        // .setOldSwapchain(VK_NULL_HANDLE)
         .setClipped(VK_TRUE);
 
     return a_logic_device.createSwapchainKHR(info);

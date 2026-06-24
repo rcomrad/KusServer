@@ -6,7 +6,9 @@ namespace engine::graphics
 {
 
 RenderPass::RenderPass(logic::Device& a_device, vk::Format a_format)
-    : vk::RenderPass(create(a_device, a_format)), m_device(a_device)
+    : vk::RenderPass(create(a_device, a_format)),
+      m_device(a_device),
+      m_clear_value(vk::ClearColorValue{1.0f, 0.0f, 0.0f, 0.0f})
 {
 }
 
@@ -17,9 +19,10 @@ RenderPass::create(logic::Device a_device, vk::Format a_format)
 
     vk::RenderPassCreateInfo info;
 
-    static auto attachment  = createAttachmentDescription(a_format);
-    static auto description = createSubpassDescription();
-    static auto dependency  = createSubpassDependency();
+    auto attachment  = createAttachmentDescription(a_format);
+    auto ref         = createAttachmentReference();
+    auto description = createSubpassDescription(ref);
+    auto dependency  = createSubpassDependency();
 
     info.setAttachments(attachment)
         .setSubpasses(description)
@@ -39,9 +42,6 @@ RenderPass::getBeginInfo(vk::Framebuffer a_framebuffer)
 {
     SCOPED_TRACE_FUNC("getBeginInfo");
 
-    static vk::ClearColorValue color = {1.0f, 0.0f, 0.0f, 0.0f};
-    static vk::ClearValue cl_val(color);
-
     core::IntVar m_width("win_width");
     core::IntVar m_height("win_height");
 
@@ -50,14 +50,14 @@ RenderPass::getBeginInfo(vk::Framebuffer a_framebuffer)
         .setRenderArea(vk::Rect2D(vk::Offset2D(0, 0),
                                   vk::Extent2D(m_width.get(), m_height.get())))
         .setClearValueCount(1)
-        .setPClearValues(&cl_val)
+        .setPClearValues(&m_clear_value)
         .setFramebuffer(a_framebuffer);
 
     return rp_begin_info;
 }
 
 std::vector<vk::AttachmentReference>
-RenderPass::createAttachmentReference() const
+RenderPass::createAttachmentReference()
 {
     std::vector<vk::AttachmentReference> result;
 
@@ -69,7 +69,7 @@ RenderPass::createAttachmentReference() const
 }
 
 std::vector<vk::AttachmentDescription>
-RenderPass::createAttachmentDescription(vk::Format a_format) const
+RenderPass::createAttachmentDescription(vk::Format a_format)
 {
     std::vector<vk::AttachmentDescription> result;
 
@@ -87,19 +87,20 @@ RenderPass::createAttachmentDescription(vk::Format a_format) const
 }
 
 std::vector<vk::SubpassDescription>
-RenderPass::createSubpassDescription() const
+RenderPass::createSubpassDescription(
+    const std::vector<vk::AttachmentReference>& a_attachment_ref)
 {
-    vk::SubpassDescription result{};
+    std::vector<vk::SubpassDescription> result;
 
-    static auto attachment_ref = createAttachmentReference();
-    result.setColorAttachments(attachment_ref)
+    result.emplace_back()
+        .setColorAttachments(a_attachment_ref)
         .setPipelineBindPoint(vk::PipelineBindPoint::eGraphics);
 
-    return {result};
+    return result;
 }
 
 std::vector<vk::SubpassDependency>
-RenderPass::createSubpassDependency() const
+RenderPass::createSubpassDependency()
 {
     std::vector<vk::SubpassDependency> result;
 

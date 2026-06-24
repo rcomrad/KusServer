@@ -36,6 +36,8 @@ public:
         return *static_cast<ModuleT*>(it->get());
     }
 
+    void startModule(const std::string& a_name);
+
 protected:
     void init();
     bool makeModulesTick();

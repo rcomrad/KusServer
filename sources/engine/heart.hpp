@@ -29,10 +29,10 @@ private:
     logic::Manager m_logic_manager;
     graphics::Manager m_graphic_manager;
 
-    utils::LifecycleManager<logic::VertexBuffer> m_buffer;
+    // utils::LifecycleManager<logic::VertexBuffer> m_buffer;
 
     void recordCommandBuffer(int a_image_num,
-                             vk::UniqueCommandBuffer& a_command_buff);
+                             logic::BaseCommand& a_command_buff);
 };
 
 } // namespace engine

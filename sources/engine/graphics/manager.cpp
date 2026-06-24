@@ -36,13 +36,13 @@ Manager::reset()
     m_graphics_pipeline.create(device, **m_render_pass, *m_shaiders.at(0),
                                *m_shaiders.at(1));
 
-    storage.reset(**m_swap_chain);
-    storage.reset(**m_render_pass);
+    storage.reset(*m_swap_chain);
+    storage.reset(*m_render_pass);
     storage.reset(m_graphics_pipeline->get());
 }
 
 void
-Manager::bindToNextImage(int a_image_num, vk::CommandBuffer a_cmd_buff)
+Manager::bindToNextImage(int a_image_num, logic::BaseCommand& a_cmd_buff)
 {
     SCOPED_TRACE_FUNC("bindToNextImage");
 

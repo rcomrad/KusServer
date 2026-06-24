@@ -19,6 +19,15 @@ FileSystem::readBinaryFile(const std::string& a_name,
     return FileReader::readBinaryFile(path);
 }
 
+std::string
+FileSystem::readFileFromDir(const std::string& a_name,
+                            const std::string& a_dir_name) const
+{
+    auto base_path = getShortcut(a_dir_name);
+    auto path      = base_path / a_name;
+    return FileReader::readFile(path);
+}
+
 void
 FileSystem::writeFile(const std::string& a_data,
                       const std::string& a_name,

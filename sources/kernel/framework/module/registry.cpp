@@ -37,14 +37,30 @@ core::ModuleRegistry::init()
 
 //--------------------------------------------------------------------------------
 
+void
+core::ModuleRegistry::startModule(const std::string& a_name)
+{
+    auto module_ptr = ModuleConstructor::getInstance().construct(a_name);
+    if (module_ptr == nullptr)
+    {
+        THROW("Unable to construct \'%s\' module", a_name);
+    }
+    else
+    {
+        m_modules.emplace_back(std::move(module_ptr));
+    }
+}
+
+//--------------------------------------------------------------------------------
+
 bool
 core::ModuleRegistry::makeModulesTick()
 {
     int result = 0;
-    for (auto& i : m_modules)
+    for (int i = 0; i < m_modules.size(); ++i) // m_modules can be changed
     {
-        result += i->execute() ? 1 : 0;
-        auto thread_ptr = dynamic_cast<ThreadModule*>(i.get());
+        result += m_modules[i]->execute() ? 1 : 0;
+        auto thread_ptr = dynamic_cast<ThreadModule*>(m_modules[i].get());
         if (thread_ptr && thread_ptr->isRunning())
         {
             result += 1;

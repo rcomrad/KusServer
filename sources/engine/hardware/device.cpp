@@ -35,6 +35,7 @@ Device::getMemoryTypeIndex(type::MemoryTypeBits a_type_filter,
         if (a_type_filter & 1 << i.value &&
             mem_properties.memoryTypes[i.value].propertyFlags & a_properties)
         {
+            LOG_DEBUG("Memory type index %d", i);
             return i;
         }
     }

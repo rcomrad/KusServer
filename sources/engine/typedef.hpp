@@ -45,4 +45,11 @@ using MemoryTypeIndex = SomeIndex<uint32_t, void, void, void, void>;
 using MemoryTypeBits  = SomeIndex<uint32_t, void, void, void, void, void>;
 using QueueIndex      = SomeIndex<int, void, void, void>;
 
+inline MemoryTypeBits&
+operator&=(MemoryTypeBits& lhs, MemoryTypeBits rhs)
+{
+    lhs.value &= rhs.value;
+    return lhs;
+}
+
 } // namespace engine::type

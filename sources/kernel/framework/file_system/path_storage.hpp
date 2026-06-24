@@ -6,6 +6,7 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
 
 //------------------------------------------------------------------------------
 
@@ -24,6 +25,9 @@ public:
     std::filesystem::path getShortcut(
         const std::string& a_name,
         const std::filesystem::path& a_path_postfix = {}) const;
+
+    std::vector<std::filesystem::path> getShortcutFileContent(
+        const std::string& a_name) const;
 
 private:
     std::unordered_set<std::filesystem::path> m_used_paths;
