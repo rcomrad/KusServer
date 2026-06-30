@@ -50,7 +50,7 @@ core::VariableStorage::addVariableInfoTamplate(
     }
     else
     {
-        LOG_INFO("Use already existing %s variable", a_var_name);
+        LOG_DEBUG("Use already existing %s variable", a_var_name);
 
         // int id = it->second;
         // VariableCell old(m_variables[id].obj);
@@ -132,6 +132,17 @@ core::VariableStorage::getVariable(int a_number) const
 {
     varIdCheck(a_number);
     return m_variables[a_number].obj.getValue();
+}
+
+int
+core::VariableStorage::getVariable(const std::string& a_name)
+{
+    auto it = m_name_to_var_dict.find(a_name);
+    if (it == m_name_to_var_dict.end())
+    {
+        THROW("No such variable: %s", a_name);
+    }
+    return getVariable(it->second);
 }
 
 //--------------------------------------------------------------------------------

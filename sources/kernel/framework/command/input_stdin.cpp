@@ -1,9 +1,9 @@
 #include "input_stdin.hpp"
 
-#include <iostream>
-
 #include "kernel/framework/core/kernel.hpp"
 #include "kernel/framework/logger/include_me.hpp"
+
+#include <iostream>
 
 core::InputSTDIN::InputSTDIN()
 {
@@ -16,9 +16,10 @@ core::InputSTDIN::InputSTDIN()
 
 core::InputSTDIN::~InputSTDIN()
 {
-    m_is_running = false;
-    m_thread_finished.wait();
-    LOG_INFO("Unlistened stdin.")
+    // TODO:
+    // m_is_running = false;
+    // m_thread_finished.wait();
+    // LOG_INFO("Unlistened stdin.")
 }
 
 void

@@ -1,11 +1,12 @@
 #pragma once
 
-#include <vector>
-
-#include "engine/hardware/instance.hpp"
 #include "kernel/framework/variable/include_me.hpp"
 #include "kernel/utility/type/declaration/lifecycle_manager.hpp"
 #include "kernel/utility/type/declaration/multitype_storage.hpp"
+
+#include <vector>
+
+#include "engine/hardware/instance.hpp"
 
 #include "surface.hpp"
 #include "surface_characteristics.hpp"
@@ -22,9 +23,9 @@ public:
     void initialize();
     void recalculateCapabilities();
 
-    inline bool isClosed()
+    inline void poolEvents(EventCarrier& a_event_carrier)
     {
-        return m_window->isClosed();
+        m_window->poolEvents(a_event_carrier);
     }
 
 private:

@@ -2,17 +2,17 @@
 
 //--------------------------------------------------------------------------------
 
+#include "kernel/framework/command/include_me.hpp"
+#include "kernel/framework/logger/basic/include_me.hpp"
+#include "kernel/utility/macroses/holy_trinity.hpp"
+#include "kernel/utility/type/declaration/lifecycle_manager.hpp"
+
 #include <atomic>
 #include <mutex>
 #include <optional>
 #include <string_view>
 #include <unordered_map>
 #include <vector>
-
-#include "kernel/framework/command/include_me.hpp"
-#include "kernel/framework/logger/basic/include_me.hpp"
-#include "kernel/utility/macroses/holy_trinity.hpp"
-#include "kernel/utility/type/declaration/lifecycle_manager.hpp"
 
 #include "variable_cell.hpp"
 
@@ -44,12 +44,13 @@ public:
         auto it = m_name_to_var_dict.find(a_name);
         if (it == m_name_to_var_dict.end())
         {
-            THROW("Np such variable: %s", a_name);
+            THROW("No such variable: %s", a_name);
         }
         setVariable(it->second, a_value);
     }
 
     int getVariable(int a_number) const;
+    int getVariable(const std::string& a_name);
 
     int addVariableInfo(const std::string& a_var_name);
     int addVariableInfo(const std::string& a_var_name, int a_default_value);

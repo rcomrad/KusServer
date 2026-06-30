@@ -65,14 +65,15 @@ engine::EngineModule::threadLoopBody()
         cmd.end();
 
         m_logic_manager.commitNextTick(cmd);
-        m_window_manager.isClosed();
+        m_window_manager.poolEvents(m_event_carrier);
     }
     catch (const logic::ResizeException&)
     {
         m_window_manager.recalculateCapabilities();
         m_graphic_manager.reset();
     }
-    return true;
+
+    return KERNEL.getVariable("is_running");
 }
 
 void

@@ -28,7 +28,37 @@ GameModule::initialize()
 bool
 GameModule::loopBody()
 {
-    return true;
+    auto& engine        = KERNEL.getModuleRef<engine::EngineModule>("engine");
+    auto& event_carrier = engine.getEventCarrier();
+    event_carrier.acquireRead(std::move(m_events_buffer));
+
+    // std::cout << "SIZE: " << m_events_buffer.size() << '\n';
+    for (auto& e : m_events_buffer)
+    {
+        switch (e.type)
+        {
+            case engine::window::EventType::MousePositionEvent:
+                if (e.mousePosition.is_valid)
+                {
+                    std::cout << "Mouse moved: " << e.mousePosition.x << " "
+                              << e.mousePosition.y << '\n';
+                }
+                break;
+
+            case engine::window::EventType::MouseInputEvent:
+                std::cout << "Button: " << e.mouseInput.button << " "
+                          << e.mouseInput.type << '\n';
+                break;
+
+            case engine::window::EventType::KeyInputEvent:
+                std::cout << "Key: " << e.keyInput.key << " "
+                          << e.mouseInput.type << '\n';
+                break;
+        }
+    }
+    m_events_buffer.clear();
+
+    return KERNEL.getVariable("is_running");
 }
 
 } // namespace game
