@@ -2,6 +2,8 @@
 
 #include "kernel/framework/include_me.hpp"
 
+#include "engine/graphics/swap_chain.hpp"
+
 namespace engine::logic
 {
 
@@ -18,10 +20,11 @@ Manager::initialize()
     auto& storage = *m_obj_ref_storage;
     m_device.create(storage.get<hard::Device>(),
                     storage.get<type::FamilyIndex>());
+    // m_buffer.create(*m_device, 65000);
     storage.put(*m_device);
 }
 
-void
+std::vector<logic::BaseCommand>
 Manager::createCommandEnv()
 {
     SCOPED_TRACE_INIT("command environment");
@@ -31,28 +34,41 @@ Manager::createCommandEnv()
                           storage.get<type::FamilyIndex>());
     m_queue.create(storage.get<logic::Device>(),
                    storage.get<type::FamilyIndex>(), 0);
-    m_command_buffers = m_command_pool->alocateBuffers(3);
+    return m_command_pool->alocateBuffers(3);
+}
+
+uint32_t
+Manager::startNextTick()
+{
+    auto& swap_chain = m_obj_ref_storage->get<graphics::SwapChain>();
+    auto& device     = m_obj_ref_storage->get<logic::Device>();
+    m_index          = m_queue->acquire_next_image(device, swap_chain);
+    LOG_DEBUG("Next index is: %d", m_index);
+    return m_index;
 }
 
 void
-Manager::nextTick(
-    std::function<void(int, vk::UniqueCommandBuffer&)> a_record_callback)
+Manager::commitNextTick(const logic::BaseCommand& a_cmd)
 {
-    auto& swap_chain = m_obj_ref_storage->get<vk::SwapchainKHR>();
+    auto& swap_chain = m_obj_ref_storage->get<graphics::SwapChain>();
     auto& device     = m_obj_ref_storage->get<logic::Device>();
 
-    auto index = m_queue->acquire_next_image(device, swap_chain);
-    LOG_DEBUG("Next index is: %d", index);
-    auto& cmd = m_command_buffers.at(index);
-    a_record_callback(index, cmd);
-    m_queue->submit(*cmd);
-    m_queue->present(index, swap_chain);
+    LOG_DEBUG("Using index: %d", m_index);
+    m_queue->submit(a_cmd);
+    m_queue->present(m_index, swap_chain);
 }
 
-std::vector<vk::UniqueCommandBuffer>&
-Manager::getCommandBuffers()
+void
+Manager::collapseImagesBuffer(ImagesBuffer& a_images_buffer,
+                              vk::DescriptorSetLayout a_desc_set_layout)
 {
-    return m_command_buffers;
+    a_images_buffer.collapse(*m_command_pool, *m_queue, a_desc_set_layout);
 }
+
+// std::vector<logic::BaseCommand>&
+// Manager::getCommandBuffers()
+// {
+//     return m_command_buffers;
+// }
 
 } // namespace engine::logic

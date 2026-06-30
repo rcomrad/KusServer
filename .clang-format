@@ -41,6 +41,9 @@ IncludeCategories:
   - Regex:           '<*>'
     Priority:        30
 
+  - Regex:           '"kernel.*"'
+    Priority:        10
+
   - Regex:           '"domain.*"'
     Priority:        50
   - Regex:           '"core.*"'
@@ -49,13 +52,18 @@ IncludeCategories:
     Priority:        70
   - Regex:           '"string.*"'
     Priority:        80
+
   - Regex:           '"server.*"'
-    Priority:        90
+    Priority:        1090
   - Regex:           '"database.*"'
-    Priority:        100
+    Priority:        1100
+  - Regex:           '"engine.*"'
+    Priority:        1100
+  - Regex:           '"game.*"'
+    Priority:        1110
 
   - Regex:           '"*/.*"'
-    Priority:        500
+    Priority:        5000
 
   - Regex:           '".*"'
-    Priority:        501
+    Priority:        5001

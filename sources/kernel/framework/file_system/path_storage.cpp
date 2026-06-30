@@ -55,14 +55,27 @@ PathStorage::getShortcut(const std::string& a_name,
     return result;
 }
 
+std::vector<std::filesystem::path>
+PathStorage::getShortcutFileContent(const std::string& a_name) const
+{
+    std::vector<std::filesystem::path> result;
+
+    auto path = getShortcut(a_name);
+    for (const auto& entry : std::filesystem::directory_iterator(path))
+    {
+        if (std::filesystem::is_regular_file(entry.status()))
+        {
+            result.emplace_back(entry.path());
+        }
+    }
+
+    return result;
+}
+
 const std::filesystem::path&
 PathStorage::addDataShortcut(const std::string& a_name,
                              const std::filesystem::path& a_path)
 {
-    auto a1 = getShortcut(DATA_DIR);
-    auto a2 = getShortcut(DATA_DIR, a_path);
-    auto a3 = a_path;
-    auto a4 = a1 / a3;
     return addShortcut(a_name, getShortcut(DATA_DIR, a_path));
 }
 

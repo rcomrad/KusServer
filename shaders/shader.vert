@@ -1,16 +1,29 @@
 #version 450
 
-layout(location = 0) in vec2 position;
-layout(location = 1) in vec3 color;
+layout (location = 0) out vec2 uv;
 
-layout(location = 0) out vec3 fragColor;
+vec4 vertices[6] = {
+    // Bottom left
+    vec4(-0.5, 0.5, 0.0, 1.0),
 
-layout(push_constant) uniform Push {
-  vec2 offset;
-  vec3 color;
-} push;
+    // Top Left
+    vec4(-0.5, -0.5, 0.0, 0.0),
 
-void main() {
-	gl_Position = vec4(position + push.offset, 0.0, 1.0);
-	fragColor = color;
+    // Top Right
+    vec4(0.5, -0.5, 1.0, 0.0),
+
+    // Top Right
+    vec4(0.5, -0.5, 1.0, 0.0),
+
+    // Bottom Right
+    vec4(0.5, 0.5, 1.0, 1.0),
+
+    // Bottom Left
+    vec4(-0.5, 0.5, 0.0, 1.0),
+};
+
+void main()
+{
+    gl_Position = vec4(vertices[gl_VertexIndex].xy, 1.0, 1.0);
+    uv = vertices[gl_VertexIndex].zw;
 }

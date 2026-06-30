@@ -14,11 +14,11 @@ namespace core
 class FileReader
 {
 public:
-    std::string readFile(const std::filesystem::path& a_path) const;
-    std::string readBinaryFile(const std::filesystem::path& a_path) const;
+    static std::string readFile(const std::filesystem::path& a_path);
+    static std::string readBinaryFile(const std::filesystem::path& a_path);
 
 private:
-    std::string readFileImpl(std::ifstream& a_inp) const;
+    static std::string readFileImpl(std::ifstream& a_inp);
 };
 
 } // namespace core

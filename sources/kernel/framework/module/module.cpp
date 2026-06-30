@@ -105,8 +105,8 @@ core::Module::changeState(State a_new_state) noexcept
 {
     if (m_sync_state)
     {
-        if (m_base_or_thread ? !m_sync_state->baseTrySitchTo(a_new_state)
-                             : !m_sync_state->threadTrySitchTo(a_new_state))
+        if (m_base_or_thread ? !m_sync_state->baseTrySwitchTo(a_new_state)
+                             : !m_sync_state->threadTrySwitchTo(a_new_state))
         {
             return;
         }

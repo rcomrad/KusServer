@@ -29,31 +29,26 @@ ImageCollection::ImageCollection(logic::Device& a_device,
     core::IntVar height("win_height");
     LOG_DEBUG("height %d, width %d", height.get(), width.get());
 
-    m_images = a_device.getSwapchainImagesKHR(a_swapchain);
-    static std::vector<std::vector<vk::ImageView>> attachment;
-    attachment.clear();
-    for (auto& i : m_images)
+    // m_images = a_device.getSwapchainImagesKHR(a_swapchain);
+    // for (auto& image : m_images)
+    for (auto& image : a_device.getSwapchainImagesKHR(a_swapchain))
     {
         vk::ImageViewCreateInfo view_info;
-
-        view_info.setImage(i)
+        view_info.setImage(image)
             .setViewType(vk::ImageViewType::e2D)
             .setFormat(a_format)
             .setComponents(component)
             .setSubresourceRange(subresource_range);
+        m_image_views.emplace_back(a_device.createImageViewUnique(view_info));
 
-        m_image_views.emplace_back().emplace_back(
-            a_device.createImageViewUnique(view_info));
+        std::vector<vk::ImageView> attachment{*m_image_views.back()};
 
         vk::FramebufferCreateInfo frame_info;
-
-        attachment.emplace_back().emplace_back(*m_image_views.back().back());
         frame_info.setLayers(1)
-            .setAttachments(attachment.back())
+            .setAttachments(attachment)
             .setRenderPass(a_render_pass)
             .setWidth(width.get())
             .setHeight(height.get());
-
         m_frame_buffers.emplace_back(
             a_device.createFramebufferUnique(frame_info));
     }

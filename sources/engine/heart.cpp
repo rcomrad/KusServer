@@ -2,6 +2,8 @@
 
 #include "kernel/framework/include_me.hpp"
 
+#include "engine/logic/images_buffer.hpp"
+
 namespace engine
 {
 
@@ -13,33 +15,32 @@ Heart::Heart()
       m_logic_manager(storage),
       m_graphic_manager(storage)
 {
+    KERNEL.addDataShortcut(IMAGES_DIR, IMAGES_DIR);
+
     m_hard_manager.initialize();
     m_window_manager.initialize();
     m_logic_manager.initialize();
     m_graphic_manager.reset();
     m_logic_manager.createCommandEnv();
 
-    std::vector<logic::Vertex> vertices{
-        {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-        {{1.0f, 0.5f},  {1.0f, 0.0f, 1.0f}},
-        {{-0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}}
-    };
-    m_buffer.create(m_logic_manager.getCurentDevice(), vertices);
+    // std::vector<logic::Vertex> vertices{
+    //     {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+    //     {{1.0f, 0.5f},  {1.0f, 0.0f, 1.0f}},
+    //     {{-0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}}
+    // };
+    // m_buffer.create(m_logic_manager.getCurentDevice(), vertices);
 }
 
 void
-Heart::recordCommandBuffer(int a_image_num,
-                           vk::UniqueCommandBuffer& a_command_buff)
+Heart::recordCommandBuffer(int a_image_num, logic::BaseCommand& a_command_buff)
 {
     static float frame = -20;
     frame              = (frame + 0.4);
     if (frame > 10) frame -= 30;
 
-    vk::CommandBufferBeginInfo info;
-    info.setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
-    a_command_buff->begin(info);
-    m_graphic_manager.bindToNextImage(a_image_num, *a_command_buff);
-    m_buffer->bind(a_command_buff);
+    a_command_buff.begin(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
+    m_graphic_manager.bindToNextImage(a_image_num, a_command_buff);
+    // m_buffer->bind(a_command_buff);
 
     // std::vector<graphics::SimplePushConstantData> push;
     // push.emplace_back();
@@ -53,38 +54,38 @@ Heart::recordCommandBuffer(int a_image_num,
     graphics::SimplePushConstantData push;
     push.offset = {-0.5f + frame * 0.02f, -0.4f + frame * 0.25f};
     push.color  = {0.0f, 0.0f, 0.0f};
-    a_command_buff->pushConstants(
-        *m_graphic_manager.getLayout(),
+    a_command_buff.pushConstants(
+        m_graphic_manager.getLayout(),
         vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment,
         0, sizeof(graphics::SimplePushConstantData), &push);
 
-    m_buffer->draw(a_command_buff);
-    a_command_buff->endRenderPass();
-    a_command_buff->end();
+    // m_buffer->draw(a_command_buff);
+    a_command_buff.endRenderPass();
+    a_command_buff.end();
 }
 
 void
 Heart::loop()
 {
-    if (!m_is_closed)
-    {
-        try
-        {
-            m_logic_manager.nextTick(
-                [&](int a_image_num, vk::UniqueCommandBuffer& a_command_buff)
-                { this->recordCommandBuffer(a_image_num, a_command_buff); });
-            m_is_closed = m_window_manager.isClosed();
-        }
-        catch (const logic::ResizeException&)
-        {
-            m_window_manager.recalculateCapabilities();
-            m_graphic_manager.reset();
-        }
-    }
-    else
-    {
-        THROW("window already closed");
-    }
+    // if (!m_is_closed)
+    // {
+    //     try
+    //     {
+    //         m_logic_manager.nextTick(
+    //             [&](int a_image_num, logic::BaseCommand& a_command_buff)
+    //             { this->recordCommandBuffer(a_image_num, a_command_buff); });
+    //         m_is_closed = m_window_manager.isClosed();
+    //     }
+    //     catch (const logic::ResizeException&)
+    //     {
+    //         m_window_manager.recalculateCapabilities();
+    //         m_graphic_manager.reset();
+    //     }
+    // }
+    // else
+    // {
+    //     THROW("window already closed");
+    // }
 }
 
 bool

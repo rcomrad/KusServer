@@ -1,32 +1,35 @@
-#pragma once
+// #pragma once
 
-#include <vulkan/vulkan.hpp>
+// #include <vulkan/vulkan.hpp>
 
-#include "engine/logic/device.hpp"
+// #include "engine/logic/device.hpp"
 
-#include "vertix.hpp"
+// #include "vertix.hpp"
 
-namespace engine::logic
-{
+// namespace engine::logic
+// {
 
-class VertexBuffer
-{
-public:
-    VertexBuffer(logic::Device a_device, const std::vector<Vertex>& a_vertices);
+// class VertexBuffer
+// {
+// public:
+//     VertexBuffer(logic::Device a_device, const std::vector<Vertex>& a_vertices);
+//     VertexBuffer(logic::Device a_device,
+//                  const char* a_data,
+//                  vk::DeviceSize a_size);
 
-    void bind(vk::UniqueCommandBuffer& a_commands);
-    void draw(vk::UniqueCommandBuffer& a_commands);
+//     void bind(vk::UniqueCommandBuffer& a_commands);
+//     void draw(vk::UniqueCommandBuffer& a_commands);
 
-private:
-    vk::UniqueBuffer m_buffer;
-    vk::UniqueDeviceMemory m_allocated_memory;
+// private:
+//     vk::UniqueBuffer m_buffer;
+//     vk::UniqueDeviceMemory m_allocated_memory;
 
-    uint32_t m_vertex_count;
+//     uint32_t m_vertex_count;
 
-    void createBuffer(logic::Device a_device,
-                      vk::DeviceSize a_size,
-                      vk::BufferUsageFlags a_usage,
-                      vk::MemoryPropertyFlags a_properties);
-};
+//     void createBuffer(logic::Device a_device,
+//                       vk::DeviceSize a_size,
+//                       vk::BufferUsageFlags a_usage,
+//                       vk::MemoryPropertyFlags a_properties);
+// };
 
-} // namespace engine::logic
+// } // namespace engine::logic

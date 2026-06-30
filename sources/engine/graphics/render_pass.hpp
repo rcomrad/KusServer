@@ -19,17 +19,18 @@ public:
     vk::RenderPassBeginInfo getBeginInfo(vk::Framebuffer a_framebuffer);
 
 private:
-    // vk::UniqueRenderPass m_render_pass;
     logic::Device& m_device;
+    vk::ClearValue m_clear_value;
 
-    vk::RenderPass create(logic::Device a_device, vk::Format a_format);
+    static vk::RenderPass create(logic::Device a_device, vk::Format a_format);
 
-    std::vector<vk::AttachmentReference> createAttachmentReference() const;
+    static std::vector<vk::AttachmentReference> createAttachmentReference();
 
-    std::vector<vk::AttachmentDescription> createAttachmentDescription(
-        vk::Format a_format) const;
-    std::vector<vk::SubpassDescription> createSubpassDescription() const;
-    std::vector<vk::SubpassDependency> createSubpassDependency() const;
+    static std::vector<vk::AttachmentDescription> createAttachmentDescription(
+        vk::Format a_format);
+    static std::vector<vk::SubpassDescription> createSubpassDescription(
+        const std::vector<vk::AttachmentReference>& a_attachment_ref);
+    static std::vector<vk::SubpassDependency> createSubpassDependency();
 };
 
 } // namespace engine::graphics

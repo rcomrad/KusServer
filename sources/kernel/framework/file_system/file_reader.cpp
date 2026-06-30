@@ -1,9 +1,9 @@
 #include "file_reader.hpp"
 
+#include "kernel/framework/logger/include_me.hpp"
+
 #include <iostream>
 #include <sstream>
-
-#include "kernel/framework/logger/include_me.hpp"
 
 namespace core
 {
@@ -11,7 +11,7 @@ namespace core
 // TODO: template?
 
 std::string
-FileReader::readFile(const std::filesystem::path& a_path) const
+FileReader::readFile(const std::filesystem::path& a_path)
 {
     std::ifstream inp(a_path);
     if (!inp)
@@ -22,7 +22,7 @@ FileReader::readFile(const std::filesystem::path& a_path) const
 }
 
 std::string
-FileReader::readBinaryFile(const std::filesystem::path& a_path) const
+FileReader::readBinaryFile(const std::filesystem::path& a_path)
 {
     std::ifstream inp(a_path, std::ios::binary);
     if (!inp)
@@ -33,7 +33,7 @@ FileReader::readBinaryFile(const std::filesystem::path& a_path) const
 }
 
 std::string
-FileReader::readFileImpl(std::ifstream& a_inp) const
+FileReader::readFileImpl(std::ifstream& a_inp)
 {
     std::stringstream buffer;
     buffer << a_inp.rdbuf();

@@ -1,30 +1,33 @@
 #include "graphic_pipeline.hpp"
 
-#include "engine/logic/vertix.hpp"
 #include "kernel/framework/logger/basic/include_me.hpp"
 #include "kernel/framework/variable/include_me.hpp"
+
+#include "engine/logic/vertix.hpp"
 
 namespace engine::graphics
 {
 
-GraphicsPipeline::GraphicsPipeline(logic::Device a_logic_device,
+GraphicsPipeline::GraphicsPipeline(logic::Device& a_logic_device,
                                    vk::RenderPass a_render_pass,
                                    vk::ShaderModule a_vert_smodule,
                                    vk::ShaderModule a_frag_smodule)
 {
     SCOPED_TRACE_INIT("graphics pipeline");
 
-    static std::vector<vk::PushConstantRange> push_const_range;
-    push_const_range.clear();
-    push_const_range.emplace_back()
-        .setStageFlags(vk::ShaderStageFlagBits::eVertex |
-                       vk::ShaderStageFlagBits::eFragment)
-        .setOffset(0)
-        .setSize(sizeof(SimplePushConstantData));
+    // push constants
+    // static std::vector<vk::PushConstantRange> push_const_range;
+    // push_const_range.clear();
+    // push_const_range.emplace_back()
+    //     .setStageFlags(vk::ShaderStageFlagBits::eVertex |
+    //                    vk::ShaderStageFlagBits::eFragment)
+    //     .setOffset(0)
+    //     .setSize(sizeof(SimplePushConstantData));
+    // layout_info.setPushConstantRanges(push_const_range);
 
-    vk::PipelineLayoutCreateInfo layout_info;
-    layout_info.setPushConstantRanges(push_const_range);
-    m_pipeline_layout = a_logic_device.createPipelineLayoutUnique(layout_info);
+    m_desc_set_layout = createDescriptorSetLayout(a_logic_device);
+    m_pipeline_layout =
+        createPipelineLayout(a_logic_device, *m_desc_set_layout);
 
     auto stages = createShaderStageInfo(a_vert_smodule, a_frag_smodule);
     auto vertex_input_state   = createVertexInputInfo();
@@ -58,6 +61,35 @@ GraphicsPipeline::GraphicsPipeline(logic::Device a_logic_device,
     m_pipeline = std::move(temp_res.value);
 }
 
+vk::UniqueDescriptorSetLayout
+GraphicsPipeline::createDescriptorSetLayout(logic::Device& a_logic_device)
+{
+    std::vector<vk::DescriptorSetLayoutBinding> set_layout_binding;
+    set_layout_binding.emplace_back()
+        .setBinding(0)
+        .setDescriptorCount(1)
+        .setDescriptorType(vk::DescriptorType::eCombinedImageSampler)
+        .setStageFlags(vk::ShaderStageFlagBits::eFragment);
+
+    vk::DescriptorSetLayoutCreateInfo layout_info;
+    layout_info.setBindings(set_layout_binding);
+
+    return a_logic_device.createDescriptorSetLayoutUnique(layout_info);
+}
+
+vk::UniquePipelineLayout
+GraphicsPipeline::createPipelineLayout(
+    logic::Device& a_logic_device,
+    vk::DescriptorSetLayout& a_desc_set_layout)
+{
+    std::vector<vk::DescriptorSetLayout> layout_array = {a_desc_set_layout};
+
+    vk::PipelineLayoutCreateInfo layout_info;
+    layout_info //.setPushConstantRanges(push_const_range)
+        .setSetLayouts(layout_array);
+    return a_logic_device.createPipelineLayoutUnique(layout_info);
+}
+
 std::vector<vk::PipelineShaderStageCreateInfo>
 GraphicsPipeline::createShaderStageInfo(vk::ShaderModule a_vert_smodule,
                                         vk::ShaderModule a_frag_smodule)
@@ -84,11 +116,11 @@ GraphicsPipeline::createVertexInputInfo()
 {
     vk::PipelineVertexInputStateCreateInfo result;
 
-    static auto binding_desc   = logic::Vertex::getBindingDescriptions();
-    static auto attribute_desc = logic::Vertex::getAttributeDescriptions();
+    // static auto binding_desc   = logic::Vertex::getBindingDescriptions();
+    // static auto attribute_desc = logic::Vertex::getAttributeDescriptions();
 
-    result.setVertexBindingDescriptions(binding_desc)
-        .setVertexAttributeDescriptions(attribute_desc);
+    // result.setVertexBindingDescriptions(binding_desc)
+    //     .setVertexAttributeDescriptions(attribute_desc);
 
     return result;
 }

@@ -1,10 +1,12 @@
 #pragma once
 
+#include "kernel/utility/type/declaration/lifecycle_manager.hpp"
+#include "kernel/utility/type/declaration/multitype_storage.hpp"
+
 #include <memory>
 #include <vector>
 
-#include "kernel/utility/type/declaration/lifecycle_manager.hpp"
-#include "kernel/utility/type/declaration/multitype_storage.hpp"
+#include "engine/logic/base_command.hpp"
 
 #include "graphic_pipeline.hpp"
 #include "image_collection.hpp"
@@ -21,11 +23,16 @@ public:
     Manager(std::shared_ptr<core::MultitypeStorage> a_obj_ref_storage);
 
     void reset();
-    void bindToNextImage(int a_image_num, vk::CommandBuffer a_cmd_buff);
+    void bindToNextImage(int a_image_num, logic::BaseCommand& a_cmd_buff);
 
-    inline auto& getLayout()
+    inline auto getLayout()
     {
         return m_graphics_pipeline->getLayout();
+    }
+
+    inline auto getDescSetLayout()
+    {
+        return m_graphics_pipeline->getDescSetLayout();
     }
 
 private:

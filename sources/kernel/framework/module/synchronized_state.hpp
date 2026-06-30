@@ -14,8 +14,8 @@ class SynchronizedState
 public:
     SynchronizedState();
 
-    bool baseTrySitchTo(State a_state) noexcept;
-    bool threadTrySitchTo(State a_state) noexcept;
+    bool baseTrySwitchTo(State a_state) noexcept;
+    bool threadTrySwitchTo(State a_state) noexcept;
     bool checkThreadValidity() noexcept;
 
     State getThreadState() const noexcept;

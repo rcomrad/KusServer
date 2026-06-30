@@ -1,10 +1,10 @@
 #pragma once
 
+#include "kernel/framework/variable/include_me.hpp"
 #include <vulkan/vulkan.hpp>
 
 #include "engine/logic/device.hpp"
 #include "engine/vk_converter.hpp"
-#include "kernel/framework/variable/include_me.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -23,14 +23,19 @@ class GraphicsPipeline
 {
 
 public:
-    GraphicsPipeline(logic::Device a_logic_device,
+    GraphicsPipeline(logic::Device& a_logic_device,
                      vk::RenderPass a_render_pass,
                      vk::ShaderModule a_vert_smodule,
                      vk::ShaderModule a_frag_smodule);
 
-    inline auto& getLayout()
+    inline auto getLayout()
     {
-        return m_pipeline_layout;
+        return *m_pipeline_layout;
+    }
+
+    inline auto getDescSetLayout()
+    {
+        return *m_desc_set_layout;
     }
 
     inline auto& get()
@@ -39,8 +44,15 @@ public:
     }
 
 private:
+    vk::UniqueDescriptorSetLayout m_desc_set_layout;
     vk::UniquePipelineLayout m_pipeline_layout;
     std::vector<vk::UniquePipeline> m_pipeline;
+
+    static vk::UniqueDescriptorSetLayout createDescriptorSetLayout(
+        logic::Device& a_logic_device);
+    static vk::UniquePipelineLayout createPipelineLayout(
+        logic::Device& a_logic_device,
+        vk::DescriptorSetLayout& a_desc_set_layout);
 
     static std::vector<vk::PipelineShaderStageCreateInfo> createShaderStageInfo(
         vk::ShaderModule a_vert_smodule,

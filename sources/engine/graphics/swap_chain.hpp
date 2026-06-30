@@ -29,9 +29,7 @@ public:
 
 private:
     logic::Device m_logic_device;
-    // std::vector<uint32_t> m_family_indexes;
 
-    // non=static for m_family_indexes
     static vk::SwapchainKHR create(logic::Device a_logic_device,
                                    vk::SurfaceKHR a_serface,
                                    type::FamilyIndex a_family_index,
