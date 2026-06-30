@@ -23,7 +23,8 @@ Manager::recalculateCapabilities()
     storage.reset(m_characteristics->format);
     storage.reset(m_characteristics->color_space);
     storage.reset(m_characteristics->present_mode);
-    storage.reset(m_characteristics->capability); // TODO: possably need to reset only this
+    storage.reset(m_characteristics
+                      ->capability); // TODO: possably need to reset only this
     storage.reset(m_characteristics->image_num);
 }
 

@@ -18,7 +18,7 @@ Heart::Heart()
     KERNEL.addDataShortcut(IMAGES_DIR, IMAGES_DIR);
 
     m_hard_manager.initialize();
-    m_window_manager.initialize();
+    // m_window_manager.initialize();
     m_logic_manager.initialize();
     m_graphic_manager.reset();
     m_logic_manager.createCommandEnv();

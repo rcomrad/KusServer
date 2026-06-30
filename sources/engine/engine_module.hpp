@@ -17,6 +17,11 @@ public:
     EngineModule();
     void force();
 
+    inline window::EventCarrier& getEventCarrier()
+    {
+        return m_event_carrier;
+    }
+
 protected:
     void threadInitialize() override;
     bool threadLoopBody() override;
@@ -30,8 +35,8 @@ private:
     logic::Manager m_logic_manager;
     graphics::Manager m_graphic_manager;
 
+    window::EventCarrier m_event_carrier;
     std::vector<logic::BaseCommand> m_commands;
-
     utils::LifecycleManager<logic::ImagesBuffer> m_textures;
 };
 
