@@ -16,11 +16,9 @@
     NAME(NAME&& other) noexcept            = default; \
     NAME& operator=(NAME&& other) noexcept = default;
 
-#define HOLY_TRINITY_NOCOPY(NAME)                     \
-    NAME(const NAME&) noexcept             = delete;  \
-    NAME& operator=(const NAME&) noexcept  = delete;  \
-    NAME(NAME&& other) noexcept            = default; \
-    NAME& operator=(NAME&& other) noexcept = default;
+#define HOLY_TRINITY_NOCOPY(NAME)          \
+    NAME(const NAME&)            = delete; \
+    NAME& operator=(const NAME&) = delete;
 
 // TODO: remove redandant
 // SINGLETON_INITIALIZER

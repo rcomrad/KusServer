@@ -54,6 +54,15 @@ core::ThreadModule::threadTerminate()
 // Utils
 //------------------------------------------------------------------------------
 
+void
+core::ThreadModule::waitAlive()
+{
+    while (getThreadState() != core::State::ALIVE)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+}
+
 core::State
 core::ThreadModule::getThreadState() const noexcept
 {

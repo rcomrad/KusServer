@@ -1,10 +1,14 @@
 #pragma once
 
 #include "kernel/framework/module/include_me.hpp"
+#include "kernel/utility/type/containers/ping_pong_atomic_buffer.hpp"
 
 #include <vector>
 
-#include "engine/window/event.hpp"
+#include "game_object.hpp"
+
+#include "gpu/event/event.hpp"
+#include "gpu/gpu_module.hpp"
 
 namespace game
 {
@@ -19,7 +23,15 @@ protected:
     bool loopBody() override;
 
 private:
-    std::vector<engine::window::Event> m_events_buffer;
+    gpu::GPUModule* m_gpu_module;
+
+    std::vector<gpu::event::Event> m_events_buffer; // TODO:
+
+    std::vector<GameObject> m_game_objects;
+
+    void processEvents();
+    void update();
+    void draw();
 };
 
 } // namespace game

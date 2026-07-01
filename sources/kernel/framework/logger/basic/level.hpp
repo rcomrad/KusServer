@@ -6,7 +6,7 @@ namespace core
 enum class LogLevel
 {
     NUN,
-    DEBUG,
+    SPAM,
     CMD, // todo: swap with TRACE
     TRACE,
     INFO,

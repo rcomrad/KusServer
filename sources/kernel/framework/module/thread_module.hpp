@@ -24,6 +24,7 @@ public:
 
     bool isRunning() const noexcept;
 
+    void waitAlive();
     core::State getThreadState() const noexcept;
     const std::vector<State>& getThreadHistory() const noexcept;
 
