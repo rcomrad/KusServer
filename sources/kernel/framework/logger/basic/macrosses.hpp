@@ -15,7 +15,7 @@
     core::LocalLogger::getLogger().writeLog(                             \
         core::LogLevel::type, "[%-5s] %-30s| %-30s[%-4d]: " format "\n", \
         #type, __FILENAME__, func_name, line_num,                        \
-        FOR_EACH(utils::PrintCaster::exec, __VA_ARGS__) "");
+        FOR_EACH(::utils::PrintCaster::exec, __VA_ARGS__) "");
 
 #define WRITE_LOG_MSG(type, format, ...) \
     WRITE_LOG_MSG_BASE(type, __func__, __LINE__, format, __VA_ARGS__)
@@ -23,7 +23,7 @@
 #define WRITE_TEE_MSG(type, format, ...)   \
     core::LocalLogger::getLogger().teeLog( \
         core::LogLevel::type, format "\n", \
-        FOR_EACH(utils::PrintCaster::exec, __VA_ARGS__) "");
+        FOR_EACH(::utils::PrintCaster::exec, __VA_ARGS__) "");
 
 #define WRITE_LOG(...)              \
     {                               \
@@ -31,7 +31,7 @@
         WRITE_TEE_MSG(__VA_ARGS__); \
     }
 
-#define LOG_DEBUG(...)   WRITE_LOG(DEBUG, __VA_ARGS__)
+#define LOG_SPAM(...)    WRITE_LOG(SPAM, __VA_ARGS__)
 #define LOG_CMD(...)     WRITE_LOG(CMD, __VA_ARGS__)
 #define LOG_TRACE(...)   WRITE_LOG(TRACE, __VA_ARGS__)
 #define LOG_INFO(...)    WRITE_LOG(INFO, __VA_ARGS__)
@@ -46,12 +46,12 @@
         ScopedTraceLog(const char* a_func_name, int a_line_num) \
             : func_name(a_func_name), line_num(a_line_num)      \
         {                                                       \
-            WRITE_LOG_MSG_BASE(DEBUG, func_name, line_num,      \
+            WRITE_LOG_MSG_BASE(TRACE, func_name, line_num,      \
                                "Start " __VA_ARGS__);           \
         }                                                       \
         ~ScopedTraceLog()                                       \
         {                                                       \
-            WRITE_LOG_MSG_BASE(DEBUG, func_name, line_num,      \
+            WRITE_LOG_MSG_BASE(TRACE, func_name, line_num,      \
                                "\tEnd " __VA_ARGS__);           \
         }                                                       \
         int line_num;                                           \

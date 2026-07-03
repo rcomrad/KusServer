@@ -50,7 +50,7 @@ core::VariableStorage::addVariableInfoTamplate(
     }
     else
     {
-        LOG_DEBUG("Use already existing %s variable", a_var_name);
+        LOG_SPAM("Use already existing %s variable", a_var_name);
 
         // int id = it->second;
         // VariableCell old(m_variables[id].obj);
@@ -130,7 +130,7 @@ core::VariableStorage::setVariable(int a_number, const char* a_value)
 int
 core::VariableStorage::getVariable(int a_number) const
 {
-    varIdCheck(a_number);
+    varIdCheck(a_number); // TODO: assert?
     return m_variables[a_number].obj.getValue();
 }
 
