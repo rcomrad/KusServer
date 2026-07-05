@@ -1,6 +1,7 @@
 #include "gpu_module.hpp"
 
 #include "kernel/framework/include_me.hpp"
+#include "kernel/utility/synchronization/sleep.hpp"
 
 #include "gpu/utils/paths.hpp"
 #include "sprite/storage_builder.hpp"
@@ -34,11 +35,14 @@ gpu::GPUModule::tryDraw(sprite::SpriteViewArray&& a_objects)
 void
 gpu::GPUModule::threadInitialize()
 {
+    SCOPED_TRACE_INIT("gpu module");
+
     m_hard_manager.initialize();
     m_window_manager.initialize();
     m_logic_manager.initialize();
     m_pipeline_manager.reset();
     m_commands = m_logic_manager.createCommandEnv();
+    LOG_TRACE("command count: %d", m_commands.size());
 
     m_sprites.create(createSpriteStorage(
         m_logic_manager.getDevice(), m_logic_manager.getQueue(),
@@ -50,11 +54,12 @@ gpu::GPUModule::threadInitialize()
 bool
 gpu::GPUModule::threadLoopBody()
 {
+    ::utils::Sleep::yield();
+
     try
     {
         auto index = m_logic_manager.startNextTick();
-
-        auto& cmd = m_commands.at(index); // TODO: move in logic::manager
+        auto& cmd  = m_commands.at(index); // TODO: move in logic::manager
 
         cmd.begin(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
         m_pipeline_manager.bindToNextImage(index, cmd);
@@ -98,7 +103,11 @@ gpu::GPUModule::createSpriteStorage(logic::Device& a_device,
     sprite::StorageBuilder builder(a_device);
     for (auto path : files)
     {
-        builder.push(path);
+        if (path.extension() == ".dds")
+        {
+            builder.push(path);
+        }
     }
+
     return builder.collapse(a_queue, a_comm_pool, a_desc_set_layout);
 }

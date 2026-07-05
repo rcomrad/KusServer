@@ -9,8 +9,10 @@ namespace gpu::sprite
 
 struct SpritePushData
 {
-    glm::vec2 scaler;
-    glm::vec2 offset;
+    glm::vec2 coord_scaler;
+    glm::vec2 coord_offset;
+    glm::vec2 uv_scaler;
+    glm::vec2 uv_offset;
     // alignas(16) glm::vec3 color;
 };
 

@@ -12,6 +12,22 @@ macro(flag_setup)
 endmacro()
 
 macro(set_target_flags TARGET)
+    # target_compile_options(${TARGET} PRIVATE 
+    #             -clang:-std=c++26 
+    #             -clang:-freflection 
+    #             -clang:-fexpansion-statements
+    #             -clang:-stdlib=libc++
+    #             "-clang:-ID:/projects/clang-p2996/build/include/c++/v1"
+    #         )
+
+    # target_compile_options(${TARGET} PRIVATE 
+    #         -std=c++26 
+    #         -freflection 
+    #         -fexpansion-statements
+    #         -stdlib=libc++
+    #         -I "D:/projects/clang-p2996/build/include/c++/v1"
+    #     )
+
     if     (${OS} MATCHES "LINUS_LINUX")
         target_compile_definitions(${TARGET} PRIVATE
             LINUS_LINUX

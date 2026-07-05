@@ -1,7 +1,9 @@
 #include "game_module.hpp"
 
 #include "kernel/framework/include_me.hpp"
+#include "kernel/utility/synchronization/sleep.hpp"
 
+#include "gpu/utils/typedef.hpp"
 #include "gpu/utils/variable.hpp"
 
 namespace game
@@ -23,12 +25,23 @@ game::GameModule::initialize()
     m_gpu_module = &(KERNEL.getModuleRef<gpu::GPUModule>("gpu"));
     m_gpu_module->waitAlive();
 
-    m_game_objects.emplace_back(m_gpu_module->getSprite("cakez"), 200, 500);
+    // m_game_objects.emplace_back(m_gpu_module->getSprite("cakez"), 200, 300);
+    // m_game_objects.emplace_back(m_gpu_module->getSprite("buttons"), -200,
+    // -200); m_game_objects.emplace_back(m_gpu_module->getSprite("buttons"),
+    // -200, 200);
+
+    buttons.create(m_gpu_module->getSprite("buttons_mini"),
+                   gpu::type::Dimensions(1, 3), gpu::type::NDC(0, 0),
+                   gpu::type::Coordinates(0, 0));
 }
+
+#include <iostream>
 
 bool
 game::GameModule::loopBody()
 {
+    ::utils::Sleep::yield();
+
     processEvents();
     update();
     draw();
@@ -36,36 +49,37 @@ game::GameModule::loopBody()
     return KERNEL.getVariable("is_running");
 }
 
-#include <iostream>
 void
 game::GameModule::processEvents()
 {
     auto& event_carrier = m_gpu_module->getEventCarrier();
     event_carrier.acquireRead(std::move(m_events_buffer));
 
-    // for (auto& e : m_events_buffer)
-    // {
-    //     switch (e.type)
-    //     {
-    //         case gpu::event::EventType::MousePositionEvent:
-    //             if (e.mousePosition.is_valid)
-    //             {
-    //                 std::cout << "Mouse moved: " << e.mousePosition.x << " "
-    //                           << e.mousePosition.y << '\n';
-    //             }
-    //             break;
+    for (auto& e : m_events_buffer)
+    {
+        switch (e.type)
+        {
+            case gpu::event::EventType::MousePositionEvent:
+                if (e.mousePosition.is_valid)
+                {
+                    // std::cout << "Mouse moved: " << e.mousePosition.coord.x
+                    //           << " " << e.mousePosition.coord.y << '\n';
 
-    //         case gpu::event::EventType::MouseInputEvent:
-    //             std::cout << "Button: " << e.mouseInput.button << " "
-    //                       << e.mouseInput.type << '\n';
-    //             break;
+                    buttons->update(e.mousePosition.coord);
+                }
+                break;
 
-    //         case gpu::event::EventType::KeyInputEvent:
-    //             std::cout << "Key: " << e.keyInput.key << " "
-    //                       << e.mouseInput.type << '\n';
-    //             break;
-    //     }
-    // }
+            case gpu::event::EventType::MouseInputEvent:
+                // std::cout << "Button: " << e.mouseInput.button << " "
+                //           << e.mouseInput.type << '\n';
+                break;
+
+            case gpu::event::EventType::KeyInputEvent:
+                // std::cout << "Key: " << e.keyInput.key << " "
+                //           << e.mouseInput.type << '\n';
+                break;
+        }
+    }
 
     m_events_buffer.clear();
 }
@@ -81,7 +95,10 @@ game::GameModule::update()
     auto height = height_var.get();
     auto width  = width_var.get();
 
-    m_game_objects.back().update(height, width);
+    // m_game_objects.back().makeConsistentWithWindow(height, width);
+
+    auto size = gpu::window::Window::getSize();
+    buttons->resize(size);
 }
 
 void
@@ -92,5 +109,7 @@ game::GameModule::draw()
     {
         objects.emplace_back(i.getPresentation());
     }
+    // objects[2].selectAnimation(1);
+    buttons->pushPresentation(objects);
     m_gpu_module->tryDraw(std::move(objects));
 }

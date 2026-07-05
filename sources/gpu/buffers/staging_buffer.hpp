@@ -6,6 +6,7 @@
 #include "gpu/command/command_pool.hpp"
 #include "gpu/logic/device.hpp"
 #include "gpu/logic/queue.hpp"
+#include "gpu/utils/typedef.hpp"
 
 #include "mapped_buffer.hpp"
 
@@ -21,8 +22,7 @@ public:
                         command::CommandPool& a_comm_pool,
                         vk::Image a_image,
                         const char* a_data,
-                        uint32_t a_height,
-                        uint32_t a_width);
+                        const type::SpriteSize& a_size);
 
 private:
     utils::LifecycleManager<MappedBuffer> m_memory;

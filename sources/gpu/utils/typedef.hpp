@@ -1,5 +1,10 @@
 #pragma once
 
+#include "kernel/utility/type/declaration/pair.hpp"
+#include <vulkan/vulkan.hpp>
+
+#include <cstdint>
+
 namespace gpu::type
 {
 
@@ -43,13 +48,29 @@ using FamilyIndex     = SomeIndex<uint32_t, void>;
 using ImageNum        = SomeIndex<uint32_t, void, void>;
 using MemoryTypeIndex = SomeIndex<uint32_t, void, void, void, void>;
 using MemoryTypeBits  = SomeIndex<uint32_t, void, void, void, void, void>;
-using QueueIndex      = SomeIndex<int, void, void, void>;
+using QueueIndex      = SomeIndex<int, void>;
+using AnimationFrame =
+    SomeIndex<int, void, void>; // TODO: not default constructed?
 
 inline MemoryTypeBits&
 operator&=(MemoryTypeBits& lhs, MemoryTypeBits rhs)
 {
     lhs.value &= rhs.value;
     return lhs;
+}
+
+using WinSize     = core::Pair<int>;
+using Coordinates = core::Pair<int>;
+using SpriteSize  = core::Pair<int>;
+using NDC         = core::Pair<float>;
+using Dimensions  = core::Pair<int>;
+
+template <typename T>
+vk::Extent3D
+createExtend3D(const core::Pair<T>& a_coord)
+{
+    return vk::Extent3D(static_cast<uint32_t>(a_coord.x),
+                        static_cast<uint32_t>(a_coord.y), 1);
 }
 
 } // namespace gpu::type

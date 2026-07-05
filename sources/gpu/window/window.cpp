@@ -5,7 +5,8 @@
 
 #include "gpu/utils/variable.hpp"
 
-std::vector<gpu::event::Event> gpu::window::Window::m_events_buffer;
+std::vector<gpu::event::Event> gpu::window::Window::m_events_buffer{
+    event::MousePosition()};
 
 gpu::window::Window::Window()
 {
@@ -52,7 +53,6 @@ gpu::window::Window::~Window()
     glfwDestroyWindow(m_window);
 }
 
-#include <iostream>
 void
 gpu::window::Window::updateSize() const
 {
@@ -60,8 +60,6 @@ gpu::window::Window::updateSize() const
     glfwGetFramebufferSize(m_window, &width, &height);
     KERNEL.setVariable(VAR_NAME_FRAME_WIDTH, width);
     KERNEL.setVariable(VAR_NAME_FRAME_HEIGHT, height);
-
-    std::cout << width << " " << height << std::endl;
 }
 
 void
@@ -75,6 +73,14 @@ GLFWwindow&
 gpu::window::Window::get()
 {
     return *m_window;
+}
+
+gpu::type::WinSize
+gpu::window::Window::getSize()
+{
+    core::IntVar height_var(VAR_NAME_FRAME_WIDTH);
+    core::IntVar width_var(VAR_NAME_FRAME_HEIGHT);
+    return type::WinSize(height_var.get(), width_var.get());
 }
 
 void
@@ -106,8 +112,8 @@ gpu::window::Window::cursorPositionCallback(GLFWwindow* a_window,
                                             double a_y)
 {
     auto& mouse_pos    = m_events_buffer.at(0).mousePosition;
-    mouse_pos.x        = a_x;
-    mouse_pos.y        = a_y;
+    mouse_pos.coord.x  = a_x;
+    mouse_pos.coord.y  = a_y;
     mouse_pos.is_valid = true;
 }
 
@@ -136,6 +142,6 @@ gpu::window::Window::synchronizeEventBuffer(EventCarrier& a_event_carrier)
     a_event_carrier.acquireWrite(std::move(m_events_buffer));
     if (m_events_buffer.empty())
     {
-        m_events_buffer.emplace_back(event::MousePosition{});
+        m_events_buffer.emplace_back(event::MousePosition());
     }
 }

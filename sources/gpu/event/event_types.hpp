@@ -2,6 +2,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include "gpu/utils/typedef.hpp"
+
 namespace gpu::event
 {
 
@@ -14,9 +16,8 @@ enum class EventType
 
 struct MousePosition
 {
-    double x;
-    double y;
-    bool is_valid = false;
+    type::Coordinates coord = {};
+    bool is_valid           = false;
 };
 
 struct MouseInput

@@ -32,7 +32,7 @@ private:
         logic::Device& a_device,
         const std::unordered_map<std::string, RawTexture>& a_textures);
     static vk::UniqueDescriptorPool createDescriptorPool(
-        logic::Device& a_device);
+        logic::Device& a_device, int a_set_count);
 };
 
 } // namespace gpu::sprite

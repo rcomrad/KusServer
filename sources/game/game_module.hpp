@@ -5,10 +5,11 @@
 
 #include <vector>
 
-#include "game_object.hpp"
-
 #include "gpu/event/event.hpp"
 #include "gpu/gpu_module.hpp"
+#include "objects/dynamic_object.hpp"
+
+#include "buttons.hpp"
 
 namespace game
 {
@@ -27,7 +28,9 @@ private:
 
     std::vector<gpu::event::Event> m_events_buffer; // TODO:
 
-    std::vector<GameObject> m_game_objects;
+    std::vector<obj::DynamicObject> m_game_objects;
+
+    utils::LifecycleManager<Buttons> buttons;
 
     void processEvents();
     void update();
