@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 
 #include "gpu/event/event.hpp"
+#include "gpu/utils/typedef.hpp"
 
 namespace gpu::window
 {
@@ -22,6 +23,8 @@ public:
 
     // TODO: createSurface
     GLFWwindow& get();
+
+    static type::WinSize getSize();
 
 private:
     GLFWwindow* m_window;

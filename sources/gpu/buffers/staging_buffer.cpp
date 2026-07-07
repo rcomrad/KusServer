@@ -26,11 +26,10 @@ gpu::buffer::StagingBuffer::transfer_image(logic::Queue& a_queue,
                                            command::CommandPool& a_comm_pool,
                                            vk::Image a_image,
                                            const char* a_data,
-                                           uint32_t a_height,
-                                           uint32_t a_width)
+                                           const type::SpriteSize& a_size)
 {
-    const uint32_t size = a_width * a_height * 4;
-    const vk::Extent3D extend{a_width, a_height, 1};
+    const uint32_t size       = a_size.x * a_size.y * 4;
+    const vk::Extent3D extend = type::createExtend3D(a_size);
 
     m_memory->push(a_data, size);
     auto cmd = prepare_command(a_comm_pool, a_image, extend);

@@ -2,6 +2,8 @@
 
 //------------------------------------------------------------------------------
 
+#include "kernel/utility/synchronization/sleep.hpp"
+
 #include "thread_module.hpp"
 
 //------------------------------------------------------------------------------
@@ -26,6 +28,7 @@ core::ThreadModuleInterface::initialize()
 bool
 core::ThreadModuleInterface::loopBody()
 {
+    ::utils::Sleep::yield();
     return m_thread_module_ref.threadLoopBody();
 }
 

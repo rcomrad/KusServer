@@ -3,11 +3,9 @@
 gpu::sprite::Sprite::Sprite(logic::Device& a_device,
                             vk::DescriptorSetLayout a_desc_set_layout,
                             vk::DescriptorPool a_descriptor_pool,
-                            RawTexture& a_texture)
-    : m_height(a_texture.getHeight()),
-      m_width(a_texture.getWidth()),
-      m_scaler_x(1),
-      m_scaler_y(1)
+                            RawTexture& a_texture,
+                            const TextureInfo& a_info)
+    : Position(a_texture, a_info), Animation(a_info)
 {
     m_image   = std::move(a_texture.obtainImage());
     m_view    = createImageView(a_device, *m_image);
@@ -18,32 +16,17 @@ gpu::sprite::Sprite::Sprite(logic::Device& a_device,
     updateDescriptorSet(a_device, *m_view, *m_sampler, m_descriptor_set);
 }
 
-#include <iostream>
-void
-gpu::sprite::Sprite::resize(uint32_t a_win_height, uint32_t a_win_width)
-{
-    m_scaler_y = static_cast<float>(m_width) / a_win_width;
-    m_scaler_x = static_cast<float>(m_height) / a_win_height;
-
-    // std::cout << "W: " << a_win_width << " " << m_width << " " << m_scaler_y
-    //           << std::endl;
-    // std::cout << "H: " << a_win_height << " " << m_height << " " <<
-    // m_scaler_x
-    //           << std::endl;
-
-    // std::cout << a_win_height << " " << a_win_width << std::endl;
-    // std::cout << m_scaler_x << " " << m_scaler_y << std::endl;
-}
-
 void
 gpu::sprite::Sprite::draw(vk::PipelineLayout a_pipeline_layout,
                           command::BaseCommand& a_cmd,
-                          SpritePushData& a_push)
+                          SpritePushData& a_push,
+                          type::AnimationFrame a_frame_num)
 {
 
     a_cmd.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
                              a_pipeline_layout, 0, m_descriptor_set, {});
-    a_push.scaler = {m_scaler_x, m_scaler_y};
+    drawPosition(a_push);
+    drawAnimation(a_push, a_frame_num);
 }
 
 vk::UniqueImageView

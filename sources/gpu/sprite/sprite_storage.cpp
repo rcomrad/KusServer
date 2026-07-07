@@ -4,6 +4,7 @@
 #include "kernel/framework/variable/include_me.hpp"
 
 #include "gpu/utils/variable.hpp"
+#include "gpu/window/window.hpp"
 
 gpu::sprite::SpriteStorage::SpriteStorage(
     buffer::BaseBuffer&& a_memory,
@@ -18,15 +19,12 @@ gpu::sprite::SpriteStorage::SpriteStorage(
 void
 gpu::sprite::SpriteStorage::resize()
 {
-    core::IntVar height_var(VAR_NAME_FRAME_WIDTH);
-    core::IntVar width_var(VAR_NAME_FRAME_HEIGHT);
-
-    auto height = height_var.get();
-    auto width  = width_var.get();
+    auto size = window::Window::getSize();
+    LOG_TRACE("resize all sprites for %d x %d", size.x, size.y);
 
     for (auto& [_, texture] : m_sprites)
     {
-        texture.resize(height, width);
+        texture.resize(size);
     }
 }
 

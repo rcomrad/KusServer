@@ -26,16 +26,7 @@ union Pair
         T2 second;
     };
 
-    Pair()
-    {
-        int yy = 0;
-        ++yy;
-    }
-    Pair(const Pair& other)
-    {
-        i = other.i;
-        j = other.j;
-    }
+    Pair() = default;
 
     Pair(T1&& iInit, T2&& jInit) : i(iInit), j(jInit)
     {
@@ -45,35 +36,129 @@ union Pair
     {
     }
 
-    ~Pair()
+    template <typename T3, typename T4>
+    Pair& assign(const Pair<T3, T4>& n)
     {
+        i = n.i;
+        j = n.j;
+        return *this;
     }
 
-    void operator+=(const Pair& n)
+    // ******************************************************
+
+    template <typename T3, typename T4>
+    Pair& operator+=(const Pair<T3, T4>& n)
     {
         i += n.i;
         j += n.j;
+        return *this;
     }
-    void operator-=(const Pair& n)
+    template <typename T3, typename T4>
+    Pair& operator-=(const Pair<T3, T4>& n)
     {
         i -= n.i;
         j -= n.j;
+        return *this;
     }
 
-    Pair operator+(const Pair& n) const
+    template <typename T3, typename T4>
+    Pair operator+(const Pair<T3, T4>& n) const
     {
-        Pair ret;
-        ret.i = i + n.i;
-        ret.j = j + n.j;
-        return ret;
+        return Pair(i + n.i, j + n.j);
     }
-    Pair operator-(const Pair& n) const
+    template <typename T3, typename T4>
+    Pair operator-(const Pair<T3, T4>& n) const
     {
-        Pair ret;
-        ret.i = i - n.i;
-        ret.j = j - n.j;
-        return ret;
+        return Pair(i - n.i, j - n.j);
     }
+
+    // ******************************************************
+
+    template <typename NumT>
+    Pair& operator+=(const NumT n)
+    {
+        i += n;
+        j += n;
+        return *this;
+    }
+    template <typename NumT>
+    Pair& operator-=(const NumT n)
+    {
+        i -= n;
+        j -= n;
+        return *this;
+    }
+
+    template <typename NumT>
+    Pair operator+(const NumT n) const
+    {
+        return Pair(i + n, j + n);
+    }
+    template <typename NumT>
+    Pair operator-(const NumT n) const
+    {
+        return Pair(i - n, j - n);
+    }
+
+    // ******************************************************
+
+    template <typename T3, typename T4>
+    Pair& operator*=(const Pair<T3, T4>& n)
+    {
+        i *= n.i;
+        j *= n.j;
+        return *this;
+    }
+    template <typename T3, typename T4>
+    Pair& operator/=(const Pair<T3, T4>& n)
+    {
+        i /= n.i;
+        j /= n.j;
+        return *this;
+    }
+
+    template <typename T3, typename T4>
+    Pair operator*(const Pair<T3, T4>& n) const
+    {
+        return Pair(i * n.i, j * n.j);
+    }
+    template <typename T3, typename T4>
+    Pair<float> operator/(const Pair<T3, T4>& n) const
+    {
+        return Pair<float>(static_cast<float>(i) / n.i,
+                           static_cast<float>(j) / n.j);
+    }
+
+    // ******************************************************
+
+    template <typename NumT>
+    Pair& operator*=(const NumT n)
+    {
+        i *= n;
+        j *= n;
+        return *this;
+    }
+    template <typename NumT>
+    Pair& operator/=(const NumT n)
+    {
+        i /= n;
+        j /= n;
+        return *this;
+    }
+
+    template <typename NumT>
+    Pair operator*(const NumT n) const
+    {
+        return Pair(i * n, j * n);
+    }
+    template <typename NumT>
+    Pair<float> operator/(const NumT n) const
+    {
+        return Pair<float>(static_cast<float>(i) / n,
+                           static_cast<float>(j) / n);
+    }
+
+    // ******************************************************
 
     bool operator<(const Pair& n) const
     {
@@ -94,12 +179,9 @@ union Pair
         return i != n.i || j != n.j;
     }
 
-    Pair& operator=(const Pair& other)
+    bool inside(const Pair& n)
     {
-        j = other.j;
-        i = other.i;
-
-        return *this;
+        return i > n.i && j > n.j;
     }
 };
 } // namespace core
