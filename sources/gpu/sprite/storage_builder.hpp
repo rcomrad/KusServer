@@ -3,14 +3,23 @@
 #include <filesystem>
 #include <unordered_map>
 
-#include "gpu/command/command_pool.hpp"
-#include "gpu/logic/device.hpp"
-#include "gpu/logic/queue.hpp"
-
 #include "raw_texture.hpp"
 #include "sprite_storage.hpp"
 
-namespace gpu::sprite
+namespace gpu
+{
+
+namespace logic
+{
+class Device;
+class Queue;
+} // namespace logic
+namespace command
+{
+class CommandPool;
+}
+
+namespace sprite
 {
 
 class StorageBuilder
@@ -18,7 +27,7 @@ class StorageBuilder
 public:
     StorageBuilder(logic::Device& a_device);
 
-    void push(const std::filesystem::path& a_path);
+    void push(const std::string& a_name, PixelArray&& a_pixel_array);
     SpriteStorage collapse(logic::Queue& a_queue,
                            command::CommandPool& a_comm_pool,
                            vk::DescriptorSetLayout a_desc_set_layout);
@@ -32,7 +41,10 @@ private:
         logic::Device& a_device,
         const std::unordered_map<std::string, RawTexture>& a_textures);
     static vk::UniqueDescriptorPool createDescriptorPool(
-        logic::Device& a_device, int a_set_count);
+        logic::Device& a_device,
+        int a_set_count);
 };
 
-} // namespace gpu::sprite
+} // namespace sprite
+
+} // namespace gpu

@@ -24,7 +24,7 @@ public:
     // TODO: createSurface
     GLFWwindow& get();
 
-    static type::WinSize getSize();
+    static type::CoordinateSize getSize();
 
 private:
     GLFWwindow* m_window;

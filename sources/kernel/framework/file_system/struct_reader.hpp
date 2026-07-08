@@ -3,6 +3,7 @@
 #include "kernel/framework/logger/basic/include_me.hpp"
 #include "kernel/utility/type/declaration/pair.hpp"
 
+#include <array>
 #include <fstream>
 #include <string>
 #include <unordered_map>
@@ -166,6 +167,33 @@ private:
             }
 
             a_map.emplace(std::move(key), std::move(value));
+        }
+
+        return true;
+    }
+
+    template <typename ValueT, size_t ElementCount>
+    static bool read(std::ifstream& a_file,
+                     std::array<ValueT, ElementCount>& a_array)
+    {
+        arrayBeginAssert(a_file);
+
+        int cnt = 0;
+        while (true)
+        {
+            ValueT value;
+            if (!read(a_file, value))
+            {
+                break;
+            }
+
+            a_array.at(cnt++) = std::move(value);
+        }
+
+        if (cnt != ElementCount)
+        {
+            THROW("Wrong array size: expected %d, found %d elements",
+                  ElementCount, cnt);
         }
 
         return true;

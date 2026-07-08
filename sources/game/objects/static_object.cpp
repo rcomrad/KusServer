@@ -2,10 +2,11 @@
 
 #include "gpu/utils/typedef.hpp"
 
-game::obj::StaticObject::StaticObject(gpu::sprite::Sprite& a_sprite,
-                                      float a_pos_x,
-                                      float a_pos_y)
-    : m_sprite(a_sprite)
+game::obj::StaticObject::StaticObject(
+    const gpu::sprite::SpriteView& a_sprite_view,
+    float a_pos_x,
+    float a_pos_y)
+    : m_sprite_view(a_sprite_view)
 {
     setPosition(a_pos_x, a_pos_y);
 }
@@ -17,8 +18,8 @@ game::obj::StaticObject::setPosition(float a_pos_x, float a_pos_y)
     m_pos_y = a_pos_y;
 }
 
-gpu::sprite::SpriteView
+gpu::sprite::DrawTask
 game::obj::StaticObject::getPresentation() const
 {
-    return gpu::sprite::SpriteView(m_sprite, gpu::type::NDC(0, 0));
+    return gpu::sprite::DrawTask(m_sprite_view, gpu::type::NDC(0, 0));
 }

@@ -75,12 +75,12 @@ gpu::window::Window::get()
     return *m_window;
 }
 
-gpu::type::WinSize
+gpu::type::CoordinateSize
 gpu::window::Window::getSize()
 {
     core::IntVar height_var(VAR_NAME_FRAME_WIDTH);
     core::IntVar width_var(VAR_NAME_FRAME_HEIGHT);
-    return type::WinSize(height_var.get(), width_var.get());
+    return type::CoordinateSize(height_var.get(), width_var.get());
 }
 
 void

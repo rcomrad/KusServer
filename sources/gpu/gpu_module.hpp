@@ -6,6 +6,7 @@
 #include "gpu/logic/manager.hpp"
 #include "gpu/window/manager.hpp"
 #include "pipeline/manager.hpp"
+#include "sprite/draw_task.hpp"
 #include "sprite/sprite_storage.hpp"
 #include "sprite/sprite_view.hpp"
 
@@ -22,12 +23,26 @@ public:
         return m_event_carrier;
     }
 
-    inline sprite::Sprite& getSprite(const std::string a_name)
+    inline sprite::SpriteView getSpriteView(const std::string a_name) const
     {
-        return m_sprites->get(a_name);
+        return m_sprites->generateSpriteView(a_name);
     }
 
-    void tryDraw(sprite::SpriteViewArray&& a_objects);
+    // inline int getSpriteID(const std::string a_name) const
+    // {
+    //     return m_sprites->getSpriteID(a_name);
+    // }
+    // inline const type::CoordinateSize& getSpriteSize(int a_sprite_id) const
+    // {
+    //     return m_sprites->getSprite(a_sprite_id).getSize();
+    // }
+    // inline const type::CoordinateSize& getSpriteHitboxOffset(
+    //     int a_sprite_id) const
+    // {
+    //     return m_sprites->getSprite(a_sprite_id).getHitboxOffset();
+    // }
+
+    void tryDraw(sprite::DrawTaskArray&& a_objects);
 
 protected:
     void threadInitialize() override;
@@ -46,8 +61,8 @@ private:
     std::vector<command::BaseCommand> m_commands;
     utils::LifecycleManager<sprite::SpriteStorage> m_sprites;
 
-    sprite::SpriteViewArray m_objects;
-    utils::AtomicShipper<sprite::SpriteViewArray> m_shipper;
+    sprite::DrawTaskArray m_draw_tasks;
+    utils::AtomicShipper<sprite::DrawTaskArray> m_shipper;
 
     static sprite::SpriteStorage createSpriteStorage(
         logic::Device& a_device,

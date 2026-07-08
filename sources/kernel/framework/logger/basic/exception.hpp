@@ -16,12 +16,12 @@ public:
 
 } // namespace core
 
-#define THROW(...)                                         \
-    {                                                      \
-        std::unique_ptr<char[]> msg;                       \
-        core::LocalLogger::getLogger().pushTeeBuffer(msg); \
-        LOG_EXEPT(__VA_ARGS__);                            \
-        throw core::LoggerException(msg.get());            \
+#define THROW(...)                                           \
+    {                                                        \
+        ::std::unique_ptr<char[]> msg;                       \
+        ::core::LocalLogger::getLogger().pushTeeBuffer(msg); \
+        LOG_EXEPT(__VA_ARGS__);                              \
+        throw ::core::LoggerException(msg.get());            \
     }
 
 #define CATCH(func)                        \

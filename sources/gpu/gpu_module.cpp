@@ -3,7 +3,10 @@
 #include "kernel/framework/include_me.hpp"
 #include "kernel/utility/synchronization/sleep.hpp"
 
+#include "font/font_loader.hpp"
+#include "font/font_storage_builder.hpp"
 #include "gpu/utils/paths.hpp"
+#include "sprite/image_loader.hpp"
 #include "sprite/storage_builder.hpp"
 #include "utils/exception.hpp"
 
@@ -27,7 +30,7 @@ gpu::GPUModule::GPUModule()
 }
 
 void
-gpu::GPUModule::tryDraw(sprite::SpriteViewArray&& a_objects)
+gpu::GPUModule::tryDraw(sprite::DrawTaskArray&& a_objects)
 {
     m_shipper.store(std::move(a_objects));
 }
@@ -64,10 +67,10 @@ gpu::GPUModule::threadLoopBody()
         cmd.begin(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
         m_pipeline_manager.bindToNextImage(index, cmd);
 
-        m_shipper.load(m_objects);
-        for (auto& obj : m_objects)
+        m_shipper.load(m_draw_tasks);
+        for (auto& task : m_draw_tasks)
         {
-            obj.draw(m_pipeline_manager.getLayout(), cmd);
+            task.execute(*m_sprites, m_pipeline_manager.getLayout(), cmd);
         }
 
         cmd.endRenderPass();
@@ -97,17 +100,9 @@ gpu::GPUModule::createSpriteStorage(logic::Device& a_device,
                                     command::CommandPool& a_comm_pool,
                                     vk::DescriptorSetLayout a_desc_set_layout)
 {
-    KERNEL.addDataShortcut(IMAGES_DIR, IMAGES_DIR);
-    auto files = KERNEL.getShortcutFileContent(IMAGES_DIR);
-
     sprite::StorageBuilder builder(a_device);
-    for (auto path : files)
-    {
-        if (path.extension() == ".dds")
-        {
-            builder.push(path);
-        }
-    }
-
+    font::FontStorageBuilder font_builder(builder);
+    sprite::loadAllImages(builder);
+    // font::loadAllFonts(font_builder);
     return builder.collapse(a_queue, a_comm_pool, a_desc_set_layout);
 }
