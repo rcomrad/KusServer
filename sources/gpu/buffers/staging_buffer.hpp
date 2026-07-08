@@ -22,7 +22,7 @@ public:
                         command::CommandPool& a_comm_pool,
                         vk::Image a_image,
                         const char* a_data,
-                        const type::SpriteSize& a_size);
+                        const type::CoordinateSize& a_size);
 
 private:
     utils::LifecycleManager<MappedBuffer> m_memory;

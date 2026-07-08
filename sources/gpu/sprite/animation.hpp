@@ -9,11 +9,15 @@
 
 #include "gpu/utils/typedef.hpp"
 
-#include "sprite_push_data.hpp"
-#include "texture_info.hpp"
-
-namespace gpu::sprite
+namespace gpu
 {
+
+namespace sprite
+{
+
+class SpritePushData;
+class TextureInfo;
+
 class Animation
 {
     using UV = core::Pair<float>;
@@ -25,7 +29,7 @@ protected:
     Animation(const TextureInfo& a_info);
 
     void drawAnimation(SpritePushData& a_push,
-                       type::AnimationFrame a_frame_num);
+                       type::AnimationFrame a_frame_num) const;
 
 private:
     UV m_uv;
@@ -42,4 +46,6 @@ private:
         const TextureInfo& a_info);
 };
 
-} // namespace gpu::sprite
+} // namespace sprite
+
+} // namespace gpu

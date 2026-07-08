@@ -30,7 +30,9 @@ game::GameModule::initialize()
     // -200); m_game_objects.emplace_back(m_gpu_module->getSprite("buttons"),
     // -200, 200);
 
-    buttons.create(m_gpu_module->getSprite("buttons_mini"),
+    // m_game_objects.emplace_back(m_gpu_module->getSprite("71"), 200, 300);
+
+    buttons.create(m_gpu_module->getSpriteView("buttons_mini"),
                    gpu::type::Dimensions(1, 3), gpu::type::NDC(0, 0),
                    gpu::type::Coordinates(0, 0));
 }
@@ -104,12 +106,15 @@ game::GameModule::update()
 void
 game::GameModule::draw()
 {
-    gpu::sprite::SpriteViewArray objects;
-    for (auto& i : m_game_objects)
-    {
-        objects.emplace_back(i.getPresentation());
-    }
-    // objects[2].selectAnimation(1);
-    buttons->pushPresentation(objects);
-    m_gpu_module->tryDraw(std::move(objects));
+    gpu::sprite::DrawTaskArray draw_tasks;
+
+    draw_tasks =
+        m_gpu_module->writeText("Awuf!", gpu::type::Coordinates(300, 300), 0);
+
+    // buttons->pushPresentation(draw_tasks);
+    // for (auto& i : m_game_objects)
+    // {
+    //     draw_tasks.emplace_back(i.getPresentation());
+    // }
+    m_gpu_module->tryDraw(std::move(draw_tasks));
 }

@@ -24,9 +24,11 @@ gpu::buffer::BaseBuffer::BaseBuffer(logic::Device& a_device,
 void
 gpu::buffer::BaseBuffer::bind(vk::Buffer a_buffer)
 {
-    const auto req   = m_device.getBufferMemoryRequirements(a_buffer);
-    const auto& size = req.size;
+    const auto req       = m_device.getBufferMemoryRequirements(a_buffer);
+    const auto size      = req.size;
+    const auto alignment = req.alignment;
 
+    m_cur_bind = (m_cur_bind + alignment - 1) & ~(alignment - 1);
     if (m_cur_bind + size > m_size)
     {
         THROW("Out of memory during binding (base buffer implementation)");
@@ -36,12 +38,15 @@ gpu::buffer::BaseBuffer::bind(vk::Buffer a_buffer)
     m_cur_bind += size;
 }
 
+#include <iostream>
 void
 gpu::buffer::BaseBuffer::bind(vk::Image a_image)
 {
-    const auto req   = m_device.getImageMemoryRequirements(a_image);
-    const auto& size = req.size;
+    const auto req       = m_device.getImageMemoryRequirements(a_image);
+    const auto size      = req.size;
+    const auto alignment = req.alignment;
 
+    m_cur_bind = (m_cur_bind + alignment - 1) & ~(alignment - 1);
     if (m_cur_bind + size > m_size)
     {
         THROW("Out of memory during binding (base buffer implementation)");

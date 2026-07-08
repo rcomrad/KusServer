@@ -69,7 +69,17 @@ public:
         return &obj;
     }
 
-    T& operator*()
+    T& operator*() noexcept
+    {
+        return obj;
+    }
+
+    const T* operator->() const noexcept
+    {
+        return &obj;
+    }
+
+    const T& operator*() const noexcept
     {
         return obj;
     }

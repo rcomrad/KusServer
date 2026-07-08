@@ -10,12 +10,26 @@
 
 #include "animation.hpp"
 #include "position.hpp"
-#include "raw_texture.hpp"
-#include "sprite_push_data.hpp"
-#include "texture_info.hpp"
 
-namespace gpu::sprite
+namespace gpu
 {
+
+namespace logic
+{
+class Device;
+}
+
+namespace command
+{
+class BaseCommand;
+}
+
+namespace sprite
+{
+
+class RawTexture;
+class SpritePushData;
+class TextureInfo;
 
 class Sprite : public Position, public Animation
 {
@@ -29,7 +43,7 @@ public:
     void draw(vk::PipelineLayout a_pipeline_layout,
               command::BaseCommand& a_cmd,
               SpritePushData& a_push,
-              type::AnimationFrame a_frame_num);
+              type::AnimationFrame a_frame_num) const;
 
 private:
     vk::UniqueImage m_image;
@@ -50,4 +64,6 @@ private:
                                     vk::DescriptorSet a_desc_set);
 };
 
-} // namespace gpu::sprite
+} // namespace sprite
+
+} // namespace gpu

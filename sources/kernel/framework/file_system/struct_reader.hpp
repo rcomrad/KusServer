@@ -3,6 +3,7 @@
 #include "kernel/framework/logger/basic/include_me.hpp"
 #include "kernel/utility/type/declaration/pair.hpp"
 
+#include <array>
 #include <fstream>
 #include <string>
 #include <unordered_map>
@@ -15,6 +16,9 @@
 MEMBER_CONCEPT(dimensions);
 MEMBER_CONCEPT(hitbox_offset);
 MEMBER_CONCEPT(animation);
+MEMBER_CONCEPT(name);
+MEMBER_CONCEPT(size);
+MEMBER_CONCEPT(color);
 
 #define MEMBER_CHECK(name)               \
     if constexpr (HasFluid_##name<T>)    \
@@ -84,6 +88,9 @@ protected:
             MEMBER_CHECK(dimensions);
             MEMBER_CHECK(hitbox_offset);
             MEMBER_CHECK(animation);
+            MEMBER_CHECK(name);
+            MEMBER_CHECK(size);
+            MEMBER_CHECK(color);
 
             THROW("Unexpected string '%s'", key);
         }
@@ -166,6 +173,33 @@ private:
             }
 
             a_map.emplace(std::move(key), std::move(value));
+        }
+
+        return true;
+    }
+
+    template <typename ValueT, size_t ElementCount>
+    static bool read(std::ifstream& a_file,
+                     std::array<ValueT, ElementCount>& a_array)
+    {
+        arrayBeginAssert(a_file);
+
+        int cnt = 0;
+        while (true)
+        {
+            ValueT value;
+            if (!read(a_file, value))
+            {
+                break;
+            }
+
+            a_array.at(cnt++) = std::move(value);
+        }
+
+        if (cnt != ElementCount)
+        {
+            THROW("Wrong array size: expected %d, found %d elements",
+                  ElementCount, cnt);
         }
 
         return true;

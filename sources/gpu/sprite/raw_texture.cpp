@@ -1,11 +1,14 @@
-#pragma once
-
 #include "raw_texture.hpp"
 
-#include "dds_structs.hpp"
+#include "gpu/buffers/base_buffer.hpp"
+#include "gpu/buffers/staging_buffer.hpp"
+#include "gpu/logic/device.hpp"
+#include "gpu/logic/queue.hpp"
+
+#include "pixel_array.hpp"
 
 gpu::sprite::RawTexture::RawTexture(logic::Device& a_device,
-                                    std::string&& a_data)
+                                    PixelArray&& a_data)
 {
     fillData(std::move(a_data));
     m_image = createImage(a_device, m_size);
@@ -18,11 +21,11 @@ gpu::sprite::RawTexture::writeToBuffer(logic::Queue& a_queue,
                                        buffer::StagingBuffer& a_transfer_buff)
 {
     a_memory.bind(*m_image);
-    a_transfer_buff.transfer_image(a_queue, a_comm_pool, *m_image, m_data,
+    a_transfer_buff.transfer_image(a_queue, a_comm_pool, *m_image, m_data_ptr,
                                    m_size);
 }
 
-const gpu::type::SpriteSize&
+const gpu::type::CoordinateSize&
 gpu::sprite::RawTexture::getSize() const
 {
     return m_size;
@@ -41,21 +44,16 @@ gpu::sprite::RawTexture::getMemReq(logic::Device& a_device) const
 }
 
 void
-gpu::sprite::RawTexture::fillData(std::string&& a_data)
+gpu::sprite::RawTexture::fillData(PixelArray&& a_data)
 {
-    m_raw_data           = std::move(a_data);
-    const char* temp_ptr = m_raw_data.data();
-    auto& dds_file       = *reinterpret_cast<const DDSFile*>(temp_ptr);
-
-    m_size.x = dds_file.header.width;
-    m_size.y = dds_file.header.height;
-
-    m_data = dds_file.data;
+    m_data_ptr         = a_data.data_ptr;
+    m_size             = std::move(a_data.size);
+    m_allocated_buffer = std::move(a_data.allocated_buffer);
 }
 
 vk::UniqueImage
 gpu::sprite::RawTexture::createImage(logic::Device& a_device,
-                                     const type::SpriteSize& a_size)
+                                     const type::CoordinateSize& a_size)
 {
     vk::ImageCreateInfo info;
     info.setMipLevels(1)

@@ -17,6 +17,11 @@ union Pair
     };
     struct
     {
+        T1 width;
+        T2 height;
+    };
+    struct
+    {
         T1 key;
         T2 value;
     };

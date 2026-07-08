@@ -2,11 +2,11 @@
 
 #include "gpu/window/window.hpp"
 
-game::Buttons::Buttons(gpu::sprite::Sprite& a_sprite,
+game::Buttons::Buttons(const gpu::sprite::SpriteView& a_sprite_view,
                        const gpu::type::Dimensions& a_dem,
                        const gpu::type::NDC& a_base_pos,
                        const gpu::type::Coordinates& a_offset)
-    : m_sprite(a_sprite),
+    : m_sprite_view(a_sprite_view),
       m_dem(a_dem),
       m_base_pos(a_base_pos),
       m_button_offset(a_offset)
@@ -19,13 +19,7 @@ void
 game::Buttons::update(gpu::type::Coordinates a_coord)
 {
     // TODO: maybe we need to use logical coordinates
-    auto win_size = gpu::window::Window::getSize();
-
-    auto tmp1 = m_sprite.getSize();
-    auto tmp2 = m_sprite.getSize() / 2;
-    auto tmp3 = m_sprite.getHitboxOffset();
-
-    auto sprite_size = m_sprite.getSize() / 2 - m_sprite.getHitboxOffset();
+    auto sprite_size = m_sprite_view.size / 2 - m_sprite_view.hitbox_offset;
 
     selected = -1;
     int cnt  = 0;
@@ -34,19 +28,9 @@ game::Buttons::update(gpu::type::Coordinates a_coord)
     {
         for (int j = 0; j < m_dem.y; ++j)
         {
-            auto tmp4 = m_norm_offset * gpu::type::Dimensions(i, j);
-
             auto cur =
                 m_start_pos + m_norm_offset * gpu::type::Dimensions(i, j);
-            cur += 1;
-            cur /= 2;
-
-            auto centr = win_size * cur;
-
-            auto tmp5 = centr - sprite_size;
-            auto tmp6 = a_coord.inside(centr - sprite_size);
-            auto tmp7 = centr + sprite_size;
-            auto tmp8 = (centr + sprite_size).inside(a_coord);
+            auto centr = gpu::type::toCoordinates(cur);
 
             if (a_coord.inside(centr - sprite_size) &&
                 (centr + sprite_size).inside(a_coord))
@@ -61,9 +45,9 @@ game::Buttons::update(gpu::type::Coordinates a_coord)
 }
 
 void
-game::Buttons::resize(const gpu::type::WinSize& a_win_size)
+game::Buttons::resize(const gpu::type::CoordinateSize& a_win_size)
 {
-    auto size     = m_sprite.getSize();
+    auto size     = m_sprite_view.size;
     m_norm_offset = (size + m_button_offset) / (a_win_size) * 2;
 
     gpu::type::Dimensions half_dem(m_dem.x / 2, m_dem.y / 2);
@@ -80,22 +64,18 @@ game::Buttons::resize(const gpu::type::WinSize& a_win_size)
 }
 
 void
-game::Buttons::pushPresentation(
-    gpu::sprite::SpriteViewArray& a_sprite_views) const
+game::Buttons::pushPresentation(gpu::sprite::DrawTaskArray& a_draw_tasks) const
 {
     for (int i = 0; i < m_dem.x; ++i)
     {
         for (int j = 0; j < m_dem.y; ++j)
         {
-            a_sprite_views.emplace_back(
-                m_sprite,
-                m_start_pos + m_norm_offset * gpu::type::Dimensions(i, j));
+            a_draw_tasks.emplace_back(
+                m_sprite_view,
+                m_start_pos + m_norm_offset * gpu::type::Dimensions(i, j),
+                selected == j ? 1 : 0);
         }
     }
 
-    if (selected > -1)
-    {
-        a_sprite_views.at(selected).selectAnimation(1);
-        // selected = -1;
-    }
+    std::cout << selected << std::endl;
 }

@@ -26,7 +26,7 @@ gpu::buffer::StagingBuffer::transfer_image(logic::Queue& a_queue,
                                            command::CommandPool& a_comm_pool,
                                            vk::Image a_image,
                                            const char* a_data,
-                                           const type::SpriteSize& a_size)
+                                           const type::CoordinateSize& a_size)
 {
     const uint32_t size       = a_size.x * a_size.y * 4;
     const vk::Extent3D extend = type::createExtend3D(a_size);

@@ -1,5 +1,12 @@
 #include "sprite.hpp"
 
+#include "gpu/command/base_command.hpp"
+#include "gpu/logic/device.hpp"
+
+#include "raw_texture.hpp"
+#include "sprite_push_data.hpp"
+#include "texture_info.hpp"
+
 gpu::sprite::Sprite::Sprite(logic::Device& a_device,
                             vk::DescriptorSetLayout a_desc_set_layout,
                             vk::DescriptorPool a_descriptor_pool,
@@ -20,7 +27,7 @@ void
 gpu::sprite::Sprite::draw(vk::PipelineLayout a_pipeline_layout,
                           command::BaseCommand& a_cmd,
                           SpritePushData& a_push,
-                          type::AnimationFrame a_frame_num)
+                          type::AnimationFrame a_frame_num) const
 {
 
     a_cmd.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,

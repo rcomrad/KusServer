@@ -2,8 +2,13 @@
 
 #include "kernel/framework/include_me.hpp"
 
+#include "gpu/buffers/staging_buffer.hpp"
+#include "gpu/command/command_pool.hpp"
+#include "gpu/logic/device.hpp"
+#include "gpu/logic/queue.hpp"
 #include "gpu/utils/paths.hpp"
 
+#include "pixel_array.hpp"
 #include "texture_info.hpp"
 
 gpu::sprite::StorageBuilder::StorageBuilder(logic::Device& a_device)
@@ -12,13 +17,10 @@ gpu::sprite::StorageBuilder::StorageBuilder(logic::Device& a_device)
 }
 
 void
-gpu::sprite::StorageBuilder::push(const std::filesystem::path& a_path)
+gpu::sprite::StorageBuilder::push(const std::string& a_name,
+                                  PixelArray&& a_pixel_array)
 {
-    auto file_name = a_path.stem().string();
-    LOG_TRACE("Load %s texture", file_name);
-    auto file_content = core::FileReader::readBinaryFile(a_path);
-    m_textures.emplace(file_name,
-                       RawTexture(m_device, std::move(file_content)));
+    m_textures.emplace(a_name, RawTexture(m_device, std::move(a_pixel_array)));
 }
 
 gpu::sprite::SpriteStorage
@@ -62,8 +64,12 @@ gpu::sprite::StorageBuilder::calculateMemoryRequirements(
     type::MemoryTypeBits total_filters = ~0;
     for (auto& [name, texture] : a_textures)
     {
-        const auto mem_req = texture.getMemReq(a_device);
-        total_size += mem_req.size;
+        const auto mem_req   = texture.getMemReq(a_device);
+        const auto size      = mem_req.size;
+        const auto alignment = mem_req.alignment;
+
+        total_size = (total_size + alignment - 1) & ~(alignment - 1);
+        total_size += size;
         total_filters &= mem_req.memoryTypeBits;
 
         if (!total_filters)

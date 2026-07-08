@@ -21,6 +21,7 @@
       - mailio:x64-linux
       - gtest:x64-linux
       - vulkan-sdk-components:x64-linux
+      - freetype:x64-linux
 
   tasks:
     - name: Clone repository

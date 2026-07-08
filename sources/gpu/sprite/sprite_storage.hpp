@@ -2,13 +2,19 @@
 
 #include <vulkan/vulkan.hpp>
 
+#include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "gpu/buffers/base_buffer.hpp"
 
 #include "sprite.hpp"
+#include "sprite_view.hpp"
 
-namespace gpu::sprite
+namespace gpu
+{
+
+namespace sprite
 {
 
 class SpriteStorage
@@ -19,12 +25,18 @@ public:
                   std::unordered_map<std::string, Sprite>&& a_sprites);
 
     void resize();
-    Sprite& get(const std::string& a_name);
+
+    SpriteView generateSpriteView(const std::string& a_name) const;
+    const Sprite& getSprite(int a_sprite_id) const;
 
 private:
     buffer::BaseBuffer m_memory;
     vk::UniqueDescriptorPool m_descriptor_pool;
-    std::unordered_map<std::string, Sprite> m_sprites;
+
+    std::vector<Sprite> m_sprites;
+    std::unordered_map<std::string, int> m_name_to_num;
 };
 
-} // namespace gpu::sprite
+} // namespace sprite
+
+} // namespace gpu

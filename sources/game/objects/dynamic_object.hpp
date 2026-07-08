@@ -8,7 +8,9 @@ namespace game::obj
 class DynamicObject : public StaticObject
 {
 public:
-    DynamicObject(gpu::sprite::Sprite& a_sprite, int a_pos_x, int a_pos_y);
+    DynamicObject(const gpu::sprite::SpriteView& a_sprite_view,
+                  int a_pos_x,
+                  int a_pos_y);
 
     void makeConsistentWithWindow(uint32_t a_win_height, uint32_t a_win_width);
 

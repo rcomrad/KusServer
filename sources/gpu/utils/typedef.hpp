@@ -59,18 +59,22 @@ operator&=(MemoryTypeBits& lhs, MemoryTypeBits rhs)
     return lhs;
 }
 
-using WinSize     = core::Pair<int>;
-using Coordinates = core::Pair<int>;
-using SpriteSize  = core::Pair<int>;
-using NDC         = core::Pair<float>;
-using Dimensions  = core::Pair<int>;
+using Dimensions     = core::Pair<int>;
+using Coordinates    = core::Pair<int>;
+using CoordinateSize = core::Pair<int>;
+using NDC            = core::Pair<float>;
 
 template <typename T>
 vk::Extent3D
 createExtend3D(const core::Pair<T>& a_coord)
 {
-    return vk::Extent3D(static_cast<uint32_t>(a_coord.x),
-                        static_cast<uint32_t>(a_coord.y), 1);
+    return vk::Extent3D(static_cast<uint32_t>(a_coord.width),
+                        static_cast<uint32_t>(a_coord.height), 1);
 }
+
+NDC
+toNDC(const Coordinates& a_coord);
+Coordinates
+toCoordinates(const NDC& a_coord);
 
 } // namespace gpu::type
