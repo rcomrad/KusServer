@@ -1,5 +1,8 @@
 #include "animation.hpp"
 
+#include "sprite_push_data.hpp"
+#include "texture_info.hpp"
+
 gpu::sprite::Animation::Animation(const TextureInfo& a_info) : m_uv(1.f, 1.f)
 {
     m_uv /= a_info.dimensions;
@@ -11,7 +14,7 @@ gpu::sprite::Animation::Animation(const TextureInfo& a_info) : m_uv(1.f, 1.f)
 
 void
 gpu::sprite::Animation::drawAnimation(SpritePushData& a_push,
-                                      type::AnimationFrame a_frame_num)
+                                      type::AnimationFrame a_frame_num) const
 {
     a_push.uv_scaler       = {m_uv.x, m_uv.y};
     const auto& cur_offset = m_offsets[a_frame_num];

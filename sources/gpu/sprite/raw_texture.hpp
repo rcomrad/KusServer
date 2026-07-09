@@ -4,39 +4,60 @@
 
 #include <string>
 
-#include "gpu/buffers/base_buffer.hpp"
-#include "gpu/buffers/staging_buffer.hpp"
 #include "gpu/utils/typedef.hpp"
 
-namespace gpu::sprite
+namespace gpu
 {
+
+namespace logic
+{
+class Device;
+class Queue;
+} // namespace logic
+
+namespace command
+{
+class CommandPool;
+}
+
+namespace buffer
+{
+class BaseBuffer;
+class StagingBuffer;
+} // namespace buffer
+
+namespace sprite
+{
+
+class PixelArray;
 
 struct RawTexture
 {
 public:
-    RawTexture(logic::Device& a_device, std::string&& a_data);
+    RawTexture(logic::Device& a_device, PixelArray&& a_data);
 
     void writeToBuffer(logic::Queue& a_queue,
                        command::CommandPool& a_comm_pool,
                        buffer::BaseBuffer& a_memory,
                        buffer::StagingBuffer& a_transfer_buff);
 
-    const type::SpriteSize& getSize() const;
+    const type::CoordinateSize& getSize() const;
     vk::UniqueImage&& obtainImage();
 
     vk::MemoryRequirements getMemReq(logic::Device& a_device) const;
 
 private:
-    std::string m_raw_data;
-
-    type::SpriteSize m_size;
-    const char* m_data;
+    const char* m_data_ptr;
+    type::CoordinateSize m_size;
+    std::string m_allocated_buffer;
 
     vk::UniqueImage m_image;
 
-    void fillData(std::string&& a_data);
+    void fillData(PixelArray&& a_data);
     static vk::UniqueImage createImage(logic::Device& a_device,
-                                       const type::SpriteSize& a_size);
+                                       const type::CoordinateSize& a_size);
 };
 
-} // namespace gpu::sprite
+} // namespace sprite
+
+} // namespace gpu

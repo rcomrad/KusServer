@@ -1,5 +1,7 @@
 #pragma once
 
+#include "pixel_array.hpp"
+
 namespace gpu::sprite
 {
 
@@ -39,5 +41,8 @@ struct DDSFile
     DDSHeader header;
     char data[];
 };
+
+PixelArray
+pixelArrayFromDDS(std::string&& a_file_content);
 
 } // namespace gpu::sprite

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "gpu/sprite/draw_task.hpp"
 #include "gpu/sprite/sprite.hpp"
 #include "gpu/sprite/sprite_view.hpp"
 #include "gpu/utils/typedef.hpp"
@@ -10,18 +11,18 @@ namespace game
 class Buttons
 {
 public:
-    Buttons(gpu::sprite::Sprite& a_sprite,
+    Buttons(const gpu::sprite::SpriteView& a_sprite_view,
             const gpu::type::Dimensions& a_dem,
             const gpu::type::NDC& a_base_pos,
             const gpu::type::Coordinates& a_offset);
 
     void update(gpu::type::Coordinates a_coord);
-    void resize(const gpu::type::WinSize& a_win_size);
+    void resize(const gpu::type::CoordinateSize& a_win_size);
 
-    void pushPresentation(gpu::sprite::SpriteViewArray& a_sprite_views) const;
+    void pushPresentation(gpu::sprite::DrawTaskArray& a_draw_tasks) const;
 
 private:
-    gpu::sprite::Sprite& m_sprite;
+    gpu::sprite::SpriteView m_sprite_view;
 
     gpu::type::Dimensions m_dem;
 

@@ -11,18 +11,18 @@
 
 //------------------------------------------------------------------------------
 
-#define WRITE_LOG_MSG_BASE(type, func_name, line_num, format, ...)       \
-    core::LocalLogger::getLogger().writeLog(                             \
-        core::LogLevel::type, "[%-5s] %-30s| %-30s[%-4d]: " format "\n", \
-        #type, __FILENAME__, func_name, line_num,                        \
+#define WRITE_LOG_MSG_BASE(type, func_name, line_num, format, ...)         \
+    ::core::LocalLogger::getLogger().writeLog(                             \
+        ::core::LogLevel::type, "[%-5s] %-30s| %-30s[%-4d]: " format "\n", \
+        #type, __FILENAME__, func_name, line_num,                          \
         FOR_EACH(::utils::PrintCaster::exec, __VA_ARGS__) "");
 
 #define WRITE_LOG_MSG(type, format, ...) \
     WRITE_LOG_MSG_BASE(type, __func__, __LINE__, format, __VA_ARGS__)
 
-#define WRITE_TEE_MSG(type, format, ...)   \
-    core::LocalLogger::getLogger().teeLog( \
-        core::LogLevel::type, format "\n", \
+#define WRITE_TEE_MSG(type, format, ...)     \
+    ::core::LocalLogger::getLogger().teeLog( \
+        ::core::LogLevel::type, format "\n", \
         FOR_EACH(::utils::PrintCaster::exec, __VA_ARGS__) "");
 
 #define WRITE_LOG(...)              \
