@@ -1,6 +1,9 @@
 #include "command_pool.hpp"
 
 #include "kernel/framework/logger/basic/include_me.hpp"
+#include "gpu/logic/device.hpp"
+
+#include "gpu/logic/device.hpp"
 
 gpu::command::CommandPool::CommandPool(logic::Device& a_device,
                                        type::FamilyIndex a_family_index)

@@ -11,22 +11,23 @@
 #include "pixel_array.hpp"
 #include "texture_info.hpp"
 
-gpu::sprite::StorageBuilder::StorageBuilder(logic::Device& a_device)
+gpu::sprite::SpriteStorageBuilder::SpriteStorageBuilder(logic::Device& a_device)
     : m_device(a_device)
 {
 }
 
 void
-gpu::sprite::StorageBuilder::push(const std::string& a_name,
-                                  PixelArray&& a_pixel_array)
+gpu::sprite::SpriteStorageBuilder::push(const std::string& a_name,
+                                        PixelArray&& a_pixel_array)
 {
     m_textures.emplace(a_name, RawTexture(m_device, std::move(a_pixel_array)));
 }
 
 gpu::sprite::SpriteStorage
-gpu::sprite::StorageBuilder::collapse(logic::Queue& a_queue,
-                                      command::CommandPool& a_comm_pool,
-                                      vk::DescriptorSetLayout a_desc_set_layout)
+gpu::sprite::SpriteStorageBuilder::collapse(
+    logic::Queue& a_queue,
+    command::CommandPool& a_comm_pool,
+    vk::DescriptorSetLayout a_desc_set_layout)
 {
     SCOPED_TRACE_CREATE("sprite storage")
 
@@ -56,7 +57,7 @@ gpu::sprite::StorageBuilder::collapse(logic::Queue& a_queue,
 }
 
 std::pair<vk::DeviceSize, gpu::type::MemoryTypeBits>
-gpu::sprite::StorageBuilder::calculateMemoryRequirements(
+gpu::sprite::SpriteStorageBuilder::calculateMemoryRequirements(
     logic::Device& a_device,
     const std::unordered_map<std::string, RawTexture>& a_textures)
 {
@@ -83,8 +84,8 @@ gpu::sprite::StorageBuilder::calculateMemoryRequirements(
 }
 
 vk::UniqueDescriptorPool
-gpu::sprite::StorageBuilder::createDescriptorPool(logic::Device& a_device,
-                                                  int a_set_count)
+gpu::sprite::SpriteStorageBuilder::createDescriptorPool(logic::Device& a_device,
+                                                        int a_set_count)
 {
     // TODO: fix a_set_count
 

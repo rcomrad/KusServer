@@ -22,6 +22,7 @@
       - gtest:x64-linux
       - vulkan-sdk-components:x64-linux
       - freetype:x64-linux
+      - glfw3:x64-linux
 
   tasks:
     - name: Clone repository

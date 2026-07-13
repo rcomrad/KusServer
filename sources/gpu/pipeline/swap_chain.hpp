@@ -3,14 +3,23 @@
 #include "kernel/utility/macroses/holy_trinity.hpp"
 #include <vulkan/vulkan.hpp>
 
-#include "gpu/utils/typedef.hpp"
 #include "gpu/utils/vk_converter.hpp"
-#include "gpu/window/surface.hpp"
 
-#include "image_collection.hpp"
-#include "render_pass.hpp"
+namespace gpu
+{
 
-namespace gpu::pipeline
+namespace logic
+{
+class Device;
+}
+
+namespace window
+{
+class Surface;
+class SurfaceCharacteristics;
+} // namespace window
+
+namespace pipeline
 {
 
 class SwapChain : public vk::SwapchainKHR
@@ -18,29 +27,22 @@ class SwapChain : public vk::SwapchainKHR
 public:
     SwapChain(logic::Device& a_logic_device,
               window::Surface& a_serface,
-              type::FamilyIndex a_family_index,
-              vk::Format a_format,
-              vk::ColorSpaceKHR a_color_space,
-              vk::PresentModeKHR a_present_mode,
-              vk::SurfaceCapabilitiesKHR a_capabilities,
-              type::ImageNum a_image_num);
-
+              const window::SurfaceCharacteristics& a_characteristic);
     ~SwapChain();
-    HOLY_TRINITY_NOCOPY(SwapChain);
 
+    HOLY_TRINITY_NOCOPY(SwapChain);
     VK_CONVERTER(vk::SwapchainKHR);
 
 private:
     logic::Device& m_logic_device;
 
-    static vk::SwapchainKHR create(logic::Device& a_logic_device,
-                                   window::Surface& a_serface,
-                                   type::FamilyIndex a_family_index,
-                                   vk::Format a_format,
-                                   vk::ColorSpaceKHR a_color_space,
-                                   vk::PresentModeKHR a_present_mode,
-                                   vk::SurfaceCapabilitiesKHR a_capabilities,
-                                   type::ImageNum a_image_num);
+    static vk::SwapchainKHR create(
+        logic::Device& a_logic_device,
+        window::Surface& a_serface,
+        ,
+        const window::SurfaceCharacteristics& a_characteristic);
 };
 
-} // namespace gpu::pipeline
+} // namespace pipeline
+
+} // namespace gpu

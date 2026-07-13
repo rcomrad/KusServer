@@ -4,14 +4,14 @@
 
 #include <algorithm>
 
-gpu::pipeline::SwapChain::SwapChain(logic::Device& a_logic_device,
-                                    window::Surface& a_serface,
-                                    type::FamilyIndex a_family_index,
-                                    vk::Format a_format,
-                                    vk::ColorSpaceKHR a_color_space,
-                                    vk::PresentModeKHR a_present_mode,
-                                    vk::SurfaceCapabilitiesKHR a_capabilities,
-                                    type::ImageNum a_image_num)
+#include "gpu/logic/device.hpp"
+#include "gpu/window/surface.hpp"
+#include "gpu/window/surface_characteristics.hpp"
+
+gpu::pipeline::SwapChain::SwapChain(
+    logic::Device& a_logic_device,
+    window::Surface& a_serface,
+    const window::SurfaceCharacteristics& a_characteristic)
     : vk::SwapchainKHR(create(a_logic_device,
                               a_serface,
                               a_family_index,
@@ -30,14 +30,10 @@ gpu::pipeline::SwapChain::~SwapChain()
 }
 
 vk::SwapchainKHR
-gpu::pipeline::SwapChain::create(logic::Device& a_logic_device,
-                                 window::Surface& a_serface,
-                                 type::FamilyIndex a_family_index,
-                                 vk::Format a_format,
-                                 vk::ColorSpaceKHR a_color_space,
-                                 vk::PresentModeKHR a_present_mode,
-                                 vk::SurfaceCapabilitiesKHR a_capabilities,
-                                 type::ImageNum a_image_num)
+gpu::pipeline::SwapChain::create(
+    logic::Device& a_logic_device,
+    window::Surface& a_serface,
+    const window::SurfaceCharacteristics& a_characteristic)
 {
     SCOPED_TRACE_INIT("swap chain");
 
@@ -46,18 +42,18 @@ gpu::pipeline::SwapChain::create(logic::Device& a_logic_device,
     vk::SwapchainCreateInfoKHR info;
     info.setClipped(VK_TRUE)
         .setSurface(a_serface)
-        .setMinImageCount(a_image_num)
-        .setImageFormat(a_format)
-        .setImageColorSpace(a_color_space)
+        .setMinImageCount(a_characteristic.image_num)
+        .setImageFormat(a_characteristic.format)
+        .setImageColorSpace(a_characteristic.color_space)
         .setImageExtent(a_capabilities.currentExtent)
         .setImageArrayLayers(1)
         .setImageUsage(vk::ImageUsageFlagBits::eColorAttachment |
                        vk::ImageUsageFlagBits::eTransferDst)
         .setImageSharingMode(vk::SharingMode::eExclusive)
-        .setQueueFamilyIndices(m_family_indexes)
+        .setQueueFamilyIndices(a_characteristic.family_index)
         .setPreTransform(a_capabilities.currentTransform)
         .setCompositeAlpha(vk::CompositeAlphaFlagBitsKHR::eOpaque)
-        .setPresentMode(a_present_mode)
+        .setPresentMode(a_characteristic.present_mode)
         .setClipped(VK_TRUE);
 
     return a_logic_device.createSwapchainKHR(info);

@@ -13,32 +13,28 @@ gpu::hard::Manager::Manager(
                           "Sets physical device for commands to use.",
                           "device_id");
 
-    // TODO: strange thing
-    // m_device_cmd_obj_ptr =
-    //     KERNEL.getCallerPtrRef(Device::CMD_DEV_PROPERTY_NAME);
-    // *m_device_cmd_obj_ptr = nullptr;
-}
-
-void
-gpu::hard::Manager::initialize()
-{
-    SCOPED_TRACE_INIT("hardware manager");
-
-    m_instance.create();
+    SCOPED_TRACE_INIT("hardware devices");
 
     auto vk_devices = m_instance->getPhysicalDevices();
     for (auto& device : vk_devices)
     {
         m_devices.emplace_back(device);
     }
+}
 
-    auto& storage = *m_obj_ref_storage;
-    storage.put(*m_instance);
-    storage.put(m_devices.at(0));
+void
+gpu::hard::Manager::initialize()
+{
+}
+
+gpu::hard::Instance&
+gpu::hard::Manager::getInstance()
+{
+    return m_devices.at(0);
 }
 
 gpu::hard::Device&
-gpu::hard::Manager::getCurentDevice()
+gpu::hard::Manager::getDevice()
 {
     return m_devices.at(0);
 }

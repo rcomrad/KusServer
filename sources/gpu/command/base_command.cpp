@@ -4,6 +4,8 @@
 
 #include <vector>
 
+#include "gpu/logic/device.hpp"
+
 #include "command_pool.hpp"
 
 gpu::command::BaseCommand::BaseCommand(logic::Device& a_device,

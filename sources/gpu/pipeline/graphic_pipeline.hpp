@@ -1,23 +1,30 @@
 #pragma once
 
-#include "kernel/framework/variable/include_me.hpp"
 #include "kernel/utility/macroses/holy_trinity.hpp"
 #include <vulkan/vulkan.hpp>
 
-#include "gpu/logic/device.hpp"
-#include "gpu/utils/vk_converter.hpp"
-
-namespace gpu::pipeline
+namespace gpu
 {
+
+namespace logic
+{
+class Device;
+}
+
+namespace pipeline
+{
+
+class RenderPass;
+class Shader;
 
 class GraphicsPipeline
 {
 
 public:
     GraphicsPipeline(logic::Device& a_logic_device,
-                     vk::RenderPass a_render_pass,
-                     vk::ShaderModule a_vert_smodule,
-                     vk::ShaderModule a_frag_smodule);
+                     RenderPass& a_render_pass,
+                     Shader& a_vert_smodule,
+                     Shader& a_frag_smodule);
     HOLY_TRINITY_NOCOPY(GraphicsPipeline);
 
     inline auto getLayout()
@@ -49,8 +56,8 @@ private:
         const std::vector<vk::PushConstantRange>& a_push_const);
 
     static std::vector<vk::PipelineShaderStageCreateInfo> createShaderStageInfo(
-        vk::ShaderModule a_vert_smodule,
-        vk::ShaderModule a_frag_smodule);
+        Shader& a_vert_smodule,
+        Shader& a_frag_smodule);
     static vk::PipelineVertexInputStateCreateInfo createVertexInputInfo();
     static vk::PipelineInputAssemblyStateCreateInfo createAssemblyStateInfo();
 
@@ -71,4 +78,6 @@ private:
             a_attachments);
 };
 
-} // namespace gpu::pipeline
+} // namespace pipeline
+
+} // namespace gpu

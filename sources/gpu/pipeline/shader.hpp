@@ -1,20 +1,37 @@
 #pragma once
 
+#include "kernel/utility/macroses/holy_trinity.hpp"
 #include <vulkan/vulkan.hpp>
 
-#include "gpu/logic/device.hpp"
+#include "gpu/utils/vk_converter.hpp"
 
-namespace gpu::pipeline
+namespace gpu
 {
 
-class Shader
+namespace logic
+{
+class Device;
+}
+
+namespace pipeline
+{
+
+class Shader : public vk::ShaderModule
 {
 public:
-    static void init();
-    static vk::UniqueShaderModule create(logic::Device& a_logic_device,
-                                         std::string_view a_name);
+    Shader(logic::Device& a_device, std::string_view a_name);
+    ~Shader();
+
+    HOLY_TRINITY_NOCOPY(Shader);
+    VK_CONVERTER(vk::ShaderModule);
 
 private:
+    logic::Device& m_device;
+
+    static vk::ShaderModule create(logic::Device& a_device,
+                                   std::string_view a_name);
 };
 
-} // namespace gpu::pipeline
+} // namespace pipeline
+
+} // namespace gpu

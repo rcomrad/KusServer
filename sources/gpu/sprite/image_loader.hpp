@@ -3,9 +3,9 @@
 namespace gpu::sprite
 {
 
-class StorageBuilder;
+class SpriteStorageBuilder;
 
 void
-loadAllImages(StorageBuilder& a_builder);
+loadAllImages(SpriteStorageBuilder& a_builder);
 
 } // namespace gpu::sprite

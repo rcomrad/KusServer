@@ -4,19 +4,28 @@
 //*************************
 #include <GLFW/glfw3.h>
 
-#include "gpu/hardware/device.hpp"
-#include "gpu/hardware/instance.hpp"
 #include "gpu/utils/vk_converter.hpp"
 
-namespace gpu::window
+namespace gpu
 {
+
+namespace hard
+{
+class Device;
+class Instance;
+} // namespace hard
+
+namespace window
+{
+
+class Window;
 
 class Surface : public vk::SurfaceKHR
 {
 public:
     Surface(hard::Instance& a_instance,
             hard::Device& a_device,
-            GLFWwindow& a_window_ptr);
+            Window& a_window);
 
     ~Surface();
 
@@ -27,7 +36,9 @@ private:
 
     static vk::SurfaceKHR create(hard::Instance& a_instance,
                                  hard::Device& a_device,
-                                 GLFWwindow& a_window_ptr);
+                                 Window& a_window);
 };
 
-} // namespace gpu::window
+} // namespace window
+
+} // namespace gpu

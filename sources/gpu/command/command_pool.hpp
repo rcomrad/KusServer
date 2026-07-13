@@ -4,13 +4,20 @@
 
 #include <vector>
 
-#include "gpu/logic/device.hpp"
 #include "gpu/utils/typedef.hpp"
 
 #include "base_command.hpp"
 #include "one_time_command.hpp"
 
-namespace gpu::command
+namespace gpu
+{
+
+namespace logic
+{
+class Device;
+}
+
+namespace command
 {
 
 class CommandPool : public vk::CommandPool
@@ -35,4 +42,6 @@ private:
     std::vector<vk::CommandBuffer> alocate(uint32_t a_size);
 };
 
-} // namespace gpu::command
+} // namespace command
+
+} // namespace gpu

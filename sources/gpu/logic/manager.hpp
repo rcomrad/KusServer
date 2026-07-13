@@ -1,44 +1,44 @@
 #pragma once
 
-#include "kernel/utility/type/declaration/lifecycle_manager.hpp"
-#include "kernel/utility/type/declaration/multitype_storage.hpp"
-
-#include <memory>
-
-#include "gpu/command/base_command.hpp"
 #include "gpu/command/command_pool.hpp"
+#include "gpu/command/draw_command.hpp"
+#include "gpu/utils/typedef.hpp"
 
 #include "device.hpp"
 #include "queue.hpp"
 
-namespace gpu::logic
+namespace gpu
+{
+
+namespace hard
+{
+class Device;
+}
+
+namespace logic
 {
 
 class Manager
 {
 public:
-    Manager(std::shared_ptr<core::MultitypeStorage> a_obj_ref_storage);
+    Manager(hard::Device& a_hard_device, type::FamilyIndex a_family_index);
 
-    void initialize();
-    std::vector<command::BaseCommand> createCommandEnv();
-
-    uint32_t startNextTick();
-    void commitNextTick(const command::BaseCommand& a_cmd);
+    command::DrawCommand& getNextDrawCommand(pipeline::SwapChain& a_swap_chain);
+    void execDrawCommand(pipeline::SwapChain& a_swap_chain,
+                         const command::DrawCommand& a_cmd);
 
     Device& getDevice();
     Queue& getQueue();
     command::CommandPool& getCommandPool();
 
 private:
-    uint32_t m_index;
-    std::shared_ptr<core::MultitypeStorage> m_obj_ref_storage;
+    Device m_device;
+    Queue m_queue;
+    command::CommandPool m_command_pool;
 
-    // at initialize
-    utils::LifecycleManager<Device> m_device;
-
-    // at createCommandEnv
-    utils::LifecycleManager<Queue> m_queue;
-    utils::LifecycleManager<command::CommandPool> m_command_pool;
+    std::vector<command::DrawCommand> m_commands;
 };
 
-} // namespace gpu::logic
+} // namespace logic
+
+} // namespace gpu

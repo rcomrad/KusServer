@@ -2,6 +2,8 @@
 
 #include "kernel/framework/logger/basic/include_me.hpp"
 
+#include "gpu/logic/device.hpp"
+
 gpu::command::OneTimeCommand::OneTimeCommand(logic::Device& a_device,
                                              CommandPool& a_parent,
                                              vk::CommandBuffer a_this)

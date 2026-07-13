@@ -12,7 +12,7 @@ namespace gpu
 namespace sprite
 {
 class SpriteStorage;
-class StorageBuilder;
+class SpriteStorageBuilder;
 } // namespace sprite
 
 namespace font
@@ -23,7 +23,7 @@ class FontInfo;
 class FontStorageBuilder
 {
 public:
-    FontStorageBuilder(sprite::StorageBuilder& a_builder);
+    FontStorageBuilder(sprite::SpriteStorageBuilder& a_builder);
 
     void push(const std::string& a_name,
               const FontInfo& a_info,
@@ -35,7 +35,7 @@ private:
     static inline const int CHAR_FROM = 33;
     static inline const int CHAR_TO   = 127;
 
-    sprite::StorageBuilder& m_builder;
+    sprite::SpriteStorageBuilder& m_builder;
     std::unordered_set<std::string> m_nicknames;
 
     static std::string genCharName(const std::string& a_name, int a_char);

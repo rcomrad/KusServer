@@ -2,9 +2,15 @@
 
 #include <vulkan/vulkan.hpp>
 
-#include "gpu/logic/device.hpp"
+namespace gpu
+{
 
-namespace gpu::command
+namespace logic
+{
+class Device;
+}
+
+namespace command
 {
 
 class CommandPool;
@@ -16,9 +22,6 @@ public:
                 CommandPool& a_parent,
                 vk::CommandBuffer a_this);
     ~BaseCommand();
-
-    // BaseCommand(const BaseCommand& a_other);
-    // BaseCommand& operator=(const BaseCommand& a_other);
 
     BaseCommand(const BaseCommand&)            = delete;
     BaseCommand& operator=(const BaseCommand&) = delete;
@@ -43,4 +46,6 @@ private:
     CommandPool& m_command_pool;
 };
 
-} // namespace gpu::command
+} // namespace command
+
+} // namespace gpu

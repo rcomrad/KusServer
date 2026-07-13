@@ -1,6 +1,5 @@
 #pragma once
 
-#include "kernel/framework/variable/include_me.hpp"
 #include "kernel/utility/type/containers/ping_pong_atomic_buffer.hpp"
 #include <GLFW/glfw3.h>
 

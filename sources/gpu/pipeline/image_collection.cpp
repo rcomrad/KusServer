@@ -4,11 +4,15 @@
 
 #include <algorithm>
 
+#include "gpu/logic/device.hpp"
 #include "gpu/utils/variable.hpp"
 
+#include "render_pass.hpp"
+#include "swap_chain.hpp"
+
 gpu::pipeline::ImageCollection::ImageCollection(logic::Device& a_device,
-                                                vk::SwapchainKHR& a_swapchain,
-                                                vk::RenderPass& a_render_pass,
+                                                Swapchain& a_swapchain,
+                                                RenderPass& a_render_pass,
                                                 vk::Format& a_format)
 {
     SCOPED_TRACE_INIT("image collection");

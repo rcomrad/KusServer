@@ -1,36 +1,38 @@
 #pragma once
 
-#include "kernel/framework/variable/include_me.hpp"
-#include "kernel/utility/type/declaration/lifecycle_manager.hpp"
-#include "kernel/utility/type/declaration/multitype_storage.hpp"
-
-#include <vector>
-
-#include "gpu/hardware/instance.hpp"
-
 #include "surface.hpp"
 #include "surface_characteristics.hpp"
 #include "window.hpp"
 
-namespace gpu::window
+namespace gpu
+{
+
+namespace hard
+{
+class Device;
+class Instance;
+} // namespace hard
+
+namespace window
 {
 
 class Manager
 {
 public:
-    Manager(std::shared_ptr<core::MultitypeStorage> a_obj_ref_storage);
+    Manager(hard::Instance& a_instance, hard::Device& a_device);
 
-    void initialize();
     void recalculateCapabilities();
-
     void poolEvents(EventCarrier& a_event_carrier);
 
-private:
-    std::shared_ptr<core::MultitypeStorage> m_obj_ref_storage;
+    Surface& getSurface();
+    const SurfaceCharacteristics& getCharacteristics() const;
 
-    utils::LifecycleManager<Window> m_window;
-    utils::LifecycleManager<Surface> m_surface;
-    utils::LifecycleManager<SurfaceCharacteristics> m_characteristics;
+private:
+    Window m_window;
+    Surface m_surface;
+    SurfaceCharacteristics m_characteristics;
 };
 
-} // namespace gpu::window
+} // namespace window
+
+} // namespace gpu

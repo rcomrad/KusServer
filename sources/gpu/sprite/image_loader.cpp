@@ -10,7 +10,7 @@
 #include "storage_builder.hpp"
 
 void
-gpu::sprite::loadAllImages(StorageBuilder& a_builder)
+gpu::sprite::loadAllImages(SpriteStorageBuilder& a_builder)
 {
     KERNEL.addDataShortcut(IMAGES_DIR, IMAGES_DIR);
     auto files = KERNEL.getShortcutFileContent(IMAGES_DIR);

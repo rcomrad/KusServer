@@ -43,6 +43,9 @@ gpu::GPUModule::threadInitialize()
     m_hard_manager.initialize();
     m_window_manager.initialize();
     m_logic_manager.initialize();
+
+        Shader::init();
+    a_device.waitIdle();
     m_pipeline_manager.reset();
     m_commands = m_logic_manager.createCommandEnv();
     LOG_TRACE("command count: %d", m_commands.size());
@@ -99,7 +102,7 @@ gpu::GPUModule::createSpriteStorage(logic::Device& a_device,
                                     command::CommandPool& a_comm_pool,
                                     vk::DescriptorSetLayout a_desc_set_layout)
 {
-    sprite::StorageBuilder builder(a_device);
+    sprite::SpriteStorageBuilder builder(a_device);
     font::FontStorageBuilder font_builder(builder);
     sprite::loadAllImages(builder);
     font::loadAllFonts(font_builder);

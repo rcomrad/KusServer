@@ -67,7 +67,7 @@ private:
     pipeline::Manager m_pipeline_manager;
 
     window::EventCarrier m_event_carrier;
-    std::vector<command::BaseCommand> m_commands;
+
     utils::LifecycleManager<sprite::SpriteStorage> m_sprites;
     utils::LifecycleManager<font::FontStorage> m_fonts;
 

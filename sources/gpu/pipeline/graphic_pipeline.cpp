@@ -3,14 +3,16 @@
 #include "kernel/framework/logger/basic/include_me.hpp"
 #include "kernel/framework/variable/include_me.hpp"
 
+#include "gpu/logic/device.hpp"
 #include "gpu/sprite/sprite_push_data.hpp"
 #include "gpu/utils/variable.hpp"
 
-gpu::pipeline::GraphicsPipeline::GraphicsPipeline(
-    logic::Device& a_logic_device,
-    vk::RenderPass a_render_pass,
-    vk::ShaderModule a_vert_smodule,
-    vk::ShaderModule a_frag_smodule)
+#include "render_pass.hpp"
+
+gpu::pipeline::GraphicsPipeline::GraphicsPipeline(logic::Device& a_logic_device,
+                                                  RenderPass& a_render_pass,
+                                                  Shader& a_vert_smodule,
+                                                  Shader& a_frag_smodule)
 {
     SCOPED_TRACE_INIT("graphics pipeline");
 
@@ -106,9 +108,8 @@ gpu::pipeline::GraphicsPipeline::createPipelineLayout(
 }
 
 std::vector<vk::PipelineShaderStageCreateInfo>
-gpu::pipeline::GraphicsPipeline::createShaderStageInfo(
-    vk::ShaderModule a_vert_smodule,
-    vk::ShaderModule a_frag_smodule)
+gpu::pipeline::GraphicsPipeline::createShaderStageInfo(Shader& a_vert_smodule,
+                                                       Shader& a_frag_smodule)
 {
     SCOPED_TRACE_CREATE("PipelineShaderStageCreateInfo");
 

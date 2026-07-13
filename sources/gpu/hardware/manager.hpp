@@ -1,8 +1,6 @@
 #pragma once
 
 #include "kernel/framework/command/include_me.hpp"
-#include "kernel/utility/type/declaration/lifecycle_manager.hpp"
-#include "kernel/utility/type/declaration/multitype_storage.hpp"
 
 #include <deque>
 
@@ -17,14 +15,13 @@ class Manager : public core::CommandCaller
 public:
     Manager(std::shared_ptr<core::MultitypeStorage> a_obj_ref_storage);
 
-    void initialize();
-    Device& getCurentDevice();
+    Instance& getInstance();
+    Device& getDevice();
 
 private:
     core::CommandCaller** m_device_cmd_obj_ptr;
-    std::shared_ptr<core::MultitypeStorage> m_obj_ref_storage;
 
-    utils::LifecycleManager<Instance> m_instance;
+    Instance m_instance;
     std::deque<Device> m_devices;
 
     COMMAND_HANDLER(printDeviceInfo, 0);

@@ -2,6 +2,7 @@
 
 #include "kernel/framework/include_me.hpp"
 
+#include "gpu/logic/device.hpp"
 #include "gpu/utils/variable.hpp"
 
 gpu::pipeline::RenderPass::RenderPass(logic::Device& a_device,

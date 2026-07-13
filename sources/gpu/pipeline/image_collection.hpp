@@ -3,17 +3,26 @@
 #include "kernel/framework/include_me.hpp"
 #include <vulkan/vulkan.hpp>
 
-#include "gpu/logic/device.hpp"
-
-namespace gpu::pipeline
+namespace gpu
 {
+
+namespace logic
+{
+class Device;
+}
+
+namespace pipeline
+{
+
+class Swapchain;
+class RenderPass;
 
 class ImageCollection
 {
 public:
     ImageCollection(logic::Device& a_device,
-                    vk::SwapchainKHR& a_swapchain,
-                    vk::RenderPass& a_render_pass,
+                    Swapchain& a_swapchain,
+                    RenderPass& a_render_pass,
                     vk::Format& a_format);
 
     // inline vk::Image getImage(int num)
@@ -40,4 +49,6 @@ private:
     std::vector<vk::UniqueFramebuffer> m_frame_buffers;
 };
 
-} // namespace gpu::pipeline
+} // namespace pipeline
+
+} // namespace gpu

@@ -46,10 +46,18 @@
           - tar
           - pkg-config
           - autoconf
+          - autoconf-archive
+          - automake
+          - libtoolize
           - net-tools
           - gnumeric
           - bison
           - flex
+          - python3-venv
+          - libwayland-dev
+          - libxinerama-dev
+          - libxcursor-dev
+          - libxi-dev
           # vulkan
           - libtool
           # - xcb

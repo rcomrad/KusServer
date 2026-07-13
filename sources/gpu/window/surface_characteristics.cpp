@@ -1,11 +1,13 @@
 #include "surface_characteristics.hpp"
 
 #include "kernel/framework/logger/basic/include_me.hpp"
-#include "kernel/framework/variable/include_me.hpp"
 
-gpu::window::SurfaceCharacteristics::SurfaceCharacteristics(
-    hard::Device& a_device,
-    window::Surface& a_serface)
+#include "gpu/hardware/device.hpp"
+
+#include "surface.hpp"
+
+gpu::SurfaceCharacteristics::SurfaceCharacteristics(hard::Device& a_device,
+                                                    Surface& a_serface)
 {
     SCOPED_TRACE_INIT("characteristics");
 
@@ -21,8 +23,8 @@ gpu::window::SurfaceCharacteristics::SurfaceCharacteristics(
 }
 
 uint32_t
-gpu::window::SurfaceCharacteristics::findFamilyIndex(hard::Device& a_device,
-                                                     window::Surface& a_serface)
+gpu::SurfaceCharacteristics::findFamilyIndex(hard::Device& a_device,
+                                             Surface& a_serface)
 {
     auto property = a_device.getQueueFamilyProperties();
     for (uint32_t i = 0; i < property.size(); ++i)
@@ -41,8 +43,8 @@ gpu::window::SurfaceCharacteristics::findFamilyIndex(hard::Device& a_device,
 }
 
 std::pair<vk::Format, vk::ColorSpaceKHR>
-gpu::window::SurfaceCharacteristics::findFormat(hard::Device& a_device,
-                                                window::Surface& a_serface)
+gpu::SurfaceCharacteristics::findFormat(hard::Device& a_device,
+                                        Surface& a_serface)
 {
     auto format      = vk::Format(VK_FORMAT_B8G8R8A8_SRGB);
     auto color_space = vk::ColorSpaceKHR(VK_COLOR_SPACE_SRGB_NONLINEAR_KHR);
@@ -60,8 +62,8 @@ gpu::window::SurfaceCharacteristics::findFormat(hard::Device& a_device,
 }
 
 vk::PresentModeKHR
-gpu::window::SurfaceCharacteristics::findPresentMode(hard::Device& a_device,
-                                                     window::Surface& a_serface)
+gpu::SurfaceCharacteristics::findPresentMode(hard::Device& a_device,
+                                             Surface& a_serface)
 {
     auto target_mode   = vk::PresentModeKHR::eMailbox;
     auto fallback_mode = vk::PresentModeKHR::eFifo;
@@ -82,7 +84,7 @@ gpu::window::SurfaceCharacteristics::findPresentMode(hard::Device& a_device,
 }
 
 uint32_t
-gpu::window::SurfaceCharacteristics::findCapabilityImageNum(
+gpu::SurfaceCharacteristics::findCapabilityImageNum(
     const vk::SurfaceCapabilitiesKHR& a_capabilities)
 {
     uint32_t result = a_capabilities.minImageCount + 1;

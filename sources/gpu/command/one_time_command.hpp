@@ -1,12 +1,11 @@
 #pragma once
 
-#include <vulkan/vulkan.hpp>
-
-#include "gpu/logic/device.hpp"
-
 #include "base_command.hpp"
 
-namespace gpu::command
+namespace gpu
+{
+
+namespace command
 {
 
 class OneTimeCommand : public BaseCommand
@@ -17,4 +16,6 @@ public:
                    vk::CommandBuffer a_this);
 };
 
-} // namespace gpu::command
+} // namespace command
+
+} // namespace gpu

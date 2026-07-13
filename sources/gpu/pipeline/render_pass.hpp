@@ -3,10 +3,17 @@
 #include "kernel/utility/macroses/holy_trinity.hpp"
 #include <vulkan/vulkan.hpp>
 
-#include "gpu/logic/device.hpp"
 #include "gpu/utils/vk_converter.hpp"
 
-namespace gpu::pipeline
+namespace gpu
+{
+
+namespace logic
+{
+class Device;
+}
+
+namespace pipeline
 {
 
 class RenderPass : public vk::RenderPass
@@ -14,8 +21,8 @@ class RenderPass : public vk::RenderPass
 public:
     RenderPass(logic::Device& a_device, vk::Format a_format);
     ~RenderPass();
-    HOLY_TRINITY_NOCOPY(RenderPass);
 
+    HOLY_TRINITY_NOCOPY(RenderPass);
     VK_CONVERTER(vk::RenderPass);
 
     vk::RenderPassBeginInfo getBeginInfo(vk::Framebuffer a_framebuffer);
@@ -35,4 +42,6 @@ private:
     static std::vector<vk::SubpassDependency> createSubpassDependency();
 };
 
-} // namespace gpu::pipeline
+} // namespace pipeline
+
+} // namespace gpu

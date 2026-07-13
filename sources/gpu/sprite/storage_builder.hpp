@@ -22,10 +22,10 @@ class CommandPool;
 namespace sprite
 {
 
-class StorageBuilder
+class SpriteStorageBuilder
 {
 public:
-    StorageBuilder(logic::Device& a_device);
+    SpriteStorageBuilder(logic::Device& a_device);
 
     void push(const std::string& a_name, PixelArray&& a_pixel_array);
     SpriteStorage collapse(logic::Queue& a_queue,

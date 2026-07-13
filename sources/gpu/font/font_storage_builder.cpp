@@ -14,7 +14,7 @@
 #include "freetype_instance.hpp"
 
 gpu::font::FontStorageBuilder::FontStorageBuilder(
-    sprite::StorageBuilder& a_builder)
+    sprite::SpriteStorageBuilder& a_builder)
     : m_builder(a_builder)
 {
 }

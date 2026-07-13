@@ -2,57 +2,37 @@
 
 #include "kernel/framework/include_me.hpp"
 
+#include "gpu/hardware/device.hpp"
 #include "gpu/pipeline/swap_chain.hpp"
 
-gpu::logic::Manager::Manager(
-    std::shared_ptr<core::MultitypeStorage> a_obj_ref_storage)
-    : m_obj_ref_storage(a_obj_ref_storage)
+gpu::logic::Manager::Manager(hard::Device& a_hard_device,
+                             type::FamilyIndex a_family_index)
+    : m_device(a_hard_device, a_family_index),
+      m_queue(m_device, a_family_index, 0),
+      m_command_pool(m_device, a_family_index)
 {
-}
+    LOG_INFO("logic manager created");
 
-void
-gpu::logic::Manager::initialize()
-{
-    SCOPED_TRACE_INIT("logic manager");
-
-    auto& storage = *m_obj_ref_storage;
-    m_device.create(storage.get<hard::Device>(),
-                    storage.get<type::FamilyIndex>());
-    storage.put(*m_device);
-}
-
-std::vector<gpu::command::BaseCommand>
-gpu::logic::Manager::createCommandEnv()
-{
-    SCOPED_TRACE_INIT("command environment");
-
-    auto& storage = *m_obj_ref_storage;
-    m_queue.create(storage.get<logic::Device>(),
-                   storage.get<type::FamilyIndex>(), 0);
-    m_command_pool.create(storage.get<logic::Device>(),
-                          storage.get<type::FamilyIndex>());
-    return m_command_pool->alocateBuffers(3);
+    m_commands = m_command_pool->alocateBuffers(3);
+    LOG_INFO("draw command allocated");
 }
 
 uint32_t
-gpu::logic::Manager::startNextTick()
+gpu::logic::Manager::getNextDrawCommand(pipeline::SwapChain& a_swap_chain)
 {
-    auto& swap_chain = m_obj_ref_storage->get<pipeline::SwapChain>();
-    auto& device     = m_obj_ref_storage->get<logic::Device>();
-    m_index          = m_queue->acquireNextImage(device, swap_chain);
-    LOG_SPAM("Next index is: %d", m_index);
-    return m_index;
+    auto index = m_queue.acquireNextImage(m_device, a_swap_chain);
+    LOG_SPAM("Next index is: %d", index);
+
+    static_assert(index == m_commands.at(index).index);
+    return m_commands.at(index);
 }
 
 void
-gpu::logic::Manager::commitNextTick(const command::BaseCommand& a_cmd)
+gpu::logic::Manager::execDrawCommand(pipeline::SwapChain& a_swap_chain,
+                                     const command::DrawCommand& a_cmd)
 {
-    auto& swap_chain = m_obj_ref_storage->get<pipeline::SwapChain>();
-    auto& device     = m_obj_ref_storage->get<logic::Device>();
-
-    LOG_SPAM("Using index: %d", m_index);
-    m_queue->submit(a_cmd);
-    m_queue->present(m_index, swap_chain);
+    m_queue.submit(a_cmd);
+    m_queue.present(m_index, a_swap_chain);
 }
 
 gpu::logic::Device&
