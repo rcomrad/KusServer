@@ -28,6 +28,12 @@ gpu::VulkanManager::execDrawCommand(const command::DrawCommand& a_cmd)
 }
 
 void
+gpu::GPUModule::poolEvents(EventCarrier& a_event_carrier)
+{
+    m_window_manager.poolEvents(a_event_carrier);
+}
+
+void
 gpu::VulkanManager::resizeWindow()
 {
     m_window_manager.recalculateCapabilities();

@@ -24,6 +24,12 @@ gpu::GPUModule::tryShipDrawTasks(sprite::DrawTaskArray&& a_objects);
     m_shipper.store(std::move(a_objects));
 }
 
+void
+gpu::GPUModule::poolEvents()
+{
+    m_vulkan_manager.poolEvents(m_event_carrier);
+}
+
 gpu::window::EventCarrier&
 gpu::GPUModule::getEventCarrier()
 {

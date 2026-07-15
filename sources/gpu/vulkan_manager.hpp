@@ -21,6 +21,8 @@ public:
     command::DrawCommand& getNextDrawCommand();
     void execDrawCommand(const command::DrawCommand& a_cmd);
 
+    void poolEvents(EventCarrier& a_event_carrier);
+
     void resizeWindow();
 
 private:

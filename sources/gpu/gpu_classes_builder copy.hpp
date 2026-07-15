@@ -1,7 +1,0 @@
-namespace gpu
-{
-
-void
-buildGpuClasses();
-
-}
