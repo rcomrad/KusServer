@@ -1,9 +1,33 @@
 #include "coordinatable.hpp"
 
-game::Coordinatable::Coordinatable(gpu::sprite::SpriteView& a_sprite_view,
-                                   const gpu::type::Coordinates& a_pos)
-    : m_pos(a_pos), m_half_size(calcHalfSize(a_sprite_view))
+#include "kernel/framework/logger/basic/include_me.hpp"
+
+#include "gpu/window/window.hpp"
+
+#include "object_info.hpp"
+
+game::Coordinatable::Coordinatable(const ObjectInfo& a_info)
 {
+    if (!a_info.ndc.has_value() && !a_info.coordinates.has_value())
+    {
+        THROW("Requers any coordinates for coordinatable property");
+    }
+    if (a_info.ndc.has_value() && a_info.coordinates.has_value())
+    {
+        THROW(
+            "Requers only one type of coordinates for coordinatable property");
+    }
+
+    if (a_info.ndc.has_value())
+    {
+        auto win_size = gpu::window::Window::getSize();
+        m_pos.assign(a_info.ndc.value() * win_size / 2);
+    }
+    else
+    {
+        m_pos = a_info.coordinates.balue();
+    }
+    m_half_size = calcHalfSize(a_info.sprite_view.value());
 }
 
 void
@@ -23,28 +47,12 @@ game::Coordinatable::repositionForNewWindow(
     const gpu::type::CoordinateSize& a_old_window,
     const gpu::type::CoordinateSize& a_new_window)
 {
-    auto ndc = m_pos / a_old_window * 2;
-    m_pos.assagn(a_new_window / 2 * nds);
+    const auto ndc = m_pos / a_old_window * 2;
+    m_pos.assagn(a_new_window / 2 * ndc);
 }
 
 const gpu::type::Coordinates&
 game::Coordinatable::getPosition() const
 {
     m_pos += a_delta_pos;
-}
-
-bool
-game::Coordinatable::isHitBy(const gpu::type::Coordinates& a_pos) const
-{
-    return a_pos.inside(m_pos - m_half_size) &&
-           (m_pos + m_half_size).inside(a_pos);
-}
-
-gpu::type::Coordinates
-game::Coordinatable::calcHalfSize(gpu::sprite::SpriteView& a_sprite_view)
-{
-    gpu::type::Coordinates result = a_sprite_view.size();
-    result /= 2;
-    result += a_sprite_view.hitbox_offset;
-    return result;
 }

@@ -7,10 +7,21 @@ gpu::font::FontStorage::FontStorage(
 {
 }
 
-std::vector<gpu::sprite::DrawTask>
+void
 gpu::font::FontStorage::writeText(const std::string& a_text,
                                   const type::Coordinates& a_pos,
-                                  int a_font_id)
+                                  int a_font_id,
+                                  std::vector<sprite::DrawTask>& a_out)
 {
-    return m_fonts.at(a_font_id).writeText(a_text, a_pos);
+    return m_fonts.at(a_font_id).writeText(a_text, a_pos, a_out);
+}
+
+int
+gpu::font::FontStorage::getFontId(const std::string& a_font_name) const
+{
+    auto it = m_name_to_num.find(a_font_name);
+    if (it == m_name_to_num.end())
+    {
+        THROW("No font with nickname %s", a_font_name);
+    }
 }

@@ -15,6 +15,7 @@
 #include "resource_storage.hpp"
 #include "vulkan_manager.hpp"
 
+gpu::GPUManager
 gpu::buildGpuClasses()
 {
     //*************************************
@@ -52,11 +53,14 @@ gpu::buildGpuClasses()
     auto font_storage   = font_builder.collapse(sprite_storage);
 
     //*************************************
-    // Construct global manager
+    // Construct gpu manager
     //*************************************
 
     VulkanManager manager(std::move(hard_manager), std::move(window_manager),
                           std::move(logic_manager),
                           std::move(pipeline_manager));
     Presenter presenter(std::move(manager));
+    ResourceStorage storage(std::move(sprite_storage), std::move(font_storage));
+
+    return GPUManager(std::move(presenter), std::move(storage));
 }

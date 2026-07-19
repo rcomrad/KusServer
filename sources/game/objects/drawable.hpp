@@ -1,22 +1,19 @@
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include "gpu/sprite/draw_task.hpp"
 #include "gpu/sprite/sprite_view.hpp"
 #include "gpu/utils/typedef.hpp"
 
-#include "coordinatable.hpp"
-
 namespace game::obj
 {
 
-class Drawable : public Coordinatable
+class ObjectInfo;
+
+class Drawable
 {
 public:
-    Drawable(gpu::sprite::SpriteView& a_sprite_view,
-             const gpu::type::Coordinates& a_pos);
+    Drawable(const ObjectInfo& a_info);
+    Drawable(Drawable&& a_other) noexcept = default;
 
     gpu::sprite::DrawTask getObjectPresentation() const;
 

@@ -1,14 +1,22 @@
 #include "drawable.hpp"
 
-game::Drawable::Drawable(gpu::sprite::SpriteView& a_sprite_view,
-                         const gpu::type::Coordinates& a_pos)
-    : Coordinatable(a_pos), m_sprite_id(a_sprite_view.id)
+#include "kernel/framework/logger/basic/include_me.hpp"
+
+#include "coordinatable.hpp"
+#include "object_info.hpp"
+
+game::Drawable::Drawable(const ObjectInfo& a_info)
 {
+    if (!a_info.sprite_view.has_value())
+    {
+        THROW("Requers texture for drawable property");
+    }
+    m_sprite_id = a_info.sprite_view.value();
 }
 
-void
-game::GameObject::getObjectPresentation(
-    std::vector<gpu::sprite::DrawTask>& a_draw_tasks) const
+gpu::sprite::DrawTask
+game::GameObject::getObjectPresentation() const
 {
-    return gpu::sprite::DrawTask(m_sprite_id, getPosition());
+    const auto& pos = dynamic_cast<Coordinatable&>(*this).getPosition();
+    return gpu::sprite::DrawTask(m_sprite_id, pos);
 }

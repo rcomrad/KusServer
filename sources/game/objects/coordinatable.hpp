@@ -6,11 +6,13 @@
 namespace game::obj
 {
 
+class ObjectInfo;
+
 class Coordinatable
 {
 public:
-    Coordinatable(gpu::sprite::SpriteView& a_sprite_view,
-                  const gpu::type::Coordinates& a_pos);
+    Coordinatable(const ObjectInfo& a_info);
+    Coordinatable(Coordinatable&& a_other) noexcept = default;
 
     void setPosition(const gpu::type::Coordinates& a_pos);
     void movePosition(const gpu::type::Coordinates& a_delta_pos);
@@ -19,14 +21,8 @@ public:
 
     const gpu::type::Coordinates& getPosition() const;
 
-    bool isHitBy(const gpu::type::Coordinates& a_pos) const;
-
 private:
     gpu::type::Coordinates m_pos;
-    const gpu::type::CoordinateSize m_half_size;
-
-    static gpu::type::Coordinates calcHalfSize(
-        gpu::sprite::SpriteView& a_sprite_view);
 };
 
 } // namespace game::obj

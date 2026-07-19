@@ -8,14 +8,12 @@ gpu::font::Font::Font(
 {
 }
 
-std::vector<gpu::sprite::DrawTask>
+void
 gpu::font::Font::writeText(const std::string& a_text,
-                           const type::Coordinates& a_pos)
+                           const type::Coordinates& a_pos,
+                           std::vector<sprite::DrawTask>& a_out)
 {
-    std::vector<sprite::DrawTask> result;
-
     // TODO: substract pending from a_pos
-
     for (int i = 0; i < a_text.size(); ++i)
     {
         auto c = a_text[i];
@@ -28,9 +26,7 @@ gpu::font::Font::writeText(const std::string& a_text,
             THROW("No such character %d", c);
         }
 
-        result.emplace_back(sprite::DrawTask(
+        a_out.emplace_back(sprite::DrawTask(
             it->second, type::toNDC(a_pos + type::Coordinates(30, 0) * i)));
     }
-
-    return result;
 }

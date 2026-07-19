@@ -1,7 +1,9 @@
+#include "gpu_manager.hpp"
+
 namespace gpu
 {
 
-void
+GPUManager
 buildGpuClasses();
 
 }

@@ -1,9 +1,22 @@
 #include "textable.hpp"
 
-game::Textable::Textable(gpu::sprite::SpriteView& a_sprite_view,
-                         const gpu::type::Coordinates& a_pos)
-    : Drawable(a_sprite_view, a_pos), m_sprite_id(a_sprite_view.id)
+#include "kernel/framework/logger/basic/include_me.hpp"
+
+#include "gpu/font/font_storage.hpp"
+
+#include "coordinatable.hpp"
+#include "object_info.hpp"
+
+game::Textable::Textable(const ObjectInfo& a_info)
 {
+    if (!a_info.font_id.has_value())
+    {
+        THROW("Requers fony for texable property");
+    }
+
+    m_font_id     = a_info.font_id.value_or(-1);
+    m_text        = a_info.text.value_or("");
+    m_text_offset = gpu::type::Coordinates(0, 0);
 }
 
 void
@@ -19,9 +32,11 @@ game::GameObject::setTextPositionOffset(const gpu::type::Coordinates& a_offset)
 }
 
 void
-game::GameObject::getPresentation(
-    std::vector<gpu::sprite::DrawTask>& a_draw_tasks) const
+game::GameObject::addTextPresentation(
+    const gpu::font::FontStorage& a_font_storage,
+    std::vector<gpu::sprite::DrawTask>& a_out) const
 {
-    a_draw_tasks.emplace_back(getObjectPresentation());
-    a_draw_tasks.emplace_back(m_sprite_id, getPosition());
+    Drawable::addPresentation(a_gpu_resources, a_draw_tasks);
+    const auto& pos = dynamic_cast<Coordinatable&>(*this).getPosition();
+    a_gpu_resources.writeText(m_text, pos + m_text_offset, m_font_id, a_out);
 }

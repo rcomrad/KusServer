@@ -16,8 +16,9 @@ class Font
 public:
     Font(std::unordered_map<char, sprite::SpriteView>&& a_char_sprites);
 
-    std::vector<sprite::DrawTask> writeText(const std::string& a_text,
-                                            const type::Coordinates& a_pos);
+    void writeText(const std::string& a_text,
+                   const type::Coordinates& a_pos,
+                   std::vector<sprite::DrawTask>& a_out);
 
 private:
     std::unordered_map<char, sprite::SpriteView> m_char_sprites;

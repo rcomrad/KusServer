@@ -1,7 +1,5 @@
 #include "kernel/utility/type/declaration/lifecycle_manager.hpp"
 
-#include <vector>
-
 #include "gpu/hardware/manager.hpp"
 #include "gpu/logic/manager.hpp"
 #include "gpu/window/manager.hpp"

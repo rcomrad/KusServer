@@ -5,6 +5,7 @@
 
 #include <array>
 #include <fstream>
+#include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -19,6 +20,13 @@ MEMBER_CONCEPT(animation);
 MEMBER_CONCEPT(name);
 MEMBER_CONCEPT(size);
 MEMBER_CONCEPT(color);
+MEMBER_CONCEPT(level);
+MEMBER_CONCEPT(texture);
+MEMBER_CONCEPT(text);
+MEMBER_CONCEPT(ndc);
+MEMBER_CONCEPT(coordinates);
+MEMBER_CONCEPT(flags);
+MEMBER_CONCEPT(type);
 
 #define MEMBER_CHECK(name)               \
     if constexpr (HasFluid_##name<T>)    \
@@ -91,6 +99,13 @@ protected:
             MEMBER_CHECK(name);
             MEMBER_CHECK(size);
             MEMBER_CHECK(color);
+            MEMBER_CHECK(level);
+            MEMBER_CHECK(texture);
+            MEMBER_CHECK(text);
+            MEMBER_CHECK(ndc);
+            MEMBER_CHECK(coordinates);
+            MEMBER_CHECK(flags);
+            MEMBER_CHECK(type);
 
             THROW("Unexpected string '%s'", key);
         }
@@ -144,6 +159,15 @@ private:
             return false;
         }
         return true;
+    }
+
+    template <typename T>
+    static bool read(std::ifstream& a_file, std::optional<T>& a_opt)
+    {
+        T data;
+        auto res = read(a_file, data);
+        a_opt    = std::move(data);
+        return res;
     }
 
     template <typename T1, typename T2>
