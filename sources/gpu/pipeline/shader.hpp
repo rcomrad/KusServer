@@ -22,7 +22,7 @@ public:
     Shader(logic::Device& a_device, std::string_view a_name);
     ~Shader();
 
-    HOLY_TRINITY_NOCOPY(Shader);
+    HOLY_TRINITY_ONLY_MOVE(Shader);
     VK_CONVERTER(vk::ShaderModule);
 
 private:

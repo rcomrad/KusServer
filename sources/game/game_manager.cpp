@@ -6,6 +6,10 @@
 // #include "gpu/utils/typedef.hpp"
 // #include "gpu/utils/variable.hpp"
 
+#include "kernel/framework/include_me.hpp"
+
+#include "objects/object_info.hpp"
+
 game::GameManager::GameManager(gpu::GPUManager& a_gpu_manager_ref)
     : m_gpu_manager_ref(a_gpu_manager_ref)
 {
@@ -16,9 +20,17 @@ game::GameManager::GameManager(gpu::GPUManager& a_gpu_manager_ref)
 
     // m_game_objects.emplace_back(m_gpu_module->getSprite("71"), 200, 300);
 
-    buttons.create(m_gpu_module->getSpriteView("buttons_mini"),
-                   gpu::type::Dimensions(1, 3), gpu::type::NDC(0, 0),
-                   gpu::type::Coordinates(0, 0));
+    // buttons.create(m_gpu_module->getSpriteView("buttons_mini"),
+    //                gpu::type::Dimensions(1, 3), gpu::type::NDC(0, 0),
+    //                gpu::type::Coordinates(0, 0));
+
+#define OBJECT_DIR "objects"
+    KERNEL.addDataShortcut(OBJECT_DIR, OBJECT_DIR);
+
+    auto map_path = KERNEL.getShortcut(OBJECT_DIR, "button.txt");
+    auto font_map = KERNEL.readStructMap<obj::ObjectInfo>(map_path);
+
+    m_objects.addObject("button", font_map);
 }
 
 void
@@ -67,32 +79,34 @@ game::GameManager::processEvents()
 void
 game::GameManager::update()
 {
-    // TODO: on;y if needed
+    // // TODO: on;y if needed
 
-    core::IntVar height_var(VAR_NAME_FRAME_HEIGHT);
-    core::IntVar width_var(VAR_NAME_FRAME_WIDTH);
+    // core::IntVar height_var(VAR_NAME_FRAME_HEIGHT);
+    // core::IntVar width_var(VAR_NAME_FRAME_WIDTH);
 
-    auto height = height_var.get();
-    auto width  = width_var.get();
+    // auto height = height_var.get();
+    // auto width  = width_var.get();
 
-    // m_game_objects.back().makeConsistentWithWindow(height, width);
+    // // m_game_objects.back().makeConsistentWithWindow(height, width);
 
-    auto size = gpu::window::Window::getSize();
-    buttons->resize(size);
+    // auto size = gpu::window::Window::getSize();
+    // buttons->resize(size);
 }
 
 void
 game::GameManager::draw()
 {
-    gpu::sprite::DrawTaskArray draw_tasks;
+    // gpu::sprite::DrawTaskArray draw_tasks;
 
-    draw_tasks =
-        m_gpu_module->writeText("Awuf!", gpu::type::Coordinates(300, 300), 0);
+    // draw_tasks =
+    //     m_gpu_module->writeText("Awuf!", gpu::type::Coordinates(300, 300),
+    //     0);
 
     // buttons->pushPresentation(draw_tasks);
     // for (auto& i : m_game_objects)
     // {
     //     draw_tasks.emplace_back(i.getPresentation());
     // }
-    m_gpu_module->tryDraw(std::move(draw_tasks));
+    const auto& font_storage = m_gpu_manager_ref.getFontStorage();
+    m_gpu_module->tryDraw(m_objects.generateDrawTasks(font_storage));
 }

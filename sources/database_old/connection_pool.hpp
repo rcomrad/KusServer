@@ -1,5 +1,8 @@
 #pragma once
 
+#include "kernel/framework/logging/table_storage.hpp"
+#include "kernel/utility/type/declaration/lifecycle_manager.hpp"
+
 #include <mutex>
 #include <optional>
 #include <semaphore>
@@ -9,9 +12,6 @@
 #include <vector>
 
 #include "database_connection.hpp"
-
-#include "kernel/framework/logging/table_storage.hpp"
-#include "kernel/utility/type/declaration/lifecycle_manager.hpp"
 
 #include "credentials.hpp"
 #include "internal_connection.hpp"
@@ -29,7 +29,7 @@ namespace data
 class ConnectionPool
 {
 public:
-    HOLY_TRINITY_NOCOPY(ConnectionPool);
+    HOLY_TRINITY_NO_COPY(ConnectionPool);
 
     static bool create(
         utils::LifecycleManager<ConnectionPool>& a_poll_addr,

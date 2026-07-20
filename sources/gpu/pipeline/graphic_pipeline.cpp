@@ -8,6 +8,7 @@
 #include "gpu/utils/variable.hpp"
 
 #include "render_pass.hpp"
+#include "shader.hpp"
 
 gpu::pipeline::GraphicsPipeline::GraphicsPipeline(logic::Device& a_logic_device,
                                                   RenderPass& a_render_pass,
@@ -117,13 +118,13 @@ gpu::pipeline::GraphicsPipeline::createShaderStageInfo(Shader& a_vert_smodule,
 
     vk::PipelineShaderStageCreateInfo first;
     first.setStage(vk::ShaderStageFlagBits::eVertex)
-        .setModule(a_vert_smodule)
+        .setModule(*a_vert_smodule)
         .setPName("main");
     result.emplace_back(first);
 
     vk::PipelineShaderStageCreateInfo second;
     second.setStage(vk::ShaderStageFlagBits::eFragment)
-        .setModule(a_frag_smodule)
+        .setModule(*a_frag_smodule)
         .setPName("main");
     result.emplace_back(second);
 

@@ -11,7 +11,7 @@
 #include "swap_chain.hpp"
 
 gpu::pipeline::ImageCollection::ImageCollection(logic::Device& a_device,
-                                                Swapchain& a_swapchain,
+                                                SwapChain& a_swapchain,
                                                 RenderPass& a_render_pass,
                                                 vk::Format& a_format)
 {
@@ -34,7 +34,7 @@ gpu::pipeline::ImageCollection::ImageCollection(logic::Device& a_device,
 
     // m_images = a_device.getSwapchainImagesKHR(a_swapchain);
     // for (auto& image : m_images)
-    for (auto& image : a_device.getSwapchainImagesKHR(a_swapchain))
+    for (auto& image : a_device.getSwapchainImagesKHR(*a_swapchain))
     {
         vk::ImageViewCreateInfo view_info;
         view_info.setImage(image)

@@ -28,7 +28,7 @@ gpu::VulkanManager::execDrawCommand(const command::DrawCommand& a_cmd)
 }
 
 void
-gpu::GPUModule::poolEvents(EventCarrier& a_event_carrier)
+gpu::GPUModule::poolEvents(window::EventCarrier& a_event_carrier)
 {
     m_window_manager.poolEvents(a_event_carrier);
 }

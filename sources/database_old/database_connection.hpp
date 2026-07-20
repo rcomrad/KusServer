@@ -14,7 +14,7 @@ public:
     // delete; DatabaseConnection& operator=(const DatabaseConnection&) noexcept
     // = delete; DatabaseConnection(DatabaseConnection&& other) noexcept;
     // DatabaseConnection& operator=(DatabaseConnection&& other) noexcept;
-    HOLY_TRINITY_NOCOPY(DatabaseConnection);
+    HOLY_TRINITY_NO_COPY(DatabaseConnection);
 
     DatabaseConnection(InternalConnection& a_db_conn, int a_pool_id) noexcept;
     ~DatabaseConnection();

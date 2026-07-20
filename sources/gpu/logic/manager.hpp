@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kernel/utility/macroses/holy_trinity.hpp"
+
 #include "gpu/command/command_pool.hpp"
 #include "gpu/command/draw_command.hpp"
 #include "gpu/utils/typedef.hpp"
@@ -15,6 +17,11 @@ namespace hard
 class Device;
 }
 
+namespace pipeline
+{
+class SwapChain;
+}
+
 namespace logic
 {
 
@@ -22,6 +29,7 @@ class Manager
 {
 public:
     Manager(hard::Device& a_hard_device, type::FamilyIndex a_family_index);
+    HOLY_TRINITY_ONLY_MOVE(Manager);
 
     command::DrawCommand& getNextDrawCommand(pipeline::SwapChain& a_swap_chain);
     void execDrawCommand(pipeline::SwapChain& a_swap_chain,

@@ -16,7 +16,7 @@ public:
     static constexpr auto CMD_DEV_PROPERTY_NAME = "eng.hard.dev_prop";
 
     Device(vk::PhysicalDevice& a_myself);
-    HOLY_TRINITY_NOCOPY(Device);
+    HOLY_TRINITY_ONLY_MOVE(Device);
 
     VK_CONVERTER(vk::PhysicalDevice);
 

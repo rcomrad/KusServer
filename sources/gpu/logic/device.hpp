@@ -14,7 +14,7 @@ class Device : public vk::Device
 public:
     Device(hard::Device& a_device, type::FamilyIndex a_family_index);
     ~Device();
-    HOLY_TRINITY_NOCOPY(Device);
+    HOLY_TRINITY_ONLY_MOVE(Device);
 
     type::MemoryTypeIndex getMemoryTypeIndex(
         type::MemoryTypeBits a_type_filter,

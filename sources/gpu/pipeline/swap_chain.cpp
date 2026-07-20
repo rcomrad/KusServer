@@ -12,14 +12,7 @@ gpu::pipeline::SwapChain::SwapChain(
     logic::Device& a_logic_device,
     window::Surface& a_serface,
     const window::SurfaceCharacteristics& a_characteristic)
-    : vk::SwapchainKHR(create(a_logic_device,
-                              a_serface,
-                              a_family_index,
-                              a_format,
-                              a_color_space,
-                              a_present_mode,
-                              a_capabilities,
-                              a_image_num)),
+    : vk::SwapchainKHR(create(a_logic_device, a_serface, a_characteristic)),
       m_logic_device(a_logic_device)
 {
 }
@@ -37,7 +30,7 @@ gpu::pipeline::SwapChain::create(
 {
     SCOPED_TRACE_INIT("swap chain");
 
-    std::vector<uint32_t> m_family_indexes{a_family_index};
+    std::vector<uint32_t> family_indexes{a_characteristic.family_index};
 
     vk::SwapchainCreateInfoKHR info;
     info.setClipped(VK_TRUE)
@@ -45,13 +38,13 @@ gpu::pipeline::SwapChain::create(
         .setMinImageCount(a_characteristic.image_num)
         .setImageFormat(a_characteristic.format)
         .setImageColorSpace(a_characteristic.color_space)
-        .setImageExtent(a_capabilities.currentExtent)
+        .setImageExtent(a_characteristic.capability.currentExtent)
         .setImageArrayLayers(1)
         .setImageUsage(vk::ImageUsageFlagBits::eColorAttachment |
                        vk::ImageUsageFlagBits::eTransferDst)
         .setImageSharingMode(vk::SharingMode::eExclusive)
-        .setQueueFamilyIndices(a_characteristic.family_index)
-        .setPreTransform(a_capabilities.currentTransform)
+        .setQueueFamilyIndices(family_indexes)
+        .setPreTransform(a_characteristic.capability.currentTransform)
         .setCompositeAlpha(vk::CompositeAlphaFlagBitsKHR::eOpaque)
         .setPresentMode(a_characteristic.present_mode)
         .setClipped(VK_TRUE);

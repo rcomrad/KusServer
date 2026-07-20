@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kernel/utility/macroses/holy_trinity.hpp"
+
 #include <atomic>
 
 namespace utils
@@ -12,6 +14,19 @@ public:
     AtomicShipper()
     {
         clearData();
+    }
+
+    AtomicShipper(AtomicShipper&& a_other)
+    {
+        m_data = std::move(a_other.m_data);
+        if (a_other.m_has_data.test())
+        {
+            m_has_data.test_and_set();
+        }
+        else
+        {
+            m_has_data.clear();
+        }
     }
 
     void store(Data&& a_data)

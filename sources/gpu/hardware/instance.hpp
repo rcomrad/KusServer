@@ -21,7 +21,7 @@ class Instance : public vk::Instance
 public:
     Instance();
     ~Instance();
-    HOLY_TRINITY_NOCOPY(Instance);
+    HOLY_TRINITY_ONLY_MOVE(Instance);
 
     std::vector<vk::PhysicalDevice> getPhysicalDevices() const;
 

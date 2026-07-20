@@ -30,8 +30,8 @@ public:
     void addObject(const std::string& a_name, const ObjectInfo& a_info);
     void removeObject(const std::string& a_name);
 
-    void generateDrawTasks(const gpu::font::FontStorage& a_font_storage,
-                           std::vector<gpu::sprite::DrawTask>& a_out) const;
+    std::vector<gpu::sprite::DrawTask> generateDrawTasks(
+        const gpu::font::FontStorage& a_font_storage) const;
 
 private:
     std::unordered_map<std::string, std::unique_ptr<BaseObject>> m_objects;

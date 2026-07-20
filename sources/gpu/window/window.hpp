@@ -1,5 +1,6 @@
 #pragma once
 
+#include "kernel/utility/macroses/holy_trinity.hpp"
 #include "kernel/utility/type/containers/ping_pong_atomic_buffer.hpp"
 #include <GLFW/glfw3.h>
 
@@ -16,6 +17,7 @@ class Window
 public:
     Window();
     ~Window();
+    HOLY_TRINITY_ONLY_MOVE(Window);
 
     void updateSize() const;
     void poolEvents(EventCarrier& a_event_carrier);

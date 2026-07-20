@@ -1,13 +1,15 @@
+#pragma once
+
 #include "presenter.hpp"
-#include "storage.hpp"
+#include "resource_storage.hpp"
 
 namespace gpu
 {
 
-class GPUManager : public Presenter, public Storage
+class GPUManager : public Presenter, public ResourceStorage
 {
 public:
-    GPUManager(Presenter&& a_presenter, Storage&& a_storage);
+    GPUManager(Presenter&& a_presenter, ResourceStorage&& a_storage);
 };
 
 } // namespace gpu

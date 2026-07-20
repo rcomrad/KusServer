@@ -8,7 +8,7 @@
 #include "gpu/window/surface_characteristics.hpp"
 
 gpu::pipeline::Manager::Manager(
-    logic::Device a_device,
+    logic::Device& a_device,
     window::Surface& a_surface,
     const window::SurfaceCharacteristics& a_characteristic)
     : m_swap_chain(a_device, a_surface, a_characteristic),

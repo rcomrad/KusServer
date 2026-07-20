@@ -29,8 +29,8 @@ public:
               window::Surface& a_serface,
               const window::SurfaceCharacteristics& a_characteristic);
     ~SwapChain();
+    HOLY_TRINITY_ONLY_MOVE(SwapChain);
 
-    HOLY_TRINITY_NOCOPY(SwapChain);
     VK_CONVERTER(vk::SwapchainKHR);
 
 private:
@@ -39,7 +39,6 @@ private:
     static vk::SwapchainKHR create(
         logic::Device& a_logic_device,
         window::Surface& a_serface,
-        ,
         const window::SurfaceCharacteristics& a_characteristic);
 };
 

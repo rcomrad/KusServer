@@ -1,5 +1,6 @@
 #pragma once
 
+#include "kernel/utility/macroses/holy_trinity.hpp"
 #include <vulkan/vulkan.hpp>
 
 #include <string>
@@ -23,6 +24,7 @@ public:
     SpriteStorage(buffer::BaseBuffer&& a_memory,
                   vk::UniqueDescriptorPool&& a_descriptor_pool,
                   std::unordered_map<std::string, Sprite>&& a_sprites);
+    HOLY_TRINITY_ONLY_MOVE(SpriteStorage);
 
     void resize();
 

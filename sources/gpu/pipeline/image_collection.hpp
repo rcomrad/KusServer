@@ -14,16 +14,17 @@ class Device;
 namespace pipeline
 {
 
-class Swapchain;
+class SwapChain;
 class RenderPass;
 
 class ImageCollection
 {
 public:
     ImageCollection(logic::Device& a_device,
-                    Swapchain& a_swapchain,
+                    SwapChain& a_swapchain,
                     RenderPass& a_render_pass,
                     vk::Format& a_format);
+    HOLY_TRINITY_ONLY_MOVE(ImageCollection);
 
     // inline vk::Image getImage(int num)
     // {

@@ -13,7 +13,7 @@ REG_MODULE(module_name, gpu::GPUModule);
 
 } // namespace gpu
 
-gpu::GPUModule::GPUModule() : core::ThreadModule(module_name),
+gpu::GPUModule::GPUModule() : core::ThreadModule(module_name)
 {
     LOG_INFO("Engine module scheduled");
 }
@@ -21,14 +21,14 @@ gpu::GPUModule::GPUModule() : core::ThreadModule(module_name),
 gpu::GPUManager&
 gpu::GPUModule::getGPUManager()
 {
-    return m_manager;
+    return *m_manager;
 }
 
 void
 gpu::GPUModule::threadInitialize()
 {
     SCOPED_TRACE_INIT("gpu module");
-    m_manager.create(buildGpuClasses);
+    m_manager.create(buildGpuClasses());
 }
 
 bool

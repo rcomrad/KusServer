@@ -12,6 +12,7 @@
 // #include "buttons.hpp"
 
 #include "gpu/gpu_manager.hpp"
+#include "objects/object_manager.hpp"
 
 namespace game
 {
@@ -25,6 +26,7 @@ public:
 
 private:
     gpu::GPUManager& m_gpu_manager_ref;
+    obj::ObjectManager m_objects;
 
     // std::vector<gpu::event::Event> m_events_buffer; // TODO:
 

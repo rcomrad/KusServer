@@ -22,7 +22,7 @@ public:
     RenderPass(logic::Device& a_device, vk::Format a_format);
     ~RenderPass();
 
-    HOLY_TRINITY_NOCOPY(RenderPass);
+    HOLY_TRINITY_ONLY_MOVE(RenderPass);
     VK_CONVERTER(vk::RenderPass);
 
     vk::RenderPassBeginInfo getBeginInfo(vk::Framebuffer a_framebuffer);

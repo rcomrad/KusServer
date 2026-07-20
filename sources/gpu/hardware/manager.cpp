@@ -2,11 +2,8 @@
 
 #include "kernel/framework/include_me.hpp"
 
-gpu::hard::Manager::Manager(
-    std::shared_ptr<core::MultitypeStorage> a_obj_ref_storage)
-    : m_obj_ref_storage(a_obj_ref_storage)
+gpu::hard::Manager::Manager()
 {
-
     registrateBaseCommand("eng.hard.show_dev",
                           "Prints available graphical devices.");
     registrateBaseCommand("eng.hard.set_dev",

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "kernel/framework/command/include_me.hpp"
+#include "kernel/utility/macroses/holy_trinity.hpp"
 
 #include <deque>
 
@@ -13,7 +14,8 @@ namespace gpu::hard
 class Manager : public core::CommandCaller
 {
 public:
-    Manager(std::shared_ptr<core::MultitypeStorage> a_obj_ref_storage);
+    Manager();
+    HOLY_TRINITY_ONLY_MOVE(Manager);
 
     Instance& getInstance();
     Device& getDevice();

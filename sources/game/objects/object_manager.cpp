@@ -48,10 +48,9 @@ game::ObjectManager::removeObject(const std::string& a_name)
     m_objects.errase(it_obj);
 }
 
-void
+std::vector<gpu::sprite::DrawTask>
 game::ObjectManager::generateDrawTasks(
-    const gpu::font::FontStorage& a_font_storage,
-    std::vector<gpu::sprite::DrawTask>& a_out) const
+    const gpu::font::FontStorage& a_font_storage) const
 {
     auto draw_it = m_draw_obj.begin();
     auto text_it = m_text_obj.begin();
@@ -60,6 +59,9 @@ game::ObjectManager::generateDrawTasks(
     { return draw_it == m_draw_obj.end(); };
     const auto text_end = [&text_it, &m_text_obj]()
     { return text_it == m_text_obj.end(); };
+
+    std::vector<gpu::sprite::DrawTask>& result;
+    result.reserve(m_objects.size());
 
     bool print_img = true;
     while (!draw_end() && !text_end())
@@ -94,4 +96,6 @@ game::ObjectManager::generateDrawTasks(
             ++text_it;
         }
     }
+
+    return result;
 }

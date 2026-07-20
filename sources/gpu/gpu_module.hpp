@@ -1,3 +1,5 @@
+#pragma once
+
 #include "kernel/utility/type/declaration/lifecycle_manager.hpp"
 
 #include "gpu_manager.hpp"

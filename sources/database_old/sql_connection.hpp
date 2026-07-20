@@ -1,8 +1,8 @@
 #pragma once
 
-#include <cstring>
-
 #include "kernel/utility/type/type_id.hpp"
+
+#include <cstring>
 
 #include "credentials.hpp"
 #include "postgresql.hpp"
@@ -14,7 +14,7 @@ namespace data
 class SQLConnection
 {
 public:
-    HOLY_TRINITY_NOCOPY(SQLConnection);
+    HOLY_TRINITY_NO_COPY(SQLConnection);
     SQLConnection(const Credentials& a_credentials) noexcept;
 
     word_t insert(void* a_result_ptr, struct_id_t a_struct_id) noexcept;

@@ -30,6 +30,11 @@ public:
         destroy();
     }
 
+    LifecycleManager(LifecycleManager&& a_other)
+    {
+        create(std::move(a_other.obj));
+    }
+
     template <typename... Args>
     LifecycleManager<T>& create(Args&&... args)
     {

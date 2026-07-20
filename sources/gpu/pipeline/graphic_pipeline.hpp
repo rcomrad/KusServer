@@ -25,7 +25,7 @@ public:
                      RenderPass& a_render_pass,
                      Shader& a_vert_smodule,
                      Shader& a_frag_smodule);
-    HOLY_TRINITY_NOCOPY(GraphicsPipeline);
+    HOLY_TRINITY_ONLY_MOVE(GraphicsPipeline);
 
     inline auto getLayout()
     {

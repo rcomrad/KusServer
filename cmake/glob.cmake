@@ -11,6 +11,7 @@ macro(collect_src)
     if (NOT ${IS_TEST})
         list(FILTER project_sources EXCLUDE REGEX "_tests/*")
     endif()
+    list(FILTER project_sources EXCLUDE REGEX "_dump/*")
     
     target_include_directories(${TARGET} PUBLIC "sources/")
     target_sources(${TARGET} PRIVATE ${project_sources})

@@ -1,5 +1,7 @@
 #include "font_storage.hpp"
 
+#include "kernel/framework/logger/basic/include_me.hpp"
+
 gpu::font::FontStorage::FontStorage(
     std::vector<Font>&& a_fonts,
     std::unordered_map<std::string, int>&& a_name_to_num)
@@ -24,4 +26,5 @@ gpu::font::FontStorage::getFontId(const std::string& a_font_name) const
     {
         THROW("No font with nickname %s", a_font_name);
     }
+    return it->second;
 }

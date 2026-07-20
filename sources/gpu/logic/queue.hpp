@@ -17,7 +17,7 @@ public:
     Queue(logic::Device& a_device,
           type::FamilyIndex a_queue_family,
           type::QueueIndex a_queue_index);
-    HOLY_TRINITY_NOCOPY(Queue);
+    HOLY_TRINITY_ONLY_MOVE(Queue);
 
     uint32_t acquireNextImage(logic::Device& a_device,
                               vk::SwapchainKHR a_swapchain);

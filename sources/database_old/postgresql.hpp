@@ -4,6 +4,7 @@
 
 #include "kernel/utility/macroses/holy_trinity.hpp"
 #include "kernel/utility/type/type_id.hpp"
+
 #include "pqxx/pqxx"
 
 #include "credentials.hpp"
@@ -16,7 +17,7 @@ namespace data
 class PostgreSQL
 {
 public:
-    HOLY_TRINITY_NOCOPY(PostgreSQL);
+    HOLY_TRINITY_NO_COPY(PostgreSQL);
     PostgreSQL(const Credentials& a_cred);
 
     //----------------------------------------------------------------------------

@@ -45,12 +45,13 @@ gpu::buildGpuClasses()
     sprite::loadAllImages(sprite_builder);
     font::loadAllFonts(font_builder);
 
-    auto& queue           = m_logic_manager.getQueue();
-    auto& cmd_pool        = m_logic_manager.getCommandPool();
-    auto& desc_set_layout = m_pipeline_manager.getDescSetLayout();
+    auto& queue           = logic_manager.getQueue();
+    auto& cmd_pool        = logic_manager.getCommandPool();
+    auto desc_set_layout = pipeline_manager.getDescSetLayout();
 
-    auto sprite_storage = builder.collapse(queue, cmd_pool, desc_set_layout);
-    auto font_storage   = font_builder.collapse(sprite_storage);
+    auto sprite_storage =
+        sprite_builder.collapse(queue, cmd_pool, desc_set_layout);
+    auto font_storage = font_builder.collapse(sprite_storage);
 
     //*************************************
     // Construct gpu manager

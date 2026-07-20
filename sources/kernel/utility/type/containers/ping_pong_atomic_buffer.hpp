@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kernel/utility/macroses/holy_trinity.hpp"
+
 #include <atomic>
 #include <vector>
 
@@ -13,6 +15,21 @@ public:
     PingPongAtomicBuffer()
     {
         m_is_second_ready_to_write.clear();
+    }
+
+    PingPongAtomicBuffer(PingPongAtomicBuffer&& a_other)
+    {
+        m_first  = std::move(a_other.m_first);
+        m_second = std::move(a_other.m_second);
+
+        if (a_other.m_is_second_ready_to_write.test())
+        {
+            m_is_second_ready_to_write.test_and_set();
+        }
+        else
+        {
+            m_is_second_ready_to_write.clear();
+        }
     }
 
     void acquireRead(std::vector<Data>&& a_container)

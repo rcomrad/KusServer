@@ -2,9 +2,9 @@
 
 //--------------------------------------------------------------------------------
 
-#include <memory>
-
 #include "kernel/utility/macroses/holy_trinity.hpp"
+
+#include <memory>
 
 #include "command_data.hpp"
 
@@ -19,7 +19,7 @@ private:
                                        void*) noexcept;
 
 public:
-    HOLY_TRINITY_NOCOPY(CommandFunctor);
+    HOLY_TRINITY_NO_COPY(CommandFunctor);
 
     std::unique_ptr<char[]> m_result_buffer;
 

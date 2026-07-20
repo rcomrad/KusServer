@@ -2,6 +2,8 @@
 
 #include <vulkan/vulkan.hpp>
 
+#include "gpu/utils/vk_converter.hpp"
+
 namespace gpu
 {
 

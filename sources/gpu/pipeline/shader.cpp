@@ -6,9 +6,9 @@
 #include "gpu/utils/paths.hpp"
 
 gpu::pipeline::Shader::Shader(logic::Device& a_device, std::string_view a_name)
-    : vk::ShaderModule(a_device, a_name), m_device(a_device)
+    : vk::ShaderModule(create(a_device, a_name)), m_device(a_device)
 {
-    static is_inited = false;
+    static bool is_inited = false;
     if (!is_inited)
     {
         is_inited = true;
@@ -22,7 +22,7 @@ gpu::pipeline::Shader::~Shader()
     m_device.destroyShaderModule(toBase());
 }
 
-vk::UniqueShaderModule
+vk::ShaderModule
 gpu::pipeline::Shader::create(logic::Device& a_device, std::string_view a_name)
 {
     LOG_TRACE("Creating shader for %s file", a_name);
