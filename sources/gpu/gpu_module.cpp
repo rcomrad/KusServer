@@ -36,7 +36,10 @@ gpu::GPUModule::threadLoopBody()
 {
     ::utils::Sleep::yield();
 
-    m_manager->draw();
+    if (!m_manager->draw())
+    {
+        m_manager->resize();
+    }
     m_manager->poolEvents();
 
     return KERNEL.getVariable("is_running");

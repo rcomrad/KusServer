@@ -10,17 +10,21 @@ gpu::Presenter::Presenter(VulkanManager&& a_vulkan_manager)
 {
 }
 
-void
+bool
 gpu::Presenter::draw()
 {
+    bool result = true;
     try
     {
         sendCommands();
     }
     catch (const utils::ResizeException&)
     {
-        resize();
+        LOG_INFO("Need to resize window");
+        m_vulkan_manager.resizeWindow();
+        result = false;
     }
+    return result;
 }
 
 void
@@ -59,12 +63,4 @@ gpu::Presenter::sendCommands()
     cmd.end();
 
     m_vulkan_manager.execDrawCommand(cmd);
-}
-
-void
-gpu::Presenter::resize()
-{
-    LOG_INFO("Need to resize window");
-    m_vulkan_manager.resizeWindow();
-    m_sprites->resize();
 }

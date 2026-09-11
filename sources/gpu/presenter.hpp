@@ -16,7 +16,7 @@ public:
     Presenter(VulkanManager&& a_vulkan_manager);
     HOLY_TRINITY_ONLY_MOVE(Presenter);
 
-    void draw();
+    bool draw();
     void tryShipDrawTasks(sprite::DrawTaskArray&& a_objects);
 
     void poolEvents();
@@ -32,7 +32,6 @@ private:
     utils::AtomicShipper<sprite::DrawTaskArray> m_shipper;
 
     void sendCommands();
-    void resize();
 };
 
 } // namespace gpu

@@ -7,8 +7,8 @@ gpu::ResourceStorage::ResourceStorage(sprite::SpriteStorage&& a_sprite_storage,
 {
 }
 
-const font::FontStorage&
+const gpu::font::FontStorage&
 gpu::ResourceStorage::getFontStorage() const
 {
-    return static_cast<font::FontStorage&>(*this);
+    return static_cast<const gpu::font::FontStorage&>(*this);
 }
