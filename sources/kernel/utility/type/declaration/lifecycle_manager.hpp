@@ -35,6 +35,11 @@ public:
         create(std::move(a_other.obj));
     }
 
+    LifecycleManager(T&& a_other)
+    {
+        create(std::move(a_other));
+    }
+
     template <typename... Args>
     LifecycleManager<T>& create(Args&&... args)
     {

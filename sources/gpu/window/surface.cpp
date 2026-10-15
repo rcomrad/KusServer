@@ -23,7 +23,7 @@ gpu::window::Surface::create(hard::Instance& a_instance,
     SCOPED_TRACE_INIT("surface");
 
     VkSurfaceKHR surface;
-    auto res = glfwCreateWindowSurface(a_instance, &a_window->get(), nullptr,
+    auto res = glfwCreateWindowSurface(a_instance, &a_window.get(), nullptr,
                                        &surface);
     if (res != VK_SUCCESS)
     {

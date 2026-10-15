@@ -8,6 +8,7 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 #define MEMBER_CONCEPT(name) \
@@ -197,6 +198,25 @@ private:
             }
 
             a_map.emplace(std::move(key), std::move(value));
+        }
+
+        return true;
+    }
+
+    template <typename KeyT>
+    static bool read(std::ifstream& a_file, std::unordered_set<KeyT>& a_set)
+    {
+        arrayBeginAssert(a_file);
+
+        while (true)
+        {
+            KeyT key;
+            if (!read(a_file, key))
+            {
+                break;
+            }
+
+            a_set.emplace(std::move(key));
         }
 
         return true;

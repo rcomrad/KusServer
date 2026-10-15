@@ -2,6 +2,7 @@
 
 // #include <string>
 // #include <vector>
+#include <map>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -18,25 +19,41 @@
 
 // #include "object .hpp"
 
+namespace gpu
+{
+class GPUManager;
+}
+
+namespace gpu::font
+{
+class FontStorage; // TODO: make it like sprites - not getter? but array from
+                   // gpumanager
+};
+
 namespace game::obj
 {
 
 class BaseObject;
-class ObjectInfo;
+struct ObjectInfo;
 
 class ObjectManager
 {
 public:
-    void addObject(const std::string& a_name, const ObjectInfo& a_info);
-    void removeObject(const std::string& a_name);
+    ObjectManager(gpu::GPUManager const& a_gpu_manager_ref);
+    ~ObjectManager();
+
+    uint64_t addObject(std::string const& a_name); // TODO: return handler
+    void removeObject(uint64_t const a_id);
 
     std::vector<gpu::sprite::DrawTask> generateDrawTasks(
         const gpu::font::FontStorage& a_font_storage) const;
 
 private:
-    std::unordered_map<std::string, std::unique_ptr<BaseObject>> m_objects;
-    std::unordered_map<int, std::unordered_set<Drawable*>> m_draw_obj;
-    std::unordered_map<int, std::unordered_set<Textable*>> m_text_obj;
+    // we don't need to draw all objects (don't store not drawable)
+    // TODO: separate based on Drawable/Textable/etc
+    std::map<int, std::unordered_set<std::unique_ptr<BaseObject>>> m_obj;
+
+    std::unordered_map<std::string, ObjectInfo> m_object_infos;
 };
 
 } // namespace game::obj

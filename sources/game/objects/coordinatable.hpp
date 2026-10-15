@@ -6,7 +6,7 @@
 namespace game::obj
 {
 
-class ObjectInfo;
+struct ObjectInfo;
 
 class Coordinatable
 {

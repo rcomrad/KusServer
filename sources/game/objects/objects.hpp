@@ -4,68 +4,79 @@
 #include "drawable.hpp"
 #include "hitable.hpp"
 #include "object_info.hpp"
+#include "object_type.hpp"
 #include "textable.hpp"
 
 namespace game::obj
 {
 
-class Object_CD : public BaseObject, public Coordinatable, public Drawable
-{
-    Object_CDH(const int a_level,
-               Coordinatable&& a_coord,
-               Drawable&& a_draw) noexcept;
+struct ObjectInfo;
 
-    constexpr static int getType();
+class Object_CD : public BaseObject, public Drawable
+{
+public:
+    Object_CD(ObjectInfo const& a_obj_info) noexcept;
+
+    static constexpr int getType()
+    {
+        return static_cast<int>(Type::COORDINATABLE) |
+               static_cast<int>(Type::DRAWABLE);
+    }
 };
 
-class Object_CDH : public BaseObject,
-                   public Coordinatable,
-                   public Drawable,
-                   public Hitable
+class Object_CDH : public BaseObject, public Drawable, public Hitable
 {
-    Object_CDH(const int a_level,
-               Coordinatable&& a_coord,
-               Drawable&& a_draw,
-               Hitable&& a_hit) noexcept;
+public:
+    Object_CDH(ObjectInfo const& a_obj_info) noexcept;
 
-    constexpr static int getType();
+    static constexpr int getType()
+    {
+        return static_cast<int>(Type::COORDINATABLE) |
+               static_cast<int>(Type::DRAWABLE) |
+               static_cast<int>(Type::HITABLE);
+    }
 };
 
-class Object_CDT : public BaseObject,
-                   public Coordinatable,
-                   public Drawable,
-                   public Textable
+class Object_CDT : public BaseObject, public Drawable, public Textable
 {
-    Object_CDT(const int a_level,
-               Coordinatable&& a_coord,
-               Drawable&& a_draw,
-               Textable&& a_text) noexcept;
+public:
+    Object_CDT(ObjectInfo const& a_obj_info) noexcept;
 
-    constexpr static int getType();
+    static constexpr int getType()
+    {
+        return static_cast<int>(Type::COORDINATABLE) |
+               static_cast<int>(Type::DRAWABLE) |
+               static_cast<int>(Type::TEXTABLE);
+    }
 };
 
 class Object_CDHT : public BaseObject,
-                    public Coordinatable,
                     public Drawable,
                     public Hitable,
                     public Textable
 {
-    Object_CDHT(const int a_level,
-                Coordinatable&& a_coord,
-                Drawable&& a_draw,
-                Hitable&& a_hit,
-                Textable&& a_text) noexcept;
+public:
+    Object_CDHT(ObjectInfo const& a_obj_info) noexcept;
 
-    constexpr static int getType();
+    static constexpr int getType()
+    {
+        return static_cast<int>(Type::COORDINATABLE) |
+               static_cast<int>(Type::DRAWABLE) |
+               static_cast<int>(Type::HITABLE) |
+               static_cast<int>(Type::TEXTABLE);
+    }
 };
 
-class Object_CT : public BaseObject, public Coordinatable, public Textable
+class Object_CT : public BaseObject, public Textable
 {
-    Object_CT(const int a_level,
-              Coordinatable&& a_coord,
-              Textable&& a_text) noexcept;
+public:
+    Object_CT(ObjectInfo const& a_obj_info) noexcept;
 
-    constexpr static int getType();
+    static constexpr int getType()
+    {
+        return static_cast<int>(Type::COORDINATABLE) |
+               static_cast<int>(Type::TEXTABLE);
+    }
 };
 
 } // namespace game::obj

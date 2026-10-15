@@ -1,5 +1,6 @@
 #pragma once
 
+#include "kernel/framework/module/module.hpp"
 #include "kernel/utility/type/declaration/lifecycle_manager.hpp"
 
 #include "game_manager.hpp"

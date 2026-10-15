@@ -28,7 +28,7 @@ gpu::sprite::DrawTask::execute(const SpriteStorage& a_storage,
     sprite.draw(a_pipeline_layout, a_cmd, push, m_animation_id);
 
     auto ndc          = m_position / a_windows_size;
-    push.coord_offset = {m_offset.x, m_offset.y};
+    push.coord_offset = {ndc.x, ndc.y};
 
     a_cmd.pushConstants(a_pipeline_layout,
                         vk::ShaderStageFlagBits::eVertex |

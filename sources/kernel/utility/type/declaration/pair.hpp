@@ -184,7 +184,7 @@ union Pair
         return i != n.i || j != n.j;
     }
 
-    bool inside(const Pair& n)
+    bool inside(const Pair& n) const
     {
         return i > n.i && j > n.j;
     }

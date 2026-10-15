@@ -5,73 +5,74 @@
 #include "hitable.hpp"
 #include "textable.hpp"
 
-game::obj::Object::BaseObject(const int a_type, const int a_level)
-    : m_type(a_type), m_level(a_level)
+game::obj::BaseObject::BaseObject(const int a_type,
+                                  std::optional<int> const& a_level)
+    : m_type(a_type), m_level(a_level.value_or(0))
 {
 }
 
 game::obj::Coordinatable&
-game::obj::Object::asCoordinatable()
+game::obj::BaseObject::asCoordinatable()
 {
     return dynamic_cast<Coordinatable&>(*this);
 }
 
 game::obj::Drawable&
-game::obj::Object::asDrawable()
+game::obj::BaseObject::asDrawable()
 {
     return dynamic_cast<Drawable&>(*this);
 }
 
 game::obj::Hitable&
-game::obj::Object::asHitable()
+game::obj::BaseObject::asHitable()
 {
     return dynamic_cast<Hitable&>(*this);
 }
 
 game::obj::Textable&
-game::obj::Object::asTextable()
+game::obj::BaseObject::asTextable()
 {
     return dynamic_cast<Textable&>(*this);
 }
 
 bool
-game::obj::Object::is(const int a_type) const
+game::obj::BaseObject::is(const int a_type) const
 {
     return m_type | a_type == a_type;
 }
 
 bool
-game::obj::Object::is(const Type a_type) const
+game::obj::BaseObject::is(const Type a_type) const
 {
     return m_type | static_cast<int>(a_type);
 }
 
 bool
-game::obj::Object::isCoordinatable() const
+game::obj::BaseObject::isCoordinatable() const
 {
     return m_type | static_cast<int>(Type::COORDINATABLE);
 }
 
 bool
-game::obj::Object::isDrawable() const
+game::obj::BaseObject::isDrawable() const
 {
     return m_type | static_cast<int>(Type::DRAWABLE);
 }
 
 bool
-game::obj::Object::isHitable() const
+game::obj::BaseObject::isHitable() const
 {
     return m_type | static_cast<int>(Type::HITABLE);
 }
 
 bool
-game::obj::Object::isTextable() const
+game::obj::BaseObject::isTextable() const
 {
     return m_type | static_cast<int>(Type::TEXTABLE);
 }
 
 int
-game::obj::Object::getLevel() const
+game::obj::BaseObject::getLevel() const
 {
     return m_level;
 }

@@ -12,22 +12,17 @@ gpu::hard::Manager::Manager()
 
     SCOPED_TRACE_INIT("hardware devices");
 
-    auto vk_devices = m_instance->getPhysicalDevices();
+    auto vk_devices = m_instance.getPhysicalDevices();
     for (auto& device : vk_devices)
     {
         m_devices.emplace_back(device);
     }
 }
 
-void
-gpu::hard::Manager::initialize()
-{
-}
-
 gpu::hard::Instance&
 gpu::hard::Manager::getInstance()
 {
-    return m_devices.at(0);
+    return m_instance;
 }
 
 gpu::hard::Device&

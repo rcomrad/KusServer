@@ -21,7 +21,7 @@ public:
     void writeText(const std::string& a_text,
                    const type::Coordinates& a_pos,
                    int a_font_id,
-                   std::vector<sprite::DrawTask>& a_out);
+                   std::vector<sprite::DrawTask>& a_out) const;
 
     int getFontId(const std::string& a_font_name) const;
 

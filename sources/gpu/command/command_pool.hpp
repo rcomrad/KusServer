@@ -9,6 +9,7 @@
 #include "gpu/utils/vk_converter.hpp"
 
 #include "base_command.hpp"
+#include "draw_command.hpp"
 #include "one_time_command.hpp"
 
 namespace gpu
@@ -30,7 +31,8 @@ public:
     HOLY_TRINITY_ONLY_MOVE(CommandPool);
 
     BaseCommand alocateBuffer();
-    std::vector<BaseCommand> alocateBuffers(uint32_t a_size);
+    // std::vector<BaseCommand> alocateBuffers(uint32_t a_size);
+    std::vector<DrawCommand> alocateDrawBuffers(uint32_t a_size);
 
     OneTimeCommand alocateOneTimeCommand();
 

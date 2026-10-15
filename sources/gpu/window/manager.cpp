@@ -8,26 +8,34 @@
 
 gpu::window::Manager::Manager(hard::Instance& a_instance,
                               hard::Device& a_device)
-    : m_surface(a_instance, a_device, m_window),
-      m_characteristics(a_device, m_surface)
+    : m_device(a_device),
+      m_surface(a_instance, m_device, m_window),
+      m_characteristics(m_device, m_surface)
 {
     LOG_INFO("window created");
 }
 
 void
+gpu::window::Manager::recalculateCapabilities()
+{
+    m_window.updateSize();
+    m_characteristics = SurfaceCharacteristics(m_device, m_surface);
+}
+
+void
 gpu::window::Manager::poolEvents(EventCarrier& a_event_carrier)
 {
-    m_window->poolEvents(a_event_carrier);
+    m_window.poolEvents(a_event_carrier);
 }
 
 gpu::window::Surface&
 gpu::window::Manager::getSurface()
 {
-    m_surface;
+    return m_surface;
 }
 
-const gpu::window::SurfaceCharacteristics&
-gpu::window::Manager::getCharacteristics() const
+gpu::window::SurfaceCharacteristics&
+gpu::window::Manager::getCharacteristics()
 {
-    m_characteristics;
+    return m_characteristics;
 }

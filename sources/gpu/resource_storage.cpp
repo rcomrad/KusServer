@@ -12,3 +12,15 @@ gpu::ResourceStorage::getFontStorage() const
 {
     return static_cast<const gpu::font::FontStorage&>(*this);
 }
+
+// std::unordered_map<std::string, gpu::sprite::SpriteView>
+// gpu::ResourceStorage::generateSpriteViews(
+//     std::vector<std::string> const& a_names)
+// {
+//     std::unordered_map<std::string, sprite::SpriteView> result;
+//     for (auto const& name : a_names)
+//     {
+//         result.emplace(name, generateSpriteView(name));
+//     }
+//     return result;
+// }

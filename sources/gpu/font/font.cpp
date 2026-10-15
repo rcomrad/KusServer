@@ -11,7 +11,7 @@ gpu::font::Font::Font(
 void
 gpu::font::Font::writeText(const std::string& a_text,
                            const type::Coordinates& a_pos,
-                           std::vector<sprite::DrawTask>& a_out)
+                           std::vector<sprite::DrawTask>& a_out) const
 {
     // TODO: substract pending from a_pos
     for (int i = 0; i < a_text.size(); ++i)

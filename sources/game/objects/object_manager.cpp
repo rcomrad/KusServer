@@ -1,99 +1,111 @@
 #include "object_manager.hpp"
 
+#include "gpu/font/font_storage.hpp"
+#include "gpu/gpu_manager.hpp"
+
 #include "base_object.hpp"
 #include "drawable.hpp"
 #include "object_builder.hpp"
+#include "object_info.hpp"
 #include "object_type.hpp"
 #include "textable.hpp"
 
-void
-game::ObjectManager::addObject(const std::string& a_name,
-                               const ObjectInfo& a_info)
+game::obj::ObjectManager::ObjectManager(
+    gpu::GPUManager const& a_gpu_manager_ref)
 {
-    const auto it = m_objects.find(a_name);
-    if (it != m_objects.end())
+    // #define OBJECT_DIR "objects"
+    // KERNEL.addDataShortcut(OBJECT_DIR, OBJECT_DIR);
+
+    auto map_path  = KERNEL.getShortcut(DATA_DIR, "objects.txt");
+    m_object_infos = KERNEL.readStructMap<obj::ObjectInfo>(map_path);
+
+    // std::vector<std::string> names;
+    for (auto& [name, info] : m_object_infos)
     {
-        THROW("Can't add existent object '%s'", a_name);
+        if (info.texture.has_value())
+        {
+            info.sprite_view.emplace(
+                a_gpu_manager_ref.generateSpriteView(info.texture.value()));
+            // names.emplace_back(info.texture.value());
+        }
     }
 
-    const auto& obj = *m_objects.emplace(a_name, createObject(a_info)).first;
+    // auto sprite_map = a_gpu_manager_ref.generateSpriteView(names);
+    // for (auto& [name, obj_info] : m_object_infos)
+    // {
+    //     if (info.texture.has_value())
+    //     {
+    //         info.sprite_view = sprite_map[info.texture.value()];
+    //     }
+    // }
+}
 
-    const auto level = obj.getLevel();
-    m_draw_obj[level].emplace(&dynamic_cast<Drawable&>(obj));
-    m_text_obj[level].emplace(&dynamic_cast<Textable&>(obj));
+game::obj::ObjectManager::~ObjectManager() = default;
+
+uint64_t
+game::obj::ObjectManager::addObject(std::string const& a_name)
+{
+    auto const it = m_object_infos.find(a_name);
+    if (m_object_infos.end() == it)
+    {
+        THROW("No such object info '%s'", a_name);
+    }
+
+    auto obj_ptr = createObject(it->second);
+    auto id      = reinterpret_cast<uint64_t>(obj_ptr.get());
+    m_obj[obj_ptr->getLevel()].emplace(std::move(obj_ptr));
+    return id;
 }
 
 void
-game::ObjectManager::removeObject(const std::string& a_name)
+game::obj::ObjectManager::removeObject(uint64_t const a_id)
 {
-    const auto it_obj = m_objects.find(a_name);
-    if (it_obj == m_objects.end())
-    {
-        THROW("Can't remove non-existent object '%s'", a_name);
-    }
-    const auto& obj = *it_obj->second;
+    // TODO: with using handler instead of uint46_t
+    // auto const ptr   = reinterpret_cast<BaseObject const*>(a_id);
+    // auto const level = ptr->getLevel();
 
-    // no error anyway
-    // TODO: remove empty?
-    const auto level = obj.getLevel();
-    if (obj.isDrawable())
-    {
-        m_draw_obj[level].errase(&dynamic_cast<Drawable&>(obj));
-    }
-    if (obj.isTextable())
-    {
-        m_text_obj[level].errase(&dynamic_cast<Textable&>(obj));
-    }
+    // const auto it_container = m_obj.find(level);
+    // if (m_obj.end() == it_container)
+    // {
+    //     THROW("No such level %d('%ull')", level, a_id);
+    // }
 
-    m_objects.errase(it_obj);
+    // const auto it_obj = it_container->second.find(ptr);
+    // if (m_objects.end() == it_obj)
+    // {
+    //     THROW("Can't remove non-existent object'%ull'", a_id);
+    // }
+    // it_container->second.erase(it_obj);
 }
 
 std::vector<gpu::sprite::DrawTask>
-game::ObjectManager::generateDrawTasks(
+game::obj::ObjectManager::generateDrawTasks(
     const gpu::font::FontStorage& a_font_storage) const
 {
-    auto draw_it = m_draw_obj.begin();
-    auto text_it = m_text_obj.begin();
+    std::vector<gpu::sprite::DrawTask> result;
+    // result.reserve(m_objects.size());
 
-    const auto draw_end = [&draw_it, &m_draw_obj]()
-    { return draw_it == m_draw_obj.end(); };
-    const auto text_end = [&text_it, &m_text_obj]()
-    { return text_it == m_text_obj.end(); };
-
-    std::vector<gpu::sprite::DrawTask>& result;
-    result.reserve(m_objects.size());
-
-    bool print_img = true;
-    while (!draw_end() && !text_end())
+    for (auto const& [level, storage] : m_obj)
     {
-        if (draw_end())
+        for (auto const& obj_ptr : storage)
         {
-            print_img = false;
-        }
-        else if (text_end())
-        {
-            print_img = true;
-        }
-        else
-        {
-            print_img = draw_it->first <= text_it->first;
-        }
-
-        if (print_img)
-        {
-            for (auto* ptr : draw_it->second)
+            if (obj_ptr->isDrawable())
             {
-                a_out.emplace_back(ptr->getObjectPresentation());
+                // TODO: make template functions for const/noncost dcast for
+                // ptr/ref/smartptr to ref
+                auto const& drawable =
+                    *dynamic_cast<Drawable const*>(obj_ptr.get());
+                result.emplace_back(drawable.getObjectPresentation());
             }
-            ++draw_it;
         }
-        else
+        for (auto const& obj_ptr : storage)
         {
-            for (auto* ptr : text_it->second)
+            if (obj_ptr->isTextable())
             {
-                ptr->addTextPresentation(a_font_storage, a_out);
+                auto const& textable =
+                    *dynamic_cast<Textable const*>(obj_ptr.get());
+                textable.addTextPresentation(a_font_storage, result);
             }
-            ++text_it;
         }
     }
 

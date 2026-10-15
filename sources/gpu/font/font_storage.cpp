@@ -13,7 +13,7 @@ void
 gpu::font::FontStorage::writeText(const std::string& a_text,
                                   const type::Coordinates& a_pos,
                                   int a_font_id,
-                                  std::vector<sprite::DrawTask>& a_out)
+                                  std::vector<sprite::DrawTask>& a_out) const
 {
     return m_fonts.at(a_font_id).writeText(a_text, a_pos, a_out);
 }

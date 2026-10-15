@@ -25,9 +25,11 @@ public:
     void poolEvents(EventCarrier& a_event_carrier);
 
     Surface& getSurface();
-    const SurfaceCharacteristics& getCharacteristics() const;
+    SurfaceCharacteristics& getCharacteristics();
 
 private:
+    hard::Device& m_device;
+
     Window m_window;
     Surface m_surface;
     SurfaceCharacteristics m_characteristics;

@@ -6,6 +6,8 @@
 #include "gpu/sprite/draw_task.hpp"
 #include "gpu/utils/typedef.hpp"
 
+#include "coordinatable.hpp"
+
 namespace gpu::font
 {
 class FontStorage;
@@ -14,9 +16,9 @@ class FontStorage;
 namespace game::obj
 {
 
-class ObjectInfo;
+struct ObjectInfo;
 
-class Textable
+class Textable : virtual public Coordinatable
 {
 public:
     Textable(const ObjectInfo& a_info);

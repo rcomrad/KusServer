@@ -4,12 +4,14 @@
 #include "gpu/sprite/sprite_view.hpp"
 #include "gpu/utils/typedef.hpp"
 
+#include "coordinatable.hpp"
+
 namespace game::obj
 {
 
-class ObjectInfo;
+struct ObjectInfo;
 
-class Drawable
+class Drawable : virtual public Coordinatable
 {
 public:
     Drawable(const ObjectInfo& a_info);

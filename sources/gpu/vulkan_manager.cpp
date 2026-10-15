@@ -24,11 +24,11 @@ void
 gpu::VulkanManager::execDrawCommand(const command::DrawCommand& a_cmd)
 {
     auto& swap_chain = m_pipeline_manager.getSwapChain();
-    return execDrawCommand.getNextDrawCommand(swap_chain, a_cmd);
+    m_logic_manager.execDrawCommand(swap_chain, a_cmd);
 }
 
 void
-gpu::GPUModule::poolEvents(window::EventCarrier& a_event_carrier)
+gpu::VulkanManager::poolEvents(window::EventCarrier& a_event_carrier)
 {
     m_window_manager.poolEvents(a_event_carrier);
 }
@@ -38,9 +38,12 @@ gpu::VulkanManager::resizeWindow()
 {
     m_window_manager.recalculateCapabilities();
 
-    auto& logic_device          = logic_manager.getDevice();
-    auto& surface               = window_manager.getSurface();
-    const auto& characteristics = window_manager.getCharacteristics();
+    auto& logic_device    = m_logic_manager.getDevice();
+    auto& surface         = m_window_manager.getSurface();
+    auto& characteristics = m_window_manager.getCharacteristics();
 
-    m_pipeline_manager.create(logic_device, surface, characteristics);
+    // TODO: make this function
+    m_pipeline_manager.~Manager();
+    new (&m_pipeline_manager)
+        pipeline::Manager(logic_device, surface, characteristics);
 }

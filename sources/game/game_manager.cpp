@@ -1,5 +1,7 @@
 #include "game_manager.hpp"
 
+#include "gpu/gpu_manager.hpp"
+
 // #include "kernel/framework/include_me.hpp"
 // #include "kernel/utility/synchronization/sleep.hpp"
 
@@ -11,7 +13,7 @@
 #include "objects/object_info.hpp"
 
 game::GameManager::GameManager(gpu::GPUManager& a_gpu_manager_ref)
-    : m_gpu_manager_ref(a_gpu_manager_ref)
+    : m_gpu_manager_ref(a_gpu_manager_ref), m_objects(a_gpu_manager_ref)
 {
     // m_game_objects.emplace_back(m_gpu_module->getSprite("cakez"), 200, 300);
     // m_game_objects.emplace_back(m_gpu_module->getSprite("buttons"), -200,
@@ -24,13 +26,20 @@ game::GameManager::GameManager(gpu::GPUManager& a_gpu_manager_ref)
     //                gpu::type::Dimensions(1, 3), gpu::type::NDC(0, 0),
     //                gpu::type::Coordinates(0, 0));
 
-#define OBJECT_DIR "objects"
-    KERNEL.addDataShortcut(OBJECT_DIR, OBJECT_DIR);
+    // #define OBJECT_DIR "objects"
+    //     KERNEL.addDataShortcut(OBJECT_DIR, OBJECT_DIR);
 
-    auto map_path = KERNEL.getShortcut(OBJECT_DIR, "button.txt");
-    auto font_map = KERNEL.readStructMap<obj::ObjectInfo>(map_path);
+    //     auto map_path       = KERNEL.getShortcut(OBJECT_DIR, "button.txt");
+    //     const auto font_map =
+    //     KERNEL.readStructMap<obj::ObjectInfo>(map_path);
 
-    m_objects.addObject("button", font_map);
+    // const auto it = m_objects.find(a_name);
+    // if (it != m_objects.end())
+    // {
+    //     THROW("Can't add existent object '%s'", a_name);
+    // }
+    // m_objects.addObject(font_map.find("button")->second);
+    m_objects.addObject("button");
 }
 
 void
@@ -44,7 +53,7 @@ game::GameManager::tick()
 void
 game::GameManager::processEvents()
 {
-    auto& event_carrier = m_gpu_module->getEventCarrier();
+    auto& event_carrier = m_gpu_manager_ref.getEventCarrier();
     event_carrier.acquireRead(std::move(m_events_buffer));
 
     for (auto& e : m_events_buffer)
@@ -57,7 +66,7 @@ game::GameManager::processEvents()
                     // std::cout << "Mouse moved: " << e.mousePosition.coord.x
                     //           << " " << e.mousePosition.coord.y << '\n';
 
-                    buttons->update(e.mousePosition.coord);
+                    // buttons->update(e.mousePosition.coord);
                 }
                 break;
 
@@ -108,5 +117,6 @@ game::GameManager::draw()
     //     draw_tasks.emplace_back(i.getPresentation());
     // }
     const auto& font_storage = m_gpu_manager_ref.getFontStorage();
-    m_gpu_module->tryDraw(m_objects.generateDrawTasks(font_storage));
+    m_gpu_manager_ref.tryShipDrawTasks(
+        m_objects.generateDrawTasks(font_storage));
 }

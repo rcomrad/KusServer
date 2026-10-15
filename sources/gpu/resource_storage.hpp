@@ -4,6 +4,7 @@
 
 #include "font/font_storage.hpp"
 #include "sprite/sprite_storage.hpp"
+#include "sprite/sprite_view.hpp"
 
 namespace gpu
 {
@@ -16,6 +17,9 @@ public:
     HOLY_TRINITY_ONLY_MOVE(ResourceStorage);
 
     const font::FontStorage& getFontStorage() const;
+
+    // std::unordered_map<std::string, sprite::SpriteView> generateSpriteViews(
+    //     std::vector<std::string> const& a_names);
 };
 
 } // namespace gpu

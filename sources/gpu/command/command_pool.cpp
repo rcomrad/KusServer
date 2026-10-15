@@ -1,7 +1,6 @@
 #include "command_pool.hpp"
 
 #include "kernel/framework/logger/basic/include_me.hpp"
-#include "gpu/logic/device.hpp"
 
 #include "gpu/logic/device.hpp"
 
@@ -34,13 +33,14 @@ gpu::command::CommandPool::alocateBuffer()
     return BaseCommand(m_device, *this, alocate(1)[0]);
 }
 
-std::vector<gpu::command::BaseCommand>
-gpu::command::CommandPool::alocateBuffers(uint32_t a_size)
+std::vector<gpu::command::DrawCommand>
+gpu::command::CommandPool::alocateDrawBuffers(uint32_t a_size)
 {
-    std::vector<BaseCommand> result;
+    int index = 0;
+    std::vector<DrawCommand> result;
     for (auto& i : alocate(a_size))
     {
-        result.emplace_back(m_device, *this, i);
+        result.emplace_back(m_device, *this, i, index++);
     }
     return result;
 }

@@ -28,7 +28,7 @@ gpu::buildGpuClasses()
     auto& hard_device = hard_manager.getDevice();
     window::Manager window_manager(instance, hard_device);
 
-    const auto& characteristics = window_manager.getCharacteristics();
+    auto& characteristics = window_manager.getCharacteristics();
     logic::Manager logic_manager(hard_device, characteristics.family_index);
 
     auto& logic_device = logic_manager.getDevice();
@@ -45,8 +45,8 @@ gpu::buildGpuClasses()
     sprite::loadAllImages(sprite_builder);
     font::loadAllFonts(font_builder);
 
-    auto& queue           = logic_manager.getQueue();
-    auto& cmd_pool        = logic_manager.getCommandPool();
+    auto& queue          = logic_manager.getQueue();
+    auto& cmd_pool       = logic_manager.getCommandPool();
     auto desc_set_layout = pipeline_manager.getDescSetLayout();
 
     auto sprite_storage =

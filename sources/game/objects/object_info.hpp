@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_set>
 
+#include "gpu/sprite/sprite_view.hpp"
 #include "gpu/utils/typedef.hpp"
 
 namespace game::obj
@@ -19,7 +20,7 @@ struct ObjectInfo
     std::optional<gpu::type::Coordinates> coordinates;
 
     std::optional<std::string> texture;
-    std::optional<std::string> sprite_view;
+    std::optional<gpu::sprite::SpriteView> sprite_view;
 
     std::optional<std::string> text;
     std::optional<std::string> font;

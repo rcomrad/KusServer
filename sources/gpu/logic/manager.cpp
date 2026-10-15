@@ -13,17 +13,17 @@ gpu::logic::Manager::Manager(hard::Device& a_hard_device,
 {
     LOG_INFO("logic manager created");
 
-    m_commands = m_command_pool->alocateBuffers(3);
+    m_commands = m_command_pool.alocateDrawBuffers(3);
     LOG_INFO("draw command allocated");
 }
 
-uint32_t
+gpu::command::DrawCommand&
 gpu::logic::Manager::getNextDrawCommand(pipeline::SwapChain& a_swap_chain)
 {
     auto index = m_queue.acquireNextImage(m_device, a_swap_chain);
     LOG_SPAM("Next index is: %d", index);
 
-    static_assert(index == m_commands.at(index).index);
+    // static_assert(index == m_commands.at(index).index);
     return m_commands.at(index);
 }
 
@@ -32,23 +32,23 @@ gpu::logic::Manager::execDrawCommand(pipeline::SwapChain& a_swap_chain,
                                      const command::DrawCommand& a_cmd)
 {
     m_queue.submit(a_cmd);
-    m_queue.present(m_index, a_swap_chain);
+    m_queue.present(a_cmd.index, a_swap_chain);
 }
 
 gpu::logic::Device&
 gpu::logic::Manager::getDevice()
 {
-    return *m_device;
+    return m_device;
 }
 
 gpu::logic::Queue&
 gpu::logic::Manager::getQueue()
 {
-    return *m_queue;
+    return m_queue;
 }
 
 gpu::command::CommandPool&
 gpu::logic::Manager::getCommandPool()
 {
-    return *m_command_pool;
+    return m_command_pool;
 }

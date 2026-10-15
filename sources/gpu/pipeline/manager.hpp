@@ -37,7 +37,7 @@ class Manager
 public:
     Manager(logic::Device& a_device,
             window::Surface& a_surface,
-            const window::SurfaceCharacteristics& a_characteristic);
+            window::SurfaceCharacteristics& a_characteristic);
     HOLY_TRINITY_ONLY_MOVE(Manager);
 
     void bindToNextImage(command::DrawCommand& a_cmd_buff);

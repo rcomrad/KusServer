@@ -1,5 +1,7 @@
 #pragma once
 
+#include <optional>
+
 #include "object_type.hpp"
 
 namespace game::obj
@@ -13,7 +15,7 @@ class Textable;
 class BaseObject
 {
 public:
-    BaseObject(const int a_type, const int a_level);
+    BaseObject(const int a_type, std::optional<int> const& a_level);
     virtual ~BaseObject() = default;
 
     Coordinatable& asCoordinatable();
@@ -33,7 +35,7 @@ public:
 
 private:
     const int m_type;
-    int m_level;
+    int m_level; // TODO: move to Coordinatable?
 };
 
 } // namespace game::obj

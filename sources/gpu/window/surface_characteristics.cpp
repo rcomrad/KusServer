@@ -6,8 +6,9 @@
 
 #include "surface.hpp"
 
-gpu::SurfaceCharacteristics::SurfaceCharacteristics(hard::Device& a_device,
-                                                    Surface& a_serface)
+gpu::window::SurfaceCharacteristics::SurfaceCharacteristics(
+    hard::Device& a_device,
+    Surface& a_serface)
 {
     SCOPED_TRACE_INIT("characteristics");
 
@@ -23,8 +24,8 @@ gpu::SurfaceCharacteristics::SurfaceCharacteristics(hard::Device& a_device,
 }
 
 uint32_t
-gpu::SurfaceCharacteristics::findFamilyIndex(hard::Device& a_device,
-                                             Surface& a_serface)
+gpu::window::SurfaceCharacteristics::findFamilyIndex(hard::Device& a_device,
+                                                     Surface& a_serface)
 {
     auto property = a_device.getQueueFamilyProperties();
     for (uint32_t i = 0; i < property.size(); ++i)
@@ -43,8 +44,8 @@ gpu::SurfaceCharacteristics::findFamilyIndex(hard::Device& a_device,
 }
 
 std::pair<vk::Format, vk::ColorSpaceKHR>
-gpu::SurfaceCharacteristics::findFormat(hard::Device& a_device,
-                                        Surface& a_serface)
+gpu::window::SurfaceCharacteristics::findFormat(hard::Device& a_device,
+                                                Surface& a_serface)
 {
     auto format      = vk::Format(VK_FORMAT_B8G8R8A8_SRGB);
     auto color_space = vk::ColorSpaceKHR(VK_COLOR_SPACE_SRGB_NONLINEAR_KHR);
@@ -62,8 +63,8 @@ gpu::SurfaceCharacteristics::findFormat(hard::Device& a_device,
 }
 
 vk::PresentModeKHR
-gpu::SurfaceCharacteristics::findPresentMode(hard::Device& a_device,
-                                             Surface& a_serface)
+gpu::window::SurfaceCharacteristics::findPresentMode(hard::Device& a_device,
+                                                     Surface& a_serface)
 {
     auto target_mode   = vk::PresentModeKHR::eMailbox;
     auto fallback_mode = vk::PresentModeKHR::eFifo;
@@ -84,7 +85,7 @@ gpu::SurfaceCharacteristics::findPresentMode(hard::Device& a_device,
 }
 
 uint32_t
-gpu::SurfaceCharacteristics::findCapabilityImageNum(
+gpu::window::SurfaceCharacteristics::findCapabilityImageNum(
     const vk::SurfaceCapabilitiesKHR& a_capabilities)
 {
     uint32_t result = a_capabilities.minImageCount + 1;

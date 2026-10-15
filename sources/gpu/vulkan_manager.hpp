@@ -1,7 +1,6 @@
 #pragma once
 
 #include "kernel/utility/macroses/holy_trinity.hpp"
-#include "kernel/utility/type/declaration/lifecycle_manager.hpp"
 
 #include "gpu/hardware/manager.hpp"
 #include "gpu/logic/manager.hpp"
@@ -30,14 +29,14 @@ public:
 
     inline auto getLayout()
     {
-        return m_pipeline_manager->getLayout();
+        return m_pipeline_manager.getLayout();
     }
 
 private:
     hard::Manager m_hard_manager;
     window::Manager m_window_manager;
     logic::Manager m_logic_manager;
-    ::utils::LifecycleManager<pipeline::Manager> m_pipeline_manager;
+    pipeline::Manager m_pipeline_manager;
 };
 
 } // namespace gpu
