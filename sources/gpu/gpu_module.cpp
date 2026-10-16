@@ -28,6 +28,7 @@ void
 gpu::GPUModule::threadInitialize()
 {
     SCOPED_TRACE_INIT("gpu module");
+    KERNEL.addDataShortcut("shaders", "shaders");
     m_manager.create(buildGpuClasses());
 }
 

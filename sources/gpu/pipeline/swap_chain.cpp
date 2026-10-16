@@ -13,13 +13,23 @@ gpu::pipeline::SwapChain::SwapChain(
     window::Surface& a_serface,
     const window::SurfaceCharacteristics& a_characteristic)
     : vk::SwapchainKHR(create(a_logic_device, a_serface, a_characteristic)),
-      m_logic_device(a_logic_device)
+      m_logic_device(&a_logic_device)
 {
+}
+
+gpu::pipeline::SwapChain::SwapChain(SwapChain&& a_other) noexcept
+{
+    m_logic_device         = a_other.m_logic_device;
+    a_other.m_logic_device = nullptr;
 }
 
 gpu::pipeline::SwapChain::~SwapChain()
 {
-    m_logic_device.destroySwapchainKHR(*static_cast<vk::SwapchainKHR*>(this));
+    if (nullptr != m_logic_device)
+    {
+        m_logic_device->destroySwapchainKHR(
+            *static_cast<vk::SwapchainKHR*>(this));
+    }
 }
 
 vk::SwapchainKHR

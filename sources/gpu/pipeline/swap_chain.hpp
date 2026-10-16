@@ -29,12 +29,14 @@ public:
               window::Surface& a_serface,
               const window::SurfaceCharacteristics& a_characteristic);
     ~SwapChain();
-    HOLY_TRINITY_ONLY_MOVE(SwapChain);
+    HOLY_TRINITY_NO_COPY(SwapChain);
+
+    SwapChain(SwapChain&& a_other) noexcept;
 
     VK_CONVERTER(vk::SwapchainKHR);
 
 private:
-    logic::Device& m_logic_device;
+    logic::Device* m_logic_device;
 
     static vk::SwapchainKHR create(
         logic::Device& a_logic_device,

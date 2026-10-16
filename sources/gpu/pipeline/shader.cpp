@@ -8,13 +8,6 @@
 gpu::pipeline::Shader::Shader(logic::Device& a_device, std::string_view a_name)
     : vk::ShaderModule(create(a_device, a_name)), m_device(a_device)
 {
-    static bool is_inited = false;
-    if (!is_inited)
-    {
-        is_inited = true;
-        SCOPED_TRACE_INIT("shader module");
-        KERNEL.addDataShortcut(SHADER_DIR, SHADER_DIR);
-    }
 }
 
 gpu::pipeline::Shader::~Shader()
