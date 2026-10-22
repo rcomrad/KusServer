@@ -1,6 +1,7 @@
 #pragma once
 
 #include "kernel/utility/macroses/holy_trinity.hpp"
+#include "kernel/utility/type/declaration/move_monitor.hpp"
 #include <vulkan/vulkan.hpp>
 
 #include "gpu/utils/vk_converter.hpp"
@@ -16,18 +17,13 @@ class Device;
 namespace pipeline
 {
 
-class Shader : public vk::ShaderModule
+DECLARE_UNIQUE_WRAPPER_HELPERS(ShaderModule);
+class Shader : public ShaderModuleBase
 {
 public:
     Shader(logic::Device& a_device, std::string_view a_name);
-    ~Shader();
-
-    HOLY_TRINITY_ONLY_MOVE(Shader);
-    VK_CONVERTER(vk::ShaderModule);
 
 private:
-    logic::Device& m_device;
-
     static vk::ShaderModule create(logic::Device& a_device,
                                    std::string_view a_name);
 };

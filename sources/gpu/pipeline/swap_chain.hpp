@@ -1,6 +1,7 @@
 #pragma once
 
 #include "kernel/utility/macroses/holy_trinity.hpp"
+#include "kernel/utility/type/declaration/move_monitor.hpp"
 #include <vulkan/vulkan.hpp>
 
 #include "gpu/utils/vk_converter.hpp"
@@ -22,22 +23,15 @@ class SurfaceCharacteristics;
 namespace pipeline
 {
 
-class SwapChain : public vk::SwapchainKHR
+DECLARE_UNIQUE_WRAPPER_HELPERS(SwapchainKHR);
+class SwapChain : public SwapchainKHRBase
 {
 public:
     SwapChain(logic::Device& a_logic_device,
               window::Surface& a_serface,
               const window::SurfaceCharacteristics& a_characteristic);
-    ~SwapChain();
-    HOLY_TRINITY_NO_COPY(SwapChain);
-
-    SwapChain(SwapChain&& a_other) noexcept;
-
-    VK_CONVERTER(vk::SwapchainKHR);
 
 private:
-    logic::Device* m_logic_device;
-
     static vk::SwapchainKHR create(
         logic::Device& a_logic_device,
         window::Surface& a_serface,

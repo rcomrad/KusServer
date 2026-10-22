@@ -7,8 +7,7 @@
 
 gpu::pipeline::RenderPass::RenderPass(logic::Device& a_device,
                                       vk::Format a_format)
-    : vk::RenderPass(create(a_device, a_format)),
-      m_device(a_device),
+    : RenderPassBase(create(a_device, a_format), a_device),
       m_clear_value(vk::ClearColorValue{1.0f, 0.0f, 0.0f, 0.0f})
 {
 }
@@ -32,10 +31,12 @@ gpu::pipeline::RenderPass::create(logic::Device& a_device, vk::Format a_format)
     return a_device.createRenderPass(info);
 }
 
-gpu::pipeline::RenderPass::~RenderPass()
+void
+gpu::pipeline::RenderPassDeleter::operator()(logic::Device& a_device,
+                                             vk::RenderPass& a_this) noexcept
 {
     SCOPED_TRACE_TERM("render pass");
-    m_device.destroyRenderPass(*static_cast<vk::RenderPass*>(this));
+    a_device.destroyRenderPass(a_this);
 }
 
 vk::RenderPassBeginInfo

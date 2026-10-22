@@ -10,6 +10,7 @@
 namespace gpu::hard
 {
 
+// TODO: do we need deleter?
 class Device : public vk::PhysicalDevice, public core::CommandCaller
 {
 public:

@@ -7,6 +7,7 @@
 
 #include "gpu/utils/typedef.hpp"
 #include "gpu/utils/vk_converter.hpp"
+#include "gpu/utils/vulkan_move_monitor.hpp"
 
 #include "base_command.hpp"
 #include "draw_command.hpp"
@@ -23,12 +24,12 @@ class Device;
 namespace command
 {
 
-class CommandPool : public vk::CommandPool
+DECLARE_UNIQUE_WRAPPER_HELPERS(CommandPool);
+class CommandPool : public CommandPoolBase
 {
 public:
     CommandPool(logic::Device& a_device, type::FamilyIndex a_family_index);
     ~CommandPool();
-    HOLY_TRINITY_ONLY_MOVE(CommandPool);
 
     BaseCommand alocateBuffer();
     // std::vector<BaseCommand> alocateBuffers(uint32_t a_size);
@@ -36,11 +37,7 @@ public:
 
     OneTimeCommand alocateOneTimeCommand();
 
-    VK_CONVERTER(vk::CommandPool);
-
 private:
-    logic::Device& m_device;
-
     static vk::CommandPool create(logic::Device& a_device,
                                   type::FamilyIndex a_family_index);
 

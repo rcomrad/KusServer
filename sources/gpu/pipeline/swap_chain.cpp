@@ -12,24 +12,16 @@ gpu::pipeline::SwapChain::SwapChain(
     logic::Device& a_logic_device,
     window::Surface& a_serface,
     const window::SurfaceCharacteristics& a_characteristic)
-    : vk::SwapchainKHR(create(a_logic_device, a_serface, a_characteristic)),
-      m_logic_device(&a_logic_device)
+    : SwapchainKHRBase(create(a_logic_device, a_serface, a_characteristic),
+                       a_logic_device)
 {
 }
 
-gpu::pipeline::SwapChain::SwapChain(SwapChain&& a_other) noexcept
+void
+gpu::pipeline::SwapchainKHRDeleter::operator()(logic::Device& a_device,
+                                               vk::RenderPass& a_this) noexcept
 {
-    m_logic_device         = a_other.m_logic_device;
-    a_other.m_logic_device = nullptr;
-}
-
-gpu::pipeline::SwapChain::~SwapChain()
-{
-    if (nullptr != m_logic_device)
-    {
-        m_logic_device->destroySwapchainKHR(
-            *static_cast<vk::SwapchainKHR*>(this));
-    }
+    a_device.destroySwapchainKHR(a_this);
 }
 
 vk::SwapchainKHR

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "kernel/utility/macroses/holy_trinity.hpp"
+#include "kernel/utility/type/declaration/move_monitor.hpp"
 #include <vulkan/vulkan.hpp>
 
 #include "gpu/utils/vk_converter.hpp"
@@ -16,19 +17,14 @@ class Device;
 namespace pipeline
 {
 
-class RenderPass : public vk::RenderPass
+DECLARE_UNIQUE_WRAPPER_HELPERS(RenderPass);
+class RenderPass : public RenderPassBase
 {
 public:
     RenderPass(logic::Device& a_device, vk::Format a_format);
-    ~RenderPass();
-
-    HOLY_TRINITY_ONLY_MOVE(RenderPass);
-    VK_CONVERTER(vk::RenderPass);
-
     vk::RenderPassBeginInfo getBeginInfo(vk::Framebuffer a_framebuffer);
 
 private:
-    logic::Device& m_device;
     vk::ClearValue m_clear_value;
 
     static vk::RenderPass create(logic::Device& a_device, vk::Format a_format);

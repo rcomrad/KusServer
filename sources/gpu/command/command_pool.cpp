@@ -6,13 +6,15 @@
 
 gpu::command::CommandPool::CommandPool(logic::Device& a_device,
                                        type::FamilyIndex a_family_index)
-    : vk::CommandPool(create(a_device, a_family_index)), m_device(a_device)
+    : CommandPoolBase(create(a_device, a_family_index), a_device)
 {
 }
 
-gpu::command::CommandPool::~CommandPool()
+void
+gpu::command::CommandPoolDeleter::operator()(logic::Device& a_device,
+                                             vk::CommandPool& a_this) noexcept
 {
-    m_device.destroyCommandPool(toBase());
+    a_device.destroyCommandPool(a_this);
 }
 
 vk::CommandPool
@@ -30,7 +32,7 @@ gpu::command::CommandPool::create(logic::Device& a_device,
 gpu::command::BaseCommand
 gpu::command::CommandPool::alocateBuffer()
 {
-    return BaseCommand(m_device, *this, alocate(1)[0]);
+    return BaseCommand(getContext(), *this, alocate(1)[0]);
 }
 
 std::vector<gpu::command::DrawCommand>
@@ -40,7 +42,7 @@ gpu::command::CommandPool::alocateDrawBuffers(uint32_t a_size)
     std::vector<DrawCommand> result;
     for (auto& i : alocate(a_size))
     {
-        result.emplace_back(m_device, *this, i, index++);
+        result.emplace_back(getContext(), *this, i, index++);
     }
     return result;
 }
@@ -48,7 +50,7 @@ gpu::command::CommandPool::alocateDrawBuffers(uint32_t a_size)
 gpu::command::OneTimeCommand
 gpu::command::CommandPool::alocateOneTimeCommand()
 {
-    return OneTimeCommand(m_device, *this, alocate(1)[0]);
+    return OneTimeCommand(getContext(), *this, alocate(1)[0]);
 }
 
 std::vector<vk::CommandBuffer>
@@ -59,6 +61,6 @@ gpu::command::CommandPool::alocate(uint32_t a_size)
         .setCommandBufferCount(a_size)
         .setCommandPool(toBase())
         .setLevel(vk::CommandBufferLevel::ePrimary);
-    auto tt = m_device.allocateCommandBuffers(allocate_info);
+    auto tt = getContext().allocateCommandBuffers(allocate_info);
     return tt;
 }

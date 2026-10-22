@@ -1,8 +1,11 @@
 #pragma once
 
+#include "kernel/utility/macroses/holy_trinity.hpp"
+#include "kernel/utility/type/declaration/move_monitor.hpp"
 #include <vulkan/vulkan.hpp>
 
 #include "gpu/utils/vk_converter.hpp"
+#include "gpu/utils/vulkan_move_monitor.hpp"
 
 namespace gpu
 {
@@ -17,7 +20,23 @@ namespace command
 
 class CommandPool;
 
-class BaseCommand : public vk::CommandBuffer
+struct CommandBufferContext
+{
+    logic::Device& device;
+    CommandPool& command_pool;
+};
+
+struct CommandBufferDeleter
+{
+    static void operator()(CommandBufferContext& a_device,
+                           vk::CommandBuffer& a_this) noexcept;
+};
+
+using CommandBufferBase = VulkanUniqueWrapper<vk::CommandBuffer,
+                                              CommandBufferDeleter,
+                                              CommandBufferContext>;
+
+class BaseCommand : public CommandBufferBase
 {
 public:
     BaseCommand(logic::Device& a_device,
@@ -25,11 +44,7 @@ public:
                 vk::CommandBuffer a_this);
     ~BaseCommand();
 
-    BaseCommand(const BaseCommand&)            = delete;
-    BaseCommand& operator=(const BaseCommand&) = delete;
-
-    BaseCommand(BaseCommand&& other) noexcept;
-    BaseCommand& operator=(BaseCommand&& other) noexcept = delete;
+    HOLY_TRINITY_ONLY_MOVE(BaseCommand);
 
     void pushBarrierFirstWrite(vk::Image a_image);
     void pushBarrierReadPostWrite(vk::Image a_image);
@@ -39,13 +54,8 @@ public:
     void begin(vk::CommandBufferUsageFlagBits a_flag);
     void end();
 
-    VK_CONVERTER(vk::CommandBuffer);
-
 private:
     bool m_has_begun;
-    mutable bool m_is_buffer_owner;
-    logic::Device& m_device;
-    CommandPool& m_command_pool;
 };
 
 } // namespace command

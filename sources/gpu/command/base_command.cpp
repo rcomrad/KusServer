@@ -11,33 +11,18 @@
 gpu::command::BaseCommand::BaseCommand(logic::Device& a_device,
                                        CommandPool& a_parent,
                                        vk::CommandBuffer a_this)
-    : vk::CommandBuffer(a_this),
-      m_has_begun(false),
-      m_is_buffer_owner(true),
-      m_device(a_device),
-      m_command_pool(a_parent)
+    : CommandBufferBase(a_this, CommandBufferContext(a_device, a_parent)),
+      m_has_begun(false)
 {
 }
 
-gpu::command::BaseCommand::~BaseCommand()
+void
+gpu::command::CommandBufferDeleter::operator()(
+    CommandBufferContext& a_context,
+    vk::CommandBuffer& a_this) noexcept
 {
-    if (m_is_buffer_owner)
-    {
-        std::vector<vk::CommandBuffer> data = {
-            *static_cast<vk::CommandBuffer*>(this)};
-        m_device.freeCommandBuffers(*m_command_pool, data);
-    }
-}
-
-gpu::command::BaseCommand::BaseCommand(BaseCommand&& a_other) noexcept
-    : vk::CommandBuffer(a_other.toBase()),
-      m_has_begun(a_other.m_has_begun),
-      m_is_buffer_owner(true),
-      m_device(a_other.m_device),
-      m_command_pool(a_other.m_command_pool)
-
-{
-    a_other.m_is_buffer_owner = false;
+    std::vector<vk::CommandBuffer> data = {a_this};
+    a_context.device.freeCommandBuffers(a_context.command_pool, data);
 }
 
 //****************************************

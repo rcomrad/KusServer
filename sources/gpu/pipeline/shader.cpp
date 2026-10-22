@@ -6,13 +6,15 @@
 #include "gpu/utils/paths.hpp"
 
 gpu::pipeline::Shader::Shader(logic::Device& a_device, std::string_view a_name)
-    : vk::ShaderModule(create(a_device, a_name)), m_device(a_device)
+    : ShaderModuleBase(create(a_device, a_name), a_device)
 {
 }
 
-gpu::pipeline::Shader::~Shader()
+void
+gpu::pipeline::ShaderModuleDeleter::operator()(logic::Device& a_device,
+                                               vk::RenderPass& a_this) noexcept
 {
-    m_device.destroyShaderModule(toBase());
+    a_device.destroyShaderModule(a_this);
 }
 
 vk::ShaderModule

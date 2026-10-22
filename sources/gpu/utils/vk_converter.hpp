@@ -15,5 +15,4 @@
     inline const Type& operator*() const        \
     {                                           \
         return *static_cast<const Type*>(this); \
-    }                                           \
-    \
+    }
