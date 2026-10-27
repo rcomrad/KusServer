@@ -44,6 +44,7 @@ gpu::pipeline::Manager::bindToNextImage(command::DrawCommand& a_cmd_buff)
 {
     LOG_SPAM("bindToNextImage");
 
+    a_cmd_buff.begin();
     a_cmd_buff.beginRenderPass(
         m_render_pass.getBeginInfo(
             m_image_collection.getFrame(a_cmd_buff.index)),

@@ -60,6 +60,14 @@ gpu::logic::Queue::submit(const command::BaseCommand a_command_buffers[],
 {
     LOG_SPAM("submit");
 
+    std::vector<vk::CommandBuffer> buffers;
+    buffers.reserve(a_size);
+
+    for (uint32_t i = 0; i < a_size; ++i)
+    {
+        buffers.emplace_back(*a_command_buffers[i]);
+    }
+
     std::vector<vk::SubmitInfo> info;
     auto& cur = info.emplace_back()
                     .setPCommandBuffers(a_command_buffers)

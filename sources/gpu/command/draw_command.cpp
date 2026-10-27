@@ -10,5 +10,10 @@ gpu::command::DrawCommand::DrawCommand(logic::Device& a_device,
                                        int a_index)
     : BaseCommand(a_device, a_parent, a_this), index(a_index)
 {
+}
+
+void
+gpu::command::DrawCommand::begin()
+{
     BaseCommand::begin(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 }

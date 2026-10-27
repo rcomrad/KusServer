@@ -12,7 +12,10 @@ public:
 
     DrawCommand(logic::Device& a_device,
                 CommandPool& a_parent,
-                vk::CommandBuffer a_this, int a_index);
+                vk::CommandBuffer a_this,
+                int a_index);
+
+    void begin();
 };
 
 } // namespace gpu::command
