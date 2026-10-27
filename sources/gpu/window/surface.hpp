@@ -7,6 +7,7 @@
 #include "kernel/utility/macroses/holy_trinity.hpp"
 
 #include "gpu/utils/vk_converter.hpp"
+#include "gpu/utils/vulkan_move_monitor.hpp"
 
 namespace gpu
 {
@@ -22,20 +23,15 @@ namespace window
 
 class Window;
 
-class Surface : public vk::SurfaceKHR
+DECLARE_UNIQUE_WRAPPER_INSTANCE_HELPERS(SurfaceKHR);
+class Surface : public SurfaceKHRBase
 {
 public:
     Surface(hard::Instance& a_instance,
             hard::Device& a_device,
             Window& a_window);
-    ~Surface();
-    HOLY_TRINITY_ONLY_MOVE(Surface);
-
-    VK_CONVERTER(vk::SurfaceKHR);
 
 private:
-    hard::Instance& m_instance;
-
     static vk::SurfaceKHR create(hard::Instance& a_instance,
                                  hard::Device& a_device,
                                  Window& a_window);

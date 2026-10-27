@@ -18,8 +18,9 @@ gpu::pipeline::SwapChain::SwapChain(
 }
 
 void
-gpu::pipeline::SwapchainKHRDeleter::operator()(logic::Device& a_device,
-                                               vk::RenderPass& a_this) noexcept
+gpu::pipeline::SwapchainKHRDeleter::operator()(
+    logic::Device& a_device,
+    vk::SwapchainKHR& a_this) noexcept
 {
     a_device.destroySwapchainKHR(a_this);
 }

@@ -49,8 +49,23 @@ gpu::window::Window::Window()
 
 gpu::window::Window::~Window()
 {
-    SCOPED_TRACE_TERM("window");
-    glfwDestroyWindow(m_window);
+    if (m_window)
+    {
+        SCOPED_TRACE_TERM("window");
+        glfwDestroyWindow(m_window);
+    }
+}
+
+gpu::window::Window::Window(Window&& a_other) noexcept
+{
+    *this = std::move(a_other);
+}
+
+gpu::window::Window&
+gpu::window::Window::operator=(Window&& a_other) noexcept
+{
+    m_window = std::exchange(a_other.m_window, nullptr);
+    return *this;
 }
 
 void

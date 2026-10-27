@@ -5,6 +5,7 @@
 #include <vulkan/vulkan.hpp>
 
 #include "gpu/utils/vk_converter.hpp"
+#include "gpu/utils/vulkan_move_monitor.hpp"
 
 namespace gpu
 {
@@ -17,7 +18,7 @@ class Device;
 namespace pipeline
 {
 
-DECLARE_UNIQUE_WRAPPER_HELPERS(ShaderModule);
+DECLARE_UNIQUE_WRAPPER_DEVICE_HELPERS(ShaderModule);
 class Shader : public ShaderModuleBase
 {
 public:

@@ -89,11 +89,20 @@ namespace logic
 class Device;
 }
 
+namespace hard
+{
+class Instance;
+}
+
 template <typename BaseClassT, typename DeleterT>
 using UniqueWrapperWithDevice =
     VulkanUniqueWrapper<BaseClassT, DeleterT, logic::Device&>;
 
-#define DECLARE_UNIQUE_WRAPPER_HELPERS(class_name)               \
+template <typename BaseClassT, typename DeleterT>
+using UniqueWrapperWithInstance =
+    VulkanUniqueWrapper<BaseClassT, DeleterT, hard::Instance&>;
+
+#define DECLARE_UNIQUE_WRAPPER_DEVICE_HELPERS(class_name)        \
     struct class_name##Deleter                                   \
     {                                                            \
         static void operator()(logic::Device& a_device,          \
@@ -102,4 +111,15 @@ using UniqueWrapperWithDevice =
                                                                  \
     using class_name##Base =                                     \
         UniqueWrapperWithDevice<vk::class_name, class_name##Deleter>;
+
+#define DECLARE_UNIQUE_WRAPPER_INSTANCE_HELPERS(class_name)      \
+    struct class_name##Deleter                                   \
+    {                                                            \
+        static void operator()(hard::Instance& a_instance,       \
+                               vk::class_name& a_this) noexcept; \
+    };                                                           \
+                                                                 \
+    using class_name##Base =                                     \
+        UniqueWrapperWithInstance<vk::class_name, class_name##Deleter>;
+
 } // namespace gpu

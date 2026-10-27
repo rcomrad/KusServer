@@ -29,8 +29,16 @@ class Surface;
 class SurfaceCharacteristics;
 } // namespace window
 
+
+
 namespace pipeline
 {
+
+static_assert(std::is_move_constructible_v<SwapChain>);
+static_assert(std::is_move_constructible_v<RenderPass>);
+static_assert(std::is_move_constructible_v<ImageCollection>);
+static_assert(std::is_move_constructible_v<Shader>);
+static_assert(std::is_move_constructible_v<GraphicsPipeline>);
 
 class Manager
 {

@@ -12,12 +12,22 @@ namespace gpu::window
 
 using EventCarrier = utils::PingPongAtomicBuffer<event::Event>;
 
+struct WindowDeleter
+{
+    static void operator()(GLFWwindow* a_this) noexcept;
+};
+
 class Window
 {
 public:
     Window();
     ~Window();
-    HOLY_TRINITY_ONLY_MOVE(Window);
+
+    // TODO: merge with VulkanUniqueWrapper?
+    Window(Window&& a_other) noexcept;
+    Window& operator=(Window&& a_other) noexcept;
+
+    HOLY_TRINITY_NO_COPY(Window);
 
     void updateSize() const;
     void poolEvents(EventCarrier& a_event_carrier);
@@ -29,6 +39,7 @@ public:
 
 private:
     GLFWwindow* m_window;
+
     static std::vector<event::Event> m_events_buffer;
 
     static void windowCloseCallback(GLFWwindow*);

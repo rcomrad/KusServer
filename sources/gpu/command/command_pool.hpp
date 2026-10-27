@@ -24,12 +24,11 @@ class Device;
 namespace command
 {
 
-DECLARE_UNIQUE_WRAPPER_HELPERS(CommandPool);
+DECLARE_UNIQUE_WRAPPER_DEVICE_HELPERS(CommandPool);
 class CommandPool : public CommandPoolBase
 {
 public:
     CommandPool(logic::Device& a_device, type::FamilyIndex a_family_index);
-    ~CommandPool();
 
     BaseCommand alocateBuffer();
     // std::vector<BaseCommand> alocateBuffers(uint32_t a_size);

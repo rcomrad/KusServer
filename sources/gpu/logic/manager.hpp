@@ -25,6 +25,10 @@ class SwapChain;
 namespace logic
 {
 
+static_assert(std::is_move_constructible_v<Device>);
+static_assert(std::is_move_constructible_v<Queue>);
+static_assert(std::is_move_constructible_v<command::CommandPool>);
+
 class Manager
 {
 public:

@@ -42,7 +42,6 @@ public:
     BaseCommand(logic::Device& a_device,
                 CommandPool& a_parent,
                 vk::CommandBuffer a_this);
-    ~BaseCommand();
 
     HOLY_TRINITY_ONLY_MOVE(BaseCommand);
 

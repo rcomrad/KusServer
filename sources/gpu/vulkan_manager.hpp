@@ -11,6 +11,11 @@
 namespace gpu
 {
 
+static_assert(std::is_move_constructible_v<hard::Manager>);
+static_assert(std::is_move_constructible_v<window::Manager>);
+static_assert(std::is_move_constructible_v<logic::Manager>);
+static_assert(std::is_move_constructible_v<pipeline::Manager>);
+
 class VulkanManager
 {
 public:

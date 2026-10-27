@@ -11,8 +11,9 @@ gpu::pipeline::Shader::Shader(logic::Device& a_device, std::string_view a_name)
 }
 
 void
-gpu::pipeline::ShaderModuleDeleter::operator()(logic::Device& a_device,
-                                               vk::RenderPass& a_this) noexcept
+gpu::pipeline::ShaderModuleDeleter::operator()(
+    logic::Device& a_device,
+    vk::ShaderModule& a_this) noexcept
 {
     a_device.destroyShaderModule(a_this);
 }
