@@ -1,31 +1,16 @@
-#include "kernel/tester/fixture.hpp"
+#include "vulkan_fixture.hpp"
 
 namespace kustest
 {
 
-class EngineTest : public Fixture
+class EngineTest : public VulkanFixture
 {
 };
 
 TEST_F(EngineTest, smoke)
 {
-    // VkApplicationInfo appInfo = {};
-    // appInfo.sType             = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    // appInfo.pApplicationName  = "Pong";
-    // appInfo.pEngineName       = "Ponggine";
-
-    // VkInstanceCreateInfo instanceInfo = {};
-    // instanceInfo.sType                =
-    // VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO; instanceInfo.pApplicationInfo =
-    // &appInfo;
-
-    // VkInstance instance;
-
-    // VkResult result = vkCreateInstance(&instanceInfo, 0, &instance);
-    // if (result == VK_SUCCESS)
-    // {
-    //     std::cout << "Successfully created vulkan instance" << std::endl;
-    // }
+    EXPECT_FALSE(instance().getPhysicalDevices().empty());
+    EXPECT_FALSE(physicalDevice().getName().empty());
 }
 
 } // namespace kustest

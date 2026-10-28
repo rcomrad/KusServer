@@ -1,5 +1,7 @@
 #include "animation.hpp"
 
+#include "kernel/framework/logger/basic/include_me.hpp"
+
 #include "sprite_push_data.hpp"
 #include "texture_info.hpp"
 
@@ -16,8 +18,15 @@ void
 gpu::sprite::Animation::drawAnimation(SpritePushData& a_push,
                                       type::AnimationFrame a_frame_num) const
 {
+    // TODO: #ifdef DEBUG
+    if (a_frame_num < 0 || a_frame_num >= m_offsets.size())
+    {
+
+        THROW("No such animation offset number");
+    }
+
     a_push.uv_scaler       = {m_uv.x, m_uv.y};
-    const auto& cur_offset = m_offsets[a_frame_num];
+    const auto& cur_offset = m_offsets.at(a_frame_num);
     a_push.uv_offset       = {cur_offset.x, cur_offset.y};
 }
 

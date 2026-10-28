@@ -14,6 +14,8 @@ struct SpritePushData
     glm::vec2 uv_scaler;
     glm::vec2 uv_offset;
     // alignas(16) glm::vec3 color;
+
+    bool operator==(SpritePushData const&) const = default;
 };
 
 } // namespace gpu::sprite

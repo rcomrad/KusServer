@@ -2,6 +2,9 @@
 
 #include <gtest/gtest.h>
 
+#include <cstddef>
+#include <type_traits>
+
 // #include <iostream>
 // #include <stdio.h>
 // #include <unordered_map>
@@ -14,6 +17,29 @@ class Fixture : public testing::Test
 protected:
     Fixture();
     ~Fixture();
+
+    template <typename T>
+    T constructWithGarbage()
+    {
+        T result;
+        fillWithGarbage(result);
+        return result;
+    }
+
+    template <typename T>
+    void fillWithGarbage(T& obj)
+    {
+        auto* bytes = reinterpret_cast<unsigned char*>(&obj);
+
+        for (std::size_t i = 0; i < sizeof(T); ++i, ++m_filler_cnt)
+        {
+            m_filler_cnt %= 'Z' - 'A' + 1;
+            bytes[i] = static_cast<unsigned char>('A' + m_filler_cnt);
+        }
+    }
+
+private:
+    int m_filler_cnt;
 
     // template <typename... Args>
     // static void print(Args... args)

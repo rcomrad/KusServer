@@ -1,10 +1,10 @@
 #include "fixture.hpp"
 
-#include <cstdio>
-
 #include "kernel/framework/logger/include_me.hpp"
 
-kustest::Fixture::Fixture()
+#include <cstdio>
+
+kustest::Fixture::Fixture() : m_filler_cnt(0)
 {
 }
 
