@@ -39,7 +39,7 @@ protected:
     }
 
 private:
-    int m_filler_cnt;
+    static inline int m_filler_cnt = 0;
 
     // template <typename... Args>
     // static void print(Args... args)

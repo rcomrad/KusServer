@@ -4,7 +4,7 @@
 
 #include <cstdio>
 
-kustest::Fixture::Fixture() : m_filler_cnt(0)
+kustest::Fixture::Fixture()
 {
 }
 
